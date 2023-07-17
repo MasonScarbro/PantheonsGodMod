@@ -23,6 +23,7 @@ namespace GodsAndPantheons
             - Each god will be assigned an in game trait automatically that associated to their type (soon to be unique non base game traits)
             - Each god will have a stat boost with their associated age
             - There will be DemiGods which are the breeding of mortal and god 
+            - Fix git
             */
 
             
