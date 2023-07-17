@@ -1,0 +1,8 @@
+{
+  "name": "PantheonGodsMod",
+  "author": "MasonScarbro",
+  "version": "1.0.0",
+  "description": "This Mod adds different types of gods for now",
+  "targetGameBuild": 558,
+  "iconPath": "icon.png"
+}
