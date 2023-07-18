@@ -1,3 +1,7 @@
+/* 
+AUTHOR: MASON SCARBRO
+VERSION: 0.2.0
+*/
 using System;
 using System.Threading;
 using NCMS;
@@ -19,11 +23,11 @@ namespace GodsAndPantheons
             /*
             PLANNED ENCOMPOSING:
             All of the things that encompose all gods etc will be planned here 
-            - Each god will have a specific height/size change (maybe not all)
             - Each god will be assigned an in game trait automatically that associated to their type (soon to be unique non base game traits)
             - Each god will have a stat boost with their associated age
-            - There will be DemiGods which are the breeding of mortal and god 
-            - Fix git
+            - There will be DemiGods which are the breeding of mortal and god
+            - Check if God is Almost dead if he is increase chance he will activate special power else 
+            - Add a special power to stars God
             */
 
             
@@ -31,11 +35,12 @@ namespace GodsAndPantheons
             chaosGod.id = "God Of Chaos";
             chaosGod.path_icon = "ui/icons/achievements/achievements_thedemon";
             chaosGod.base_stats[S.damage] += 15;
-            chaosGod.base_stats[S.health] = 800;
+            chaosGod.base_stats[S.health] += 800;
             chaosGod.base_stats[S.attack_speed] += 5f;
             chaosGod.action_attack_target = new AttackAction(ActionLibrary.addBurningEffectOnTarget);
             chaosGod.action_death = new WorldAction(ActionLibrary.turnIntoDemon);
             chaosGod.action_death = (WorldAction)Delegate.Combine(chaosGod.action_death, new WorldAction(chaosGodsTrick));
+            chaosGod.base_stats[S.scale] = 0.08f;
             AssetManager.traits.add(chaosGod);
             PlayerConfig.unlockTrait(chaosGod.id);
             addTraitToLocalizedLibrary(chaosGod.id, "Tis's The God Of Chaos!");
@@ -44,67 +49,92 @@ namespace GodsAndPantheons
             ActorTrait sunGod = new ActorTrait();
             sunGod.id = "God Of light";
             sunGod.path_icon = "ui/icons/achievements/achievements_thedemon";
-            sunGod.base_stats[S.damage] += 10f;
-            sunGod.base_stats[S.health] = 500;
-            sunGod.base_stats[S.attack_speed] += 15f;
+            sunGod.base_stats[S.damage] += 15f;
+            sunGod.base_stats[S.health] += 500;
+            sunGod.base_stats[S.attack_speed] += 25f;
             sunGod.base_stats[S.critical_chance] += 0.05f;
-            //INCREASE MOVEMENT SPEED PLANNED
+            sunGod.base_stats[S.speed] += 80f;
+            sunGod.base_stats[S.dodge] += 30f;
+            sunGod.base_stats[S.accuracy] += 10f;
             sunGod.action_attack_target = new AttackAction(ActionLibrary.addBurningEffectOnTarget);
-            //NEW ACTION TO BE ADDED
+            sunGod.action_attack_target = new AttackAction(ActionLibrary.addSlowEffectOnTarget);
+            sunGod.action_attack_target = new AttackAction(sunGodAttack);
             sunGod.action_death = (WorldAction)Delegate.Combine(sunGod.action_death, new WorldAction(sunGodsDeath));
             AssetManager.traits.add(sunGod);
             PlayerConfig.unlockTrait(sunGod.id);
-            addTraitToLocalizedLibrary(sunGod.id, "Tis's The God Of light!");
+            addTraitToLocalizedLibrary(sunGod.id, "Tis' The God Of light!");
 
             ActorTrait darkGod = new ActorTrait();
             darkGod.id = "God Of the Night";
             darkGod.path_icon = "ui/icons/achievements/achievements_thedemon";
-            darkGod.base_stats[S.damage] += 10f;
-            darkGod.base_stats[S.health] = 550;
+            darkGod.base_stats[S.damage] += 15f;
+            darkGod.base_stats[S.health] += 550;
             darkGod.base_stats[S.attack_speed] += 3f;
             darkGod.base_stats[S.critical_chance] += 0.25f;
-            //SPAWN ANTIMATTER BOMB VISUAL ON BODY
+            darkGod.base_stats[S.scale] = 0.02f;
+            darkGod.base_stats[S.dodge] += 3f;
+            darkGod.action_attack_target = new AttackAction(darkGodAttack);
             darkGod.action_death = (WorldAction)Delegate.Combine(darkGod.action_death, new WorldAction(darkGodsDeath));
             AssetManager.traits.add(darkGod);
             PlayerConfig.unlockTrait(darkGod.id);
-            addTraitToLocalizedLibrary(darkGod.id, "Tis's The God Of darkness!");
+            addTraitToLocalizedLibrary(darkGod.id, "Tis' The God Of darkness!");
 
             ActorTrait knowledgeGod = new ActorTrait();
             knowledgeGod.id = "God Of Knowledge";
             knowledgeGod.path_icon = "ui/icons/achievements/achievements_thedemon";
-            knowledgeGod.base_stats[S.damage] += 10f;
-            knowledgeGod.base_stats[S.health] = 600;
+            knowledgeGod.base_stats[S.damage] += 15f;
+            knowledgeGod.base_stats[S.health] += 600;
             knowledgeGod.base_stats[S.attack_speed] += 1f;
             knowledgeGod.base_stats[S.critical_chance] += 0.25f;
+            knowledgeGod.base_stats[S.range] += 15f;
+            knowledgeGod.base_stats[S.scale] = 0.06f;
             knowledgeGod.base_stats[S.intelligence] += 35f;
-            //KNOWLEDGE GOD IS INTENDED TO BE ON WIZARD SO IF ELSE GIVE ACTOR ABILITY TO USE ALL SPELLS INCLUDING NAPALM BOMBS VISUAL (NO PHYS BOMB)
+            knowledgeGod.base_stats[S.accuracy] += 10f;
+            knowledgeGod.action_attack_target = new AttackAction(knowledgeGodAttack);
             AssetManager.traits.add(knowledgeGod);
             PlayerConfig.unlockTrait(knowledgeGod.id);
-            addTraitToLocalizedLibrary(knowledgeGod.id, "Tis's The God Of Knowledges!");
+            addTraitToLocalizedLibrary(knowledgeGod.id, "Tis' The God Of Knowledges!");
 
             ActorTrait starsGod = new ActorTrait();
             starsGod.id = "God Of the Stars";
             starsGod.path_icon = "ui/icons/achievements/achievements_thedemon";
-            starsGod.base_stats[S.damage] += 10f;
-            starsGod.base_stats[S.health] = 600;
+            starsGod.base_stats[S.damage] += 15f;
+            starsGod.base_stats[S.health] += 600;
             starsGod.base_stats[S.attack_speed] += 1f;
             starsGod.base_stats[S.critical_chance] += 0.05f;
+            starsGod.base_stats[S.scale] = 0.02f;
+            starsGod.base_stats[S.range] += 15f;
             starsGod.base_stats[S.intelligence] += 3f;
-            //GOD OF STARS IS THE AGE OF THE MOON THUS WILL BE ICE/COLD BASED, ICE ATTACKS AND FREEZING ABILITIES FROM THE WIZARD
+            starsGod.action_attack_target = new AttackAction(ActionLibrary.addFrozenEffectOnTarget);
             AssetManager.traits.add(starsGod);
             PlayerConfig.unlockTrait(starsGod.id);
             addTraitToLocalizedLibrary(starsGod.id, "Now Cometh the Age of stars, A Thousand Year Voyage under the wisdom of the moon");
+
+            ActorTrait earthGod = new ActorTrait();
+            earthGod.id = "God Of the the Earth";
+            earthGod.path_icon = "ui/icons/achievements/achievements_thedemon";
+            earthGod.base_stats[S.damage] += 40f;
+            earthGod.base_stats[S.health] += 1000;
+            earthGod.base_stats[S.attack_speed] += 1f;
+            earthGod.base_stats[S.armor] += 30f;
+            earthGod.base_stats[S.scale] = 0.1f;
+            earthGod.base_stats[S.range] += 10f;
+            earthGod.base_stats[S.intelligence] += 3f;
+            AssetManager.traits.add(earthGod);
+            PlayerConfig.unlockTrait(earthGod.id);
+            addTraitToLocalizedLibrary(earthGod.id, "God of the Natural Enviornment, The titan of creation");
 
             ActorTrait subGod = new ActorTrait();
             subGod.id = "God Of You Decide";
             subGod.path_icon = "ui/icons/achievements/achievements_thedemon";
             subGod.base_stats[S.damage] += 5f;
-            subGod.base_stats[S.health] = 400;
+            subGod.base_stats[S.health] += 400;
             subGod.base_stats[S.attack_speed] += 1f;
+            subGod.base_stats[S.scale] = 0.02f;
             subGod.base_stats[S.critical_chance] += 0.05f;
             AssetManager.traits.add(subGod);
             PlayerConfig.unlockTrait(subGod.id);
-            addTraitToLocalizedLibrary(subGod.id, "Now Cometh the Age of stars, A Thousand Year Voyage under the wisdom of the moon");
+            addTraitToLocalizedLibrary(subGod.id, "These Are the gods that have smaller importance");
 
 
         }
@@ -143,7 +173,131 @@ namespace GodsAndPantheons
 
         }
 
+
+        public static bool knowledgeGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+
+            if (pTarget != null)
+            {
+                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
+
+                if (Toolbox.randomChance(0.2f))
+                {
+                    // randomly spawns a flash of fire or acid on the tile 
+                    MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f);
+                    MapBox.instance.dropManager.spawn(pTile, "acid", 5f, -1f);
+                    MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f);
+                }
+                if (Toolbox.randomChance(0.01f))
+                {
+                    ActionLibrary.castCurses(null, pTarget, null); // casts curses
+                }
+                if (Toolbox.randomChance(0.01f))
+                {
+                    ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null); // freezezz the target
+                }
+                if (Toolbox.randomChance(0.05f))
+                {
+                    ActionLibrary.castShieldOnHimself(null, pSelf, null); // Casts a shield for himself !! hint: pSelf !!
+                }
+                if (Toolbox.randomChance(0.04f))
+                {
+                    ActionLibrary.teleportRandom(null, pTarget, null); // teleports the target
+                }
+                if (Toolbox.randomChance(0.1f))
+                {
+                    ActionLibrary.castLightning(null, pTarget, null); // Casts Lightning on the target
+                }
+                if (Toolbox.randomChance(0.5f))
+                {
+                    EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f);    //spawn 1 meteorite
+                    pSelf.a.addStatusEffect("invincible", 5f);
+                }
+                if (Toolbox.randomChance(0.1f))
+                {
+                    EffectsLibrary.spawn("fx_thunder_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
+                    pSelf.a.addStatusEffect("invincible", 5f);
+                }
+
+                return true;
+            }
+            return false;
+        }
+
+
+        public static bool darkGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+
+            if (pTarget != null)
+            {
+                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
+
+                
+                if (Toolbox.randomChance(0.1f))
+                {
+                    EffectsLibrary.spawn("fx_antimatter_effect", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
+                    pSelf.a.addStatusEffect("invincible", 5f);
+                }
+
+                return true;
+            }
+            return false;
+        }
+
+        public static bool sunGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+
+            if (pTarget != null)
+            {
+                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
+
+                
+                if (Toolbox.randomChance(0.5f))
+                {
+                    EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
+                    pSelf.a.addStatusEffect("invincible", 5f);
+                }
+                if (Toolbox.randomChance(0.1f))
+                {
+                    EffectsLibrary.spawn("fx_slash", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
+                }
+
+
+                return true;
+            }
+            return false;
+        }
         
+        public static bool earthGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+
+            if (pTarget != null)
+            {
+                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
+                PowerLibrary pb = new PowerLibrary();
+                
+                if (Toolbox.randomChance(0.5f))
+                {
+                    pb.spawnEarthquake(pTarget.a.currentTile, null);
+                }
+                if (Toolbox.randomChance(0.1f))
+                {
+                    pb.spawnCloudRain(pTarget.a.currentTile, null);
+                    pb.spawnCloudSnow(pTarget.a.currentTile, null);
+                }
+                if (Toolbox.randomChance(0.01f))
+                {
+                    pb.spawnBoulder(pTarget.a.currentTile, null);
+                }
+
+                return true;
+            }
+            return false;
+        }
+
+
+         
+
 
          public static void addTraitToLocalizedLibrary(string id, string description)        
          {

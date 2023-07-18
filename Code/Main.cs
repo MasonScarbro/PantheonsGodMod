@@ -1,3 +1,7 @@
+/* 
+AUTHOR: MASON SCARBRO
+VERSION: 0.2.0
+*/
 using System;
 using NCMS;
 using UnityEngine;
