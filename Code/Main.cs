@@ -15,6 +15,7 @@ namespace GodsAndPantheons
     {
         void Awake()
         {
+            Effects.init();
             Traits.init();
         }
         

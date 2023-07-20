@@ -54,12 +54,12 @@ namespace GodsAndPantheons
             
             ActorTrait sunGod = new ActorTrait();
             sunGod.id = "God Of light";
-            sunGod.path_icon = "ui/icons/achievements/achievements_thedemon";
+            sunGod.path_icon = "ui/icons/lightGod";
             sunGod.base_stats[S.damage] += 15f;
             sunGod.base_stats[S.health] += 500;
-            sunGod.base_stats[S.attack_speed] += 25f;
+            sunGod.base_stats[S.attack_speed] += 80f;
             sunGod.base_stats[S.critical_chance] += 0.05f;
-            sunGod.base_stats[S.speed] += 80f;
+            sunGod.base_stats[S.speed] += 100f;
             sunGod.base_stats[S.dodge] += 30f;
             sunGod.base_stats[S.accuracy] += 10f;
             sunGod.base_stats[S.range] += 100f;
@@ -67,6 +67,7 @@ namespace GodsAndPantheons
             sunGod.action_attack_target = new AttackAction(ActionLibrary.addSlowEffectOnTarget);
             sunGod.action_attack_target = new AttackAction(sunGodAttack);
             sunGod.action_death = (WorldAction)Delegate.Combine(sunGod.action_death, new WorldAction(sunGodsDeath));
+            sunGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(sunGodEraStatus));
             AssetManager.traits.add(sunGod);
             PlayerConfig.unlockTrait(sunGod.id);
             sunGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(sunGodAutoTrait));
@@ -75,7 +76,7 @@ namespace GodsAndPantheons
 
             ActorTrait darkGod = new ActorTrait();
             darkGod.id = "God Of the Night";
-            darkGod.path_icon = "ui/icons/achievements/achievements_thedemon";
+            darkGod.path_icon = "ui/icons/godDark";
             darkGod.base_stats[S.damage] += 15f;
             darkGod.base_stats[S.health] += 550;
             darkGod.base_stats[S.attack_speed] += 3f;
@@ -84,6 +85,7 @@ namespace GodsAndPantheons
             darkGod.base_stats[S.dodge] += 3f;
             darkGod.action_attack_target = new AttackAction(darkGodAttack);
             darkGod.action_death = (WorldAction)Delegate.Combine(darkGod.action_death, new WorldAction(darkGodsDeath));
+            darkGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(darkGodEraStatus));
             AssetManager.traits.add(darkGod);
             PlayerConfig.unlockTrait(darkGod.id);
             darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(darkGodAutoTrait));
@@ -91,7 +93,7 @@ namespace GodsAndPantheons
 
             ActorTrait knowledgeGod = new ActorTrait();
             knowledgeGod.id = "God Of Knowledge";
-            knowledgeGod.path_icon = "ui/icons/achievements/achievements_thedemon";
+            knowledgeGod.path_icon = "ui/icons/knowledgeGod";
             knowledgeGod.base_stats[S.damage] += 15f;
             knowledgeGod.base_stats[S.health] += 600;
             knowledgeGod.base_stats[S.attack_speed] += 1f;
@@ -101,6 +103,7 @@ namespace GodsAndPantheons
             knowledgeGod.base_stats[S.intelligence] += 35f;
             knowledgeGod.base_stats[S.accuracy] += 10f;
             knowledgeGod.action_attack_target = new AttackAction(knowledgeGodAttack);
+            knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(knowledgeGodEraStatus));
             AssetManager.traits.add(knowledgeGod);
             PlayerConfig.unlockTrait(knowledgeGod.id);
             knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgeGodAutoTrait));
@@ -108,7 +111,7 @@ namespace GodsAndPantheons
 
             ActorTrait starsGod = new ActorTrait();
             starsGod.id = "God Of the Stars";
-            starsGod.path_icon = "ui/icons/achievements/achievements_thedemon";
+            starsGod.path_icon = "ui/icons/starsGod";
             starsGod.base_stats[S.damage] += 15f;
             starsGod.base_stats[S.health] += 600;
             starsGod.base_stats[S.attack_speed] += 1f;
@@ -117,6 +120,7 @@ namespace GodsAndPantheons
             starsGod.base_stats[S.range] += 15f;
             starsGod.base_stats[S.intelligence] += 3f;
             starsGod.action_attack_target = new AttackAction(ActionLibrary.addFrozenEffectOnTarget);
+            starsGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(starsGodEraStatus));
             AssetManager.traits.add(starsGod);
             PlayerConfig.unlockTrait(starsGod.id);
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodAutoTrait));
@@ -124,7 +128,7 @@ namespace GodsAndPantheons
 
             ActorTrait earthGod = new ActorTrait();
             earthGod.id = "God Of the Earth";
-            earthGod.path_icon = "ui/icons/achievements/achievements_thedemon";
+            earthGod.path_icon = "ui/icons/earthGod";
             earthGod.base_stats[S.damage] += 40f;
             earthGod.base_stats[S.health] += 1000;
             earthGod.base_stats[S.attack_speed] += 1f;
@@ -132,6 +136,7 @@ namespace GodsAndPantheons
             earthGod.base_stats[S.scale] = 0.1f;
             earthGod.base_stats[S.range] += 10f;
             earthGod.base_stats[S.intelligence] += 3f;
+            earthGod.action_attack_target = new AttackAction(earthGodAttack);
             AssetManager.traits.add(earthGod);
             PlayerConfig.unlockTrait(earthGod.id);
             earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(earthGodAutoTrait));
@@ -139,7 +144,7 @@ namespace GodsAndPantheons
 
             ActorTrait subGod = new ActorTrait();
             subGod.id = "LesserGod";
-            subGod.path_icon = "ui/icons/achievements/achievements_thedemon";
+            subGod.path_icon = "ui/icons/subGod";
             subGod.base_stats[S.damage] += 5f;
             subGod.base_stats[S.health] += 400;
             subGod.base_stats[S.attack_speed] += 1f;
@@ -225,9 +230,9 @@ namespace GodsAndPantheons
                     EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f);    //spawn 1 meteorite
                     pSelf.a.addStatusEffect("invincible", 5f);
                 }
-                if (Toolbox.randomChance(0.1f))
+                if (Toolbox.randomChance(0.01f))
                 {
-                    EffectsLibrary.spawn("fx_thunder_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
+                    EffectsLibrary.spawn("fx_fireball_explosion", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
                     pSelf.a.addStatusEffect("invincible", 5f);
                 }
 
@@ -265,15 +270,28 @@ namespace GodsAndPantheons
             {
                 
                 Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
+                PowerLibrary pb = new PowerLibrary();
                 
-                if (Toolbox.randomChance(0.08f))
+                if (Toolbox.randomChance(0.05f))
                 {
+                    pb.divineLightFX(pTarget.a.currentTile, null);
                     EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
                     pSelf.a.addStatusEffect("invincible", 5f);
                 }
-                if (Toolbox.randomChance(0.5f))
+                if (Toolbox.randomChance(0.08f))
                 {
-                    EffectsLibrary.spawn("fx_slash", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
+                    pb.divineLightFX(pTarget.a.currentTile, null);
+                    pTarget.a.addStatusEffect("burning", 5f);
+                    
+                }
+                if (Toolbox.randomChance(0.02f))
+                {
+                    pb.divineLightFX(pTarget.a.currentTile, null);
+                    EffectsLibrary.spawn("fx_thunder_flash", pSelf.a.currentTile, null, null, 0f, -1f, -1f);
+                    pSelf.a.addStatusEffect("caffeinated", 10f);
+                    pTarget.a.addStatusEffect("slowness", 10f);
+
+                    
                 }
 
 
@@ -290,7 +308,7 @@ namespace GodsAndPantheons
                 Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
                 PowerLibrary pb = new PowerLibrary();
                 
-                if (Toolbox.randomChance(0.5f))
+                if (Toolbox.randomChance(0.05f))
                 {
                     pb.spawnEarthquake(pTarget.a.currentTile, null);
                 }
@@ -299,7 +317,7 @@ namespace GodsAndPantheons
                     pb.spawnCloudRain(pTarget.a.currentTile, null);
                     pb.spawnCloudSnow(pTarget.a.currentTile, null);
                 }
-                if (Toolbox.randomChance(0.01f))
+                if (Toolbox.randomChance(0.2f))
                 {
                     pb.spawnBoulder(pTarget.a.currentTile, null);
                 }
@@ -428,6 +446,95 @@ namespace GodsAndPantheons
 
                 }
                 
+
+            }
+            return true;
+        }
+
+
+        private static bool sunGodEraStatus(BaseSimObject pSelf, WorldTile pTile)
+        {
+            if (pSelf.a != null)
+            {
+                if (World.world_era.id == "age_sun")       //only in age of sun
+                {
+                    pSelf.a.addStatusEffect("Lights_Prevail"); // add the status I created
+                
+                }
+                else
+                {
+                    if (pSelf.a.hasStatus("Lights_Prevail"))          //no other age can have this trait
+                    {
+                        pSelf.a.finishAllStatusEffects(); // remove the status
+                    }
+                }
+
+
+            }
+            return true;
+        }
+
+        private static bool starsGodEraStatus(BaseSimObject pSelf, WorldTile pTile)
+        {
+            if (pSelf.a != null)
+            {
+                if (World.world_era.id == "age_moon")       //only in age of moon
+                {
+                    pSelf.a.addStatusEffect("Stars_Prevail"); // add the status I created
+                
+                }
+                else
+                {
+                    if (pSelf.a.hasStatus("Stars_Prevail"))          //no other age can have this trait
+                    {
+                        pSelf.a.finishAllStatusEffects(); // remove the status
+                    }
+                }
+
+
+            }
+            return true;
+        }
+
+        private static bool darkGodEraStatus(BaseSimObject pSelf, WorldTile pTile)
+        {
+            if (pSelf.a != null)
+            {
+                if (World.world_era.id == "age_dark")       //only in age of dark
+                {
+                    pSelf.a.addStatusEffect("Nights_Prevail"); // add the status I created
+                
+                }
+                else
+                {
+                    if (pSelf.a.hasStatus("Nights_Prevail"))          //no other age can have this trait
+                    {
+                        pSelf.a.finishAllStatusEffects(); // remove the status
+                    }
+                }
+
+
+            }
+            return true;
+        }
+
+        private static bool knowledgeGodEraStatus(BaseSimObject pSelf, WorldTile pTile)
+        {
+            if (pSelf.a != null)
+            {
+                if (World.world_era.id == "age_wonder")       //only in age of wonder
+                {
+                    pSelf.a.addStatusEffect("Knowledge_Prevail"); // add the status I created
+                
+                }
+                else
+                {
+                    if (pSelf.a.hasStatus("Knowledge_Prevail"))          //no other age can have this trait
+                    {
+                        pSelf.a.finishAllStatusEffects(); // remove the status
+                    }
+                }
+
 
             }
             return true;
