@@ -1,6 +1,6 @@
 /* 
 AUTHOR: MASON SCARBRO
-VERSION: 0.3.0
+VERSION: 0.4.1
 */
 using System;
 using System.Threading;
@@ -85,7 +85,7 @@ namespace GodsAndPantheons
             darkGod.base_stats[S.dodge] += 3f;
             darkGod.action_attack_target = new AttackAction(darkGodAttack);
             darkGod.action_death = (WorldAction)Delegate.Combine(darkGod.action_death, new WorldAction(darkGodsDeath));
-            darkGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(darkGodEraStatus));
+            darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(darkGodEraStatus));
             AssetManager.traits.add(darkGod);
             PlayerConfig.unlockTrait(darkGod.id);
             darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(darkGodAutoTrait));
@@ -99,11 +99,11 @@ namespace GodsAndPantheons
             knowledgeGod.base_stats[S.attack_speed] += 1f;
             knowledgeGod.base_stats[S.critical_chance] += 0.25f;
             knowledgeGod.base_stats[S.range] += 15f;
-            knowledgeGod.base_stats[S.scale] = 0.06f;
+            knowledgeGod.base_stats[S.scale] = 0.04f;
             knowledgeGod.base_stats[S.intelligence] += 35f;
             knowledgeGod.base_stats[S.accuracy] += 10f;
             knowledgeGod.action_attack_target = new AttackAction(knowledgeGodAttack);
-            knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(knowledgeGodEraStatus));
+            knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgeGodEraStatus));
             AssetManager.traits.add(knowledgeGod);
             PlayerConfig.unlockTrait(knowledgeGod.id);
             knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgeGodAutoTrait));
@@ -120,7 +120,7 @@ namespace GodsAndPantheons
             starsGod.base_stats[S.range] += 15f;
             starsGod.base_stats[S.intelligence] += 3f;
             starsGod.action_attack_target = new AttackAction(ActionLibrary.addFrozenEffectOnTarget);
-            starsGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(starsGodEraStatus));
+            starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodEraStatus));
             AssetManager.traits.add(starsGod);
             PlayerConfig.unlockTrait(starsGod.id);
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodAutoTrait));
@@ -153,6 +153,22 @@ namespace GodsAndPantheons
             AssetManager.traits.add(subGod);
             PlayerConfig.unlockTrait(subGod.id);
             addTraitToLocalizedLibrary(subGod.id, "These Are the gods that have smaller importance");
+
+            ActorTrait warGod = new ActorTrait();
+            warGod.id = "God Of War";
+            warGod.path_icon = "ui/icons/warGod";
+            warGod.base_stats[S.damage] += 100f;
+            warGod.base_stats[S.health] += 700;
+            warGod.base_stats[S.attack_speed] += 35f;
+            warGod.base_stats[S.armor] += 50f;
+            warGod.base_stats[S.scale] = 0.03f;
+            warGod.base_stats[S.range] += 10f;
+            warGod.base_stats[S.warfare] += 40f;
+            warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodEraStatus));
+            AssetManager.traits.add(warGod);
+            PlayerConfig.unlockTrait(warGod.id);
+            warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodAutoTrait));
+            addTraitToLocalizedLibrary(warGod.id, "God of Conflict, Bravery, Ambition, Many spheres of domain lie with him");
 
 
         }
@@ -451,6 +467,29 @@ namespace GodsAndPantheons
             return true;
         }
 
+        public static bool warGodAutoTrait(BaseSimObject pTarget, WorldTile pTile)
+        {
+
+            if (pTarget.a != null)
+            {
+                if (pTarget.a.hasTrait("God Of War"))
+                {
+                    pTarget.a.addTrait("blessed");
+                    pTarget.a.addTrait("strong");
+                    pTarget.a.addTrait("frost_proof");
+                    pTarget.a.addTrait("ambitious");
+                    pTarget.a.addTrait("pyromaniac");
+                    pTarget.a.addTrait("veteran");
+                    pTarget.a.addTrait("tough");
+                    pTarget.a.addTrait("immortal");
+
+                }
+                
+
+            }
+            return true;
+        }
+
 
         private static bool sunGodEraStatus(BaseSimObject pSelf, WorldTile pTile)
         {
@@ -464,6 +503,28 @@ namespace GodsAndPantheons
                 else
                 {
                     if (pSelf.a.hasStatus("Lights_Prevail"))          //no other age can have this trait
+                    {
+                        pSelf.a.finishAllStatusEffects(); // remove the status
+                    }
+                }
+
+
+            }
+            return true;
+        }
+
+        private static bool warGodEraStatus(BaseSimObject pSelf, WorldTile pTile)
+        {
+            if (pSelf.a != null)
+            {
+                if (World.world_era.id == "age_ash")       //only in age of sun
+                {
+                    pSelf.a.addStatusEffect("War_Prevail"); // add the status I created
+                
+                }
+                else
+                {
+                    if (pSelf.a.hasStatus("War_Prevail"))          //no other age can have this trait
                     {
                         pSelf.a.finishAllStatusEffects(); // remove the status
                     }
@@ -522,7 +583,7 @@ namespace GodsAndPantheons
         {
             if (pSelf.a != null)
             {
-                if (World.world_era.id == "age_wonder")       //only in age of wonder
+                if (World.world_era.id == "age_wonders")       //only in age of wonder
                 {
                     pSelf.a.addStatusEffect("Knowledge_Prevail"); // add the status I created
                 
