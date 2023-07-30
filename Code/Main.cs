@@ -1,6 +1,6 @@
 /* 
 AUTHOR: MASON SCARBRO
-VERSION: 0.4.1
+VERSION: 1.0.0
 */
 using System;
 using NCMS;
@@ -17,6 +17,9 @@ namespace GodsAndPantheons
         {
             Effects.init();
             Traits.init();
+            NewProjectiles.init();
+            NewTerraformOptions.init();
+            NewEffects.init();
         }
         
     }

@@ -1,3 +1,7 @@
+/* 
+AUTHOR: MASON SCARBRO
+VERSION: 1.0.0
+*/
 using System;
 using System.IO;
 using System.Linq;
@@ -22,12 +26,12 @@ namespace GodsAndPantheons
             sunGodEra.base_stats[S.armor] += 25;
             sunGodEra.base_stats[S.health] += 500;
             sunGodEra.base_stats[S.speed] += 300;
-            sunGodEra.base_stats[S.knockback_reduction] += 10f;
+            sunGodEra.base_stats[S.knockback_reduction] += 0.5f;
             sunGodEra.base_stats[S.knockback] += 1f;
             sunGodEra.base_stats[S.attack_speed] += 80f;
             sunGodEra.base_stats[S.dodge] += 80f;
             sunGodEra.path_icon = "ui/icons/lightGod";
-            sunGodEra.description = "status_description_Lights_Prevail";
+            sunGodEra.description = "The World, Light up";
             sunGodEra.name = "status_title_Lights_Prevail";
             localizeStatus(sunGodEra.id, "Lights_Prevail", sunGodEra.description); // Localizes the status effect
             AssetManager.status.add(sunGodEra);
@@ -39,12 +43,12 @@ namespace GodsAndPantheons
             darkGodEra.base_stats[S.armor] += 55;
             darkGodEra.base_stats[S.health] += 500;
             darkGodEra.base_stats[S.speed] += 30;
-            darkGodEra.base_stats[S.knockback_reduction] += 10f;
+            darkGodEra.base_stats[S.knockback_reduction] += 0.6f;
             darkGodEra.base_stats[S.knockback] += 2f;
             darkGodEra.base_stats[S.armor] += 50f;
             darkGodEra.base_stats[S.attack_speed] += 8f;
             darkGodEra.path_icon = "ui/icons/godDark";
-            darkGodEra.description = "status_description_Nights_Prevail";
+            darkGodEra.description = "The world, shrouded in my domain";
             darkGodEra.name = "status_title_Nights_Prevail";
             localizeStatus(darkGodEra.id, "Nights_Prevail", darkGodEra.description); // Localizes the status effect
             AssetManager.status.add(darkGodEra);
@@ -55,7 +59,7 @@ namespace GodsAndPantheons
             knowledgeGodEra.base_stats[S.armor] += 30;
             knowledgeGodEra.base_stats[S.health] += 500;
             knowledgeGodEra.base_stats[S.speed] += 20;
-            knowledgeGodEra.base_stats[S.knockback_reduction] += 10f;
+            knowledgeGodEra.base_stats[S.knockback_reduction] += 0.9f;
             knowledgeGodEra.base_stats[S.knockback] += 1f;
             knowledgeGodEra.base_stats[S.armor] += 50f;
             knowledgeGodEra.base_stats[S.attack_speed] += 20f;
@@ -65,7 +69,7 @@ namespace GodsAndPantheons
             knowledgeGodEra.base_stats[S.range] += 40f;
             knowledgeGodEra.base_stats[S.accuracy] += 20f;
             knowledgeGodEra.path_icon = "ui/icons/knowledgeGod";
-            knowledgeGodEra.description = "status_description_Knowledge_Prevail";
+            knowledgeGodEra.description = "The era of Knowledge has come to pass";
             knowledgeGodEra.name = "status_title_Knowledge_Prevail";
             localizeStatus(knowledgeGodEra.id, "Knowledge_Prevail", knowledgeGodEra.description); // Localizes the status effect
             AssetManager.status.add(knowledgeGodEra);
@@ -76,12 +80,12 @@ namespace GodsAndPantheons
             starsGodEra.base_stats[S.armor] += 50;
             starsGodEra.base_stats[S.health] += 500;
             starsGodEra.base_stats[S.speed] += 30;
-            starsGodEra.base_stats[S.knockback_reduction] += 30f;
+            starsGodEra.base_stats[S.knockback_reduction] += 0.8f;
             starsGodEra.base_stats[S.knockback] += 1f;
             starsGodEra.base_stats[S.armor] += 50f;
             starsGodEra.base_stats[S.attack_speed] += 80f;
             starsGodEra.path_icon = "ui/icons/starsGod";
-            starsGodEra.description = "status_description_Stars_Prevail";
+            starsGodEra.description = "The Age Of Stars is Apon Us";
             starsGodEra.name = "status_title_Stars_Prevail";
             localizeStatus(starsGodEra.id, "Stars_Prevail", starsGodEra.description); // Localizes the status effect
             AssetManager.status.add(starsGodEra);
@@ -92,24 +96,60 @@ namespace GodsAndPantheons
             warGodEra.base_stats[S.armor] += 50;
             warGodEra.base_stats[S.health] += 500;
             warGodEra.base_stats[S.speed] += 30;
-            warGodEra.base_stats[S.knockback_reduction] += 30f;
+            warGodEra.base_stats[S.knockback_reduction] += 1f;
             warGodEra.base_stats[S.knockback] += 2f;
             warGodEra.base_stats[S.armor] += 50f;
             warGodEra.base_stats[S.attack_speed] += 8f;
             warGodEra.base_stats[S.damage] += 30f;
-            warGodEra.path_icon = "ui/icons/starsGod";
-            warGodEra.description = "status_description_Stars_Prevail";
-            warGodEra.name = "status_title_Stars_Prevail";
-            localizeStatus(warGodEra.id, "Stars_Prevail", warGodEra.description); // Localizes the status effect
+            warGodEra.path_icon = "ui/icons/warGod";
+            warGodEra.description = "The Era Of war War Prevails";
+            warGodEra.name = "status_title_War_Prevail";
+            localizeStatus(warGodEra.id, "War_Prevail", warGodEra.description); // Localizes the status effect
             AssetManager.status.add(warGodEra);
+
+            StatusEffect warGodsCry = new StatusEffect();
+            warGodsCry.id = "WarGodsCry";
+            warGodsCry.duration = 7000f;
+            warGodsCry.base_stats[S.armor] += 50;
+            warGodsCry.base_stats[S.health] += 60;
+            warGodsCry.base_stats[S.speed] += 10;
+            warGodsCry.base_stats[S.knockback_reduction] += 3f;
+            warGodsCry.base_stats[S.knockback] += 2f;
+            warGodsCry.base_stats[S.attack_speed] += 8f;
+            warGodsCry.base_stats[S.damage] += 15f;
+            warGodsCry.path_icon = "ui/icons/warGod";
+            warGodsCry.description = "A Cry Of Anger and Rage";
+            warGodsCry.name = "WarGodsCry";
+            localizeStatus(warGodsCry.id, "WarGodsCry", warGodsCry.description); // Localizes the status effect
+            AssetManager.status.add(warGodsCry);
+
+
+            /*
+            ProjectileAsset Test = new ProjectileAsset();
+            Usoppball.id = "Test";
+		    Usoppball.texture = "effects/projectiles/Test";
+		    Usoppball.trailEffect_enabled = false;
+		    Usoppball.look_at_target = true;
+            Usoppball.parabolic = false;
+            Usoppball.hitShake = true;
+		    Usoppball.looped = false;
+		    Usoppball.speed = 1f;
+            Usoppball.startScale = 0.1f;
+            Usoppball.targetScale = 0.1f;
+            AssetManager.projectiles.add(Usoppball);
+
+
+            
+
+            */
 
         }
 
         public static void localizeStatus(string id, string name, string description)
       	{
       		Dictionary<string, string> localizedText = Reflection.GetField(LocalizedTextManager.instance.GetType(), LocalizedTextManager.instance, "localizedText") as Dictionary<string, string>;
-      		localizedText.Add("status_title_" + id, name);
-      		localizedText.Add("status_description_" + id, description);
+            localizedText.Add(name, id);
+            localizedText.Add(description, description);
         }
     }
 
