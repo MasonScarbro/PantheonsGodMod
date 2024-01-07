@@ -90,11 +90,13 @@ namespace GodsAndPantheons
                 draw_light_area = true,
                 looped = true,
                 draw_light_size = 0.1f,
+                look_at_target = true,
                 parabolic = false,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
                 startScale = 0.01f,
                 targetScale = 0.01f,
+                animation_speed = 0.08f,
                 /*
                 impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
                 {

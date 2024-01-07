@@ -24,7 +24,7 @@ namespace GodsAndPantheons
 
             
             ActorTrait chaosGod = new ActorTrait();
-            chaosGod.id = "God Of Chaos";
+            chaosGod.id = "God_Of_Chaos";
             chaosGod.path_icon = "ui/icons/chaosGod";
             chaosGod.base_stats[S.damage] += 30f;
             chaosGod.base_stats[S.health] += 800;
@@ -34,7 +34,7 @@ namespace GodsAndPantheons
             chaosGod.base_stats[S.range] += 8f;
             chaosGod.action_attack_target = new AttackAction(ActionLibrary.addBurningEffectOnTarget);
             chaosGod.action_attack_target = new AttackAction(chaosGodAttack);
-            chaosGod.action_death = new WorldAction(ActionLibrary.turnIntoDemon);
+            //chaosGod.action_death = new WorldAction(ActionLibrary.turnIntoDemon);
             chaosGod.action_death = (WorldAction)Delegate.Combine(chaosGod.action_death, new WorldAction(chaosGodsTrick));
             chaosGod.base_stats[S.scale] = 0.08f;
             AssetManager.traits.add(chaosGod);
@@ -168,14 +168,15 @@ namespace GodsAndPantheons
 
         }
 
-        public static bool chaosGodsTrick(BaseSimObject pTarget, WorldTile pTile = null)
+        public static bool chaosGodsTrick(BaseSimObject pSelf, WorldTile pTile = null)
         {
-        
-            Actor pActor = (Actor)pTarget;
-            pActor.removeTrait("chaosGod");
+            Actor pActor = (Actor)pSelf;
+
+            
             World.world.eraManager.setEra(S.age_chaos, true);
-
-
+            pActor.removeTrait("God_Of_Chaos");
+            
+           
             return true;
 
         }
@@ -203,10 +204,12 @@ namespace GodsAndPantheons
 
         public static bool chaosGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
+            var chaosGodPwr1Chance = Toolbox.randomChance(0.01f);
+            var chaosGodPwr2Chance = Toolbox.randomChance(0.02f);
 
             if (pTarget != null)
             {
-                if (Toolbox.randomChance(0.01f))
+                if (chaosGodPwr1Chance)
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
 		            float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -215,7 +218,7 @@ namespace GodsAndPantheons
                     EffectsLibrary.spawnProjectile("fireBallX", newPoint, newPoint2, 0.0f);
                     
                 }
-                if (Toolbox.randomChance(0.02f))
+                if (chaosGodPwr2Chance)
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
 		            float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -236,50 +239,60 @@ namespace GodsAndPantheons
         public static bool knowledgeGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
 
+            var knowledgeGodPwrChance1 = Toolbox.randomChance(0.2f);
+            var knowledgeGodPwrChance2 = Toolbox.randomChance(0.01f);
+            var knowledgeGodPwrChance3 = Toolbox.randomChance(0.01f);
+            var knowledgeGodPwrChance4 = Toolbox.randomChance(0.05f);
+            var knowledgeGodPwrChance5 = Toolbox.randomChance(0.04f);
+            var knowledgeGodPwrChance6 = Toolbox.randomChance(0.02f);
+            var knowledgeGodPwrChance7= Toolbox.randomChance(0.005f);
+            var knowledgeGodPwrChance8 = Toolbox.randomChance(0.01f);
+            var knowledgeGodPwrChance9 = Toolbox.randomChance(0.09f);
+
             if (pTarget != null)
             {
                 Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
 
-                if (Toolbox.randomChance(0.2f))
+                if (knowledgeGodPwrChance1)
                 {
                     // randomly spawns a flash of fire or acid on the tile 
                     MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f);
                     MapBox.instance.dropManager.spawn(pTile, "acid", 5f, -1f);
                     MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f); // Drops fire from distance 5 with scale of one at current tile
                 }
-                if (Toolbox.randomChance(0.01f))
+                if (knowledgeGodPwrChance2)
                 {
                     ActionLibrary.castCurses(null, pTarget, null); // casts curses
                 }
-                if (Toolbox.randomChance(0.01f))
+                if (knowledgeGodPwrChance3)
                 {
                     ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null); // freezezz the target
                 }
-                if (Toolbox.randomChance(0.05f))
+                if (knowledgeGodPwrChance4)
                 {
                     ActionLibrary.castShieldOnHimself(null, pSelf, null); // Casts a shield for himself !! hint: pSelf !!
                 }
-                if (Toolbox.randomChance(0.04f))
+                if (knowledgeGodPwrChance5)
                 {
                     ActionLibrary.teleportRandom(null, pTarget, null); // teleports the target
                 }
                 
-                if (Toolbox.randomChance(0.02f))
+                if (knowledgeGodPwrChance6)
                 {
                     ActionLibrary.castLightning(null, pTarget, null); // Casts Lightning on the target
                 }
-                if (Toolbox.randomChance(0.005f))
+                if (knowledgeGodPwrChance7)
                 {
                     EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f);    //spawn 1 meteorite
                     pSelf.a.addStatusEffect("invincible", 5f);
                 }
-                if (Toolbox.randomChance(0.01f))
+                if (knowledgeGodPwrChance8)
                 {
                     EffectsLibrary.spawn("fx_fireball_explosion", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
                     MapAction.damageWorld(pSelf.currentTile, 2, AssetManager.terraform.get("grenade"), null);
                     pSelf.a.addStatusEffect("invincible", 1f);
                 }
-                if (Toolbox.randomChance(0.09f))
+                if (knowledgeGodPwrChance9)
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
 		            float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -301,17 +314,23 @@ namespace GodsAndPantheons
         public static bool darkGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
 
+            var darkGodPwrChance1 = Toolbox.randomChance(0.0001f);
+            var darkGodPwrChance2 = Toolbox.randomChance(0.001f);
+            var darkGodPwrChance3 = Toolbox.randomChance(0.04f);
+            var darkGodPwrChance4 = Toolbox.randomChance(0.01f);
+
+
             if (pTarget != null)
             {
                 Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
 
                 
-                if (Toolbox.randomChance(0.0001f))
+                if (darkGodPwrChance1)
                 {
                     EffectsLibrary.spawn("fx_antimatter_effect", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
                     pSelf.a.addStatusEffect("invincible", 5f);
                 }
-                if (Toolbox.randomChance(0.02f))
+                if (darkGodPwrChance2)
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
 		            float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -321,7 +340,7 @@ namespace GodsAndPantheons
                     
 
                 }
-                if (Toolbox.randomChance(0.04f))
+                if (darkGodPwrChance3)
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
 		            float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -331,7 +350,7 @@ namespace GodsAndPantheons
                     
 
                 }
-                if (Toolbox.randomChance(0.01f))
+                if (darkGodPwrChance4)
                 {
                     EffectsLibrary.spawnAtTile("fx_smokeFlash_dej", pTile, 0.1f);
                     MapAction.damageWorld(pTarget.currentTile, 5, AssetManager.terraform.get("lightning_power"), null);
@@ -348,13 +367,16 @@ namespace GodsAndPantheons
 
         public static bool starsGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
+            var starGodPwrChance1 = Toolbox.randomChance(0.0005f);
+            var starGodPwrChance2 = Toolbox.randomChance(0.01f);
+            var starGodPwrChance3 = Toolbox.randomChance(0.005f);
 
             if (pTarget != null)
             {
                 Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
 
                 
-                if (Toolbox.randomChance(0.0005f))
+                if (starGodPwrChance1)
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
 		            float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -363,7 +385,7 @@ namespace GodsAndPantheons
                     EffectsLibrary.spawnProjectile("moonFall", newPoint, newPoint2, 0.0f);
                     pSelf.a.addStatusEffect("invincible", 2f);
                 }
-                if (Toolbox.randomChance(1f))
+                if (starGodPwrChance2)
                 {
                     EffectsLibrary.spawnAtTile("fx_cometAzureDown_dej", pTarget.a.currentTile, 0.1f);
                     MapAction.applyTileDamage(pTarget.currentTile, 8, AssetManager.terraform.get("cometAzureDownDamage"));
@@ -372,7 +394,7 @@ namespace GodsAndPantheons
                     World.world.applyForce(pTarget.currentTile.neighbours[0], 4, 0.4f, false, true, 200, null, pTarget, null);
                     pSelf.a.addStatusEffect("invincible", 5f);
                 }
-                if (Toolbox.randomChance(0.005f))
+                if (starGodPwrChance3)
                 {
                     EffectsLibrary.spawnAtTile("fx_cometShower_dej", pTarget.a.currentTile, 0.09f);
                     MapAction.applyTileDamage(pTarget.currentTile, 2f, AssetManager.terraform.get("cometRain"));
@@ -406,25 +428,31 @@ namespace GodsAndPantheons
         public static bool sunGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
 
+            var sunGodPwrChance1 = Toolbox.randomChance(0.1f);
+            var sunGodPwrChance2 = Toolbox.randomChance(0.008f);
+            var sunGodPwrChance3 = Toolbox.randomChance(0.02f);
+            var sunGodPwrChance4 = Toolbox.randomChance(0.005f);
+            var sunGodPwrChance5 = Toolbox.randomChance(0.0001f);
+
             if (pTarget != null)
             {
                 
                 Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
                 PowerLibrary pb = new PowerLibrary();
                 
-                if (Toolbox.randomChance(0.005f))
+                if (sunGodPwrChance1)
                 {
                     pb.divineLightFX(pTarget.a.currentTile, null);
                     EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
                     pSelf.a.addStatusEffect("invincible", 5f);
                 }
-                if (Toolbox.randomChance(0.008f))
+                if (sunGodPwrChance2)
                 {
                     pb.divineLightFX(pTarget.a.currentTile, null);
                     pTarget.a.addStatusEffect("burning", 5f);
                     
                 }
-                if (Toolbox.randomChance(0.02f))
+                if (sunGodPwrChance3)
                 {
                     pb.divineLightFX(pTarget.a.currentTile, null);
                     EffectsLibrary.spawn("fx_thunder_flash", pSelf.a.currentTile, null, null, 0f, -1f, -1f);
@@ -433,7 +461,7 @@ namespace GodsAndPantheons
 
                     
                 }
-                if (Toolbox.randomChance(0.005f))
+                if (sunGodPwrChance4)
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
 		            float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -443,7 +471,7 @@ namespace GodsAndPantheons
                 }
                 //EffectsLibrary.spawnAtTile("fx_multiFlash_dej", pTile, 0.01f);
                 
-                if (Toolbox.randomChance(0.0001f))
+                if (sunGodPwrChance5)
                 {
                     //TO BE USED AS IMACT ACTION FOR LIGHT PROJECILES LATER
                     int count = 0;
@@ -481,6 +509,8 @@ namespace GodsAndPantheons
 
         public static bool warGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
+            var warGodPwrChance1 = Toolbox.randomChance(0.01f);
+            var warGodPwrChance2 = Toolbox.randomChance(0.03f);
 
             if (pTarget != null)
             {
@@ -488,7 +518,7 @@ namespace GodsAndPantheons
                 Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
                 PowerLibrary pb = new PowerLibrary();
                 
-                if (Toolbox.randomChance(0.01f))
+                if (warGodPwrChance1)
                 {
                     EffectsLibrary.spawnExplosionWave(pSelf.currentTile.posV3, 1f, 1f);
                     pSelf.a.addStatusEffect("WarGodsCry");
@@ -499,7 +529,7 @@ namespace GodsAndPantheons
                     World.world.applyForce(pSelf.currentTile, 4, 0.4f, false, true, 20, null, pTarget, null);
 
                 }
-                if (Toolbox.randomChance(0.03f))
+                if (warGodPwrChance2)
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
 		            float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -518,17 +548,19 @@ namespace GodsAndPantheons
         
         public static bool earthGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
+            var earthGodPwrChance1 = Toolbox.randomChance(0.05f);
+            var earthGodPwrChance2 = Toolbox.randomChance(0.1f);
 
             if (pTarget != null)
             {
                 Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
                 PowerLibrary pb = new PowerLibrary();
                 
-                if (Toolbox.randomChance(0.05f))
+                if (earthGodPwrChance1)
                 {
                     pb.spawnEarthquake(pTarget.a.currentTile, null);
                 }
-                if (Toolbox.randomChance(0.1f))
+                if (earthGodPwrChance2)
                 {
                     pb.spawnCloudRain(pTarget.a.currentTile, null);
                     pb.spawnCloudSnow(pTarget.a.currentTile, null);
