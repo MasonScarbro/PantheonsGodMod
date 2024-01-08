@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ai;
+using HarmonyLib;
+using NCMS.Utils;
 
 namespace GodsAndPantheons
 {
@@ -841,7 +843,7 @@ namespace GodsAndPantheons
       		localizedText.Add("trait_" + id, id);
       		localizedText.Add("trait_" + id + "_info", description);
 
-        }
+         }
 
         
 

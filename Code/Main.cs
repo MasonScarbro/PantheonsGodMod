@@ -6,7 +6,8 @@ using System;
 using NCMS;
 using UnityEngine;
 using ReflectionUtility;
-
+using HarmonyLib;
+using NCMS.Utils;
 
 namespace GodsAndPantheons
 {
@@ -20,6 +21,7 @@ namespace GodsAndPantheons
             NewProjectiles.init();
             NewTerraformOptions.init();
             NewEffects.init();
+            Items.init();
         }
         
     }
