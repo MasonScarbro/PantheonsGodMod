@@ -51,10 +51,10 @@ namespace GodsAndPantheons
             sunGod.base_stats[S.health] += 500;
             sunGod.base_stats[S.attack_speed] += 80f;
             sunGod.base_stats[S.critical_chance] += 0.05f;
-            sunGod.base_stats[S.speed] += 100f;
+            sunGod.base_stats[S.speed] += 90f;
             sunGod.base_stats[S.dodge] += 30f;
             sunGod.base_stats[S.accuracy] += 10f;
-            sunGod.base_stats[S.range] += 10f;
+            sunGod.base_stats[S.range] += 5f;
             sunGod.action_attack_target = new AttackAction(ActionLibrary.addBurningEffectOnTarget);
             sunGod.action_attack_target = new AttackAction(ActionLibrary.addSlowEffectOnTarget);
             sunGod.action_attack_target = new AttackAction(sunGodAttack);
@@ -63,6 +63,7 @@ namespace GodsAndPantheons
             AssetManager.traits.add(sunGod);
             PlayerConfig.unlockTrait(sunGod.id);
             sunGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(sunGodAutoTrait));
+            sunGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(sunGodGiveWeapon));
             addTraitToLocalizedLibrary(sunGod.id, "Tis' The God Of light!");
             
 
@@ -265,6 +266,7 @@ namespace GodsAndPantheons
                 if (knowledgeGodPwrChance2)
                 {
                     ActionLibrary.castCurses(null, pTarget, null); // casts curses
+                    ((Actor)pSelf).removeTrait("cursed");
                 }
                 if (knowledgeGodPwrChance3)
                 {
@@ -430,7 +432,7 @@ namespace GodsAndPantheons
         public static bool sunGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
 
-            var sunGodPwrChance1 = Toolbox.randomChance(0.1f);
+            var sunGodPwrChance1 = Toolbox.randomChance(0.09f);
             var sunGodPwrChance2 = Toolbox.randomChance(0.008f);
             var sunGodPwrChance3 = Toolbox.randomChance(0.02f);
             var sunGodPwrChance4 = Toolbox.randomChance(0.005f);
@@ -596,11 +598,29 @@ namespace GodsAndPantheons
                     pTarget.a.addTrait("energized");
                     pTarget.a.addTrait("light_lamp");
                     pTarget.a.addTrait("immortal");
-                    pTarget.a.equipment.weapon.setItem(ItemGenerator.generateItem(AssetManager.items.get("SpearOfLight"), "adamantine"));
+                    
                 }
                 
 
             }
+            return true;
+        }
+
+        public static bool sunGodGiveWeapon(BaseSimObject pTarget, WorldTile pTile)
+        {
+
+            if (pTarget.a != null)
+            {
+                if (pTarget.a.hasTrait("God Of light"))
+                {
+                    ItemData spearOfLight = ItemGenerator.generateItem(AssetManager.items.get("SpearOfLight"), "adamantine", 0, null, null, 1, pTarget.a);
+                    pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(spearOfLight);
+                    
+                }
+
+
+            }
+            pTarget.a.updateStats();
             return true;
         }
 

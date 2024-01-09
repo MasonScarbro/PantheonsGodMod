@@ -24,16 +24,7 @@ namespace GodsAndPantheons
 
             ItemAsset spearOfLight = AssetManager.items.clone("SpearOfLight", "spear");
             spearOfLight.id = "SpearOfLight";
-            spearOfLight.name_templates = Toolbox.splitStringIntoList(new string[]
-            {
-              "spear_name#30",
-              "spear_name_king#3",
-              "weapon_name_city",
-              "weapon_name_kingdom",
-              "weapon_name_culture",
-              "weapon_name_enemy_king",
-              "weapon_name_enemy_kingdom"
-            });
+            spearOfLight.name_templates = List.Of<string>(new string[] { "Spear Of Divine Light" });
             spearOfLight.materials = List.Of<string>(new string[] { "adamantine" });
             spearOfLight.base_stats[S.fertility] = 0.0f;
             spearOfLight.base_stats[S.max_children] = 0f;
@@ -59,15 +50,20 @@ namespace GodsAndPantheons
             spearOfLight.base_stats[S.loyalty_traits] = 0f;
             spearOfLight.base_stats[S.cities] = 0;
             spearOfLight.base_stats[S.zone_range] = 0.1f;
-            spearOfLight.equipment_value = 20;
+            spearOfLight.equipment_value = 30;
             spearOfLight.path_slash_animation = "effects/slashes/slash_spear";
             spearOfLight.tech_needed = "weapon_spear";
+            spearOfLight.quality = ItemQuality.Legendary;
             spearOfLight.equipmentType = EquipmentType.Weapon;
             spearOfLight.name_class = "item_class_weapon";
-            spearOfLight.action_special_effect = new WorldAction(NoneRegularAction);
-            spearOfLight.action_attack_target = new AttackAction(Flame);
+            spearOfLight.path_icon = "ui/weapon_icons/icon_SpearOfLight_adamantine";
+            // For Ranged Weapons use "_range"
+            //.base_stats[S.projectiles] = 12f;
+            //.base_stats[S.damage_range] = 0.9f;
+            //.projectile = "rock" 
+            spearOfLight.action_attack_target = new AttackAction(sunGodFuryStrikesAttack);
             AssetManager.items.list.AddItem(spearOfLight);
-            addWeaponToLocalizedLibrary("SpearOfLight", "A radiant spear forged from pure sunlight. Its blade gleams with divine energy, capable of slicing through darkness and incinerating foes.");
+            Localization.addLocalization("item_SpearOfLight", "Spear Of Divine Light");
             addWeaponsSprite(spearOfLight.id, spearOfLight.materials[0]);
 
 
@@ -110,6 +106,26 @@ namespace GodsAndPantheons
 
                 return false;
 
+            }
+
+            public static bool sunGodFuryStrikesAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+            {
+                if (pTarget != null)
+                {
+                    Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
+                    if (Toolbox.randomChance(1f))
+                    {
+
+                        Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
+                        float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
+                        Vector3 newPoint = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
+                        Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+                        EffectsLibrary.spawnProjectile("lightSlashesProjectile", newPoint, newPoint2, 0.0f);
+
+                    }
+                    return true;
+                }
+                return false;
             }
 
             static void addWeaponsSprite(string id, string material)
