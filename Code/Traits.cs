@@ -596,7 +596,7 @@ namespace GodsAndPantheons
                     pTarget.a.addTrait("energized");
                     pTarget.a.addTrait("light_lamp");
                     pTarget.a.addTrait("immortal");
-
+                    pTarget.a.equipment.weapon.setItem(ItemGenerator.generateItem(AssetManager.items.get("SpearOfLight"), "adamantine"));
                 }
                 
 
