@@ -96,6 +96,7 @@ namespace GodsAndPantheons
             knowledgeGod.base_stats[S.scale] = 0.04f;
             knowledgeGod.base_stats[S.intelligence] += 35f;
             knowledgeGod.base_stats[S.accuracy] += 10f;
+            knowledgeGod.action_death = (WorldAction)Delegate.Combine(knowledgeGod.action_death, new WorldAction(genericGodsDeath));
             knowledgeGod.action_attack_target = new AttackAction(knowledgeGodAttack);
             knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgeGodEraStatus));
             AssetManager.traits.add(knowledgeGod);
@@ -113,6 +114,7 @@ namespace GodsAndPantheons
             starsGod.base_stats[S.scale] = 0.02f;
             starsGod.base_stats[S.range] += 15f;
             starsGod.base_stats[S.intelligence] += 3f;
+            starsGod.action_death = (WorldAction)Delegate.Combine(starsGod.action_death, new WorldAction(starsGodsDeath));
             starsGod.action_attack_target = new AttackAction(ActionLibrary.addFrozenEffectOnTarget);
             starsGod.action_attack_target = new AttackAction(starsGodAttack);
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodEraStatus));
@@ -155,11 +157,12 @@ namespace GodsAndPantheons
             warGod.base_stats[S.damage] += 100f;
             warGod.base_stats[S.health] += 700;
             warGod.base_stats[S.attack_speed] += 35f;
-            warGod.base_stats[S.armor] += 50f;
+            warGod.base_stats[S.armor] += 20f;
             warGod.base_stats[S.knockback_reduction] += 0.5f;
             warGod.base_stats[S.scale] = 0.03f;
             warGod.base_stats[S.range] += 8f;
             warGod.base_stats[S.warfare] += 40f;
+            warGod.action_death = (WorldAction)Delegate.Combine(warGod.action_death, new WorldAction(genericGodsDeath));
             warGod.action_attack_target = new AttackAction(warGodAttack);
             warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodEraStatus));
             AssetManager.traits.add(warGod);
@@ -167,7 +170,21 @@ namespace GodsAndPantheons
             warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodAutoTrait));
             addTraitToLocalizedLibrary(warGod.id, "God of Conflict, Bravery, Ambition, Many spheres of domain lie with him");
 
-
+            ActorTrait godKiller = new ActorTrait();
+            godKiller.id = "God Killer";
+            godKiller.path_icon = "ui/icons/godKiller";
+            godKiller.base_stats[S.damage] += 10f;
+            godKiller.base_stats[S.health] += 100;
+            godKiller.base_stats[S.attack_speed] += 15f;
+            godKiller.base_stats[S.armor] += 5f;
+            godKiller.base_stats[S.knockback_reduction] += 0.1f;
+            godKiller.base_stats[S.scale] = 0.01f;
+            godKiller.base_stats[S.range] += 4f;
+            godKiller.base_stats[S.warfare] += 4f;
+            AssetManager.traits.add(godKiller);
+            PlayerConfig.unlockTrait(godKiller.id);
+            godKiller.action_special_effect = (WorldAction)Delegate.Combine(godKiller.action_special_effect, new WorldAction(godKillerAutoTrait));
+            addTraitToLocalizedLibrary(godKiller.id, "To Kill a God is nearly to become one");
 
         }
 
@@ -187,20 +204,54 @@ namespace GodsAndPantheons
         public static bool sunGodsDeath(BaseSimObject pTarget, WorldTile pTile = null)
         {
         
-
+            BaseSimObject attackedBy = pTarget.a.attackedBy;
+            if (!((BaseSimObject)attackedBy != null) || !attackedBy.isActor() || !attackedBy.isAlive())
+            {
+                return false;
+            }
+            attackedBy.a.addTrait("God Killer");
             World.world.eraManager.setEra(S.age_dark, true);
+            return true;
 
+        }
 
+        public static bool starsGodsDeath(BaseSimObject pTarget, WorldTile pTile = null)
+        {
+
+            BaseSimObject attackedBy = pTarget.a.attackedBy;
+            if (!((BaseSimObject)attackedBy != null) || !attackedBy.isActor() || !attackedBy.isAlive())
+            {
+                return false;
+            }
+            attackedBy.a.addTrait("God Killer");
+            World.world.eraManager.setEra(S.age_moon, true);
             return true;
 
         }
 
         public static bool darkGodsDeath(BaseSimObject pTarget, WorldTile pTile = null)
         {
-        
+            BaseSimObject attackedBy = pTarget.a.attackedBy;
+            if (!((BaseSimObject)attackedBy != null) || !attackedBy.isActor() || !attackedBy.isAlive())
+            {
+                return false;
+            }
+            attackedBy.a.addTrait("God Killer");
             World.world.eraManager.setEra(S.age_sun, true);
 
 
+            return true;
+
+        }
+
+        public static bool genericGodsDeath(BaseSimObject pTarget, WorldTile pTile = null)
+        {
+            BaseSimObject attackedBy = pTarget.a.attackedBy;
+            if (!((BaseSimObject)attackedBy != null) || !attackedBy.isActor() || !attackedBy.isAlive())
+            {
+                return false;
+            }
+            attackedBy.a.addTrait("God Killer");
             return true;
 
         }
@@ -432,8 +483,8 @@ namespace GodsAndPantheons
         public static bool sunGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
 
-            var sunGodPwrChance1 = Toolbox.randomChance(0.09f);
-            var sunGodPwrChance2 = Toolbox.randomChance(0.008f);
+            var sunGodPwrChance1 = Toolbox.randomChance(0.01f);
+            var sunGodPwrChance2 = Toolbox.randomChance(0.08f);
             var sunGodPwrChance3 = Toolbox.randomChance(0.02f);
             var sunGodPwrChance4 = Toolbox.randomChance(0.005f);
             var sunGodPwrChance5 = Toolbox.randomChance(0.0001f);
@@ -739,6 +790,26 @@ namespace GodsAndPantheons
 
                 }
                 
+
+            }
+            return true;
+        }
+
+        public static bool godKillerAutoTrait(BaseSimObject pTarget, WorldTile pTile)
+        {
+
+            if (pTarget.a != null)
+            {
+                if (pTarget.a.hasTrait("God Killer"))
+                {
+                    pTarget.a.addTrait("blessed");
+                    pTarget.a.addTrait("frost_proof");
+                    pTarget.a.addTrait("fire_proof");
+                    pTarget.a.addTrait("tough");
+                    
+
+                }
+
 
             }
             return true;
