@@ -675,6 +675,24 @@ namespace GodsAndPantheons
             return true;
         }
 
+        public static bool darkGodGiveWeapon(BaseSimObject pTarget, WorldTile pTile)
+        {
+
+            if (pTarget.a != null)
+            {
+                if (pTarget.a.hasTrait("God Of War"))
+                {
+                    ItemData spearOfLight = ItemGenerator.generateItem(AssetManager.items.get("AxeOfFury"), "adamantine", 0, null, null, 1, pTarget.a);
+                    pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(spearOfLight);
+
+                }
+
+
+            }
+            pTarget.a.updateStats();
+            return true;
+        }
+
         public static bool knowledgeGodAutoTrait(BaseSimObject pTarget, WorldTile pTile)
         {
             Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
