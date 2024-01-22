@@ -73,22 +73,22 @@ namespace GodsAndPantheons
             axeOfFury.materials = List.Of<string>(new string[] { "adamantine" });
             axeOfFury.base_stats[S.fertility] = 0.0f;
             axeOfFury.base_stats[S.max_children] = 0f;
-            axeOfFury.base_stats[S.max_age] = 0f;
-            axeOfFury.base_stats[S.attack_speed] = 10f;
-            axeOfFury.base_stats[S.damage] = 2;
-            axeOfFury.base_stats[S.speed] = 8f;
-            axeOfFury.base_stats[S.health] = 1;
+            axeOfFury.base_stats[S.max_age] += 100f;
+            axeOfFury.base_stats[S.attack_speed] = 1f;
+            axeOfFury.base_stats[S.damage] = 10f;
+            axeOfFury.base_stats[S.speed] = 1f;
+            axeOfFury.base_stats[S.health] = 4;
             axeOfFury.base_stats[S.accuracy] = 1f;
             axeOfFury.base_stats[S.range] = 1;
-            axeOfFury.base_stats[S.armor] = 3;
-            axeOfFury.base_stats[S.scale] = 0.0f;
-            axeOfFury.base_stats[S.dodge] = 10f;
+            axeOfFury.base_stats[S.armor] = 1;
+            axeOfFury.base_stats[S.scale] = 0.01f;
+            axeOfFury.base_stats[S.dodge] = 5f;
             axeOfFury.base_stats[S.targets] = 3f;
-            axeOfFury.base_stats[S.critical_chance] = 0.0f;
-            axeOfFury.base_stats[S.knockback] = 0.0f;
+            axeOfFury.base_stats[S.critical_chance] = 0.05f;
+            axeOfFury.base_stats[S.knockback] = 0.05f;
             axeOfFury.base_stats[S.knockback_reduction] = 0.0f;
             axeOfFury.base_stats[S.intelligence] = 0;
-            axeOfFury.base_stats[S.warfare] = 0;
+            axeOfFury.base_stats[S.warfare] = 10;
             axeOfFury.base_stats[S.diplomacy] = 0;
             axeOfFury.base_stats[S.stewardship] = 0;
             axeOfFury.base_stats[S.opinion] = 0f;
@@ -101,15 +101,61 @@ namespace GodsAndPantheons
             axeOfFury.quality = ItemQuality.Legendary;
             axeOfFury.equipmentType = EquipmentType.Weapon;
             axeOfFury.name_class = "item_class_weapon";
-            axeOfFury.path_icon = "ui/weapon_icons/icon_axeOfFury_adamantine";
+            axeOfFury.path_icon = "ui/weapon_icons/icon_AxeOfFury_adamantine";
             // For Ranged Weapons use "_range"
             //.base_stats[S.projectiles] = 12f;
             //.base_stats[S.damage_range] = 0.9f;
             //.projectile = "rock" 
-            axeOfFury.action_attack_target = new AttackAction(sunGodFuryStrikesAttack);
+            
             AssetManager.items.list.AddItem(axeOfFury);
-            Localization.addLocalization("item_axeOfFury", "Spear Of Divine Light");
+            Localization.addLocalization("item_AxeOfFury", "Axe Of War");
             addWeaponsSprite(axeOfFury.id, axeOfFury.materials[0]);
+
+
+            ItemAsset darkDagger = AssetManager.items.clone("DarkDagger", "_melee");
+            darkDagger.id = "DarkDagger";
+            darkDagger.name_templates = List.Of<string>(new string[] { "Dagger Of Darkness" });
+            darkDagger.materials = List.Of<string>(new string[] { "adamantine" });
+            darkDagger.base_stats[S.fertility] = 0.0f;
+            darkDagger.base_stats[S.max_children] = 0f;
+            darkDagger.base_stats[S.max_age] += 100f;
+            darkDagger.base_stats[S.attack_speed] = 3f;
+            darkDagger.base_stats[S.damage] = 4;
+            darkDagger.base_stats[S.speed] = 1f;
+            darkDagger.base_stats[S.health] = 1;
+            darkDagger.base_stats[S.accuracy] = 1f;
+            darkDagger.base_stats[S.range] = 1;
+            darkDagger.base_stats[S.armor] = 1;
+            darkDagger.base_stats[S.scale] = 0.0f;
+            darkDagger.base_stats[S.dodge] = 15f;
+            darkDagger.base_stats[S.targets] = 3f;
+            darkDagger.base_stats[S.critical_chance] = 0.0f;
+            darkDagger.base_stats[S.knockback] = 0.0f;
+            darkDagger.base_stats[S.knockback_reduction] = 0.0f;
+            darkDagger.base_stats[S.intelligence] = 0;
+            darkDagger.base_stats[S.warfare] = 0;
+            darkDagger.base_stats[S.diplomacy] = 0;
+            darkDagger.base_stats[S.stewardship] = 5;
+            darkDagger.base_stats[S.opinion] = 0f;
+            darkDagger.base_stats[S.loyalty_traits] = 0f;
+            darkDagger.base_stats[S.cities] = 0;
+            darkDagger.base_stats[S.zone_range] = 0.1f;
+            darkDagger.equipment_value = 30;
+            darkDagger.path_slash_animation = "effects/slashes/slash_spear";
+            darkDagger.tech_needed = String.Empty;
+            darkDagger.quality = ItemQuality.Legendary;
+            darkDagger.equipmentType = EquipmentType.Weapon;
+            darkDagger.name_class = "item_class_weapon";
+            darkDagger.path_icon = "ui/weapon_icons/icon_DarkDagger_adamantine";
+            // For Ranged Weapons use "_range"
+            //.base_stats[S.projectiles] = 12f;
+            //.base_stats[S.damage_range] = 0.9f;
+            //.projectile = "rock" 
+            
+            AssetManager.items.list.AddItem(darkDagger);
+            Localization.addLocalization("item_DarkDagger", "Dagger Of Darkness");
+            addWeaponsSprite(darkDagger.id, darkDagger.materials[0]);
+
 
 
         }
@@ -180,15 +226,7 @@ namespace GodsAndPantheons
                 dictItems.Add(sprite.name, sprite);
             }
 
-            public static void addWeaponToLocalizedLibrary(string id, string description)
-            {
-
-                string language = Reflection.GetField(LocalizedTextManager.instance.GetType(), LocalizedTextManager.instance, "language") as string;
-                Dictionary<string, string> localizedText = Reflection.GetField(LocalizedTextManager.instance.GetType(), LocalizedTextManager.instance, "localizedText") as Dictionary<string, string>;
-                localizedText.Add("item_" + id, id);
-                localizedText.Add("trait_" + id + "_info", description);
-
-            }
+            
         
     }
 }

@@ -15,10 +15,12 @@ using ai;
 using HarmonyLib;
 using NCMS.Utils;
 
+
 namespace GodsAndPantheons
 {
     class Traits
-    { 
+    {
+        
         public static void init()
         {
 
@@ -63,7 +65,7 @@ namespace GodsAndPantheons
             AssetManager.traits.add(sunGod);
             PlayerConfig.unlockTrait(sunGod.id);
             sunGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(sunGodAutoTrait));
-            sunGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(sunGodGiveWeapon));
+            sunGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             addTraitToLocalizedLibrary(sunGod.id, "Tis' The God Of light!");
             
 
@@ -83,6 +85,7 @@ namespace GodsAndPantheons
             AssetManager.traits.add(darkGod);
             PlayerConfig.unlockTrait(darkGod.id);
             darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(darkGodAutoTrait));
+            darkGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             addTraitToLocalizedLibrary(darkGod.id, "Tis' The God Of darkness!");
 
             ActorTrait knowledgeGod = new ActorTrait();
@@ -164,10 +167,11 @@ namespace GodsAndPantheons
             warGod.base_stats[S.warfare] += 40f;
             warGod.action_death = (WorldAction)Delegate.Combine(warGod.action_death, new WorldAction(genericGodsDeath));
             warGod.action_attack_target = new AttackAction(warGodAttack);
-            warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodEraStatus));
+            warGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             AssetManager.traits.add(warGod);
             PlayerConfig.unlockTrait(warGod.id);
             warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodAutoTrait));
+            warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
             addTraitToLocalizedLibrary(warGod.id, "God of Conflict, Bravery, Ambition, Many spheres of domain lie with him");
 
             ActorTrait godKiller = new ActorTrait();
@@ -657,41 +661,9 @@ namespace GodsAndPantheons
             return true;
         }
 
-        public static bool sunGodGiveWeapon(BaseSimObject pTarget, WorldTile pTile)
-        {
+        
 
-            if (pTarget.a != null)
-            {
-                if (pTarget.a.hasTrait("God Of light"))
-                {
-                    ItemData spearOfLight = ItemGenerator.generateItem(AssetManager.items.get("SpearOfLight"), "adamantine", 0, null, null, 1, pTarget.a);
-                    pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(spearOfLight);
-                    
-                }
-
-
-            }
-            pTarget.a.updateStats();
-            return true;
-        }
-
-        public static bool darkGodGiveWeapon(BaseSimObject pTarget, WorldTile pTile)
-        {
-
-            if (pTarget.a != null)
-            {
-                if (pTarget.a.hasTrait("God Of War"))
-                {
-                    ItemData spearOfLight = ItemGenerator.generateItem(AssetManager.items.get("AxeOfFury"), "adamantine", 0, null, null, 1, pTarget.a);
-                    pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(spearOfLight);
-
-                }
-
-
-            }
-            pTarget.a.updateStats();
-            return true;
-        }
+        
 
         public static bool knowledgeGodAutoTrait(BaseSimObject pTarget, WorldTile pTile)
         {
@@ -943,6 +915,8 @@ namespace GodsAndPantheons
             }
             return true;
         }
+
+        
 
          public static void addTraitToLocalizedLibrary(string id, string description)        
          {
