@@ -40,6 +40,7 @@ namespace GodsAndPantheons
             chaosGod.action_attack_target = new AttackAction(chaosGodAttack);
             //chaosGod.action_death = new WorldAction(ActionLibrary.turnIntoDemon);
             chaosGod.action_death = (WorldAction)Delegate.Combine(chaosGod.action_death, new WorldAction(chaosGodsTrick));
+            chaosGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             chaosGod.base_stats[S.scale] = 0.08f;
             AssetManager.traits.add(chaosGod);
             PlayerConfig.unlockTrait(chaosGod.id);
@@ -105,6 +106,7 @@ namespace GodsAndPantheons
             AssetManager.traits.add(knowledgeGod);
             PlayerConfig.unlockTrait(knowledgeGod.id);
             knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgeGodAutoTrait));
+            knowledgeGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             addTraitToLocalizedLibrary(knowledgeGod.id, "Tis' The God Of Knowledges!");
 
             ActorTrait starsGod = new ActorTrait();

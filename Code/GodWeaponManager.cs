@@ -22,10 +22,7 @@ public static class GodWeaponManager
     public static bool godGiveWeapon(BaseSimObject pTarget, WorldTile pTile)
     {
         //Debug.Log(hasGodGivenWeapon); 
-        if (hasGodGivenWeapon == true)
-        {
-            return false;
-        }
+        
 
         if (pTarget.a != null)
         {
@@ -40,16 +37,54 @@ public static class GodWeaponManager
             if (pTarget.a.hasTrait("God Of the Night"))
             {
                 ItemData darkDaggerD = ItemGenerator.generateItem(AssetManager.items.get("DarkDagger"), "adamantine", 0, null, null, 1, pTarget.a);
-                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(darkDaggerD);
-
+                if (darkDaggerD != null)
+                {
+                    var weaponSlot = pTarget.a.equipment.getSlot(EquipmentType.Weapon);
+                    if (weaponSlot != null)
+                    {
+                        weaponSlot.setItem(darkDaggerD);
+                    }
+                }
             }
 
             if (pTarget.a.hasTrait("God Of light"))
             {
                 ItemData spearOfLightD = ItemGenerator.generateItem(AssetManager.items.get("SpearOfLight"), "adamantine", 0, null, null, 1, pTarget.a);
-                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(spearOfLightD);
+                if (spearOfLightD != null)
+                {
+                    var weaponSlot = pTarget.a.equipment.getSlot(EquipmentType.Weapon);
+                    if (weaponSlot != null)
+                    {
+                        weaponSlot.setItem(spearOfLightD);
+                    }
+                    
+                }
+                
 
             }
+
+            if (pTarget.a.hasTrait("God Of Knowledge"))
+            {
+                ItemData staffOfKnowledgeD = ItemGenerator.generateItem(AssetManager.items.get("StaffOfKnowledge"), "base", 0, null, null, 1, pTarget.a);
+                if (staffOfKnowledgeD != null)
+                {
+                    var weaponSlot = pTarget.a.equipment.getSlot(EquipmentType.Weapon);
+                    if (weaponSlot != null)
+                    {
+                        weaponSlot.setItem(staffOfKnowledgeD);
+                    }
+
+                }
+
+            }
+
+            if (pTarget.a.hasTrait("God_Of_Chaos"))
+            {
+                ItemData MaceOfDestructionD = ItemGenerator.generateItem(AssetManager.items.get("MaceOfDestruction"), "adamantine", 0, null, null, 1, pTarget.a);
+                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(MaceOfDestructionD);
+
+            }
+
             hasHappend = true;
             pTarget.a.updateStats();
         }

@@ -51,6 +51,7 @@ namespace GodsAndPantheons
             spearOfLight.base_stats[S.cities] = 0;
             spearOfLight.base_stats[S.zone_range] = 0.1f;
             spearOfLight.equipment_value = 30;
+            spearOfLight.special_effect_interval = 0.1f;
             spearOfLight.path_slash_animation = "effects/slashes/slash_spear";
             spearOfLight.tech_needed = "weapon_spear";
             spearOfLight.quality = ItemQuality.Legendary;
@@ -136,7 +137,7 @@ namespace GodsAndPantheons
             darkDagger.base_stats[S.warfare] = 0;
             darkDagger.base_stats[S.diplomacy] = 0;
             darkDagger.base_stats[S.stewardship] = 5;
-            darkDagger.base_stats[S.opinion] = 0f;
+            darkDagger.base_stats[S.opinion] = 5f;
             darkDagger.base_stats[S.loyalty_traits] = 0f;
             darkDagger.base_stats[S.cities] = 0;
             darkDagger.base_stats[S.zone_range] = 0.1f;
@@ -156,6 +157,95 @@ namespace GodsAndPantheons
             Localization.addLocalization("item_DarkDagger", "Dagger Of Darkness");
             addWeaponsSprite(darkDagger.id, darkDagger.materials[0]);
 
+
+            ItemAsset maceOfDestruction = AssetManager.items.clone("MaceOfDestruction", "_melee");
+            maceOfDestruction.id = "MaceOfDestruction";
+            maceOfDestruction.name_templates = List.Of<string>(new string[] { "Dagger Of Darkness" });
+            maceOfDestruction.materials = List.Of<string>(new string[] { "adamantine" });
+            maceOfDestruction.base_stats[S.fertility] = 0.0f;
+            maceOfDestruction.base_stats[S.max_children] = 0f;
+            maceOfDestruction.base_stats[S.max_age] += 100f;
+            maceOfDestruction.base_stats[S.attack_speed] = 3f;
+            maceOfDestruction.base_stats[S.damage] += 10;
+            maceOfDestruction.base_stats[S.speed] += 1f;
+            maceOfDestruction.base_stats[S.health] = 1;
+            maceOfDestruction.base_stats[S.accuracy] = 1f;
+            maceOfDestruction.base_stats[S.range] = 1;
+            maceOfDestruction.base_stats[S.armor] = 1;
+            maceOfDestruction.base_stats[S.scale] = 0.0f;
+            maceOfDestruction.base_stats[S.dodge] = 4f;
+            maceOfDestruction.base_stats[S.targets] = 3f;
+            maceOfDestruction.base_stats[S.critical_chance] = 0.0f;
+            maceOfDestruction.base_stats[S.knockback] = 0.0f;
+            maceOfDestruction.base_stats[S.knockback_reduction] = 0.1f;
+            maceOfDestruction.base_stats[S.intelligence] = 0;
+            maceOfDestruction.base_stats[S.warfare] = 0;
+            maceOfDestruction.base_stats[S.diplomacy] = 0;
+            maceOfDestruction.base_stats[S.stewardship] = 0;
+            maceOfDestruction.base_stats[S.opinion] = 0f;
+            maceOfDestruction.base_stats[S.loyalty_traits] = 0f;
+            maceOfDestruction.base_stats[S.cities] = 0;
+            maceOfDestruction.base_stats[S.zone_range] = 0.1f;
+            maceOfDestruction.equipment_value = 30;
+            maceOfDestruction.path_slash_animation = "effects/slashes/slash_spear";
+            maceOfDestruction.tech_needed = String.Empty;
+            maceOfDestruction.quality = ItemQuality.Legendary;
+            maceOfDestruction.equipmentType = EquipmentType.Weapon;
+            maceOfDestruction.name_class = "item_class_weapon";
+            maceOfDestruction.path_icon = "ui/weapon_icons/icon_MaceOfDestruction_adamantine";
+            // For Ranged Weapons use "_range"
+            //.base_stats[S.projectiles] = 12f;
+            //.base_stats[S.damage_range] = 0.9f;
+            //.projectile = "rock" 
+
+            AssetManager.items.list.AddItem(maceOfDestruction);
+            Localization.addLocalization("item_MaceOfDestruction", "Mace Of Destruction");
+            addWeaponsSprite(maceOfDestruction.id, maceOfDestruction.materials[0]);
+
+            ItemAsset staffOfKnowledge = AssetManager.items.clone("StaffOfKnowledge", "_range");
+            staffOfKnowledge.id = "StaffOfKnowledge";
+            staffOfKnowledge.name_templates = List.Of<string>(new string[] { "Staff Of Knowledge" });
+            staffOfKnowledge.materials = List.Of<string>(new string[] { "base" });
+            staffOfKnowledge.base_stats[S.fertility] = 0.0f;
+            staffOfKnowledge.base_stats[S.max_children] = 0f;
+            staffOfKnowledge.base_stats[S.max_age] += 100f;
+            staffOfKnowledge.base_stats[S.attack_speed] = 1f;
+            staffOfKnowledge.base_stats[S.damage] += 5;
+            staffOfKnowledge.base_stats[S.speed] += 1f;
+            staffOfKnowledge.base_stats[S.health] = 1;
+            staffOfKnowledge.base_stats[S.accuracy] = 1f;
+            staffOfKnowledge.base_stats[S.range] = 1;
+            staffOfKnowledge.base_stats[S.armor] = 1;
+            staffOfKnowledge.base_stats[S.scale] = 0.0f;
+            staffOfKnowledge.base_stats[S.dodge] = 1f;
+            staffOfKnowledge.base_stats[S.targets] = 3f;
+            staffOfKnowledge.base_stats[S.critical_chance] = 0.0f;
+            staffOfKnowledge.base_stats[S.knockback] = 0.0f;
+            staffOfKnowledge.base_stats[S.knockback_reduction] = 0.1f;
+            staffOfKnowledge.base_stats[S.intelligence] = 15f;
+            staffOfKnowledge.base_stats[S.warfare] = 0;
+            staffOfKnowledge.base_stats[S.diplomacy] = 0;
+            staffOfKnowledge.base_stats[S.stewardship] = 0;
+            staffOfKnowledge.base_stats[S.opinion] = 0f;
+            staffOfKnowledge.base_stats[S.loyalty_traits] = 0f;
+            staffOfKnowledge.base_stats[S.cities] = 0;
+            staffOfKnowledge.base_stats[S.zone_range] = 0.1f;
+            staffOfKnowledge.equipment_value = 30;
+            staffOfKnowledge.path_slash_animation = "effects/slashes/slash_punch";
+            staffOfKnowledge.tech_needed = String.Empty;
+            staffOfKnowledge.quality = ItemQuality.Legendary;
+            staffOfKnowledge.equipmentType = EquipmentType.Weapon;
+            staffOfKnowledge.attackType = WeaponType.Range;
+            staffOfKnowledge.name_class = "item_class_weapon";
+            staffOfKnowledge.path_icon = "ui/weapon_icons/icon_StaffOfKnowledge_base";
+            // For Ranged Weapons use "_range"
+            staffOfKnowledge.base_stats[S.projectiles] = 12f;
+            staffOfKnowledge.base_stats[S.damage_range] = 0.9f;
+            staffOfKnowledge.projectile = "freeze_orb"; 
+
+            AssetManager.items.list.AddItem(staffOfKnowledge);
+            Localization.addLocalization("item_StaffOfKnowledge", "Staff Of Knowledge");
+            addWeaponsSprite(staffOfKnowledge.id, staffOfKnowledge.materials[0]);
 
 
         }
@@ -204,7 +294,7 @@ namespace GodsAndPantheons
                 if (pTarget != null)
                 {
                     Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
-                    if (Toolbox.randomChance(0.7f))
+                    if (Toolbox.randomChance(0.9f))
                     {
 
                         Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
