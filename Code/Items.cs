@@ -29,11 +29,11 @@ namespace GodsAndPantheons
             spearOfLight.base_stats[S.fertility] = 0.0f;
             spearOfLight.base_stats[S.max_children] = 0f;
             spearOfLight.base_stats[S.max_age] += 100f;
-            spearOfLight.base_stats[S.attack_speed] = 10f;
-            spearOfLight.base_stats[S.damage] = 2;
-            spearOfLight.base_stats[S.speed] += 8f;
-            spearOfLight.base_stats[S.health] = 1;
-            spearOfLight.base_stats[S.accuracy] = 1f;
+            spearOfLight.base_stats[S.attack_speed] = 15f;
+            spearOfLight.base_stats[S.damage] += 15f;
+            spearOfLight.base_stats[S.speed] += 10f;
+            spearOfLight.base_stats[S.health] += 10;
+            spearOfLight.base_stats[S.accuracy] += 5f;
             spearOfLight.base_stats[S.range] = 1;
             spearOfLight.base_stats[S.armor] = 3f;
             spearOfLight.base_stats[S.scale] = 0.0f;
@@ -76,9 +76,9 @@ namespace GodsAndPantheons
             axeOfFury.base_stats[S.max_children] = 0f;
             axeOfFury.base_stats[S.max_age] += 100f;
             axeOfFury.base_stats[S.attack_speed] = 1f;
-            axeOfFury.base_stats[S.damage] = 10f;
+            axeOfFury.base_stats[S.damage] += 25f;
             axeOfFury.base_stats[S.speed] = 1f;
-            axeOfFury.base_stats[S.health] = 4;
+            axeOfFury.base_stats[S.health] += 5f;
             axeOfFury.base_stats[S.accuracy] = 1f;
             axeOfFury.base_stats[S.range] = 1;
             axeOfFury.base_stats[S.armor] = 1;
@@ -121,7 +121,7 @@ namespace GodsAndPantheons
             darkDagger.base_stats[S.max_children] = 0f;
             darkDagger.base_stats[S.max_age] += 100f;
             darkDagger.base_stats[S.attack_speed] = 3f;
-            darkDagger.base_stats[S.damage] = 4;
+            darkDagger.base_stats[S.damage] += 15f;
             darkDagger.base_stats[S.speed] = 1f;
             darkDagger.base_stats[S.health] = 1;
             darkDagger.base_stats[S.accuracy] = 1f;
@@ -166,7 +166,7 @@ namespace GodsAndPantheons
             maceOfDestruction.base_stats[S.max_children] = 0f;
             maceOfDestruction.base_stats[S.max_age] += 100f;
             maceOfDestruction.base_stats[S.attack_speed] = 3f;
-            maceOfDestruction.base_stats[S.damage] += 10;
+            maceOfDestruction.base_stats[S.damage] += 30;
             maceOfDestruction.base_stats[S.speed] += 1f;
             maceOfDestruction.base_stats[S.health] = 1;
             maceOfDestruction.base_stats[S.accuracy] = 1f;
@@ -210,7 +210,7 @@ namespace GodsAndPantheons
             staffOfKnowledge.base_stats[S.max_children] = 0f;
             staffOfKnowledge.base_stats[S.max_age] += 100f;
             staffOfKnowledge.base_stats[S.attack_speed] = 1f;
-            staffOfKnowledge.base_stats[S.damage] += 5;
+            staffOfKnowledge.base_stats[S.damage] += 10;
             staffOfKnowledge.base_stats[S.speed] += 1f;
             staffOfKnowledge.base_stats[S.health] = 1;
             staffOfKnowledge.base_stats[S.accuracy] = 1f;
@@ -231,7 +231,7 @@ namespace GodsAndPantheons
             staffOfKnowledge.base_stats[S.cities] = 0;
             staffOfKnowledge.base_stats[S.zone_range] = 0.1f;
             staffOfKnowledge.equipment_value = 30;
-            staffOfKnowledge.path_slash_animation = "effects/slashes/slash_punch";
+            staffOfKnowledge.path_slash_animation = "effects/slashes/darkSlash";
             staffOfKnowledge.tech_needed = String.Empty;
             staffOfKnowledge.quality = ItemQuality.Legendary;
             staffOfKnowledge.equipmentType = EquipmentType.Weapon;
@@ -241,11 +241,56 @@ namespace GodsAndPantheons
             // For Ranged Weapons use "_range"
             staffOfKnowledge.base_stats[S.projectiles] = 12f;
             staffOfKnowledge.base_stats[S.damage_range] = 0.9f;
-            staffOfKnowledge.projectile = "freeze_orb"; 
+            staffOfKnowledge.projectile = "wordsOfKnowledgeProjectile"; 
 
             AssetManager.items.list.AddItem(staffOfKnowledge);
             Localization.addLocalization("item_StaffOfKnowledge", "Staff Of Knowledge");
             addWeaponsSprite(staffOfKnowledge.id, staffOfKnowledge.materials[0]);
+
+            ItemAsset cometScepter = AssetManager.items.clone("CometScepter", "_range");
+            cometScepter.id = "CometScepter";
+            cometScepter.name_templates = List.Of<string>(new string[] { "Scepter Of The Stars" });
+            cometScepter.materials = List.Of<string>(new string[] { "base" });
+            cometScepter.base_stats[S.fertility] = 0.0f;
+            cometScepter.base_stats[S.max_children] = 0f;
+            cometScepter.base_stats[S.max_age] += 100f;
+            cometScepter.base_stats[S.attack_speed] = 1f;
+            cometScepter.base_stats[S.damage] += 10;
+            cometScepter.base_stats[S.speed] += 1f;
+            cometScepter.base_stats[S.health] = 1;
+            cometScepter.base_stats[S.accuracy] = 1f;
+            cometScepter.base_stats[S.range] = 1;
+            cometScepter.base_stats[S.armor] = 1;
+            cometScepter.base_stats[S.scale] = 0.0f;
+            cometScepter.base_stats[S.dodge] += 3f;
+            cometScepter.base_stats[S.targets] = 3f;
+            cometScepter.base_stats[S.critical_chance] += 0.1f;
+            cometScepter.base_stats[S.knockback] = 0.0f;
+            cometScepter.base_stats[S.knockback_reduction] = 0.1f;
+            cometScepter.base_stats[S.intelligence] += 15f;
+            cometScepter.base_stats[S.warfare] = 0;
+            cometScepter.base_stats[S.diplomacy] = 0;
+            cometScepter.base_stats[S.stewardship] = 0;
+            cometScepter.base_stats[S.opinion] = 0f;
+            cometScepter.base_stats[S.loyalty_traits] = 0f;
+            cometScepter.base_stats[S.cities] = 0;
+            cometScepter.base_stats[S.zone_range] = 0.1f;
+            cometScepter.equipment_value = 30;
+            cometScepter.path_slash_animation = "effects/slashes/slash_punch";
+            cometScepter.tech_needed = String.Empty;
+            cometScepter.quality = ItemQuality.Legendary;
+            cometScepter.equipmentType = EquipmentType.Weapon;
+            cometScepter.attackType = WeaponType.Range;
+            cometScepter.name_class = "item_class_weapon";
+            cometScepter.path_icon = "ui/weapon_icons/icon_CometScepter_base";
+            // For Ranged Weapons use "_range"
+            cometScepter.base_stats[S.projectiles] = 4f;
+            cometScepter.base_stats[S.damage_range] = 0.9f;
+            cometScepter.projectile = "starShowerProjectile";
+
+            AssetManager.items.list.AddItem(cometScepter);
+            Localization.addLocalization("item_CometScepter", "Scepter Of The Stars");
+            addWeaponsSprite(cometScepter.id, cometScepter.materials[0]);
 
 
         }

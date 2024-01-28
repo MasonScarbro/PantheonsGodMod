@@ -67,7 +67,7 @@ namespace GodsAndPantheons
             PlayerConfig.unlockTrait(sunGod.id);
             sunGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(sunGodAutoTrait));
             sunGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
-            addTraitToLocalizedLibrary(sunGod.id, "Tis' The God Of light!");
+            addTraitToLocalizedLibrary(sunGod.id, "The God Of light, controls the very light that shines and can pass through with great speed");
             
 
             ActorTrait darkGod = new ActorTrait();
@@ -87,7 +87,7 @@ namespace GodsAndPantheons
             PlayerConfig.unlockTrait(darkGod.id);
             darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(darkGodAutoTrait));
             darkGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
-            addTraitToLocalizedLibrary(darkGod.id, "Tis' The God Of darkness!");
+            addTraitToLocalizedLibrary(darkGod.id, "The God Of darkness, thievery and the shadows of which is his domain ");
 
             ActorTrait knowledgeGod = new ActorTrait();
             knowledgeGod.id = "God Of Knowledge";
@@ -107,7 +107,7 @@ namespace GodsAndPantheons
             PlayerConfig.unlockTrait(knowledgeGod.id);
             knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgeGodAutoTrait));
             knowledgeGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
-            addTraitToLocalizedLibrary(knowledgeGod.id, "Tis' The God Of Knowledges!");
+            addTraitToLocalizedLibrary(knowledgeGod.id, "The God Of Knowledge, His mind excedes Time he knows all");
 
             ActorTrait starsGod = new ActorTrait();
             starsGod.id = "God Of the Stars";
@@ -123,6 +123,7 @@ namespace GodsAndPantheons
             starsGod.action_attack_target = new AttackAction(ActionLibrary.addFrozenEffectOnTarget);
             starsGod.action_attack_target = new AttackAction(starsGodAttack);
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodEraStatus));
+            starsGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             AssetManager.traits.add(starsGod);
             PlayerConfig.unlockTrait(starsGod.id);
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodAutoTrait));
@@ -477,6 +478,7 @@ namespace GodsAndPantheons
                 
 
                 }
+
                 
                     
                 return true;
@@ -637,8 +639,10 @@ namespace GodsAndPantheons
         }
 
 
-         
-        public static bool sunGodAutoTrait(BaseSimObject pTarget, WorldTile pTile)
+        
+    
+
+    public static bool sunGodAutoTrait(BaseSimObject pTarget, WorldTile pTile)
         {
             
             if (pTarget.a != null)
@@ -919,6 +923,7 @@ namespace GodsAndPantheons
         }
 
         
+
 
          public static void addTraitToLocalizedLibrary(string id, string description)        
          {

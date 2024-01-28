@@ -15,80 +15,115 @@ using ai;
 using HarmonyLib;
 using NCMS.Utils;
 
+
 public static class GodWeaponManager
 {
-    private static bool hasHappend = false;
+    public static int count = 0;
 
     public static bool godGiveWeapon(BaseSimObject pTarget, WorldTile pTile)
     {
-        //Debug.Log(hasGodGivenWeapon); 
-        
+
+        if (count == 1)
+        {
+            Debug.Log("IGNORE THIS ERROR AND KEEP PLAYING!");
+        }
+
+
+
+
+
 
         if (pTarget.a != null)
         {
 
             if (pTarget.a.hasTrait("God Of War"))
             {
-                ItemData axeOfFuryD = ItemGenerator.generateItem(AssetManager.items.get("AxeOfFury"), "adamantine", 0, null, null, 1, pTarget.a);
+                ItemData axeOfFuryD = new ItemData();
+                axeOfFuryD.id = "AxeOfFury";
+                axeOfFuryD.material = "adamantine";
                 pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(axeOfFuryD);
-
+                pTarget.a.setStatsDirty();
+                return true;
             }
 
             if (pTarget.a.hasTrait("God Of the Night"))
             {
-                ItemData darkDaggerD = ItemGenerator.generateItem(AssetManager.items.get("DarkDagger"), "adamantine", 0, null, null, 1, pTarget.a);
-                if (darkDaggerD != null)
+                ItemData darkDaggerD = new ItemData();
+                darkDaggerD.id = "DarkDagger";
+                darkDaggerD.material = "adamantine";
+                var weaponSlot = pTarget.a.equipment.getSlot(EquipmentType.Weapon);
+                if (weaponSlot != null)
                 {
-                    var weaponSlot = pTarget.a.equipment.getSlot(EquipmentType.Weapon);
-                    if (weaponSlot != null)
-                    {
-                        weaponSlot.setItem(darkDaggerD);
-                    }
+                    weaponSlot.setItem(darkDaggerD);
                 }
+
+                pTarget.a.setStatsDirty();
+                return true;
             }
 
             if (pTarget.a.hasTrait("God Of light"))
             {
-                ItemData spearOfLightD = ItemGenerator.generateItem(AssetManager.items.get("SpearOfLight"), "adamantine", 0, null, null, 1, pTarget.a);
-                if (spearOfLightD != null)
+                ItemData spearOfLightD = new ItemData();
+                spearOfLightD.id = "SpearOfLight";
+                spearOfLightD.material = "adamantine";
+
+                var weaponSlot = pTarget.a.equipment.getSlot(EquipmentType.Weapon);
+                if (weaponSlot != null)
                 {
-                    var weaponSlot = pTarget.a.equipment.getSlot(EquipmentType.Weapon);
-                    if (weaponSlot != null)
-                    {
-                        weaponSlot.setItem(spearOfLightD);
-                    }
-                    
+                    weaponSlot.setItem(spearOfLightD);
                 }
-                
+
+
+                pTarget.a.setStatsDirty();
+                return true;
 
             }
 
             if (pTarget.a.hasTrait("God Of Knowledge"))
             {
-                ItemData staffOfKnowledgeD = ItemGenerator.generateItem(AssetManager.items.get("StaffOfKnowledge"), "base", 0, null, null, 1, pTarget.a);
-                if (staffOfKnowledgeD != null)
-                {
-                    var weaponSlot = pTarget.a.equipment.getSlot(EquipmentType.Weapon);
-                    if (weaponSlot != null)
-                    {
-                        weaponSlot.setItem(staffOfKnowledgeD);
-                    }
+                ItemData staffOfKnowledgeD = new ItemData();
+                staffOfKnowledgeD.id = "StaffOfKnowledge";
+                staffOfKnowledgeD.material = "base";
 
+                var weaponSlot = pTarget.a.equipment.getSlot(EquipmentType.Weapon);
+                if (weaponSlot != null)
+                {
+                    weaponSlot.setItem(staffOfKnowledgeD);
                 }
+                pTarget.a.setStatsDirty();
+                return true;
 
             }
 
             if (pTarget.a.hasTrait("God_Of_Chaos"))
             {
-                ItemData MaceOfDestructionD = ItemGenerator.generateItem(AssetManager.items.get("MaceOfDestruction"), "adamantine", 0, null, null, 1, pTarget.a);
-                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(MaceOfDestructionD);
+                ItemData maceOfDestructionD = new ItemData();
+                maceOfDestructionD.id = "MaceOfDestruction";
+                maceOfDestructionD.material = "adamantine";
+                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(maceOfDestructionD);
+                pTarget.a.setStatsDirty();
+                return true;
 
             }
 
-            hasHappend = true;
+            if (pTarget.a.hasTrait("God Of the Stars"))
+            {
+                ItemData cometScepterD = new ItemData();
+                cometScepterD.id = "CometScepter";
+                cometScepterD.material = "base";
+                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(cometScepterD);
+                pTarget.a.setStatsDirty();
+                return true;
+
+            }
             pTarget.a.updateStats();
+            count++;
+            return true;
         }
-        
+
+
         return false;
     }
+
 }
+

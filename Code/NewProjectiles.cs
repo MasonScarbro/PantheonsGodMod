@@ -256,7 +256,65 @@ namespace GodsAndPantheons
                 {
                     return Impact(pSelf, pTarget, pTile);
                 })*/
-            }); 
+            });
+
+
+            AssetManager.projectiles.add(new ProjectileAsset
+            {
+                id = "starShowerProjectile",
+                animation_speed = 0.1f,
+                speed = 5f,
+                texture = "starShowerProjectile",
+                trailEffect_enabled = false,
+                texture_shadow = "shadow_ball",
+                endEffect = string.Empty,
+                terraformOption = string.Empty,
+                terraformRange = 1,
+                draw_light_area = true,
+                draw_light_size = 0.1f,
+                looped = false,
+                parabolic = false,
+                sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
+                // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
+                startScale = 0.1f,
+                targetScale = 0.1f,
+                look_at_target = true,
+
+                /*
+                impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+                {
+                    return Impact(pSelf, pTarget, pTile);
+                })*/
+            });
+
+
+            AssetManager.projectiles.add(new ProjectileAsset
+            {
+                id = "wordsOfKnowledgeProjectile",
+                animation_speed = 0.2f,
+                speed = 4f,
+                texture = "wordsOfKnowledgeProjectile",
+                trailEffect_enabled = false,
+                texture_shadow = "shadow_ball",
+                endEffect = string.Empty,
+                terraformOption = string.Empty,
+                terraformRange = 1,
+                draw_light_area = true,
+                draw_light_size = 0.1f,
+                looped = true,
+                parabolic = false,
+                sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
+                // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
+                startScale = 0.1f,
+                targetScale = 0.1f,
+                look_at_target = true,
+
+                /*
+                impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+                {
+                    return Impact(pSelf, pTarget, pTile);
+                })*/
+            });
 
             /*private static bool Impact(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {

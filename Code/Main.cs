@@ -8,6 +8,9 @@ using UnityEngine;
 using ReflectionUtility;
 using HarmonyLib;
 using NCMS.Utils;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace GodsAndPantheons
 {
@@ -23,6 +26,6 @@ namespace GodsAndPantheons
             NewEffects.init();
             Items.init();
         }
-        
+        public static Dictionary<Actor, Actor> listOfTamedBeasts = new Dictionary<Actor, Actor>();
     }
 }
