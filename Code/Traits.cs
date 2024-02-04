@@ -36,11 +36,11 @@ namespace GodsAndPantheons
             chaosGod.base_stats[S.attack_speed] += 10f;
             chaosGod.base_stats[S.critical_chance] += 0.05f;
             chaosGod.base_stats[S.range] += 8f;
+            chaosGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             chaosGod.action_attack_target = new AttackAction(ActionLibrary.addBurningEffectOnTarget);
             chaosGod.action_attack_target = new AttackAction(chaosGodAttack);
             //chaosGod.action_death = new WorldAction(ActionLibrary.turnIntoDemon);
             chaosGod.action_death = (WorldAction)Delegate.Combine(chaosGod.action_death, new WorldAction(chaosGodsTrick));
-            chaosGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             chaosGod.base_stats[S.scale] = 0.08f;
             AssetManager.traits.add(chaosGod);
             PlayerConfig.unlockTrait(chaosGod.id);
@@ -58,15 +58,15 @@ namespace GodsAndPantheons
             sunGod.base_stats[S.dodge] += 30f;
             sunGod.base_stats[S.accuracy] += 10f;
             sunGod.base_stats[S.range] += 5f;
+            AssetManager.traits.add(sunGod);
+            PlayerConfig.unlockTrait(sunGod.id);
+            sunGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
+            sunGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(sunGodAutoTrait));
             sunGod.action_attack_target = new AttackAction(ActionLibrary.addBurningEffectOnTarget);
             sunGod.action_attack_target = new AttackAction(ActionLibrary.addSlowEffectOnTarget);
             sunGod.action_attack_target = new AttackAction(sunGodAttack);
             sunGod.action_death = (WorldAction)Delegate.Combine(sunGod.action_death, new WorldAction(sunGodsDeath));
             sunGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(sunGodEraStatus));
-            AssetManager.traits.add(sunGod);
-            PlayerConfig.unlockTrait(sunGod.id);
-            sunGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(sunGodAutoTrait));
-            sunGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             addTraitToLocalizedLibrary(sunGod.id, "The God Of light, controls the very light that shines and can pass through with great speed");
             
 
@@ -80,13 +80,13 @@ namespace GodsAndPantheons
             darkGod.base_stats[S.scale] = 0.02f;
             darkGod.base_stats[S.dodge] += 3f;
             darkGod.base_stats[S.range] += 6f;
+            darkGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             darkGod.action_attack_target = new AttackAction(darkGodAttack);
             darkGod.action_death = (WorldAction)Delegate.Combine(darkGod.action_death, new WorldAction(darkGodsDeath));
             darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(darkGodEraStatus));
             AssetManager.traits.add(darkGod);
             PlayerConfig.unlockTrait(darkGod.id);
             darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(darkGodAutoTrait));
-            darkGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             addTraitToLocalizedLibrary(darkGod.id, "The God Of darkness, thievery and the shadows of which is his domain ");
 
             ActorTrait knowledgeGod = new ActorTrait();
@@ -100,13 +100,13 @@ namespace GodsAndPantheons
             knowledgeGod.base_stats[S.scale] = 0.04f;
             knowledgeGod.base_stats[S.intelligence] += 35f;
             knowledgeGod.base_stats[S.accuracy] += 10f;
+            knowledgeGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             knowledgeGod.action_death = (WorldAction)Delegate.Combine(knowledgeGod.action_death, new WorldAction(genericGodsDeath));
             knowledgeGod.action_attack_target = new AttackAction(knowledgeGodAttack);
             knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgeGodEraStatus));
             AssetManager.traits.add(knowledgeGod);
             PlayerConfig.unlockTrait(knowledgeGod.id);
             knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgeGodAutoTrait));
-            knowledgeGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             addTraitToLocalizedLibrary(knowledgeGod.id, "The God Of Knowledge, His mind excedes Time he knows all");
 
             ActorTrait starsGod = new ActorTrait();
@@ -119,11 +119,11 @@ namespace GodsAndPantheons
             starsGod.base_stats[S.scale] = 0.02f;
             starsGod.base_stats[S.range] += 15f;
             starsGod.base_stats[S.intelligence] += 3f;
+            starsGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             starsGod.action_death = (WorldAction)Delegate.Combine(starsGod.action_death, new WorldAction(starsGodsDeath));
             starsGod.action_attack_target = new AttackAction(ActionLibrary.addFrozenEffectOnTarget);
             starsGod.action_attack_target = new AttackAction(starsGodAttack);
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodEraStatus));
-            starsGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             AssetManager.traits.add(starsGod);
             PlayerConfig.unlockTrait(starsGod.id);
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodAutoTrait));
@@ -143,6 +143,7 @@ namespace GodsAndPantheons
             AssetManager.traits.add(earthGod);
             PlayerConfig.unlockTrait(earthGod.id);
             earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(earthGodAutoTrait));
+            earthGod.action_special_effect = new WorldAction(earthGodBuildWorld);
             addTraitToLocalizedLibrary(earthGod.id, "God of the Natural Enviornment, The titan of creation");
 
             ActorTrait subGod = new ActorTrait();
@@ -174,6 +175,7 @@ namespace GodsAndPantheons
             AssetManager.traits.add(warGod);
             PlayerConfig.unlockTrait(warGod.id);
             warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodAutoTrait));
+            warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodSeeds));
             warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
             addTraitToLocalizedLibrary(warGod.id, "God of Conflict, Bravery, Ambition, Many spheres of domain lie with him");
 
@@ -574,6 +576,7 @@ namespace GodsAndPantheons
         {
             var warGodPwrChance1 = Toolbox.randomChance(0.01f);
             var warGodPwrChance2 = Toolbox.randomChance(0.03f);
+            
 
             if (pTarget != null)
             {
@@ -602,6 +605,7 @@ namespace GodsAndPantheons
                     
                 }
                 
+                    
 
 
                 return true;
@@ -632,6 +636,7 @@ namespace GodsAndPantheons
                 {
                     pb.spawnBoulder(pTarget.a.currentTile, null);
                 }
+                
 
                 return true;
             }
@@ -922,10 +927,93 @@ namespace GodsAndPantheons
             return true;
         }
 
-        
+        public static bool warGodSeeds(BaseSimObject pTarget, WorldTile pTile)
+        {
+
+            if (pTarget.a != null)
+            {
+
+                WorldTile tile1 = Toolbox.getRandomTileWithinDistance(pTile, 60);
+                WorldTile tile2 = Toolbox.getRandomTileWithinDistance(pTile, 40);
+                List<WorldTile> randTile = List.Of<WorldTile>(new WorldTile[] { tile1, tile2 });
+                WorldTile _tile = Toolbox.getRandomTileWithinDistance(randTile, pTile, 45, 120);
+                if (Toolbox.randomChance(0.02f))
+                {
+                    MapBox.instance.dropManager.spawn(_tile, SD.spite, 5f, -1f);
+                }
+                if (Toolbox.randomChance(0.021f))
+                {
+                    MapBox.instance.dropManager.spawn(_tile, SD.discord, 5f, -1f);
+                }
+                if (Toolbox.randomChance(0.022f))
+                {
+                    MapBox.instance.dropManager.spawn(_tile, SD.inspiration, 5f, -1f);
+                }
+
+            }
+            return true;
+        }
+
+        public static bool earthGodBuildWorld(BaseSimObject pSelf, WorldTile pTile)
+        {
+            if (pSelf.a != null)
+            {
+                if (Toolbox.randomChance(0.01f))
+                {
+                    ActionLibrary.tryToGrowTree(pSelf);
+                }
+                if (Toolbox.randomChance(0.01f))
+                {
+                    ActionLibrary.tryToCreatePlants(pSelf);
+                }
+                if (Toolbox.randomChance(0.01f))
+                {
+                    BuildingActions.tryGrowMineralRandom(pSelf.a.currentTile);
+                }
+                if (Toolbox.randomChance(0.01f))
+                {
+                    
+                    buildMountain(pTile);
+                    Debug.Log("IGNORE THIS ERROR AND KEEP PLAYING!");
+
+                }
+
+                return true;
+            }
+            return false;
+        }
 
 
-         public static void addTraitToLocalizedLibrary(string id, string description)        
+        public static void buildMountain(WorldTile pTile)
+        {
+            WorldTile tile1 = Toolbox.getRandomTileWithinDistance(pTile, 50);
+            WorldTile tile2 = Toolbox.getRandomTileWithinDistance(pTile, 25);
+            List<WorldTile> randTile = List.Of<WorldTile>(new WorldTile[] { tile1, tile2 });
+            WorldTile _tile = Toolbox.getRandomTileWithinDistance(randTile, pTile, 30, 120);
+            if (_tile != null)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        WorldTile tile = _tile.neighbours[i];
+                        MapAction.terraformMain(tile, AssetManager.tiles.get("mountains"), TerraformLibrary.destroy);
+                        MapAction.terraformMain(tile.neighbours[i], AssetManager.tiles.get("mountains"), TerraformLibrary.destroy);
+                        MapAction.terraformMain(tile.neighbours[j], AssetManager.tiles.get("soil_high"), TerraformLibrary.destroy);
+                        MapAction.terraformMain(tile.neighbours[j].neighbours[i], AssetManager.tiles.get("soil_high"), TerraformLibrary.destroy);
+                        MapAction.terraformMain(tile.neighbours[j].neighbours[i], AssetManager.tiles.get("soil_low"), TerraformLibrary.destroy);
+                        MapAction.terraformMain(tile.neighbours[i].neighbours[j], AssetManager.tiles.get("soil_low"), TerraformLibrary.destroy);
+                        MapAction.terraformMain(tile.neighbours[i].neighbours[0], AssetManager.tiles.get("mountains"), TerraformLibrary.destroy);
+                        MapAction.terraformMain(tile.neighbours[i].neighbours[j].neighbours[j], AssetManager.tiles.get("soil_low"), TerraformLibrary.destroy);
+                        MapAction.terraformMain(tile.neighbours[j].neighbours[i].neighbours[i], AssetManager.tiles.get("soil_low"), TerraformLibrary.destroy);
+                        
+                    }
+                }
+            }
+            
+
+        }
+        public static void addTraitToLocalizedLibrary(string id, string description)        
          {
 
             string language = Reflection.GetField(LocalizedTextManager.instance.GetType(), LocalizedTextManager.instance, "language") as string;

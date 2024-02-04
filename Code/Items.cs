@@ -107,7 +107,7 @@ namespace GodsAndPantheons
             //.base_stats[S.projectiles] = 12f;
             //.base_stats[S.damage_range] = 0.9f;
             //.projectile = "rock" 
-            
+
             AssetManager.items.list.AddItem(axeOfFury);
             Localization.addLocalization("item_AxeOfFury", "Axe Of War");
             addWeaponsSprite(axeOfFury.id, axeOfFury.materials[0]);
@@ -142,17 +142,18 @@ namespace GodsAndPantheons
             darkDagger.base_stats[S.cities] = 0;
             darkDagger.base_stats[S.zone_range] = 0.1f;
             darkDagger.equipment_value = 30;
-            darkDagger.path_slash_animation = "effects/slashes/slash_spear";
+            darkDagger.path_slash_animation = "effects/slashes/darkSlash";
             darkDagger.tech_needed = String.Empty;
             darkDagger.quality = ItemQuality.Legendary;
             darkDagger.equipmentType = EquipmentType.Weapon;
             darkDagger.name_class = "item_class_weapon";
             darkDagger.path_icon = "ui/weapon_icons/icon_DarkDagger_adamantine";
+            darkDagger.action_attack_target = new AttackAction(darkGodTeleportAttack);
             // For Ranged Weapons use "_range"
             //.base_stats[S.projectiles] = 12f;
             //.base_stats[S.damage_range] = 0.9f;
             //.projectile = "rock" 
-            
+
             AssetManager.items.list.AddItem(darkDagger);
             Localization.addLocalization("item_DarkDagger", "Dagger Of Darkness");
             addWeaponsSprite(darkDagger.id, darkDagger.materials[0]);
@@ -241,7 +242,7 @@ namespace GodsAndPantheons
             // For Ranged Weapons use "_range"
             staffOfKnowledge.base_stats[S.projectiles] = 12f;
             staffOfKnowledge.base_stats[S.damage_range] = 0.9f;
-            staffOfKnowledge.projectile = "wordsOfKnowledgeProjectile"; 
+            staffOfKnowledge.projectile = "wordsOfKnowledgeProjectile";
 
             AssetManager.items.list.AddItem(staffOfKnowledge);
             Localization.addLocalization("item_StaffOfKnowledge", "Staff Of Knowledge");
@@ -295,73 +296,99 @@ namespace GodsAndPantheons
 
         }
 
-            static bool Flame(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile = null)
+        static bool Flame(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile = null)
+        {
+            if (pTarget != null)
             {
-                if (pTarget != null)
+                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
+                if (Toolbox.randomChance(80.0f))
                 {
-                    Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
-                    if (Toolbox.randomChance(80.0f))
-                    {
-                        pTarget.CallMethod("addStatusEffect", "burning", 15f);
+                    pTarget.CallMethod("addStatusEffect", "burning", 15f);
 
 
 
 
 
-                    }
                 }
-                return false;
-
             }
+            return false;
+
+        }
 
 
-            static bool NoneAttackSomeoneAction(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile = null)
+        static bool NoneAttackSomeoneAction(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile = null)
+        {
+
+            return false;
+
+        }
+        static bool NoneRegularAction(BaseSimObject pTarget, WorldTile pTile = null)
+        {
+
+            return false;
+
+        }
+        static bool NoneGetAttackedAction(BaseSimObject pSelf, BaseSimObject pAttackedBy = null, WorldTile pTile = null)
+        {
+
+            return false;
+
+        }
+
+        public static bool sunGodFuryStrikesAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (pTarget != null)
             {
-
-                return false;
-
-            }
-            static bool NoneRegularAction(BaseSimObject pTarget, WorldTile pTile = null)
-            {
-
-                return false;
-
-            }
-            static bool NoneGetAttackedAction(BaseSimObject pSelf, BaseSimObject pAttackedBy = null, WorldTile pTile = null)
-            {
-
-                return false;
-
-            }
-
-            public static bool sunGodFuryStrikesAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
-            {
-                if (pTarget != null)
+                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
+                if (Toolbox.randomChance(0.9f))
                 {
-                    Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
-                    if (Toolbox.randomChance(0.9f))
+
+                    Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
+                    float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
+                    Vector3 newPoint = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
+                    Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+                    EffectsLibrary.spawnProjectile("lightSlashesProjectile", newPoint, newPoint2, 0.0f);
+
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public static bool darkGodTeleportAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (pTarget != null)
+            {
+                
+                if (Toolbox.randomChance(0.7f))
+                {
+                    EffectsLibrary.spawnAt("fx_teleportStart_dej", pSelf.currentPosition, pSelf.a.stats[S.scale]);
+                    BaseEffect baseEffect = EffectsLibrary.spawnAt("fx_teleportEnd_dej", pTarget.a.currentTile.posV3, pSelf.a.stats[S.scale]);
+                    if (baseEffect != null)
                     {
-
-                        Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
-                        float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
-                        Vector3 newPoint = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                        Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
-                        EffectsLibrary.spawnProjectile("lightSlashesProjectile", newPoint, newPoint2, 0.0f);
-
+                        baseEffect.spriteAnimation.setFrameIndex(9);
                     }
+                    pSelf.a.cancelAllBeh(null);
+                    pSelf.a.spawnOn(pTarget.a.currentTile, 0f);
                     return true;
                 }
-                return false;
+                return true;
             }
+            return false;
+        }
 
-            static void addWeaponsSprite(string id, string material)
-            {
-                var dictItems = Reflection.GetField(typeof(ActorAnimationLoader), null, "dictItems") as Dictionary<string, Sprite>;
-                var sprite = Resources.Load<Sprite>("weapons/w_" + id + "_" + material);
-                dictItems.Add(sprite.name, sprite);
-            }
-
-            
         
+
+
+
+    static void addWeaponsSprite(string id, string material)
+        {
+            var dictItems = Reflection.GetField(typeof(ActorAnimationLoader), null, "dictItems") as Dictionary<string, Sprite>;
+            var sprite = Resources.Load<Sprite>("weapons/w_" + id + "_" + material);
+            dictItems.Add(sprite.name, sprite);
+        }
+
+
+
     }
 }
