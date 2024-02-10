@@ -144,6 +144,7 @@ namespace GodsAndPantheons
             PlayerConfig.unlockTrait(earthGod.id);
             earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(earthGodAutoTrait));
             earthGod.action_special_effect = new WorldAction(earthGodBuildWorld);
+            earthGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             addTraitToLocalizedLibrary(earthGod.id, "God of the Natural Enviornment, The titan of creation");
 
             ActorTrait subGod = new ActorTrait();

@@ -116,6 +116,19 @@ public static class GodWeaponManager
                 return true;
 
             }
+
+
+            if (pTarget.a.hasTrait("God Of the Earth"))
+            {
+                //Debug.Log("Why No Activate!?!?!?");
+                ItemData hammerOfCreationD = new ItemData();
+                hammerOfCreationD.id = "HammerOfCreation";
+                hammerOfCreationD.material = "base";
+                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(hammerOfCreationD);
+                pTarget.a.setStatsDirty();
+                return true;
+
+            }
             pTarget.a.updateStats();
             count++;
             return true;

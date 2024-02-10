@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using HarmonyLib;
 using NCMS.Utils;
+using System.Collections;
 
 namespace GodsAndPantheons
 {
@@ -294,6 +295,47 @@ namespace GodsAndPantheons
             addWeaponsSprite(cometScepter.id, cometScepter.materials[0]);
 
 
+            ItemAsset hammerOfCreation = AssetManager.items.clone("HammerOfCreation", "_melee");
+            hammerOfCreation.id = "HammerOfCreation";
+            hammerOfCreation.name_templates = List.Of<string>(new string[] { "Hammer Of Creation" });
+            hammerOfCreation.materials = List.Of<string>(new string[] { "base" });
+            hammerOfCreation.base_stats[S.fertility] = 0.0f;
+            hammerOfCreation.base_stats[S.max_children] = 0f;
+            hammerOfCreation.base_stats[S.max_age] += 100f;
+            hammerOfCreation.base_stats[S.attack_speed] = 1f;
+            hammerOfCreation.base_stats[S.damage] += 10;
+            hammerOfCreation.base_stats[S.speed] += 1f;
+            hammerOfCreation.base_stats[S.health] = 1;
+            hammerOfCreation.base_stats[S.accuracy] = 1f;
+            hammerOfCreation.base_stats[S.range] = 2;
+            hammerOfCreation.base_stats[S.armor] = 3;
+            hammerOfCreation.base_stats[S.scale] = 0.0f;
+            hammerOfCreation.base_stats[S.dodge] += 1f;
+            hammerOfCreation.base_stats[S.targets] = 3f;
+            hammerOfCreation.base_stats[S.critical_chance] += 0.1f;
+            hammerOfCreation.base_stats[S.knockback] = 0.2f;
+            hammerOfCreation.base_stats[S.knockback_reduction] = 0.1f;
+            hammerOfCreation.base_stats[S.intelligence] += 0f;
+            hammerOfCreation.base_stats[S.warfare] = 0;
+            hammerOfCreation.base_stats[S.diplomacy] = 0;
+            hammerOfCreation.base_stats[S.stewardship] = 0;
+            hammerOfCreation.base_stats[S.opinion] = 0f;
+            hammerOfCreation.base_stats[S.loyalty_traits] = 0f;
+            hammerOfCreation.base_stats[S.cities] = 0;
+            hammerOfCreation.base_stats[S.zone_range] = 0.1f;
+            hammerOfCreation.equipment_value = 30;
+            hammerOfCreation.path_slash_animation = "effects/slashes/slash_axe";
+            hammerOfCreation.tech_needed = String.Empty;
+            hammerOfCreation.quality = ItemQuality.Legendary;
+            hammerOfCreation.equipmentType = EquipmentType.Weapon;
+            hammerOfCreation.name_class = "item_class_weapon";
+            hammerOfCreation.path_icon = "ui/weapon_icons/icon_HammerOfCreation_base";
+            hammerOfCreation.action_attack_target = (AttackAction)Delegate.Combine(hammerOfCreation.action_attack_target, new AttackAction(earthGodSendMountain));
+            // For Ranged Weapons use "_range"
+            AssetManager.items.list.AddItem(hammerOfCreation);
+            Localization.addLocalization("item_HammerOfCreation", "Hammer Of Creation");
+            addWeaponsSprite(hammerOfCreation.id, hammerOfCreation.materials[0]);
+
         }
 
         static bool Flame(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile = null)
@@ -377,11 +419,71 @@ namespace GodsAndPantheons
             return false;
         }
 
+        public static bool earthGodSendMountain(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (pSelf.a != null)
+            {
+                
+                if (Toolbox.randomChance(1f))
+                {
+
+                    buildMountainPath(pTile, pSelf, pTarget);
+                    //Debug.Log("IGNORE THIS ERROR AND KEEP PLAYING!");
+
+                }
+
+                return true;
+            }
+            return false;
+        }
+
         
 
+        public static void buildMountainPath(WorldTile pTile, BaseSimObject pSelf, BaseSimObject pTarget)
+        {
+            
+            List<WorldTile> selfTiles = pSelf.a.current_path;
+            List<WorldTile> targetTiles = pTarget.a.current_path;
+
+            //Debug.Log(selfTiles);
+            if (selfTiles != null)
+            {
+                int length = selfTiles.Count;
+                Debug.Log("Self: " + selfTiles.Count);
+                for (int i = 0; i < selfTiles.Count; i++)
+                {
+                    
+                    WorldTile tileP = selfTiles[i];
+                    MapAction.terraformMain(tileP, AssetManager.tiles.get("mountains"), TerraformLibrary.destroy);
+                    
 
 
-    static void addWeaponsSprite(string id, string material)
+                }
+                
+
+            }
+            if (targetTiles != null)
+            {
+                Debug.Log("Target: " + targetTiles.Count);
+                if (selfTiles.Count == 0)
+                {
+                    for (int i = 0; i < targetTiles.Count; i++)
+                    {
+                        WorldTile tileP = targetTiles[i];
+                        MapAction.terraformMain(tileP, AssetManager.tiles.get("mountains"), TerraformLibrary.destroy);
+                       
+
+                    }
+                   
+                }
+            }
+            
+
+
+        }
+
+
+        static void addWeaponsSprite(string id, string material)
         {
             var dictItems = Reflection.GetField(typeof(ActorAnimationLoader), null, "dictItems") as Dictionary<string, Sprite>;
             var sprite = Resources.Load<Sprite>("weapons/w_" + id + "_" + material);
