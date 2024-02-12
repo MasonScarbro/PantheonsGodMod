@@ -25,6 +25,9 @@ namespace GodsAndPantheons
             NewTerraformOptions.init();
             NewEffects.init();
             Items.init();
+            Units.init();
+            Tab.init();
+            Buttons.init();
         }
         public static Dictionary<Actor, Actor> listOfTamedBeasts = new Dictionary<Actor, Actor>();
     }
