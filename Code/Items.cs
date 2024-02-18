@@ -336,6 +336,47 @@ namespace GodsAndPantheons
             Localization.addLocalization("item_HammerOfCreation", "Hammer Of Creation");
             addWeaponsSprite(hammerOfCreation.id, hammerOfCreation.materials[0]);
 
+            ItemAsset lichGodsGreatSword = AssetManager.items.clone("LichGodsGreatSword", "_melee");
+            lichGodsGreatSword.id = "LichGodsGreatSword";
+            lichGodsGreatSword.name_templates = List.Of<string>(new string[] { "GreatSword Of The Lich" });
+            lichGodsGreatSword.materials = List.Of<string>(new string[] { "base" });
+            lichGodsGreatSword.base_stats[S.fertility] = 0.0f;
+            lichGodsGreatSword.base_stats[S.max_children] = 0f;
+            lichGodsGreatSword.base_stats[S.max_age] += 100f;
+            lichGodsGreatSword.base_stats[S.attack_speed] = 1f;
+            lichGodsGreatSword.base_stats[S.damage] += 10;
+            lichGodsGreatSword.base_stats[S.speed] += 1f;
+            lichGodsGreatSword.base_stats[S.health] = 1;
+            lichGodsGreatSword.base_stats[S.accuracy] = 1f;
+            lichGodsGreatSword.base_stats[S.range] = 2;
+            lichGodsGreatSword.base_stats[S.armor] = 3;
+            lichGodsGreatSword.base_stats[S.scale] = 0.0f;
+            lichGodsGreatSword.base_stats[S.dodge] += 1f;
+            lichGodsGreatSword.base_stats[S.targets] = 3f;
+            lichGodsGreatSword.base_stats[S.critical_chance] += 0.1f;
+            lichGodsGreatSword.base_stats[S.knockback] = 0.2f;
+            lichGodsGreatSword.base_stats[S.knockback_reduction] = 0.1f;
+            lichGodsGreatSword.base_stats[S.intelligence] += 0f;
+            lichGodsGreatSword.base_stats[S.warfare] = 0;
+            lichGodsGreatSword.base_stats[S.diplomacy] = 0;
+            lichGodsGreatSword.base_stats[S.stewardship] = 0;
+            lichGodsGreatSword.base_stats[S.opinion] = 0f;
+            lichGodsGreatSword.base_stats[S.loyalty_traits] = 0f;
+            lichGodsGreatSword.base_stats[S.cities] = 0;
+            lichGodsGreatSword.base_stats[S.zone_range] = 0.1f;
+            lichGodsGreatSword.equipment_value = 30;
+            lichGodsGreatSword.path_slash_animation = "effects/slashes/slash_sword";
+            lichGodsGreatSword.tech_needed = String.Empty;
+            lichGodsGreatSword.quality = ItemQuality.Legendary;
+            lichGodsGreatSword.equipmentType = EquipmentType.Weapon;
+            lichGodsGreatSword.name_class = "item_class_weapon";
+            lichGodsGreatSword.path_icon = "ui/weapon_icons/icon_LichGodsGreatSword_base";
+            
+            // For Ranged Weapons use "_range"
+            AssetManager.items.list.AddItem(lichGodsGreatSword);
+            Localization.addLocalization("item_LichGodsGreatSword", "GreatSword Of The Lich");
+            addWeaponsSprite(lichGodsGreatSword.id, lichGodsGreatSword.materials[0]);
+
         }
 
         static bool Flame(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile = null)
@@ -402,7 +443,7 @@ namespace GodsAndPantheons
             if (pTarget != null)
             {
                 
-                if (Toolbox.randomChance(0.7f))
+                if (Toolbox.randomChance(0.6f))
                 {
                     EffectsLibrary.spawnAt("fx_teleportStart_dej", pSelf.currentPosition, pSelf.a.stats[S.scale]);
                     BaseEffect baseEffect = EffectsLibrary.spawnAt("fx_teleportEnd_dej", pTarget.a.currentTile.posV3, pSelf.a.stats[S.scale]);
@@ -424,7 +465,7 @@ namespace GodsAndPantheons
             if (pSelf.a != null)
             {
                 
-                if (Toolbox.randomChance(1f))
+                if (Toolbox.randomChance(0.1f))
                 {
 
                     buildMountainPath(pTile, pSelf, pTarget);

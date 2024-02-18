@@ -180,6 +180,27 @@ namespace GodsAndPantheons
             warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
             addTraitToLocalizedLibrary(warGod.id, "God of Conflict, Bravery, Ambition, Many spheres of domain lie with him");
 
+
+            ActorTrait lichGod = new ActorTrait();
+            lichGod.id = "God Of The Lich";
+            lichGod.path_icon = "ui/icons/lichGod";
+            lichGod.base_stats[S.damage] += 100f;
+            lichGod.base_stats[S.health] += 700;
+            lichGod.base_stats[S.attack_speed] += 35f;
+            lichGod.base_stats[S.armor] += 20f;
+            lichGod.base_stats[S.knockback_reduction] += 0.5f;
+            lichGod.base_stats[S.scale] = 0.03f;
+            lichGod.base_stats[S.range] += 8f;
+            lichGod.base_stats[S.warfare] += 40f;
+            lichGod.action_death = (WorldAction)Delegate.Combine(lichGod.action_death, new WorldAction(genericGodsDeath));
+            lichGod.action_attack_target = new AttackAction(lichGodAttack);
+            lichGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
+            AssetManager.traits.add(lichGod);
+            PlayerConfig.unlockTrait(lichGod.id);
+            //lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(lichGodAutoTrait));
+            lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
+            addTraitToLocalizedLibrary(lichGod.id, "God of Dead Souls, Corruption, and Rot, Many spheres of domain lie with him");
+
             ActorTrait godKiller = new ActorTrait();
             godKiller.id = "God Killer";
             godKiller.path_icon = "ui/icons/godKiller";

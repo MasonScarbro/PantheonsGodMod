@@ -117,6 +117,17 @@ public static class GodWeaponManager
 
             }
 
+            if (pTarget.a.hasTrait("God Of The Lich"))
+            {
+                ItemData lichGodsGreatSwordD = new ItemData();
+                lichGodsGreatSwordD.id = "LichGodsGreatSword";
+                lichGodsGreatSwordD.material = "base";
+                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(lichGodsGreatSwordD);
+                pTarget.a.setStatsDirty();
+                return true;
+
+            }
+
 
             if (pTarget.a.hasTrait("God Of the Earth"))
             {
