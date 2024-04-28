@@ -5,5 +5,14 @@
     "RectX": 0,
     "RectY": 0,
     "PixelsPerUnit": 1
-  }
+  },
+  "Specific":[{
+      "Path": "w_GodHuntersScythe_base.png",
+      "PivotX": 0.6,
+      "PivotY": 0.2,
+      "RectX": 0,
+      "RectY": 0,
+      "PixelsPerUnit": 1
+  }]
+
 }

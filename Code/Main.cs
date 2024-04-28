@@ -28,6 +28,7 @@ namespace GodsAndPantheons
             Units.init();
             Tab.init();
             Buttons.init();
+            Invasions.init();
         }
         public static Dictionary<Actor, Actor> listOfTamedBeasts = new Dictionary<Actor, Actor>();
     }

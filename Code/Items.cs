@@ -303,7 +303,7 @@ namespace GodsAndPantheons
             hammerOfCreation.base_stats[S.max_children] = 0f;
             hammerOfCreation.base_stats[S.max_age] += 100f;
             hammerOfCreation.base_stats[S.attack_speed] = 1f;
-            hammerOfCreation.base_stats[S.damage] += 10;
+            hammerOfCreation.base_stats[S.damage] += 15;
             hammerOfCreation.base_stats[S.speed] += 1f;
             hammerOfCreation.base_stats[S.health] = 1;
             hammerOfCreation.base_stats[S.accuracy] = 1f;
@@ -376,6 +376,88 @@ namespace GodsAndPantheons
             AssetManager.items.list.AddItem(lichGodsGreatSword);
             Localization.addLocalization("item_LichGodsGreatSword", "GreatSword Of The Lich");
             addWeaponsSprite(lichGodsGreatSword.id, lichGodsGreatSword.materials[0]);
+
+
+            ItemAsset godHuntersScytheB = AssetManager.items.clone("GodHuntersScytheBlank", "_melee");
+            godHuntersScytheB.id = "GodHuntersScytheBlank";
+            godHuntersScytheB.name_templates = List.Of<string>(new string[] { "God Hunters Scythe" });
+            godHuntersScytheB.materials = List.Of<string>(new string[] { "base" });
+            godHuntersScytheB.base_stats[S.fertility] = 0.0f;
+            godHuntersScytheB.base_stats[S.max_children] = 0f;
+            godHuntersScytheB.base_stats[S.attack_speed] += 5f;
+            godHuntersScytheB.base_stats[S.damage] += 20;
+            godHuntersScytheB.base_stats[S.speed] += 1f;
+            godHuntersScytheB.base_stats[S.health] = 1;
+            godHuntersScytheB.base_stats[S.accuracy] = 1f;
+            godHuntersScytheB.base_stats[S.range] = 2;
+            godHuntersScytheB.base_stats[S.armor] = 3;
+            godHuntersScytheB.base_stats[S.scale] = 0.0f;
+            godHuntersScytheB.base_stats[S.dodge] += 4f;
+            godHuntersScytheB.base_stats[S.targets] = 3f;
+            godHuntersScytheB.base_stats[S.critical_chance] += 0.1f;
+            godHuntersScytheB.base_stats[S.knockback] = 0.2f;
+            godHuntersScytheB.base_stats[S.knockback_reduction] = 0.1f;
+            godHuntersScytheB.base_stats[S.intelligence] += 0f;
+            godHuntersScytheB.base_stats[S.warfare] = 0;
+            godHuntersScytheB.base_stats[S.diplomacy] = 0;
+            godHuntersScytheB.base_stats[S.stewardship] = 0;
+            godHuntersScytheB.base_stats[S.opinion] = 0f;
+            godHuntersScytheB.base_stats[S.loyalty_traits] = 0f;
+            godHuntersScytheB.base_stats[S.cities] = 0;
+            godHuntersScytheB.base_stats[S.zone_range] = 0.1f;
+            godHuntersScytheB.equipment_value = 30;
+            godHuntersScytheB.path_slash_animation = "effects/slashes/slash_sword";
+            godHuntersScytheB.tech_needed = String.Empty;
+            godHuntersScytheB.quality = ItemQuality.Legendary;
+            godHuntersScytheB.equipmentType = EquipmentType.Weapon;
+            godHuntersScytheB.name_class = "item_class_weapon";
+            godHuntersScytheB.path_icon = "ui/weapon_icons/icon_GodHuntersScythe_base";
+
+            // For Ranged Weapons use "_range"
+            AssetManager.items.list.AddItem(godHuntersScytheB);
+            Localization.addLocalization("item_GodHuntersScytheBlank", "The Weapon Chosen by the God Hunters");
+            addWeaponsSprite(godHuntersScytheB.id, godHuntersScytheB.materials[0]);
+
+
+            // for humans
+            ItemAsset godHuntersScythe = AssetManager.items.clone("GodHuntersScythe", "_melee");
+            godHuntersScythe.id = "GodHuntersScythe";
+            godHuntersScythe.name_templates = List.Of<string>(new string[] { "God Hunters Scythe" });
+            godHuntersScythe.materials = List.Of<string>(new string[] { "base" });
+            godHuntersScythe.base_stats[S.fertility] = 0.0f;
+            godHuntersScythe.base_stats[S.max_children] = 0f;
+            godHuntersScythe.base_stats[S.attack_speed] += 10f;
+            godHuntersScythe.base_stats[S.damage] += 25;
+            godHuntersScythe.base_stats[S.speed] += 3f;
+            godHuntersScythe.base_stats[S.health] = 1;
+            godHuntersScythe.base_stats[S.accuracy] = 1f;
+            godHuntersScythe.base_stats[S.range] = 2;
+            godHuntersScythe.base_stats[S.armor] = 3;
+            godHuntersScythe.base_stats[S.scale] = 0.0f;
+            godHuntersScythe.base_stats[S.dodge] += 4f;
+            godHuntersScythe.base_stats[S.targets] = 3f;
+            godHuntersScythe.base_stats[S.critical_chance] += 0.1f;
+            godHuntersScythe.base_stats[S.knockback] = 0.2f;
+            godHuntersScythe.base_stats[S.knockback_reduction] = 0.1f;
+            godHuntersScythe.base_stats[S.intelligence] += 4f;
+            godHuntersScythe.base_stats[S.warfare] = 0;
+            godHuntersScythe.base_stats[S.diplomacy] = 0;
+            godHuntersScythe.base_stats[S.stewardship] = 0;
+            godHuntersScythe.base_stats[S.opinion] = 20f;
+            godHuntersScythe.base_stats[S.loyalty_traits] = 0f;
+            godHuntersScythe.base_stats[S.cities] = 0;
+            godHuntersScythe.base_stats[S.zone_range] = 0.1f;
+            godHuntersScythe.equipment_value = 30;
+            godHuntersScythe.path_slash_animation = "effects/slashes/slash_sword";
+            godHuntersScythe.tech_needed = String.Empty;
+            godHuntersScythe.quality = ItemQuality.Legendary;
+            godHuntersScythe.equipmentType = EquipmentType.Weapon;
+            godHuntersScythe.name_class = "item_class_weapon";
+            godHuntersScythe.path_icon = "ui/weapon_icons/icon_GodHuntersScythe_base";
+
+            AssetManager.items.list.AddItem(godHuntersScythe);
+            Localization.addLocalization("item_GodHuntersScythe", "The Weapon Chosen by the God Hunters");
+            addWeaponsSprite(godHuntersScythe.id, godHuntersScythe.materials[0]);
 
         }
 

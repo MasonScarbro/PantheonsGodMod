@@ -52,7 +52,7 @@ namespace GodsAndPantheons
               Resources.Load<Sprite>("ui/Icons/godKiller"),
               "Godhunter Spawn",
               "Spawn a GodHunter",
-              new Vector2(254, 18),
+              new Vector2(100, 18),
               ButtonType.GodPower,
               tab.transform,
               null

@@ -129,7 +129,7 @@ namespace GodsAndPantheons
                     removeTreesFully = true,
                     explode_strength = 100,
                     explosion_pixel_effect = true,
-                    damage = 500,
+                    damage = 50,
                 });
 
                 AssetManager.terraform.add(new TerraformOptions
@@ -142,6 +142,22 @@ namespace GodsAndPantheons
                     explode_strength = 10,
                     explosion_pixel_effect = true,
                     damage = 500,
+                });
+
+                AssetManager.terraform.add(new TerraformOptions
+                {
+                    id = "waveTerra",
+                    flash = false,
+                    explode_tile = false,
+                    transformToWasteland = true,
+                    destroyBuildings = true,
+                    removeTreesFully = true,
+                    explode_strength = 5,
+                    explosion_pixel_effect = true,
+                    applyForce = true,
+                    force_power = .0001f,
+                    attackType = AttackType.Poison,
+                    damage = 50,
                 });
         }
 

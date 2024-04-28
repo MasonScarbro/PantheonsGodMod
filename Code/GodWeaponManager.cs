@@ -140,6 +140,19 @@ public static class GodWeaponManager
                 return true;
 
             }
+
+
+            if (pTarget.a.hasTrait("God Hunter"))
+            {
+                //Debug.Log("Why No Activate!?!?!?");
+                ItemData godHuntersScythe = new ItemData();
+                godHuntersScythe.id = "GodHuntersScytheBlank";
+                godHuntersScythe.material = "base";
+                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(godHuntersScythe);
+                pTarget.a.setStatsDirty();
+                return true;
+
+            }
             pTarget.a.updateStats();
             count++;
             return true;

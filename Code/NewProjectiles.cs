@@ -316,6 +316,34 @@ namespace GodsAndPantheons
                 })*/
             });
 
+            AssetManager.projectiles.add(new ProjectileAsset
+            {
+                id = "waveOfMutilationProjectile",
+                animation_speed = 0.3f,
+                speed = 5f,
+                texture = "waveOfMutilationProjectile",
+                trailEffect_enabled = true,
+                texture_shadow = "shadow_ball",
+                endEffect = string.Empty,
+                terraformOption = "waveTerra",
+                terraformRange = 2,
+                draw_light_area = true,
+                draw_light_size = 0.1f,
+                looped = true,
+                parabolic = false,
+                sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
+                // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
+                startScale = 0.08f,
+                targetScale = 0.08f,
+                look_at_target = true,
+
+                /*
+                impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+                {
+                    return Impact(pSelf, pTarget, pTile);
+                })*/
+            });
+
             /*private static bool Impact(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
 
