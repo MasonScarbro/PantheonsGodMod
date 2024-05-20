@@ -58,6 +58,16 @@ namespace GodsAndPantheons
               null
               
           );
+            PowerButtons.CreateButton(
+                    "KnowledgeGodWindow",
+                    Resources.Load<Sprite>("ui/Icons/knowledgeGod"),
+                    "Chance Modfier",
+                    "Manage The Gods Powers",
+                    new Vector2(204, 18),
+                    ButtonType.Click,
+                    tab.transform,
+                    KnowledgeGodWindow.openWindow
+              );
 
         }
 
