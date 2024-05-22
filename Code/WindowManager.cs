@@ -18,7 +18,17 @@ namespace GodsAndPantheons
             
             
             newWindow("KnowledgeGodWindow", "Knowledge Chance Modfier");
+            newWindow("MoonGodWindow", "Ranni Chance Modifier");
+            newWindow("DarkGodWindow", "Dark Chance Modifier");
+            newWindow("SunGodWindow", "Sun Chance Modifier");
+            newWindow("WarGodWindow", "Sun Chance Modifier");
+            newWindow("EarthGodWindow", "Earth Chance Modifier");
             KnowledgeGodWindow.init();
+            MoonGodWindow.init();
+            DarkGodWindow.init();
+            SunGodWindow.init();
+            WarGodWindow.init();
+            EarthGodWindow.init();
             //GodChancesWindow.init();
         }
 

@@ -16,10 +16,49 @@ namespace GodsAndPantheons
         
         public Dictionary<string, InputOption> knowledgeGodChances = new Dictionary<string, InputOption>
         {
-            {"KnowledgeGodPwr1%", new InputOption{active = true, value = "3" }},
-            {"KnowledgeGodPwr2%", new InputOption{active = true, value = "35" }},
-            {"KnowledgeGodPwr3%", new InputOption{active = true, value = "300" }},
+            {"KnowledgeGodPwr1%", new InputOption{active = true, value = "20" }},
+            {"KnowledgeGodPwr2%", new InputOption{active = true, value = "1" }},
+            {"KnowledgeGodPwr3%", new InputOption{active = true, value = "1" }},
             {"KnowledgeGodPwr4%", new InputOption{active = true, value = "5" }},
+            {"KnowledgeGodPwr5%", new InputOption{active = true, value = "4" }},
+            {"SummonLightning%", new InputOption{active = true, value = "2" }},
+            {"SummonMeteor%", new InputOption{active = true, value = "1" }},
+            {"PagesOfKnowledge%", new InputOption{active = true, value = "1" }},
+        };
+        public Dictionary<string, InputOption> moonGodChances = new Dictionary<string, InputOption>
+        {
+            {"summonMoonChunk%", new InputOption{active = true, value = "0.05" }},
+            {"cometAzure%", new InputOption{active = true, value = "1" }},
+            {"cometShower%", new InputOption{active = true, value = "1" }}
+            
+        };
+        public Dictionary<string, InputOption> darkGodChances = new Dictionary<string, InputOption>
+        {
+            {"cloudOfDarkness%", new InputOption{active = true, value = "0.01" }},
+            {"blackHole%", new InputOption{active = true, value = "0.1" }},
+            {"darkDaggers%", new InputOption{active = true, value = "4" }},
+            {"smokeFlash%", new InputOption{active = true, value = "1" }}
+        };
+        public Dictionary<string, InputOption> sunGodChances = new Dictionary<string, InputOption>
+        {
+            {"flashOfLight%", new InputOption{active = true, value = "1" }},
+            {"beamOfLight%", new InputOption{active = true, value = "8" }},
+            {"speedOfLight%", new InputOption{active = true, value = "2" }},
+            {"lightBallz%", new InputOption{active = true, value = "0.5" }}
+        };
+        public Dictionary<string, InputOption> warGodChances = new Dictionary<string, InputOption>
+        {
+            {"warGodsCry%", new InputOption{active = true, value = "1" }},
+            {"axeThrow%", new InputOption{active = true, value = "3" }},
+            {"seedsOfWar%", new InputOption{active = true, value = "2" }},
+            
+        };
+        public Dictionary<string, InputOption> earthGodChances = new Dictionary<string, InputOption>
+        {
+            {"earthquake%", new InputOption{active = true, value = "5" }},
+            {"makeItRain%", new InputOption{active = true, value = "10" }},
+            {"buildWorld%", new InputOption{active = true, value = "1" }},
+
         };
 
 

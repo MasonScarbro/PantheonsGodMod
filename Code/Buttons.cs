@@ -63,10 +63,60 @@ namespace GodsAndPantheons
                     Resources.Load<Sprite>("ui/Icons/knowledgeGod"),
                     "Chance Modfier",
                     "Manage The Gods Powers",
-                    new Vector2(204, 18),
+                    new Vector2(136, 18),
                     ButtonType.Click,
                     tab.transform,
                     KnowledgeGodWindow.openWindow
+              );
+            PowerButtons.CreateButton(
+                    "MoonGodWindow",
+                    Resources.Load<Sprite>("ui/Icons/starsGod"),
+                    "Chance Modfier",
+                    "Manage The Gods Powers",
+                    new Vector2(172, 18),
+                    ButtonType.Click,
+                    tab.transform,
+                    MoonGodWindow.openWindow
+              );
+            PowerButtons.CreateButton(
+                    "DarkGodWindow",
+                    Resources.Load<Sprite>("ui/Icons/godDark"),
+                    "Chance Modfier",
+                    "Manage The Gods Powers",
+                    new Vector2(208, 18),
+                    ButtonType.Click,
+                    tab.transform,
+                    DarkGodWindow.openWindow
+              );
+            PowerButtons.CreateButton(
+                    "SunGodWindow",
+                    Resources.Load<Sprite>("ui/Icons/lightGod"),
+                    "Chance Modfier",
+                    "Manage The Gods Powers",
+                    new Vector2(244, 18),
+                    ButtonType.Click,
+                    tab.transform,
+                    SunGodWindow.openWindow
+              );
+            PowerButtons.CreateButton(
+                    "WarGodWindow",
+                    Resources.Load<Sprite>("ui/Icons/warGod"),
+                    "Chance Modfier",
+                    "Manage The Gods Powers",
+                    new Vector2(280, 18),
+                    ButtonType.Click,
+                    tab.transform,
+                    WarGodWindow.openWindow
+              );
+            PowerButtons.CreateButton(
+                    "EarthGodWindow",
+                    Resources.Load<Sprite>("ui/Icons/earthGod"),
+                    "Chance Modfier",
+                    "Manage The Gods Powers",
+                    new Vector2(316, 18),
+                    ButtonType.Click,
+                    tab.transform,
+                    EarthGodWindow.openWindow
               );
 
         }

@@ -49,9 +49,11 @@ namespace GodsAndPantheons
         // War God Chances
         public static float warGodPwrChance1 = 0.01f;
         public static float warGodPwrChance2 = 0.03f;
+        public static float warGodPwrChance3 = 0.02f;
         // Earth God Chances
         public static float earthGodPwrChance1 = 0.05f;
         public static float earthGodPwrChance2 = 0.1f;
+        public static float earthGodPwrChance3 = 0.01f;
         // Lich God Chances
         public static float lichGodPwrChance1 = 1f;
 
@@ -1071,15 +1073,15 @@ namespace GodsAndPantheons
                 WorldTile tile2 = Toolbox.getRandomTileWithinDistance(pTile, 40);
                 List<WorldTile> randTile = List.Of<WorldTile>(new WorldTile[] { tile1, tile2 });
                 WorldTile _tile = Toolbox.getRandomTileWithinDistance(randTile, pTile, 45, 120);
-                if (Toolbox.randomChance(0.02f))
+                if (Toolbox.randomChance(warGodPwrChance3))
                 {
                     MapBox.instance.dropManager.spawn(_tile, SD.spite, 5f, -1f);
                 }
-                if (Toolbox.randomChance(0.021f))
+                if (Toolbox.randomChance(warGodPwrChance3))
                 {
                     MapBox.instance.dropManager.spawn(_tile, SD.discord, 5f, -1f);
                 }
-                if (Toolbox.randomChance(0.022f))
+                if (Toolbox.randomChance(warGodPwrChance3))
                 {
                     MapBox.instance.dropManager.spawn(_tile, SD.inspiration, 5f, -1f);
                 }
@@ -1092,19 +1094,19 @@ namespace GodsAndPantheons
         {
             if (pSelf.a != null)
             {
-                if (Toolbox.randomChance(0.01f))
+                if (Toolbox.randomChance(earthGodPwrChance3))
                 {
                     ActionLibrary.tryToGrowTree(pSelf);
                 }
-                if (Toolbox.randomChance(0.01f))
+                if (Toolbox.randomChance(earthGodPwrChance3))
                 {
                     ActionLibrary.tryToCreatePlants(pSelf);
                 }
-                if (Toolbox.randomChance(0.01f))
+                if (Toolbox.randomChance(earthGodPwrChance3))
                 {
                     BuildingActions.tryGrowMineralRandom(pSelf.a.currentTile);
                 }
-                if (Toolbox.randomChance(0.01f))
+                if (Toolbox.randomChance(earthGodPwrChance3))
                 {
 
                     buildMountain(pTile);
