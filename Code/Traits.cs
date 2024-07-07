@@ -1345,6 +1345,11 @@ namespace GodsAndPantheons
                 __result = false;
                 return false;
             }
+            if (pTarget.isBuilding() && __instance.kingdom == pTarget.kingdom)
+            {
+                __result = false;
+                return false;
+            }
             if (__instance.isActor() && pTarget.isActor())
             {
                 Actor a = (Actor)__instance;
