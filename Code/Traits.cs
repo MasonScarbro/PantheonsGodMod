@@ -70,92 +70,93 @@ namespace GodsAndPantheons
             }
             return true;
         }
+	    
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+    {
+    PowerLibrary pb = new PowerLibrary();
+    Actor self = (Actor)pSelf;
+    if (pTarget != null)
+    {
+        Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
+        Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
+        float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
+        if (Toolbox.randomChance(0.06f))
         {
-            PowerLibrary pb = new PowerLibrary();
-            Actor self = (Actor)pSelf;
-            if (pTarget != null)
-            {
-                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
-                Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
-                float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
-                if (Toolbox.randomChance(0.06f))
-                {
-                    ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null); // freezezz the target
-                }else
-                if (Toolbox.randomChance(0.04f))
-                {
-                    EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f);    //spawn 1 meteorite
-                    pSelf.a.addStatusEffect("invincible", 1f);
-                }
-                else if (Toolbox.randomChance(0.09f))
-                {
-                    ActionLibrary.castTornado(pSelf, pTarget, pTile);
-                }
-                if (Toolbox.randomChance(0.06f))
-                {
-                    Summon(SA.demon, 1);
-                }
-                else if (Toolbox.randomChance(0.07f))
-                {
-                    Summon(SA.evilMage, 1);
-                }
-                else if (Toolbox.randomChance(0.08f))
-                {
-                    Summon(SA.skeleton, 3);
-                }
-                if(Toolbox.randomChance(0.1f))
-                {
-                    ActionLibrary.castLightning(null, pTarget, null);
-                }
-                else
-                if (Toolbox.randomChance(0.08f))
-                {
-                    EffectsLibrary.spawn("fx_explosion_middle", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
-                    pSelf.a.addStatusEffect("invincible", 1f);
-                }else
-                if (Toolbox.randomChance(0.2f))
-                {
-                    // randomly spawns a flash of fire or acid on the tile 
-                    MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f);
-                    MapBox.instance.dropManager.spawn(pTile, "acid", 5f, -1f);
-                    MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f); // Drops fire from distance 5 with scale of one at current tile
-                }else if (Toolbox.randomChance(0.03f))
-                {
-                    Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                    Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
-                    EffectsLibrary.spawnProjectile("lightBallzProjectiles", newPoint, newPoint2, 0.0f);
-                }else if (Toolbox.randomChance(0.03f))
-                {
-                    Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x + 35f, pSelf.currentPosition.y + 95f, (float)pos.x + 1f, (float)pos.y + 1f, pDist, true); // the Point of the projectile launcher 
-                    Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
-                    EffectsLibrary.spawnProjectile("moonFall", newPoint, newPoint2, 0.0f);
-                    pSelf.a.addStatusEffect("invincible", 2f);
-                }
-                else if (Toolbox.randomChance(0.04f))
-                {
-                    pb.spawnEarthquake(pTarget.a.currentTile, null);
-                }
-
-
-                return true;
-            }
-            return false;
-         }
-        public void Summon(string creature, int times)
+            ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null); // freezezz the target
+        }else
+        if (Toolbox.randomChance(0.04f))
         {
-            for (int i = 0; i < times; i++)
-            {
-                Actor actor = World.world.units.spawnNewUnit(creature, pTile, true, 3f);
-                actor.data.name = $"Summoned by {self.getName()}";
-                actor.addTrait("Summoned One");
-                actor.addTrait("regeneration");
-                actor.removeTrait("immortal");
-                actor.data.set("lifespan", 0);
-
-            }
-
+            EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f);    //spawn 1 meteorite
+            pSelf.a.addStatusEffect("invincible", 1f);
         }
+        else if (Toolbox.randomChance(0.09f))
+        {
+            ActionLibrary.castTornado(pSelf, pTarget, pTile);
+        }
+        if (Toolbox.randomChance(0.06f))
+        {
+            Summon(SA.demon, 1, self, pTile);
+        }
+        else if (Toolbox.randomChance(0.07f))
+        {
+            Summon(SA.evilMage, 1, self, pTile);
+        }
+        else if (Toolbox.randomChance(0.08f))
+        {
+            Summon(SA.skeleton, 3, self, pTile);
+        }
+        if(Toolbox.randomChance(0.1f))
+        {
+            ActionLibrary.castLightning(null, pTarget, null);
+        }
+        else
+        if (Toolbox.randomChance(0.08f))
+        {
+            EffectsLibrary.spawn("fx_explosion_middle", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
+            pSelf.a.addStatusEffect("invincible", 1f);
+        }else
+        if (Toolbox.randomChance(0.2f))
+        {
+            // randomly spawns a flash of fire or acid on the tile 
+            MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f);
+            MapBox.instance.dropManager.spawn(pTile, "acid", 5f, -1f);
+            MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f); // Drops fire from distance 5 with scale of one at current tile
+        }else if (Toolbox.randomChance(0.03f))
+        {
+            Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
+            Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+            EffectsLibrary.spawnProjectile("lightBallzProjectiles", newPoint, newPoint2, 0.0f);
+        }else if (Toolbox.randomChance(0.03f))
+        {
+            Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x + 35f, pSelf.currentPosition.y + 95f, (float)pos.x + 1f, (float)pos.y + 1f, pDist, true); // the Point of the projectile launcher 
+            Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+            EffectsLibrary.spawnProjectile("moonFall", newPoint, newPoint2, 0.0f);
+            pSelf.a.addStatusEffect("invincible", 2f);
+        }
+        else if (Toolbox.randomChance(0.04f))
+        {
+            pb.spawnEarthquake(pTarget.a.currentTile, null);
+        }
+
+
+        return true;
+    }
+    return false;
+ }
+public static void Summon(string creature, int times, Actor self, WorldTile Ptile)
+{
+    for (int i = 0; i < times; i++)
+    {
+        Actor actor = World.world.units.spawnNewUnit(creature, Ptile, true, 3f);
+        actor.data.name = $"Summoned by {self.getName()}";
+        actor.addTrait("Summoned One");
+        actor.addTrait("regeneration");
+        actor.removeTrait("immortal");
+        actor.data.set("lifespan", 0);
+
+    }
+
+}
          public static void addTraitToLocalizedLibrary(string id, string description)        
          {
 
