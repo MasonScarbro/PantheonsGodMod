@@ -400,6 +400,7 @@ namespace GodsAndPantheons
                 actor.data.name = $"Summoned by {self.getName()}";
                 actor.addTrait("Summoned One");
                 actor.addTrait("regeneration");
+                actor.addTrait("madness");
                 actor.removeTrait("immortal");
                 actor.data.set("lifespan", 0);
 
