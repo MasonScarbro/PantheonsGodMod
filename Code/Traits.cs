@@ -1320,6 +1320,19 @@ namespace GodsAndPantheons
             localizedText.Add("trait_" + id + "_info", description);
 
         }
+
+        public static Actor FindMaster(Actor summoned)
+           {
+              List<Actor> simpleList = World.world.units.getSimpleList();
+                 foreach (Actor actor in simpleList)
+                  {
+                   if (summoned.getName().Equals($"Summoned by {actor.getName()}") && actor.hasTrait("God Of gods"))
+                  {
+                         return actor;
+                    }
+               }
+              return summoned;
+        }
     }
     [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
     public class UpdateAttacking
