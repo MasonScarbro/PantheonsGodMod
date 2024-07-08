@@ -287,6 +287,7 @@ namespace GodsAndPantheons
             godofgods.base_stats[S.armor] += 40f;
             godofgods.action_death = new WorldAction(ActionLibrary.deathNuke);
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsAutoTrait));
+            godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(BringMinions));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(GodOfGodsEraStatus));
             godofgods.base_stats[S.scale] = 0.5f;
             godofgods.action_attack_target += new AttackAction(GodOfGodsAttack);
@@ -312,18 +313,45 @@ namespace GodsAndPantheons
             var harmony = new Harmony("com.Gods.Pantheons");
             harmony.PatchAll();
         }
-        //to make summoned ones only live for like 20 secounds
+        //to make summoned ones only live for like 30 secounds
         public static bool SummonedBeing(BaseSimObject pTarget, WorldTile pTile)
         {
             Actor a = (Actor)pTarget;
             int life;
-            a.data.get("lifespan", out life);
-            a.data.set("lifespan", life + 1);
-            if (life + 1 > 21f)
+            int lifespan;
+            a.data.get("lifespan", out lifespan);
+            a.data.get("life", out life);
+            a.data.set("life", life + 1);
+            if (life + 1 > lifespan)
             {
                 a.killHimself(false, AttackType.Age, false, true, true);
             }
             return true;
+        }
+        public static bool BringMinions(BaseSimObject pTarget, WorldTile pTile)
+        {
+            Actor a = (Actor)pTarget;
+            List<Actor> Minions = GetMinions(a);
+            foreach(Actor a in Minions){
+                float pDist = Vector2.Distance(pTarget.currentPosition, a.currentPosition);
+                if(pDist > 15){
+                    EffectsLibrary.spawnAt(text, pTarget.currentPosition, a.stats[S.scale]);
+                    a.spawnOn(pTarget.currentPosition, 0f);
+                }
+            }
+            return true;
+        }
+        public static List<Actor> GetMinions(Actor a){
+            List<Actor> MyMinions = new List<Actor>();
+            List<Actor> simpleList = World.world.units.getSimpleList();
+                 foreach (Actor actor in simpleList)
+                  {
+                   if (actor.getName().Equals($"Summoned by {a.getName()}") && actor.hasTrait("Summoned One"))
+                  {
+                         MyMinions.Add(actor);
+                    }
+               }
+              return MyMinions;
         }
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -416,8 +444,8 @@ namespace GodsAndPantheons
                 actor.addTrait("fire_proof");
                 actor.addTrait("acid_proof");
                 actor.removeTrait("immortal");
-                actor.data.set("lifespan", 0);
-
+                actor.data.set("life", 0);
+                actor.data.set("lifespan", 31);
             }
 
         }
@@ -1159,6 +1187,7 @@ namespace GodsAndPantheons
                 {
                     pSelf.a.addStatusEffect("God_Of_All"); // add the status I created
                     pSelf.a.restoreHealth(pSelf.a.getMaxHealth());
+                    actor.data.set("lifespan", 61);
 
                 }
                 else
@@ -1166,6 +1195,7 @@ namespace GodsAndPantheons
                     if (pSelf.a.hasStatus("God_Of_All"))          //no other age can have this trait
                     {
                         pSelf.a.finishAllStatusEffects(); // remove the status
+                        actor.data.set("lifespan", 31);
                     }
                 }
 
