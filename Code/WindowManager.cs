@@ -30,6 +30,7 @@ namespace GodsAndPantheons
             SunGodWindow.init();
             WarGodWindow.init();
             EarthGodWindow.init();
+            GodOfGodsWindow.init();
             //GodChancesWindow.init();
         }
 
