@@ -280,14 +280,15 @@ namespace GodsAndPantheons
             godofgods.base_stats[S.attack_speed] += 60f;
             godofgods.base_stats[S.critical_chance] += 50f;
             godofgods.base_stats[S.intelligence] += 40f;
-            godofgods.base_stats[S.range] += 30f;
+            godofgods.base_stats[S.range] += 20f;
             godofgods.base_stats[S.dodge] += 35f;
             godofgods.base_stats[S.accuracy] += 15f;
             godofgods.base_stats[S.speed] += 30f;
             godofgods.base_stats[S.armor] += 40f;
             godofgods.action_death = new WorldAction(ActionLibrary.deathNuke);
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsAutoTrait));
-            godofgods.base_stats[S.scale] = 1f;
+            godofgods.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(GodOfGodsEraStatus));
+            godofgods.base_stats[S.scale] = 0.5f;
             godofgods.action_attack_target += new AttackAction(GodOfGodsAttack);
             AssetManager.traits.add(godofgods);
             PlayerConfig.unlockTrait(godofgods.id);
@@ -303,8 +304,10 @@ namespace GodsAndPantheons
             SummonedOne.action_special_effect += new WorldAction(SummonedBeing);
             SummonedOne.group_id = TraitGroup.special;
             SummonedOne.can_be_given = false;
+            SummonedOne.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(GodOfGodsEraStatus));
             AssetManager.traits.add(SummonedOne);
             addTraitToLocalizedLibrary(SummonedOne.id, "A creature summoned by God himself in order to aid them in battle, DO NOT MODIFY THE NAME OF THIS CREATURE!");
+            
             //this to make it so summoned ones dont fight their Master and his allies
             var harmony = new Harmony("com.Gods.Pantheons");
             harmony.PatchAll();
@@ -852,7 +855,7 @@ namespace GodsAndPantheons
                 if (Toolbox.randomChance(warGodPwrChance1))
                 {
                     EffectsLibrary.spawnExplosionWave(pSelf.currentTile.posV3, 1f, 1f);
-                    pSelf.a.addStatusEffect("WarGodsCry");
+                    pSelf.a.addStatusEffect("WarGodsCry", 30f);
                     World.world.startShake(0.3f, 0.01f, 2f, true, true);
                     pSelf.a.addStatusEffect("invincible", 1f);
                     MapAction.damageWorld(pSelf.currentTile, 2, AssetManager.terraform.get("crab_step"), null);
@@ -1132,6 +1135,27 @@ namespace GodsAndPantheons
             if (pSelf.a != null)
             {
                 if (World.world_era.id == "age_sun")       //only in age of sun
+                {
+                    pSelf.a.addStatusEffect("Lights_Prevail"); // add the status I created
+
+                }
+                else
+                {
+                    if (pSelf.a.hasStatus("Lights_Prevail"))          //no other age can have this trait
+                    {
+                        pSelf.a.finishAllStatusEffects(); // remove the status
+                    }
+                }
+
+
+            }
+            return true;
+        }
+        private static bool GodOfGodsEraStatus(BaseSimObject pSelf, WorldTile pTile)
+        {
+            if (pSelf.a != null)
+            {
+                if (World.world_era.id == "age_hope")       //only in age of sun
                 {
                     pSelf.a.addStatusEffect("Lights_Prevail"); // add the status I created
 
