@@ -1157,12 +1157,12 @@ namespace GodsAndPantheons
             {
                 if (World.world_era.id == "age_hope")       //only in age of sun
                 {
-                    pSelf.a.addStatusEffect("Lights_Prevail"); // add the status I created
+                    pSelf.a.addStatusEffect("God_Of_All"); // add the status I created
 
                 }
                 else
                 {
-                    if (pSelf.a.hasStatus("Lights_Prevail"))          //no other age can have this trait
+                    if (pSelf.a.hasStatus("God_Of_All"))          //no other age can have this trait
                     {
                         pSelf.a.finishAllStatusEffects(); // remove the status
                     }
