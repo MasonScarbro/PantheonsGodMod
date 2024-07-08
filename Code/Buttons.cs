@@ -76,7 +76,7 @@ namespace GodsAndPantheons
                     new Vector2(352, 18),
                     ButtonType.Click,
                     tab.transform,
-                    MoonGodWindow.openWindow
+                    GodOfGodsWindow.openWindow
               );
             PowerButtons.CreateButton(
                     "MoonGodWindow",
