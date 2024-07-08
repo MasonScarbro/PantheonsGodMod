@@ -330,13 +330,13 @@ namespace GodsAndPantheons
         }
         public static bool BringMinions(BaseSimObject pTarget, WorldTile pTile)
         {
-            Actor a = (Actor)pTarget;
-            List<Actor> Minions = GetMinions(a);
+            Actor b = (Actor)pTarget;
+            List<Actor> Minions = GetMinions(b);
             foreach(Actor a in Minions){
                 float pDist = Vector2.Distance(pTarget.currentPosition, a.currentPosition);
                 if(pDist > 15){
-                    EffectsLibrary.spawnAt(text, pTarget.currentPosition, a.stats[S.scale]);
-                    a.spawnOn(pTarget.currentPosition, 0f);
+                    EffectsLibrary.spawnAt("fx_teleport_blue", pTarget.currentPosition, a.stats[S.scale]);
+                    a.spawnOn(pTarget.currentTile, 0f);
                 }
             }
             return true;
@@ -1187,7 +1187,7 @@ namespace GodsAndPantheons
                 {
                     pSelf.a.addStatusEffect("God_Of_All"); // add the status I created
                     pSelf.a.restoreHealth(pSelf.a.getMaxHealth());
-                    actor.data.set("lifespan", 61);
+                    a.data.set("lifespan", 61);
 
                 }
                 else
@@ -1195,7 +1195,7 @@ namespace GodsAndPantheons
                     if (pSelf.a.hasStatus("God_Of_All"))          //no other age can have this trait
                     {
                         pSelf.a.finishAllStatusEffects(); // remove the status
-                        actor.data.set("lifespan", 31);
+                        a.data.set("lifespan", 31);
                     }
                 }
 
