@@ -1204,7 +1204,7 @@ namespace GodsAndPantheons
                     pSelf.a.addStatusEffect("God_Of_All"); // add the status I created
                     pSelf.a.restoreHealth(pSelf.a.getMaxHealth());
                     pSelf.a.data.set("lifespan", 61);
-                    pSelf.data.set("healing", true);
+                    pSelf.a.data.set("healing", true);
                 }
                 }
                 else
@@ -1213,7 +1213,7 @@ namespace GodsAndPantheons
                     {
                         pSelf.a.finishAllStatusEffects(); // remove the status
                         pSelf.a.data.set("lifespan", 31);
-                        pSelf.data.set("healing", true);
+                        pSelf.a.data.set("healing", true);
                     }
                 }
 
