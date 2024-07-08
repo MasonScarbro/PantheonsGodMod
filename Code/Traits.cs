@@ -1183,8 +1183,9 @@ namespace GodsAndPantheons
         {
             if (pSelf.a != null)
             {
-                if(!pSelf.a.hasStatus("God_Of_All")){
+                
                 if (World.world_era.id == "age_hope")       //only in age of hope
+                    if(!pSelf.a.hasStatus("God_Of_All")){
                 {
                     pSelf.a.addStatusEffect("God_Of_All"); // add the status I created
                     pSelf.a.restoreHealth(pSelf.a.getMaxHealth());
