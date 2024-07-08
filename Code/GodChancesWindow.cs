@@ -330,6 +330,154 @@ namespace GodsAndPantheons
         }
 
     }
+    class GodOfGodsWindow : MonoBehaviour
+    {
+        private static GameObject contents;
+        private static GameObject scrollView;
+        private static Vector2 originalSize;
+        public static DarkGodWindow instance;
+
+
+        public static void init()
+        {
+
+            contents = WindowManager.windowContents["GodOfGodsWindow"];
+            instance = new GameObject("GodOfGodsWindowInstance").AddComponent<GodOfGodsWindow>();
+            scrollView = GameObject.Find($"/Canvas Container Main/Canvas - Windows/windows/GodOfGodsWindow/Background/Scroll View");
+            originalSize = contents.GetComponent<RectTransform>().sizeDelta;
+            VerticalLayoutGroup layoutGroup = contents.AddComponent<VerticalLayoutGroup>();
+            layoutGroup.childControlHeight = false;
+            layoutGroup.childControlWidth = false;
+            layoutGroup.childForceExpandHeight = false;
+            layoutGroup.childForceExpandWidth = false;
+            layoutGroup.childScaleHeight = true;
+            layoutGroup.childScaleWidth = true;
+            layoutGroup.childAlignment = TextAnchor.UpperCenter;
+            layoutGroup.spacing = 50;
+            loadSettingOptions();
+        }
+
+        private static void loadSettingOptions()
+        {
+            loadInputOptions();
+
+
+        }
+
+        public static void openWindow()
+        {
+            Windows.ShowWindow("GodOfGodsWindow");
+        }
+
+        private static void loadInputOptions()
+        {
+            contents.GetComponent<RectTransform>().sizeDelta += new Vector2(0, ((Main.savedSettings.GodOfGodsWindow.Count)) * 250);
+            foreach (KeyValuePair<string, InputOption> kv in Main.savedSettings.GodOfGodsWindow)
+            {
+
+                UnityAction call = null;
+                switch (kv.Key)
+                {
+                    case "cloudOfDarkness%":
+                        call = delegate {
+                            if (Main.savedSettings.darkGodChances["cloudOfDarkness%"].active)
+                            {
+                                Traits.darkGodPwrChance1 = float.Parse(Main.savedSettings.darkGodChances["cloudOfDarkness%"].value) / 100;
+
+                            }
+                            else
+                            {
+                                Traits.darkGodPwrChance1 = 0;
+                            }
+
+                        };
+                        break;
+                    case "blackHole%":
+                        call = delegate {
+                            if (Main.savedSettings.darkGodChances["blackHole%"].active)
+                            {
+                                Traits.darkGodPwrChance2 = float.Parse(Main.savedSettings.darkGodChances["blackHole%"].value) / 100;
+                            }
+                            else
+                            {
+                                Traits.darkGodPwrChance2 = 0;
+                            }
+
+                        };
+                        break;
+                    case "darkDaggers%":
+                        call = delegate {
+                            if (Main.savedSettings.darkGodChances["darkDaggers%"].active)
+                            {
+                                Traits.darkGodPwrChance3 = int.Parse(Main.savedSettings.darkGodChances["darkDaggers%"].value) / 100;
+                            }
+                            else
+                            {
+                                Traits.darkGodPwrChance3 = 0;
+                            }
+
+                        };
+                        break;
+                    case "smokeFlash%":
+                        call = delegate {
+                            if (Main.savedSettings.darkGodChances["smokeFlash%"].active)
+                            {
+                                Traits.darkGodPwrChance4 = int.Parse(Main.savedSettings.darkGodChances["smokeFlash%"].value) / 100;
+                            }
+                            else
+                            {
+                                Traits.darkGodPwrChance4 = 0;
+                            }
+                            
+
+                        };
+                        break;
+
+                }
+                if (call != null)
+                {
+                    call.Invoke();
+                }
+
+                NameInput input = NewUI.createInputOption(
+                    "DarkGodWindow",
+                    $"{kv.Key}_setting",
+                    kv.Key,
+                    "Modify The Value Of This Setting",
+                    0,
+                    contents,
+                    kv.Value.value
+                );
+                input.inputField.characterValidation = InputField.CharacterValidation.Integer;
+                input.inputField.onValueChanged.AddListener(delegate {
+                    string pValue = NewUI.checkStatInput(input);
+                    Main.modifyGodOption(kv.Key, pValue, PowerButtons.GetToggleValue($"{kv.Key}Button"), call);
+                    input.setText(pValue);
+                });
+
+                PowerButton activeButton = PowerButtons.CreateButton(
+                    $"{kv.Key}Button",
+                    Mod.EmbededResources.LoadSprite($"{Mod.Info.Name}.Resources.units.icon.png"),
+                    "Activate Setting",
+                    "",
+                    new Vector2(200, 0),
+                    ButtonType.Toggle,
+                    input.transform.parent.transform,
+                    delegate {
+                        string pValue = NewUI.checkStatInput(input);
+                        Main.modifyGodOption(kv.Key, pValue, PowerButtons.GetToggleValue($"{kv.Key}Button"), call);
+                        input.setText(pValue);
+                    }
+                );
+                if (kv.Value.active)
+                {
+                    PowerButtons.ToggleButton($"{kv.Key}Button");
+                }
+                activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+            }
+        }
+
+    }
 
     class DarkGodWindow : MonoBehaviour
     {
