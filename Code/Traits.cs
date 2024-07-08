@@ -1187,7 +1187,7 @@ namespace GodsAndPantheons
                 {
                     pSelf.a.addStatusEffect("God_Of_All"); // add the status I created
                     pSelf.a.restoreHealth(pSelf.a.getMaxHealth());
-                    a.data.set("lifespan", 61);
+                    pSelf.a.data.set("lifespan", 61);
 
                 }
                 else
@@ -1195,7 +1195,7 @@ namespace GodsAndPantheons
                     if (pSelf.a.hasStatus("God_Of_All"))          //no other age can have this trait
                     {
                         pSelf.a.finishAllStatusEffects(); // remove the status
-                        a.data.set("lifespan", 31);
+                        pSelf.a.data.set("lifespan", 31);
                     }
                 }
 
