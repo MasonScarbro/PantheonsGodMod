@@ -332,7 +332,7 @@ namespace GodsAndPantheons
                 Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
-                if(Toolbox.randomChance(GodOfGodsPwrChance1){
+                if(Toolbox.randomChance(GodOfGodsPwrChance1)){
                 if (Toolbox.randomChance(0.06f))
                 {
                     ActionLibrary.castLightning(null, pTarget, null);
