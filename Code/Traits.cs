@@ -1198,7 +1198,7 @@ namespace GodsAndPantheons
             if (pSelf.a != null)
             {
                 
-                if (World.world_era.id == "age_hope")       //only in age of hope
+                if (World.world_era.id == "age_hope")   {    //only in age of hope
                     if(!pSelf.a.hasStatus("God_Of_All")){
                 {
                     pSelf.a.addStatusEffect("God_Of_All"); // add the status I created
@@ -1206,6 +1206,7 @@ namespace GodsAndPantheons
                     pSelf.a.data.set("lifespan", 61);
                     pSelf.a.data.set("healing", true);
                 }
+                    }
                 }
                 else
                 {
