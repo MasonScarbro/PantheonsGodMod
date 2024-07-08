@@ -347,7 +347,7 @@ namespace GodsAndPantheons
                     ActionLibrary.castTornado(pSelf, pTarget, pTile);
                 }
                 }
-                if(Toolbox.randomChance(GodOfGodsPwrChance2){
+                if(Toolbox.randomChance(GodOfGodsPwrChance2)){
                 if (Toolbox.randomChance(0.06f))
                 {
                     Summon(SA.demon, 1, self, pTile);
@@ -361,7 +361,7 @@ namespace GodsAndPantheons
                     Summon(SA.skeleton, 3, self, pTile);
                 }
                 }
-                if(Toolbox.randomChance(GodOfGodsPwrChance3){
+                if(Toolbox.randomChance(GodOfGodsPwrChance3)){
                 if(Toolbox.randomChance(0.1f))
                 {
                     ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null);
