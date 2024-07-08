@@ -348,7 +348,7 @@ namespace GodsAndPantheons
             List<Actor> Minions = GetMinions(b);
             foreach(Actor a in Minions){
                 float pDist = Vector2.Distance(pTarget.currentPosition, a.currentPosition);
-                if(pDist > 15){
+                if(pDist > 30){
                     EffectsLibrary.spawnAt("fx_teleport_blue", pTarget.currentPosition, a.stats[S.scale]);
                     a.spawnOn(pTarget.currentTile, 0f);
                 }
