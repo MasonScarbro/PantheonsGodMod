@@ -53,6 +53,25 @@ namespace GodsAndPantheons
             localizeStatus(darkGodEra.id, "Nights_Prevail", darkGodEra.description); // Localizes the status effect
             AssetManager.status.add(darkGodEra);
 
+	    StatusEffect GodOfGodsEra = new StatusEffect();
+            GodOfGodsEra.id = "God_Of_All";
+            GodOfGodsEra.duration = 7000f;
+            GodOfGodsEra.base_stats[S.armor] += 30;
+	    GodOfGodsEra.base_stats[S.damage] += 50;
+	    GodOfGodsEra.base_stats[S.range] += 10;
+            GodOfGodsEra.base_stats[S.health] += 900;
+            GodOfGodsEra.base_stats[S.speed] += 70;
+            GodOfGodsEra.base_stats[S.knockback_reduction] += 0.5f;
+            GodOfGodsEra.base_stats[S.knockback] += 1f;
+            GodOfGodsEra.base_stats[S.attack_speed] += 80f;
+	    GodOfGodsEra.base_stats[S.scale] += 0.5f;
+            GodOfGodsEra.base_stats[S.dodge] += 80f;
+            GodOfGodsEra.path_icon = "ui/icons/IconDemi";
+            GodOfGodsEra.description = "Now i have become God, destroyed of worlds";
+            GodOfGodsEra.name = "God Of All";
+            localizeStatus(GodOfGodsEra.id, "God_Of_All", GodOfGodsEra.description); // Localizes the status effect
+            AssetManager.status.add(GodOfGodsEra);
+
             StatusEffect knowledgeGodEra = new StatusEffect();
             knowledgeGodEra.id = "Knowledge_Prevail";
             knowledgeGodEra.duration = 7000f;
