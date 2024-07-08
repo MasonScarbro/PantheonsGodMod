@@ -335,7 +335,7 @@ namespace GodsAndPantheons
         private static GameObject contents;
         private static GameObject scrollView;
         private static Vector2 originalSize;
-        public static DarkGodWindow instance;
+        public static GodOfGodsWindow instance;
 
 
         public static void init()
@@ -371,8 +371,8 @@ namespace GodsAndPantheons
 
         private static void loadInputOptions()
         {
-            contents.GetComponent<RectTransform>().sizeDelta += new Vector2(0, ((Main.savedSettings.GodOfGodsWindow.Count)) * 250);
-            foreach (KeyValuePair<string, InputOption> kv in Main.savedSettings.GodOfGodsWindow)
+            contents.GetComponent<RectTransform>().sizeDelta += new Vector2(0, ((Main.savedSettings.GodOfGodsChances.Count)) * 250);
+            foreach (KeyValuePair<string, InputOption> kv in Main.savedSettings.GodOfGodsChances)
             {
 
                 UnityAction call = null;
@@ -396,11 +396,11 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.GodOfGodsChances["Summoning%"].active)
                             {
-                                Traits.GodOfGodsChance2 = float.Parse(Main.savedSettings.GodOfGodsChances["Summoning%"].value) / 100;
+                                Traits.GodOfGodsPwrChance2 = float.Parse(Main.savedSettings.GodOfGodsChances["Summoning%"].value) / 100;
                             }
                             else
                             {
-                                Traits.GodOfGodsChance2 = 0;
+                                Traits.GodOfGodsPwrChance2 = 0;
                             }
 
                         };
@@ -409,11 +409,11 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.GodOfGodsChances["Magic%"].active)
                             {
-                                Traits.GodOfGodsChance3 = int.Parse(Main.savedSettings.GodOfGodsChances["Magic%"].value) / 100;
+                                Traits.GodOfGodsPwrChance3 = int.Parse(Main.savedSettings.GodOfGodsChances["Magic%"].value) / 100;
                             }
                             else
                             {
-                                Traits.GodOfGodsChance3 = 0;
+                                Traits.GodOfGodsPwrChance3 = 0;
                             }
 
                         };
