@@ -73,7 +73,7 @@ namespace GodsAndPantheons
                     Resources.Load<Sprite>("ui/Icons/IconDemi"),
                     "Chance Modfier",
                     "Manage The Gods Powers",
-                    new Vector2(172, 18),
+                    new Vector2(352, 18),
                     ButtonType.Click,
                     tab.transform,
                     MoonGodWindow.openWindow
