@@ -378,61 +378,46 @@ namespace GodsAndPantheons
                 UnityAction call = null;
                 switch (kv.Key)
                 {
-                    case "cloudOfDarkness%":
+                    case "Terrain bending%":
                         call = delegate {
-                            if (Main.savedSettings.darkGodChances["cloudOfDarkness%"].active)
+                            if (Main.savedSettings.GodOfGodsChances["Terrain bending%"].active)
                             {
-                                Traits.darkGodPwrChance1 = float.Parse(Main.savedSettings.darkGodChances["cloudOfDarkness%"].value) / 100;
+                                Traits.GodOfGodsPwrChance1 = float.Parse(Main.savedSettings.GodOfGodsChances["Terrain bending%"].value) / 100;
 
                             }
                             else
                             {
-                                Traits.darkGodPwrChance1 = 0;
+                                Traits.GodOfGodsPwrChance1 = 0;
                             }
 
                         };
                         break;
-                    case "blackHole%":
+                    case "Summoning%":
                         call = delegate {
-                            if (Main.savedSettings.darkGodChances["blackHole%"].active)
+                            if (Main.savedSettings.GodOfGodsChances["Summoning%"].active)
                             {
-                                Traits.darkGodPwrChance2 = float.Parse(Main.savedSettings.darkGodChances["blackHole%"].value) / 100;
+                                Traits.GodOfGodsChance2 = float.Parse(Main.savedSettings.GodOfGodsChances["Summoning%"].value) / 100;
                             }
                             else
                             {
-                                Traits.darkGodPwrChance2 = 0;
+                                Traits.GodOfGodsChance2 = 0;
                             }
 
                         };
                         break;
-                    case "darkDaggers%":
+                    case "Magic%":
                         call = delegate {
-                            if (Main.savedSettings.darkGodChances["darkDaggers%"].active)
+                            if (Main.savedSettings.GodOfGodsChances["Magic%"].active)
                             {
-                                Traits.darkGodPwrChance3 = int.Parse(Main.savedSettings.darkGodChances["darkDaggers%"].value) / 100;
+                                Traits.GodOfGodsChance3 = int.Parse(Main.savedSettings.GodOfGodsChances["Magic%"].value) / 100;
                             }
                             else
                             {
-                                Traits.darkGodPwrChance3 = 0;
+                                Traits.GodOfGodsChance3 = 0;
                             }
 
                         };
                         break;
-                    case "smokeFlash%":
-                        call = delegate {
-                            if (Main.savedSettings.darkGodChances["smokeFlash%"].active)
-                            {
-                                Traits.darkGodPwrChance4 = int.Parse(Main.savedSettings.darkGodChances["smokeFlash%"].value) / 100;
-                            }
-                            else
-                            {
-                                Traits.darkGodPwrChance4 = 0;
-                            }
-                            
-
-                        };
-                        break;
-
                 }
                 if (call != null)
                 {
@@ -440,7 +425,7 @@ namespace GodsAndPantheons
                 }
 
                 NameInput input = NewUI.createInputOption(
-                    "DarkGodWindow",
+                    "GodOfGodsWindow",
                     $"{kv.Key}_setting",
                     kv.Key,
                     "Modify The Value Of This Setting",
