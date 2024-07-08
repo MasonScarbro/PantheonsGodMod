@@ -319,8 +319,15 @@ namespace GodsAndPantheons
             Actor a = (Actor)pTarget;
             int life;
             int lifespan;
+            bool healing = false;
             a.data.get("lifespan", out lifespan);
             a.data.get("life", out life);
+            a.data.get("healing", out healing);
+            if(healing == true)
+            {
+                a.restoreHealth(a.getMaxHealth());
+                a.data.set("healing", false);
+            }
             a.data.set("life", life + 1);
             if (life + 1 > lifespan)
             {
@@ -331,6 +338,13 @@ namespace GodsAndPantheons
         public static bool BringMinions(BaseSimObject pTarget, WorldTile pTile)
         {
             Actor b = (Actor)pTarget;
+            bool healing = false;
+            b.data.get("healing", out healing);
+            if (healing == true)
+            {
+                b.restoreHealth(b.getMaxHealth());
+                b.data.set("healing", false);
+            }
             List<Actor> Minions = GetMinions(b);
             foreach(Actor a in Minions){
                 float pDist = Vector2.Distance(pTarget.currentPosition, a.currentPosition);
@@ -1190,6 +1204,7 @@ namespace GodsAndPantheons
                     pSelf.a.addStatusEffect("God_Of_All"); // add the status I created
                     pSelf.a.restoreHealth(pSelf.a.getMaxHealth());
                     pSelf.a.data.set("lifespan", 61);
+                    pSelf.data.set("healing", true);
                 }
                 }
                 else
@@ -1198,6 +1213,7 @@ namespace GodsAndPantheons
                     {
                         pSelf.a.finishAllStatusEffects(); // remove the status
                         pSelf.a.data.set("lifespan", 31);
+                        pSelf.data.set("healing", true);
                     }
                 }
 
