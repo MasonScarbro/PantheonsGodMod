@@ -319,15 +319,8 @@ namespace GodsAndPantheons
             Actor a = (Actor)pTarget;
             int life;
             int lifespan;
-            bool healing = false;
             a.data.get("lifespan", out lifespan);
             a.data.get("life", out life);
-            a.data.get("healing", out healing);
-            if(healing == true)
-            {
-                a.restoreHealth(a.getMaxHealth());
-                a.data.set("healing", false);
-            }
             a.data.set("life", life + 1);
             if (life + 1 > lifespan)
             {
@@ -340,15 +333,10 @@ namespace GodsAndPantheons
             Actor b = (Actor)pTarget;
             bool healing = false;
             b.data.get("healing", out healing);
-            if (healing == true)
-            {
-                b.restoreHealth(b.getMaxHealth());
-                b.data.set("healing", false);
-            }
             List<Actor> Minions = GetMinions(b);
             foreach(Actor a in Minions){
                 float pDist = Vector2.Distance(pTarget.currentPosition, a.currentPosition);
-                if(pDist > 30){
+                if(pDist > 50){
                     EffectsLibrary.spawnAt("fx_teleport_blue", pTarget.currentPosition, a.stats[S.scale]);
                     a.spawnOn(pTarget.currentTile, 0f);
                 }
@@ -459,7 +447,6 @@ namespace GodsAndPantheons
                 actor.addTrait("acid_proof");
                 actor.removeTrait("immortal");
                 actor.data.set("life", 0);
-                actor.data.set("lifespan", 31);
             }
 
         }
@@ -476,7 +463,6 @@ namespace GodsAndPantheons
                     pTarget.a.addTrait("acid_Proof");
                     pTarget.a.addTrait("freeze_proof");
                     pTarget.a.addTrait("shiny");
-                    pTarget.a.addTrait("giant");
                     pTarget.a.addTrait("energized");
                     pTarget.a.addTrait("immortal");
                     pTarget.a.addTrait("nightchild");
