@@ -481,7 +481,7 @@ namespace GodsAndPantheons
         {
             Actor pActor = (Actor)pSelf;
 
-            if(Main.savedSettings.deathera)
+            if(deathera)
               World.world.eraManager.setEra(S.age_chaos, true);
             pActor.removeTrait("God_Of_Chaos");
 
@@ -499,7 +499,7 @@ namespace GodsAndPantheons
                 return false;
             }
             attackedBy.a.addTrait("God Killer");
-            if(Main.savedSettings.deathera)
+            if(deathera)
               World.world.eraManager.setEra(S.age_dark, true);
             return true;
 
@@ -514,7 +514,7 @@ namespace GodsAndPantheons
                 return false;
             }
             attackedBy.a.addTrait("God Killer");
-            if(Main.savedSettings.deathera)
+            if(deathera)
               World.world.eraManager.setEra(S.age_moon, true);
             return true;
 
@@ -528,7 +528,7 @@ namespace GodsAndPantheons
                 return false;
             }
             attackedBy.a.addTrait("God Killer");
-            if(Main.savedSettings.deathera)
+            if(deathera)
               World.world.eraManager.setEra(S.age_sun, true);
 
 
