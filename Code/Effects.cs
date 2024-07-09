@@ -64,7 +64,7 @@ namespace GodsAndPantheons
             GodOfGodsEra.base_stats[S.knockback_reduction] += 0.5f;
             GodOfGodsEra.base_stats[S.knockback] += 1f;
             GodOfGodsEra.base_stats[S.attack_speed] += 40f;
-	    GodOfGodsEra.base_stats[S.scale] += 0.5f;
+	    GodOfGodsEra.base_stats[S.scale] += 0.75f;
             GodOfGodsEra.base_stats[S.dodge] += 80f;
             GodOfGodsEra.path_icon = "ui/icons/IconDemi";
             GodOfGodsEra.description = "Now i have become God, destroyed of worlds";
