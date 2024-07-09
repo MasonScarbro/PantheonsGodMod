@@ -61,6 +61,7 @@ namespace GodsAndPantheons
         public static float GodOfGodsPwrChance2 = 0.2f;
         public static float GodOfGodsPwrChance3 = 0.1f;
 
+        public static bool deathera;
 
 
         public static void init()
