@@ -277,7 +277,7 @@ namespace GodsAndPantheons
             godofgods.base_stats[S.damage] += 200;
             godofgods.base_stats[S.health] += 1000;
             godofgods.base_stats[S.attack_speed] += 60f;
-            godofgods.base_stats[S.critical_chance] += 50f;
+            godofgods.base_stats[S.critical_chance] += 0.5f;
             godofgods.base_stats[S.intelligence] += 40f;
             godofgods.base_stats[S.range] += 20f;
             godofgods.base_stats[S.dodge] += 35f;
