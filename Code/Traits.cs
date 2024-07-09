@@ -164,7 +164,7 @@ namespace GodsAndPantheons
             starsGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             starsGod.action_death = (WorldAction)Delegate.Combine(starsGod.action_death, new WorldAction(starsGodsDeath));
             starsGod.action_attack_target = new AttackAction(ActionLibrary.addFrozenEffectOnTarget);
-            starsGod.action_attack_target = new AttackAction(starsGodAttack);
+            starsGod.action_attack_target += new AttackAction(starsGodAttack);
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodEraStatus));
             AssetManager.traits.add(starsGod);
             PlayerConfig.unlockTrait(starsGod.id);
@@ -184,9 +184,9 @@ namespace GodsAndPantheons
             earthGod.action_attack_target = new AttackAction(earthGodAttack);
             AssetManager.traits.add(earthGod);
             PlayerConfig.unlockTrait(earthGod.id);
-            earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(earthGodAutoTrait));
             earthGod.action_special_effect = new WorldAction(earthGodBuildWorld);
-            earthGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
+            earthGod.action_special_effect += new WorldAction(GodWeaponManager.godGiveWeapon);
+            earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(earthGodAutoTrait));
             addTraitToLocalizedLibrary(earthGod.id, "God of the Natural Enviornment, The titan of creation");
 
             ActorTrait subGod = new ActorTrait();
