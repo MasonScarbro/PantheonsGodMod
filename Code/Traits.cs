@@ -275,8 +275,8 @@ namespace GodsAndPantheons
             ActorTrait godofgods = new ActorTrait();
             godofgods.id = "God Of gods";
             godofgods.path_icon = "ui/icons/IconDemi";
-            godofgods.base_stats[S.damage] += 200f;
-            godofgods.base_stats[S.health] += 1100f;
+            godofgods.base_stats[S.damage] += 150;
+            godofgods.base_stats[S.health] += 900;
             godofgods.base_stats[S.attack_speed] += 60f;
             godofgods.base_stats[S.critical_chance] += 50f;
             godofgods.base_stats[S.intelligence] += 40f;
