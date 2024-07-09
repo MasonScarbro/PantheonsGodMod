@@ -154,8 +154,10 @@ namespace GodsAndPantheons
         public static void ToggleEra(){
             if(Main.savedSettings.deathera){
                 Main.savedSettings.deathera = false;
+                Traits.deathera = false;
             }else{
                 Main.savedSettings.deathera = true;
+                Traits.deathera = true;
             }
         }
     }
