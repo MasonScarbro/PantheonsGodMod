@@ -109,7 +109,6 @@ namespace GodsAndPantheons
                 return false;
             }
             savedSettings = loadedData;
-            Traits.deathera = savedSettings.deathera;
             return true;
         }
         public static void modifyGodOption(string key, string value, bool active, UnityAction call = null)
