@@ -58,7 +58,7 @@ namespace GodsAndPantheons
         }
         IEnumerator Start()
         {
-            loadSettings();
+            //loadSettings();
             Dictionary<string, ScrollWindow> allWindows = (Dictionary<string, ScrollWindow>)Reflection.GetField(typeof(ScrollWindow), null, "allWindows");
             Reflection.CallStaticMethod(typeof(ScrollWindow), "checkWindowExist", "inspect_unit");
             allWindows["inspect_unit"].gameObject.SetActive(false);
@@ -120,7 +120,6 @@ namespace GodsAndPantheons
             Main.savedSettings.warGodChances[key] = new InputOption { active = active, value = value };
             Main.savedSettings.earthGodChances[key] = new InputOption { active = active, value = value };
             Main.savedSettings.GodOfGodsChances[key] = new InputOption { active = active, value = value };
-            Main.savedSettings.deathera = true;
             saveSettings();
             if (call != null)
             {
