@@ -153,7 +153,7 @@ namespace GodsAndPantheons
         }
         public static void ToggleEra(){
             if(Settings.deathera){
-                Main.savedSettings .deathera = false;
+                Main.savedSettings.deathera = false;
             }else{
                 Main.Settings.deathera = true;
             }
