@@ -45,7 +45,6 @@ public static class GodWeaponManager
                 axeOfFuryD.material = "adamantine";
                 pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(axeOfFuryD);
                 pTarget.a.setStatsDirty();
-                return true;
             }
 
             if (pTarget.a.hasTrait("God Of the Night"))
@@ -60,7 +59,6 @@ public static class GodWeaponManager
                 }
 
                 pTarget.a.setStatsDirty();
-                return true;
             }
 
             if (pTarget.a.hasTrait("God Of light"))
@@ -77,7 +75,6 @@ public static class GodWeaponManager
 
 
                 pTarget.a.setStatsDirty();
-                return true;
 
             }
 
@@ -93,7 +90,6 @@ public static class GodWeaponManager
                     weaponSlot.setItem(staffOfKnowledgeD);
                 }
                 pTarget.a.setStatsDirty();
-                return true;
 
             }
 
@@ -104,7 +100,6 @@ public static class GodWeaponManager
                 maceOfDestructionD.material = "adamantine";
                 pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(maceOfDestructionD);
                 pTarget.a.setStatsDirty();
-                return true;
 
             }
 
@@ -115,7 +110,6 @@ public static class GodWeaponManager
                 cometScepterD.material = "base";
                 pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(cometScepterD);
                 pTarget.a.setStatsDirty();
-                return true;
 
             }
 
@@ -126,7 +120,6 @@ public static class GodWeaponManager
                 lichGodsGreatSwordD.material = "base";
                 pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(lichGodsGreatSwordD);
                 pTarget.a.setStatsDirty();
-                return true;
 
             }
 
@@ -139,7 +132,6 @@ public static class GodWeaponManager
                 hammerOfCreationD.material = "base";
                 pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(hammerOfCreationD);
                 pTarget.a.setStatsDirty();
-                return true;
 
             }
 
@@ -152,7 +144,6 @@ public static class GodWeaponManager
                 godHuntersScythe.material = "base";
                 pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(godHuntersScythe);
                 pTarget.a.setStatsDirty();
-                return true;
 
             }
             pTarget.a.updateStats();
