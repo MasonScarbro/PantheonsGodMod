@@ -25,6 +25,12 @@ namespace GodsAndPantheons
             {"SummonMeteor%", new InputOption{active = true, value = "1" }},
             {"PagesOfKnowledge%", new InputOption{active = true, value = "1" }},
         };
+        public Dictionary<string, InputOption> GodOfGodsChances = new Dictionary<string, InputOption>
+        {
+            {"Terrain bending%", new InputOption{active = true, value = "20" }},
+            {"Summoning%", new InputOption{active = true, value = "1" }},
+            {"Magic%", new InputOption{active = true, value = "1" }},
+        };
         public Dictionary<string, InputOption> moonGodChances = new Dictionary<string, InputOption>
         {
             {"summonMoonChunk%", new InputOption{active = true, value = "0.05" }},
@@ -60,6 +66,7 @@ namespace GodsAndPantheons
             {"buildWorld%", new InputOption{active = true, value = "1" }},
 
         };
+        public bool deathera = true;
 
 
     }

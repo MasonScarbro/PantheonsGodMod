@@ -154,7 +154,7 @@ namespace GodsAndPantheons
                 if (call != null)
                 {
                     call.Invoke();
-                }
+                
 
                 NameInput input = NewUI.createInputOption(
                     "KnowledgeGodWindow",
@@ -191,6 +191,7 @@ namespace GodsAndPantheons
                     PowerButtons.ToggleButton($"{kv.Key}Button");
                 }
                 activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+                }
             }
         }
 
@@ -289,7 +290,7 @@ namespace GodsAndPantheons
                 if (call != null)
                 {
                     call.Invoke();
-                }
+                
 
                 NameInput input = NewUI.createInputOption(
                     "MoonGodWindow",
@@ -326,6 +327,141 @@ namespace GodsAndPantheons
                     PowerButtons.ToggleButton($"{kv.Key}Button");
                 }
                 activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+                }
+            }
+        }
+
+    }
+    class GodOfGodsWindow : MonoBehaviour
+    {
+        private static GameObject contents;
+        private static GameObject scrollView;
+        private static Vector2 originalSize;
+        public static GodOfGodsWindow instance;
+
+
+        public static void init()
+        {
+
+            contents = WindowManager.windowContents["GodOfGodsWindow"];
+            instance = new GameObject("GodOfGodsWindowInstance").AddComponent<GodOfGodsWindow>();
+            scrollView = GameObject.Find($"/Canvas Container Main/Canvas - Windows/windows/GodOfGodsWindow/Background/Scroll View");
+            originalSize = contents.GetComponent<RectTransform>().sizeDelta;
+            VerticalLayoutGroup layoutGroup = contents.AddComponent<VerticalLayoutGroup>();
+            layoutGroup.childControlHeight = false;
+            layoutGroup.childControlWidth = false;
+            layoutGroup.childForceExpandHeight = false;
+            layoutGroup.childForceExpandWidth = false;
+            layoutGroup.childScaleHeight = true;
+            layoutGroup.childScaleWidth = true;
+            layoutGroup.childAlignment = TextAnchor.UpperCenter;
+            layoutGroup.spacing = 50;
+            loadSettingOptions();
+        }
+
+        private static void loadSettingOptions()
+        {
+            loadInputOptions();
+
+
+        }
+
+        public static void openWindow()
+        {
+            Windows.ShowWindow("GodOfGodsWindow");
+        }
+
+        private static void loadInputOptions()
+        {
+            contents.GetComponent<RectTransform>().sizeDelta += new Vector2(0, ((Main.savedSettings.GodOfGodsChances.Count)) * 250);
+            foreach (KeyValuePair<string, InputOption> kv in Main.savedSettings.GodOfGodsChances)
+            {
+
+                UnityAction call = null;
+                switch (kv.Key)
+                {
+                    case "Terrain bending%":
+                        call = delegate {
+                            if (Main.savedSettings.GodOfGodsChances["Terrain bending%"].active)
+                            {
+                                Traits.GodOfGodsPwrChance1 = float.Parse(Main.savedSettings.GodOfGodsChances["Terrain bending%"].value) / 100;
+
+                            }
+                            else
+                            {
+                                Traits.GodOfGodsPwrChance1 = 0;
+                            }
+
+                        };
+                        break;
+                    case "Summoning%":
+                        call = delegate {
+                            if (Main.savedSettings.GodOfGodsChances["Summoning%"].active)
+                            {
+                                Traits.GodOfGodsPwrChance2 = float.Parse(Main.savedSettings.GodOfGodsChances["Summoning%"].value) / 100;
+                            }
+                            else
+                            {
+                                Traits.GodOfGodsPwrChance2 = 0;
+                            }
+
+                        };
+                        break;
+                    case "Magic%":
+                        call = delegate {
+                            if (Main.savedSettings.GodOfGodsChances["Magic%"].active)
+                            {
+                                Traits.GodOfGodsPwrChance3 = int.Parse(Main.savedSettings.GodOfGodsChances["Magic%"].value) / 100;
+                            }
+                            else
+                            {
+                                Traits.GodOfGodsPwrChance3 = 0;
+                            }
+
+                        };
+                        break;
+                }
+                if (call != null)
+                {
+                    call.Invoke();
+                
+
+                NameInput input = NewUI.createInputOption(
+                    "GodOfGodsWindow",
+                    $"{kv.Key}_setting",
+                    kv.Key,
+                    "Modify The Value Of This Setting",
+                    0,
+                    contents,
+                    kv.Value.value
+                );
+                input.inputField.characterValidation = InputField.CharacterValidation.Integer;
+                input.inputField.onValueChanged.AddListener(delegate {
+                    string pValue = NewUI.checkStatInput(input);
+                    Main.modifyGodOption(kv.Key, pValue, PowerButtons.GetToggleValue($"{kv.Key}Button"), call);
+                    input.setText(pValue);
+                });
+
+                PowerButton activeButton = PowerButtons.CreateButton(
+                    $"{kv.Key}Button",
+                    Mod.EmbededResources.LoadSprite($"{Mod.Info.Name}.Resources.units.icon.png"),
+                    "Activate Setting",
+                    "",
+                    new Vector2(200, 0),
+                    ButtonType.Toggle,
+                    input.transform.parent.transform,
+                    delegate {
+                        string pValue = NewUI.checkStatInput(input);
+                        Main.modifyGodOption(kv.Key, pValue, PowerButtons.GetToggleValue($"{kv.Key}Button"), call);
+                        input.setText(pValue);
+                    }
+                );
+                if (kv.Value.active)
+                {
+                    PowerButtons.ToggleButton($"{kv.Key}Button");
+                }
+                activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+                }
             }
         }
 
@@ -438,7 +574,7 @@ namespace GodsAndPantheons
                 if (call != null)
                 {
                     call.Invoke();
-                }
+                
 
                 NameInput input = NewUI.createInputOption(
                     "DarkGodWindow",
@@ -475,6 +611,7 @@ namespace GodsAndPantheons
                     PowerButtons.ToggleButton($"{kv.Key}Button");
                 }
                 activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+                }
             }
         }
 
@@ -587,7 +724,7 @@ namespace GodsAndPantheons
                 if (call != null)
                 {
                     call.Invoke();
-                }
+                
 
                 NameInput input = NewUI.createInputOption(
                     "SunGodWindow",
@@ -624,6 +761,7 @@ namespace GodsAndPantheons
                     PowerButtons.ToggleButton($"{kv.Key}Button");
                 }
                 activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+                }
             }
         }
 
@@ -723,7 +861,7 @@ namespace GodsAndPantheons
                 if (call != null)
                 {
                     call.Invoke();
-                }
+                
 
                 NameInput input = NewUI.createInputOption(
                     "WarGodWindow",
@@ -760,6 +898,7 @@ namespace GodsAndPantheons
                     PowerButtons.ToggleButton($"{kv.Key}Button");
                 }
                 activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+                }
             }
         }
 
@@ -859,7 +998,6 @@ namespace GodsAndPantheons
                 if (call != null)
                 {
                     call.Invoke();
-                }
 
                 NameInput input = NewUI.createInputOption(
                     "EarthGodWindow",
@@ -896,6 +1034,7 @@ namespace GodsAndPantheons
                     PowerButtons.ToggleButton($"{kv.Key}Button");
                 }
                 activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+                }
             }
         }
 

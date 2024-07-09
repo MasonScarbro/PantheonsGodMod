@@ -56,7 +56,10 @@ namespace GodsAndPantheons
         public static float earthGodPwrChance3 = 0.01f;
         // Lich God Chances
         public static float lichGodPwrChance1 = 1f;
-
+        //god of Gods Chances
+        public static float GodOfGodsPwrChance1 = 0.3f;
+        public static float GodOfGodsPwrChance2 = 0.2f;
+        public static float GodOfGodsPwrChance3 = 0.1f;
 
 
         public static void init()
@@ -160,7 +163,7 @@ namespace GodsAndPantheons
             starsGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             starsGod.action_death = (WorldAction)Delegate.Combine(starsGod.action_death, new WorldAction(starsGodsDeath));
             starsGod.action_attack_target = new AttackAction(ActionLibrary.addFrozenEffectOnTarget);
-            starsGod.action_attack_target = new AttackAction(starsGodAttack);
+            starsGod.action_attack_target += new AttackAction(starsGodAttack);
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodEraStatus));
             AssetManager.traits.add(starsGod);
             PlayerConfig.unlockTrait(starsGod.id);
@@ -180,9 +183,9 @@ namespace GodsAndPantheons
             earthGod.action_attack_target = new AttackAction(earthGodAttack);
             AssetManager.traits.add(earthGod);
             PlayerConfig.unlockTrait(earthGod.id);
-            earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(earthGodAutoTrait));
             earthGod.action_special_effect = new WorldAction(earthGodBuildWorld);
-            earthGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
+            earthGod.action_special_effect += new WorldAction(GodWeaponManager.godGiveWeapon);
+            earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(earthGodAutoTrait));
             addTraitToLocalizedLibrary(earthGod.id, "God of the Natural Enviornment, The titan of creation");
 
             ActorTrait subGod = new ActorTrait();
@@ -271,19 +274,21 @@ namespace GodsAndPantheons
             ActorTrait godofgods = new ActorTrait();
             godofgods.id = "God Of gods";
             godofgods.path_icon = "ui/icons/IconDemi";
-            godofgods.base_stats[S.damage] += 200f;
-            godofgods.base_stats[S.health] += 1000f;
-            godofgods.base_stats[S.attack_speed] += 100f;
-            godofgods.base_stats[S.critical_chance] += 50f;
+            godofgods.base_stats[S.damage] += 200;
+            godofgods.base_stats[S.health] += 1000;
+            godofgods.base_stats[S.attack_speed] += 60f;
+            godofgods.base_stats[S.critical_chance] += 0.5f;
             godofgods.base_stats[S.intelligence] += 40f;
-            godofgods.base_stats[S.range] += 30f;
+            godofgods.base_stats[S.range] += 20f;
             godofgods.base_stats[S.dodge] += 35f;
             godofgods.base_stats[S.accuracy] += 15f;
             godofgods.base_stats[S.speed] += 30f;
-            godofgods.base_stats[S.armor] += 60f;
+            godofgods.base_stats[S.armor] += 50f;
             godofgods.action_death = new WorldAction(ActionLibrary.deathNuke);
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsAutoTrait));
-            godofgods.base_stats[S.scale] = 1f;
+            godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(BringMinions));
+            godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsEraStatus));
+            godofgods.base_stats[S.scale] = 0.075f;
             godofgods.action_attack_target += new AttackAction(GodOfGodsAttack);
             AssetManager.traits.add(godofgods);
             PlayerConfig.unlockTrait(godofgods.id);
@@ -292,31 +297,60 @@ namespace GodsAndPantheons
             SummonedOne.id = "Summoned One";
             SummonedOne.path_icon = "ui/icons/iconBlessing";
             SummonedOne.base_stats[S.damage] += 10;
-            SummonedOne.base_stats[S.health] += 30;
+            SummonedOne.base_stats[S.health] += 20;
             SummonedOne.base_stats[S.armor] += 10;
             SummonedOne.base_stats[S.knockback_reduction] += 0.5f;
             SummonedOne.base_stats[S.max_age] = -20000f;
             SummonedOne.action_special_effect += new WorldAction(SummonedBeing);
             SummonedOne.group_id = TraitGroup.special;
             SummonedOne.can_be_given = false;
+            SummonedOne.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(GodOfGodsEraStatus));
             AssetManager.traits.add(SummonedOne);
             addTraitToLocalizedLibrary(SummonedOne.id, "A creature summoned by God himself in order to aid them in battle, DO NOT MODIFY THE NAME OF THIS CREATURE!");
+            
             //this to make it so summoned ones dont fight their Master and his allies
             var harmony = new Harmony("com.Gods.Pantheons");
             harmony.PatchAll();
         }
-        //to make summoned ones only live for like 20 secounds
+        //to make summoned ones only live for like 30 secounds
         public static bool SummonedBeing(BaseSimObject pTarget, WorldTile pTile)
         {
             Actor a = (Actor)pTarget;
             int life;
-            a.data.get("lifespan", out life);
-            a.data.set("lifespan", life + 1);
-            if (life + 1 > 21f)
+            int lifespan;
+            a.data.get("lifespan", out lifespan);
+            a.data.get("life", out life);
+            a.data.set("life", life + 1);
+            if (life + 1 > lifespan)
             {
                 a.killHimself(false, AttackType.Age, false, true, true);
             }
             return true;
+        }
+        public static bool BringMinions(BaseSimObject pTarget, WorldTile pTile)
+        {
+            Actor b = (Actor)pTarget;
+            List<Actor> Minions = GetMinions(b);
+            foreach(Actor a in Minions){
+                float pDist = Vector2.Distance(pTarget.currentPosition, a.currentPosition);
+                if(pDist > 50){
+                    EffectsLibrary.spawnAt("fx_teleport_blue", pTarget.currentPosition, a.stats[S.scale]);
+                    a.spawnOn(pTarget.currentTile, 0f);
+                }
+            }
+            return true;
+        }
+        public static List<Actor> GetMinions(Actor a){
+            List<Actor> MyMinions = new List<Actor>();
+            List<Actor> simpleList = World.world.units.getSimpleList();
+                 foreach (Actor actor in simpleList)
+                  {
+                   if (actor.getName().Equals($"Summoned by {a.getName()}") && actor.hasTrait("Summoned One"))
+                  {
+                         MyMinions.Add(actor);
+                    }
+               }
+              return MyMinions;
         }
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -328,64 +362,69 @@ namespace GodsAndPantheons
                 Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
-                if (Toolbox.randomChance(0.06f))
+                if(Toolbox.randomChance(GodOfGodsPwrChance1)){
+                if (Toolbox.randomChance(0.5f))
                 {
-                    ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null); // freezezz the target
+                    ActionLibrary.castLightning(null, pTarget, null);
                 }else
-                if (Toolbox.randomChance(0.04f))
+                if (Toolbox.randomChance(0.2f))
                 {
                     EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f);    //spawn 1 meteorite
                     pSelf.a.addStatusEffect("invincible", 1f);
                 }
-                else if (Toolbox.randomChance(0.09f))
+                else if (Toolbox.randomChance(0.3f))
                 {
                     ActionLibrary.castTornado(pSelf, pTarget, pTile);
                 }
-                if (Toolbox.randomChance(0.06f))
+                else if (Toolbox.randomChance(0.15f))
+                {
+                    pb.spawnEarthquake(pTarget.a.currentTile, null);
+                }
+                }
+                if(Toolbox.randomChance(GodOfGodsPwrChance2)){
+                if (Toolbox.randomChance(0.6f))
                 {
                     Summon(SA.demon, 1, self, pTile);
                 }
-                else if (Toolbox.randomChance(0.07f))
+                else if (Toolbox.randomChance(0.7f))
                 {
                     Summon(SA.evilMage, 1, self, pTile);
                 }
-                else if (Toolbox.randomChance(0.08f))
+                else if (Toolbox.randomChance(0.8f))
                 {
                     Summon(SA.skeleton, 3, self, pTile);
                 }
-                if(Toolbox.randomChance(0.1f))
+                }
+                if(Toolbox.randomChance(GodOfGodsPwrChance3)){
+                if(Toolbox.randomChance(0.5f))
                 {
-                    ActionLibrary.castLightning(null, pTarget, null);
+                    ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null);
                 }
                 else
-                if (Toolbox.randomChance(0.08f))
+                if (Toolbox.randomChance(0.4f))
                 {
                     EffectsLibrary.spawn("fx_explosion_middle", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
                     pSelf.a.addStatusEffect("invincible", 1f);
                 }else
-                if (Toolbox.randomChance(0.2f))
+                if (Toolbox.randomChance(0.6f))
                 {
                     // randomly spawns a flash of fire or acid on the tile 
                     MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f);
                     MapBox.instance.dropManager.spawn(pTile, "acid", 5f, -1f);
                     MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f); // Drops fire from distance 5 with scale of one at current tile
-                }else if (Toolbox.randomChance(0.03f))
+                }else if (Toolbox.randomChance(0.2f))
                 {
                     Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
                     Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
                     EffectsLibrary.spawnProjectile("lightBallzProjectiles", newPoint, newPoint2, 0.0f);
-                }else if (Toolbox.randomChance(0.03f))
+                }else if (Toolbox.randomChance(0.2f))
                 {
                     Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x + 35f, pSelf.currentPosition.y + 95f, (float)pos.x + 1f, (float)pos.y + 1f, pDist, true); // the Point of the projectile launcher 
                     Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
                     EffectsLibrary.spawnProjectile("moonFall", newPoint, newPoint2, 0.0f);
                     pSelf.a.addStatusEffect("invincible", 2f);
                 }
-                else if (Toolbox.randomChance(0.04f))
-                {
-                    pb.spawnEarthquake(pTarget.a.currentTile, null);
                 }
-
 
                 return true;
             }
@@ -401,9 +440,11 @@ namespace GodsAndPantheons
                 actor.addTrait("Summoned One");
                 actor.addTrait("regeneration");
                 actor.addTrait("madness");
+                actor.addTrait("fire_proof");
+                actor.addTrait("acid_proof");
                 actor.removeTrait("immortal");
-                actor.data.set("lifespan", 0);
-
+                actor.data.set("life", 0);
+                actor.data.set("lifespan", 31);
             }
 
         }
@@ -420,11 +461,11 @@ namespace GodsAndPantheons
                     pTarget.a.addTrait("acid_Proof");
                     pTarget.a.addTrait("freeze_proof");
                     pTarget.a.addTrait("shiny");
-                    pTarget.a.addTrait("giant");
                     pTarget.a.addTrait("energized");
                     pTarget.a.addTrait("immortal");
                     pTarget.a.addTrait("nightchild");
                     pTarget.a.addTrait("moonchild");
+                    pTarget.a.addTrait("regeneration");
 
                 }
 
@@ -437,8 +478,8 @@ namespace GodsAndPantheons
         {
             Actor pActor = (Actor)pSelf;
 
-
-            World.world.eraManager.setEra(S.age_chaos, true);
+            if(Main.savedSettings.deathera)
+              World.world.eraManager.setEra(S.age_chaos, true);
             pActor.removeTrait("God_Of_Chaos");
 
 
@@ -455,7 +496,8 @@ namespace GodsAndPantheons
                 return false;
             }
             attackedBy.a.addTrait("God Killer");
-            World.world.eraManager.setEra(S.age_dark, true);
+            if(Main.savedSettings.deathera)
+              World.world.eraManager.setEra(S.age_dark, true);
             return true;
 
         }
@@ -469,7 +511,8 @@ namespace GodsAndPantheons
                 return false;
             }
             attackedBy.a.addTrait("God Killer");
-            World.world.eraManager.setEra(S.age_moon, true);
+            if(Main.savedSettings.deathera)
+              World.world.eraManager.setEra(S.age_moon, true);
             return true;
 
         }
@@ -482,7 +525,8 @@ namespace GodsAndPantheons
                 return false;
             }
             attackedBy.a.addTrait("God Killer");
-            World.world.eraManager.setEra(S.age_sun, true);
+            if(Main.savedSettings.deathera)
+              World.world.eraManager.setEra(S.age_sun, true);
 
 
             return true;
@@ -841,7 +885,7 @@ namespace GodsAndPantheons
                 if (Toolbox.randomChance(warGodPwrChance1))
                 {
                     EffectsLibrary.spawnExplosionWave(pSelf.currentTile.posV3, 1f, 1f);
-                    pSelf.a.addStatusEffect("WarGodsCry");
+                    pSelf.a.addStatusEffect("WarGodsCry", 30f);
                     World.world.startShake(0.3f, 0.01f, 2f, true, true);
                     pSelf.a.addStatusEffect("invincible", 1f);
                     MapAction.damageWorld(pSelf.currentTile, 2, AssetManager.terraform.get("crab_step"), null);
@@ -1137,6 +1181,32 @@ namespace GodsAndPantheons
             }
             return true;
         }
+        private static bool GodOfGodsEraStatus(BaseSimObject pSelf, WorldTile pTile)
+        {
+            if (pSelf.a != null)
+            {
+                
+                if (World.world_era.id == "age_hope")   {    //only in age of hope
+                    if(!pSelf.a.hasStatus("God_Of_All")){
+                {
+                    pSelf.a.addStatusEffect("God_Of_All"); // add the status I created
+                    pSelf.a.data.set("lifespan", 61);
+                }
+                    }
+                }
+                else
+                {
+                    if (pSelf.a.hasStatus("God_Of_All"))          //no other age can have this trait
+                    {
+                        pSelf.a.finishAllStatusEffects(); // remove the status
+                        pSelf.a.data.set("lifespan", 31);
+                    }
+                }
+
+
+            }
+            return true;
+        }
 
         private static bool warGodEraStatus(BaseSimObject pSelf, WorldTile pTile)
         {
@@ -1345,7 +1415,7 @@ namespace GodsAndPantheons
                 __result = false;
                 return false;
             }
-            if (pTarget.isBuilding() && __instance.kingdom == pTarget.kingdom)
+            if (pTarget.isBuilding() && __instance.kingdom.race == pTarget.kingdom.race)
             {
                 __result = false;
                 return false;
