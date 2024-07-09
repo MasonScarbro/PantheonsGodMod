@@ -498,7 +498,8 @@ namespace GodsAndPantheons
                 return false;
             }
             attackedBy.a.addTrait("God Killer");
-            World.world.eraManager.setEra(S.age_dark, true);
+            if(Main.savedSettings.deathera)
+              World.world.eraManager.setEra(S.age_dark, true);
             return true;
 
         }
@@ -512,7 +513,8 @@ namespace GodsAndPantheons
                 return false;
             }
             attackedBy.a.addTrait("God Killer");
-            World.world.eraManager.setEra(S.age_moon, true);
+            if(Main.savedSettings.deathera)
+              World.world.eraManager.setEra(S.age_moon, true);
             return true;
 
         }
@@ -525,7 +527,8 @@ namespace GodsAndPantheons
                 return false;
             }
             attackedBy.a.addTrait("God Killer");
-            World.world.eraManager.setEra(S.age_sun, true);
+            if(Main.savedSettings.deathera)
+              World.world.eraManager.setEra(S.age_sun, true);
 
 
             return true;
