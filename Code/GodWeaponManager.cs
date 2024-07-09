@@ -36,7 +36,7 @@ public static class GodWeaponManager
         if (pTarget.a != null)
         {
             bool gottenweapon = false;
-            pTarget.a.get("gottenweapon", out gottenweapon);
+            pTarget.a.data.get("gottenweapon", out gottenweapon);
             if(!gottenweapon){
             if (pTarget.a.hasTrait("God Of War"))
             {
@@ -156,7 +156,7 @@ public static class GodWeaponManager
 
             }
             pTarget.a.updateStats();
-            pTarget.a.set("gottenweapon", true);
+            pTarget.a.data.set("gottenweapon", true);
             count++;
             return true;
             }
