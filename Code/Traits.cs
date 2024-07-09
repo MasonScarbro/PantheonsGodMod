@@ -275,7 +275,7 @@ namespace GodsAndPantheons
             godofgods.id = "God Of gods";
             godofgods.path_icon = "ui/icons/IconDemi";
             godofgods.base_stats[S.damage] += 200;
-            godofgods.base_stats[S.health] += 1400;
+            godofgods.base_stats[S.health] += 1000;
             godofgods.base_stats[S.attack_speed] += 60f;
             godofgods.base_stats[S.critical_chance] += 50f;
             godofgods.base_stats[S.intelligence] += 40f;
@@ -297,8 +297,8 @@ namespace GodsAndPantheons
             SummonedOne.id = "Summoned One";
             SummonedOne.path_icon = "ui/icons/iconBlessing";
             SummonedOne.base_stats[S.damage] += 10;
-            SummonedOne.base_stats[S.health] += 15;
-            SummonedOne.base_stats[S.armor] += 5;
+            SummonedOne.base_stats[S.health] += 20;
+            SummonedOne.base_stats[S.armor] += 10;
             SummonedOne.base_stats[S.knockback_reduction] += 0.5f;
             SummonedOne.base_stats[S.max_age] = -20000f;
             SummonedOne.action_special_effect += new WorldAction(SummonedBeing);
