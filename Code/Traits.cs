@@ -330,8 +330,6 @@ namespace GodsAndPantheons
         public static bool BringMinions(BaseSimObject pTarget, WorldTile pTile)
         {
             Actor b = (Actor)pTarget;
-            bool healing = false;
-            b.data.get("healing", out healing);
             List<Actor> Minions = GetMinions(b);
             foreach(Actor a in Minions){
                 float pDist = Vector2.Distance(pTarget.currentPosition, a.currentPosition);
@@ -1191,9 +1189,7 @@ namespace GodsAndPantheons
                     if(!pSelf.a.hasStatus("God_Of_All")){
                 {
                     pSelf.a.addStatusEffect("God_Of_All"); // add the status I created
-                    pSelf.a.restoreHealth(pSelf.a.getMaxHealth());
                     pSelf.a.data.set("lifespan", 61);
-                    pSelf.a.data.set("healing", true);
                 }
                     }
                 }
@@ -1203,7 +1199,6 @@ namespace GodsAndPantheons
                     {
                         pSelf.a.finishAllStatusEffects(); // remove the status
                         pSelf.a.data.set("lifespan", 31);
-                        pSelf.a.data.set("healing", true);
                     }
                 }
 
