@@ -998,7 +998,6 @@ namespace GodsAndPantheons
                 if (call != null)
                 {
                     call.Invoke();
-                }
 
                 NameInput input = NewUI.createInputOption(
                     "EarthGodWindow",
@@ -1035,6 +1034,7 @@ namespace GodsAndPantheons
                     PowerButtons.ToggleButton($"{kv.Key}Button");
                 }
                 activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+                }
             }
         }
 
