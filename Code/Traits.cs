@@ -480,8 +480,8 @@ namespace GodsAndPantheons
         {
             Actor pActor = (Actor)pSelf;
 
-
-            World.world.eraManager.setEra(S.age_chaos, true);
+            if(Main.savedSettings.deathera)
+              World.world.eraManager.setEra(S.age_chaos, true);
             pActor.removeTrait("God_Of_Chaos");
 
 
