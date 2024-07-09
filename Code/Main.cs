@@ -58,7 +58,7 @@ namespace GodsAndPantheons
         }
         IEnumerator Start()
         {
-            //loadSettings();
+            loadSettings();
             Dictionary<string, ScrollWindow> allWindows = (Dictionary<string, ScrollWindow>)Reflection.GetField(typeof(ScrollWindow), null, "allWindows");
             Reflection.CallStaticMethod(typeof(ScrollWindow), "checkWindowExist", "inspect_unit");
             allWindows["inspect_unit"].gameObject.SetActive(false);
