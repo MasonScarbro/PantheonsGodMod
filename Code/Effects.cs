@@ -56,14 +56,14 @@ namespace GodsAndPantheons
 	    StatusEffect GodOfGodsEra = new StatusEffect();
             GodOfGodsEra.id = "God_Of_All";
             GodOfGodsEra.duration = 7000f;
-            GodOfGodsEra.base_stats[S.armor] += 30;
+            GodOfGodsEra.base_stats[S.armor] += 20;
 	    GodOfGodsEra.base_stats[S.damage] += 50;
 	    GodOfGodsEra.base_stats[S.range] += 10;
-            GodOfGodsEra.base_stats[S.health] += 900;
+            GodOfGodsEra.base_stats[S.health] += 100;
             GodOfGodsEra.base_stats[S.speed] += 70;
             GodOfGodsEra.base_stats[S.knockback_reduction] += 0.5f;
             GodOfGodsEra.base_stats[S.knockback] += 1f;
-            GodOfGodsEra.base_stats[S.attack_speed] += 80f;
+            GodOfGodsEra.base_stats[S.attack_speed] += 40f;
 	    GodOfGodsEra.base_stats[S.scale] += 0.5f;
             GodOfGodsEra.base_stats[S.dodge] += 80f;
             GodOfGodsEra.path_icon = "ui/icons/IconDemi";
