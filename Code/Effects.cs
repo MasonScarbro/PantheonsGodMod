@@ -67,7 +67,7 @@ namespace GodsAndPantheons
 	    GodOfGodsEra.base_stats[S.scale] += 0.075f;
             GodOfGodsEra.base_stats[S.dodge] += 80f;
             GodOfGodsEra.path_icon = "ui/icons/IconDemi";
-            GodOfGodsEra.description = "Now i have become God, destroyed of worlds";
+            GodOfGodsEra.description = "Now i have become death, destroyed of worlds";
             GodOfGodsEra.name = "God Of All";
             localizeStatus(GodOfGodsEra.id, "God_Of_All", GodOfGodsEra.description); // Localizes the status effect
             AssetManager.status.add(GodOfGodsEra);
