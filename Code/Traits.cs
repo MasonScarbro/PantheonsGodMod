@@ -444,7 +444,7 @@ namespace GodsAndPantheons
                 actor.addTrait("acid_proof");
                 actor.removeTrait("immortal");
                 actor.data.set("life", 0);
-                actor.data.set("lifespan", 30);
+                actor.data.set("lifespan", 31);
             }
 
         }
