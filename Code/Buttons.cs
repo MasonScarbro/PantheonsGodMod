@@ -69,6 +69,16 @@ namespace GodsAndPantheons
                     KnowledgeGodWindow.openWindow
               );
             PowerButtons.CreateButton(
+                    "ToggleDeathEras",
+                    Resources.Load<Sprite>("ui/Icons/ages/iconAgeHope"),
+                    "Chance Modfier",
+                    "should deaths change the era?",
+                    new Vector2(388, 18),
+                    ButtonType.Click,
+                    tab.transform,
+                    ToggleEra
+              );
+            PowerButtons.CreateButton(
                     "GodOfGodsWindow",
                     Resources.Load<Sprite>("ui/Icons/IconDemi"),
                     "Chance Modfier",
@@ -140,6 +150,13 @@ namespace GodsAndPantheons
         {
             AssetManager.powers.CallMethod("spawnUnit", pTile, pPowerID);
             return true;
+        }
+        public static void ToggleEra(){
+            if(Settings.deathera){
+                Settings.deathera = false;
+            }else{
+                Settings.deathera = true;
+            }
         }
     }
 }
