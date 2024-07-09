@@ -289,7 +289,7 @@ namespace GodsAndPantheons
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsAutoTrait));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(BringMinions));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsEraStatus));
-            godofgods.base_stats[S.scale] = 0.5f;
+            godofgods.base_stats[S.scale] = 0.75f;
             godofgods.action_attack_target += new AttackAction(GodOfGodsAttack);
             AssetManager.traits.add(godofgods);
             PlayerConfig.unlockTrait(godofgods.id);
