@@ -66,6 +66,7 @@ namespace GodsAndPantheons
             {"buildWorld%", new InputOption{active = true, value = "1" }},
 
         };
+        public bool deathera;
 
 
     }
