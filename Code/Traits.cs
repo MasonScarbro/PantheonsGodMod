@@ -467,6 +467,7 @@ namespace GodsAndPantheons
                     pTarget.a.addTrait("immortal");
                     pTarget.a.addTrait("nightchild");
                     pTarget.a.addTrait("moonchild");
+                    pTarget.a.addTrait("regeneration");
 
                 }
 
