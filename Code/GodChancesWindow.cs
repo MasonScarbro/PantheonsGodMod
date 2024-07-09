@@ -154,7 +154,7 @@ namespace GodsAndPantheons
                 if (call != null)
                 {
                     call.Invoke();
-                }
+                
 
                 NameInput input = NewUI.createInputOption(
                     "KnowledgeGodWindow",
@@ -191,6 +191,7 @@ namespace GodsAndPantheons
                     PowerButtons.ToggleButton($"{kv.Key}Button");
                 }
                 activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+                }
             }
         }
 
@@ -289,7 +290,7 @@ namespace GodsAndPantheons
                 if (call != null)
                 {
                     call.Invoke();
-                }
+                
 
                 NameInput input = NewUI.createInputOption(
                     "MoonGodWindow",
@@ -326,6 +327,7 @@ namespace GodsAndPantheons
                     PowerButtons.ToggleButton($"{kv.Key}Button");
                 }
                 activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+                }
             }
         }
 
@@ -422,7 +424,7 @@ namespace GodsAndPantheons
                 if (call != null)
                 {
                     call.Invoke();
-                }
+                
 
                 NameInput input = NewUI.createInputOption(
                     "GodOfGodsWindow",
@@ -459,6 +461,7 @@ namespace GodsAndPantheons
                     PowerButtons.ToggleButton($"{kv.Key}Button");
                 }
                 activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+                }
             }
         }
 
@@ -571,7 +574,7 @@ namespace GodsAndPantheons
                 if (call != null)
                 {
                     call.Invoke();
-                }
+                
 
                 NameInput input = NewUI.createInputOption(
                     "DarkGodWindow",
@@ -608,6 +611,7 @@ namespace GodsAndPantheons
                     PowerButtons.ToggleButton($"{kv.Key}Button");
                 }
                 activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+                }
             }
         }
 
@@ -720,7 +724,7 @@ namespace GodsAndPantheons
                 if (call != null)
                 {
                     call.Invoke();
-                }
+                
 
                 NameInput input = NewUI.createInputOption(
                     "SunGodWindow",
@@ -757,6 +761,7 @@ namespace GodsAndPantheons
                     PowerButtons.ToggleButton($"{kv.Key}Button");
                 }
                 activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+                }
             }
         }
 
@@ -856,7 +861,7 @@ namespace GodsAndPantheons
                 if (call != null)
                 {
                     call.Invoke();
-                }
+                
 
                 NameInput input = NewUI.createInputOption(
                     "WarGodWindow",
@@ -893,6 +898,7 @@ namespace GodsAndPantheons
                     PowerButtons.ToggleButton($"{kv.Key}Button");
                 }
                 activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+                }
             }
         }
 
