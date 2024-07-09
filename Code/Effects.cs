@@ -62,10 +62,10 @@ namespace GodsAndPantheons
             GodOfGodsEra.base_stats[S.mod_health] = 0.5f;
             GodOfGodsEra.base_stats[S.speed] += 70;
             GodOfGodsEra.base_stats[S.knockback_reduction] += 0.5f;
-            GodOfGodsEra.base_stats[S.knockback] += 1f;
+            GodOfGodsEra.base_stats[S.mod_crit] = 0.5f;
             GodOfGodsEra.base_stats[S.attack_speed] += 40f;
 	    GodOfGodsEra.base_stats[S.scale] += 0.075f;
-            GodOfGodsEra.base_stats[S.dodge] += 80f;
+            GodOfGodsEra.base_stats[S.dodge] += 40f;
             GodOfGodsEra.path_icon = "ui/icons/IconDemi";
             GodOfGodsEra.description = "Now i have become death, destroyed of worlds";
             GodOfGodsEra.name = "God Of All";
