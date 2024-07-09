@@ -35,7 +35,9 @@ public static class GodWeaponManager
 
         if (pTarget.a != null)
         {
-
+            bool gottenweapon = false;
+            pTarget.a.get("gottenweapon", out gottenweapon);
+            if(!gottenweapon){
             if (pTarget.a.hasTrait("God Of War"))
             {
                 ItemData axeOfFuryD = new ItemData();
@@ -154,8 +156,10 @@ public static class GodWeaponManager
 
             }
             pTarget.a.updateStats();
+            pTarget.a.set("gottenweapon", true);
             count++;
             return true;
+            }
         }
 
 
