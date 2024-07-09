@@ -274,8 +274,8 @@ namespace GodsAndPantheons
             ActorTrait godofgods = new ActorTrait();
             godofgods.id = "God Of gods";
             godofgods.path_icon = "ui/icons/IconDemi";
-            godofgods.base_stats[S.damage] += 150;
-            godofgods.base_stats[S.health] += 900;
+            godofgods.base_stats[S.damage] += 200;
+            godofgods.base_stats[S.health] += 1400;
             godofgods.base_stats[S.attack_speed] += 60f;
             godofgods.base_stats[S.critical_chance] += 50f;
             godofgods.base_stats[S.intelligence] += 40f;
@@ -283,7 +283,7 @@ namespace GodsAndPantheons
             godofgods.base_stats[S.dodge] += 35f;
             godofgods.base_stats[S.accuracy] += 15f;
             godofgods.base_stats[S.speed] += 30f;
-            godofgods.base_stats[S.armor] += 40f;
+            godofgods.base_stats[S.armor] += 50f;
             godofgods.action_death = new WorldAction(ActionLibrary.deathNuke);
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsAutoTrait));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(BringMinions));
