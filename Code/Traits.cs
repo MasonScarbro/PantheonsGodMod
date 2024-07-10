@@ -1517,7 +1517,7 @@ namespace GodsAndPantheons
         if(pData.initiator.isActor()){
             pData.initiator.a.data.get("Special Radius", out extent);
         }
-        int range = pData.initiator.stats[S.area_of_effect] + pTargetToCheck.stats[S.size] + extent;
+        float range = pData.initiator.stats[S.area_of_effect] + pTargetToCheck.stats[S.size] + extent;
 		int num2;
 		if (pData.critical)
 		{
