@@ -467,7 +467,7 @@ namespace GodsAndPantheons
                     pTarget.a.addTrait("nightchild");
                     pTarget.a.addTrait("moonchild");
                     pTarget.a.addTrait("regeneration");
-
+		    pTarget.a.set("SpecialAttack", true);
                 }
 
 
@@ -1407,65 +1407,17 @@ namespace GodsAndPantheons
               return summoned;
         }
     }
-    [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
-    public class UpdateAttacking
-    {
-        static bool Prefix(ref bool __result, BaseSimObject __instance, BaseSimObject pTarget)
-        {
-            if (__instance == pTarget)
-            {
-                __result = false;
-                return false;
-            }
-            if (pTarget.isBuilding() && __instance.kingdom.race == pTarget.kingdom.race)
-            {
-                __result = false;
-                return false;
-            }
-            if (__instance.isActor() && pTarget.isActor())
-            {
-                Actor a = (Actor)__instance;
-                Actor b = (Actor)pTarget;
-                if (a.hasTrait("Summoned One"))
-                {
-                    Actor Master = Traits.FindMaster(a);
-                    if (Master != a)
-                    {
-                        if (!Master.canAttackTarget(b))
-                        {
-                            __result = false;
-                            return false;
-                        }
-                    }
-                }
-                else if (b.hasTrait("Summoned One"))
-                {
-                    Actor Master = Traits.FindMaster(b);
-                    if (Master != b)
-                    {
-                        if (!a.canAttackTarget(Master))
-                        {
-                            __result = false;
-                            return false;
-                        }
-                    }
-                }
-            }
-            return true;
-        
-        }
-    }
     [HarmonyPatch(typeof(MapBox), "applyAttack")]
     public class updateAttack
     {
       static bool Prefix(AttackData pData, BaseSimObject pTargetToCheck)
        {
-        int num = (int)pData.initiator.stats[S.damage];
-        float extent = 0;
-        if(pData.initiator.isActor()){
-            pData.initiator.a.data.get("Special Radius", out extent);
-        }
-        float range = pData.initiator.stats[S.area_of_effect] + pTargetToCheck.stats[S.size];
+	        bool newattack = false;
+	        if(pData.initiator.isActor()){
+			pData.initiator.a.data.get("SpecialAttack", out newattack);
+	        }
+	        if(newattack){
+                int num = (int)pData.initiator.stats[S.damage];
 		int num2;
 		if (pData.critical)
 		{
@@ -1479,7 +1431,10 @@ namespace GodsAndPantheons
 		{
 			pData.initiator.a.addExperience(2);
 		}
-        if(Toolbox.Dist(pTargetToCheck.currentPosition.x, pTargetToCheck.currentPosition.y + pTargetToCheck.getZ(), pData.attack_vector.x, pData.attack_vector.y) < (range - extent)){
+	        if (pData.initiator.isActor() && pTargetToCheck.isAlive())
+		{
+			pData.initiator.a.attackTargetActions(pTargetToCheck, pData.hit_tile);
+		}
 		float pDamage = (float)num2;
 		bool pFlash = true;
 		AttackType attack_type = pData.attack_type;
@@ -1509,12 +1464,10 @@ namespace GodsAndPantheons
 			float angle = Toolbox.getAngle(pTargetToCheck.transform.position.x, pTargetToCheck.transform.position.y, pData.attack_vector.x, pData.attack_vector.y);
 			pTargetToCheck.a.addForce(-Mathf.Cos(angle) * num3, -Mathf.Sin(angle) * num3, num3);
 		}
-        }
-        if (pData.initiator.isActor() && pTargetToCheck.isAlive())
-		{
-			pData.initiator.a.attackTargetActions(pTargetToCheck, pData.hit_tile);
+			return false;
 		}
-        return false;
+        
+        return true;
         
     }
  }
