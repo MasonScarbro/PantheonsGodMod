@@ -305,7 +305,7 @@ namespace GodsAndPantheons
             SummonedOne.action_special_effect += new WorldAction(SummonedBeing);
             SummonedOne.group_id = TraitGroup.special;
             SummonedOne.can_be_given = false;
-            SummonedOne.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(GodOfGodsEraStatus));
+            SummonedOne.action_special_effect = (WorldAction)Delegate.Combine(SummonedOne.action_special_effect, new WorldAction(GodOfGodsEraStatus));
             AssetManager.traits.add(SummonedOne);
             addTraitToLocalizedLibrary(SummonedOne.id, "A creature summoned by God himself in order to aid them in battle, DO NOT MODIFY THE NAME OF THIS CREATURE!");
             
