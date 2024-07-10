@@ -1481,7 +1481,9 @@ namespace GodsAndPantheons
 			__result =  false;
 		}
 		float num = Toolbox.Dist(pTargetToCheck.currentPosition.x, pTargetToCheck.currentPosition.y + pTargetToCheck.getZ(), pData.attack_vector.x, pData.attack_vector.y);
-		float num2 = pData.initiator.stats[S.area_of_effect] + pTargetToCheck.stats[S.size] + pData.initiator.a.data.get("Special Radius");
+	        int range = 0;
+	        pData.initiator.a.data.get("Special Radius", out range);
+		float num2 = pData.initiator.stats[S.area_of_effect] + pTargetToCheck.stats[S.size] + range;
 		if (num < num2)
 		{
 			Vector3 pPos = pTargetToCheck.currentPosition;
@@ -1506,14 +1508,14 @@ namespace GodsAndPantheons
      }
     }
     [HarmonyPatch(typeof(MapBox), "applyAttack")]
-    public class UpdateAttacking
+    public class updateAttack
     {
       static bool Prefix(ref bool __result, AttackData pData, BaseSimObject pTargetToCheck)
        {
         int num = (int)pData.initiator.stats[S.damage];
-        int extent;
+        float extent = 0;
         if(pData.initiator.isActor()){
-            extent = pData.initiator.a.data.get("Special Radius");
+            pData.initiator.a.data.get("Special Radius", out extent);
         }
         int range = pData.initiator.stats[S.area_of_effect] + pTargetToCheck.stats[S.size] + extent;
 		int num2;
@@ -1529,7 +1531,7 @@ namespace GodsAndPantheons
 		{
 			pData.initiator.a.addExperience(2);
 		}
-        if(Toolbox.Dist(pTargetToCheck.currentPosition.x, pTargetToCheck.currentPosition.y + pTargetToCheck.getZ(), pData.attack_vector.x, pData.attack_vector.y) < (range - extent){
+        if(Toolbox.Dist(pTargetToCheck.currentPosition.x, pTargetToCheck.currentPosition.y + pTargetToCheck.getZ(), pData.attack_vector.x, pData.attack_vector.y) < (range - extent)){
 		float pDamage = (float)num2;
 		bool pFlash = true;
 		AttackType attack_type = pData.attack_type;
