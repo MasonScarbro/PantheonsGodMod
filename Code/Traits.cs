@@ -285,6 +285,7 @@ namespace GodsAndPantheons
             godofgods.base_stats[S.speed] += 30f;
             godofgods.base_stats[S.armor] += 50f;
             godofgods.action_death = new WorldAction(ActionLibrary.deathNuke);
+            godofgods.action_death = (WorldAction)Delegate.Combine(godofgods.action_death, new WorldAction(genericGodsDeath));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsAutoTrait));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(BringMinions));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsEraStatus));
