@@ -51,7 +51,7 @@ namespace GodsAndPantheons
             spearOfLight.base_stats[S.loyalty_traits] = 0f;
             spearOfLight.base_stats[S.cities] = 0;
             spearOfLight.base_stats[S.zone_range] = 0.1f;
-            spearOfLight.equipment_value = 30;
+            spearOfLight.equipment_value = 3000;
             spearOfLight.special_effect_interval = 0.1f;
             spearOfLight.path_slash_animation = "effects/slashes/slash_spear";
             spearOfLight.tech_needed = "weapon_spear";
@@ -97,7 +97,7 @@ namespace GodsAndPantheons
             axeOfFury.base_stats[S.loyalty_traits] = 0f;
             axeOfFury.base_stats[S.cities] = 0;
             axeOfFury.base_stats[S.zone_range] = 0.1f;
-            axeOfFury.equipment_value = 30;
+            axeOfFury.equipment_value = 3000;
             axeOfFury.path_slash_animation = "effects/slashes/slash_spear";
             axeOfFury.tech_needed = "weapon_axe";
             axeOfFury.quality = ItemQuality.Legendary;
@@ -142,7 +142,7 @@ namespace GodsAndPantheons
             darkDagger.base_stats[S.loyalty_traits] = 0f;
             darkDagger.base_stats[S.cities] = 0;
             darkDagger.base_stats[S.zone_range] = 0.1f;
-            darkDagger.equipment_value = 30;
+            darkDagger.equipment_value = 3000;
             darkDagger.path_slash_animation = "effects/slashes/darkSlash";
             darkDagger.tech_needed = String.Empty;
             darkDagger.quality = ItemQuality.Legendary;
@@ -188,7 +188,7 @@ namespace GodsAndPantheons
             maceOfDestruction.base_stats[S.loyalty_traits] = 0f;
             maceOfDestruction.base_stats[S.cities] = 0;
             maceOfDestruction.base_stats[S.zone_range] = 0.1f;
-            maceOfDestruction.equipment_value = 30;
+            maceOfDestruction.equipment_value = 3000;
             maceOfDestruction.path_slash_animation = "effects/slashes/slash_spear";
             maceOfDestruction.tech_needed = String.Empty;
             maceOfDestruction.quality = ItemQuality.Legendary;
@@ -232,7 +232,7 @@ namespace GodsAndPantheons
             staffOfKnowledge.base_stats[S.loyalty_traits] = 0f;
             staffOfKnowledge.base_stats[S.cities] = 0;
             staffOfKnowledge.base_stats[S.zone_range] = 0.1f;
-            staffOfKnowledge.equipment_value = 30;
+            staffOfKnowledge.equipment_value = 3000;
             staffOfKnowledge.path_slash_animation = "effects/slashes/darkSlash";
             staffOfKnowledge.tech_needed = String.Empty;
             staffOfKnowledge.quality = ItemQuality.Legendary;
@@ -277,7 +277,7 @@ namespace GodsAndPantheons
             cometScepter.base_stats[S.loyalty_traits] = 0f;
             cometScepter.base_stats[S.cities] = 0;
             cometScepter.base_stats[S.zone_range] = 0.1f;
-            cometScepter.equipment_value = 30;
+            cometScepter.equipment_value = 3000;
             cometScepter.path_slash_animation = "effects/slashes/slash_punch";
             cometScepter.tech_needed = String.Empty;
             cometScepter.quality = ItemQuality.Legendary;
@@ -323,7 +323,7 @@ namespace GodsAndPantheons
             hammerOfCreation.base_stats[S.loyalty_traits] = 0f;
             hammerOfCreation.base_stats[S.cities] = 0;
             hammerOfCreation.base_stats[S.zone_range] = 0.1f;
-            hammerOfCreation.equipment_value = 30;
+            hammerOfCreation.equipment_value = 3000;
             hammerOfCreation.path_slash_animation = "effects/slashes/slash_axe";
             hammerOfCreation.tech_needed = String.Empty;
             hammerOfCreation.quality = ItemQuality.Legendary;
@@ -364,7 +364,7 @@ namespace GodsAndPantheons
             lichGodsGreatSword.base_stats[S.loyalty_traits] = 0f;
             lichGodsGreatSword.base_stats[S.cities] = 0;
             lichGodsGreatSword.base_stats[S.zone_range] = 0.1f;
-            lichGodsGreatSword.equipment_value = 30;
+            lichGodsGreatSword.equipment_value = 3000;
             lichGodsGreatSword.path_slash_animation = "effects/slashes/slash_sword";
             lichGodsGreatSword.tech_needed = String.Empty;
             lichGodsGreatSword.quality = ItemQuality.Legendary;
@@ -405,7 +405,7 @@ namespace GodsAndPantheons
             godHuntersScytheB.base_stats[S.loyalty_traits] = 0f;
             godHuntersScytheB.base_stats[S.cities] = 0;
             godHuntersScytheB.base_stats[S.zone_range] = 0.1f;
-            godHuntersScytheB.equipment_value = 30;
+            godHuntersScytheB.equipment_value = 3000;
             godHuntersScytheB.path_slash_animation = "effects/slashes/slash_sword";
             godHuntersScytheB.tech_needed = String.Empty;
             godHuntersScytheB.quality = ItemQuality.Legendary;
@@ -447,7 +447,7 @@ namespace GodsAndPantheons
             godHuntersScythe.base_stats[S.loyalty_traits] = 0f;
             godHuntersScythe.base_stats[S.cities] = 0;
             godHuntersScythe.base_stats[S.zone_range] = 0.1f;
-            godHuntersScythe.equipment_value = 30;
+            godHuntersScythe.equipment_value = 3000;
             godHuntersScythe.path_slash_animation = "effects/slashes/slash_sword";
             godHuntersScythe.tech_needed = String.Empty;
             godHuntersScythe.quality = ItemQuality.Legendary;

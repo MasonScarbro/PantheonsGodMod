@@ -285,6 +285,7 @@ namespace GodsAndPantheons
             godofgods.base_stats[S.speed] += 30f;
             godofgods.base_stats[S.armor] += 50f;
             godofgods.action_death = new WorldAction(ActionLibrary.deathNuke);
+            godofgods.action_death = (WorldAction)Delegate.Combine(godofgods.action_death, new WorldAction(genericGodsDeath));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsAutoTrait));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(BringMinions));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsEraStatus));
@@ -466,7 +467,7 @@ namespace GodsAndPantheons
                     pTarget.a.addTrait("nightchild");
                     pTarget.a.addTrait("moonchild");
                     pTarget.a.addTrait("regeneration");
-
+		    pTarget.a.data.set("SpecialAttack", true);
                 }
 
 
@@ -1185,13 +1186,13 @@ namespace GodsAndPantheons
         {
             if (pSelf.a != null)
             {
-                
                 if (World.world_era.id == "age_hope")   {    //only in age of hope
                     if(!pSelf.a.hasStatus("God_Of_All")){
                 {
                     pSelf.a.addStatusEffect("God_Of_All"); // add the status I created
                     pSelf.a.data.set("lifespan", 61);
                 }
+			    pSelf.a.data.set("Special Radius", 30);
                     }
                 }
                 else
@@ -1201,6 +1202,7 @@ namespace GodsAndPantheons
                         pSelf.a.finishAllStatusEffects(); // remove the status
                         pSelf.a.data.set("lifespan", 31);
                     }
+		    pSelf.a.data.set("Special Radius", 20);
                 }
 
 
@@ -1453,5 +1455,68 @@ namespace GodsAndPantheons
         
         }
     }
-
+    [HarmonyPatch(typeof(MapBox), "applyAttack")]
+    public class updateAttack
+    {
+      static bool Prefix(AttackData pData, BaseSimObject pTargetToCheck)
+       {
+	        bool newattack = false;
+	        if(pData.initiator.isActor()){
+			pData.initiator.a.data.get("SpecialAttack", out newattack);
+	        }
+	        if(newattack){
+                int num = (int)pData.initiator.stats[S.damage];
+		int num2;
+		if (pData.critical)
+		{
+			num2 = (int)((float)num * pData.initiator.stats[S.critical_damage_multiplier]);
+		}
+		else
+		{
+			num2 = (int)Toolbox.randomFloat(pData.initiator.stats[S.damage_range] * (float)num, (float)num);
+		}
+		if (pData.initiator.isActor() && pTargetToCheck.isAlive())
+		{
+			pData.initiator.a.addExperience(2);
+		}
+	        if (pData.initiator.isActor() && pTargetToCheck.isAlive())
+		{
+			pData.initiator.a.attackTargetActions(pTargetToCheck, pData.hit_tile);
+		}
+		float pDamage = (float)num2;
+		bool pFlash = true;
+		AttackType attack_type = pData.attack_type;
+		BaseSimObject initiator = pData.initiator;
+		bool metallic_weapon = pData.metallic_weapon;
+		pTargetToCheck.getHit(pDamage, pFlash, attack_type, initiator, pData.skip_shake, metallic_weapon);
+		if (pTargetToCheck.isActor() && pData.initiator.isActor() && !pTargetToCheck.isAlive() && pData.initiator.a.asset.animal && pData.initiator.a.asset.diet_meat && pTargetToCheck.a.asset.source_meat)
+		{
+			pData.initiator.a.restoreStatsFromEating(70, 0f, true);
+		}
+		float num3;
+		if (pTargetToCheck.base_data.health > 0)
+		{
+			num3 = 0.2f * pData.initiator.stats[S.knockback];
+		}
+		else
+		{
+			num3 = 0.3f * pData.initiator.stats[S.knockback];
+		}
+		num3 -= num3 * pTargetToCheck.stats[S.knockback_reduction];
+		if (num3 < 0f)
+		{
+			num3 = 0f;
+		}
+		if (num3 > 0f && pTargetToCheck.isActor())
+		{
+			float angle = Toolbox.getAngle(pTargetToCheck.transform.position.x, pTargetToCheck.transform.position.y, pData.attack_vector.x, pData.attack_vector.y);
+			pTargetToCheck.a.addForce(-Mathf.Cos(angle) * num3, -Mathf.Sin(angle) * num3, num3);
+		}
+			return false;
+		}
+        
+        return true;
+        
+    }
+ }
 }
