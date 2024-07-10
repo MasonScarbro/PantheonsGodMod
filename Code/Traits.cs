@@ -1510,7 +1510,7 @@ namespace GodsAndPantheons
     [HarmonyPatch(typeof(MapBox), "applyAttack")]
     public class updateAttack
     {
-      static bool Prefix(ref bool __result, AttackData pData, BaseSimObject pTargetToCheck)
+      static bool Prefix(AttackData pData, BaseSimObject pTargetToCheck)
        {
         int num = (int)pData.initiator.stats[S.damage];
         float extent = 0;
