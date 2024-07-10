@@ -1454,5 +1454,117 @@ namespace GodsAndPantheons
         
         }
     }
-
+    [HarmonyPatch(typeof(MapBox), "checkAttackFor")]
+    public class UpdateRange
+    {
+      static bool Prefix(ref bool __result, AttackData pData, BaseSimObject pTargetToCheck)
+       {
+           if (pTargetToCheck == null)
+		{
+			__result = false;
+		}
+		if (pTargetToCheck == pData.initiator)
+		{
+			__result =  false;
+		}
+		if (!pTargetToCheck.isAlive())
+		{
+			__result =  false;
+		}
+		if (!pData.initiator.isAlive())
+		{
+			__result =  false;
+		}
+		if (!pData.initiator.canAttackTarget(pTargetToCheck))
+		{
+			__result =  false;
+		}
+		float num = Toolbox.Dist(pTargetToCheck.currentPosition.x, pTargetToCheck.currentPosition.y + pTargetToCheck.getZ(), pData.attack_vector.x, pData.attack_vector.y);
+		float num2 = pData.initiator.stats[S.area_of_effect] + pTargetToCheck.stats[S.size] + pData.initiator.a.data.get("Special Radius");
+		if (num < num2)
+		{
+			Vector3 pPos = pTargetToCheck.currentPosition;
+			pPos = Vector3.MoveTowards(pData.attack_vector, pTargetToCheck.currentPosition, pTargetToCheck.stats[S.size] * 0.9f);
+			pPos.y += pTargetToCheck.getZ();
+			if (pTargetToCheck.spriteRenderer != null && pTargetToCheck.spriteRenderer.enabled)
+			{
+				if (pData.critical)
+				{
+					EffectsLibrary.spawnAt("fx_hit_critical", pPos, 0.1f);
+				}
+				else
+				{
+					EffectsLibrary.spawnAt("fx_hit", pPos, 0.1f);
+				}
+			}
+			MapBox.applyAttack(pData, pTargetToCheck);
+			__result =  true;
+		}
+        return false;
+        
+     }
+    }
+    [HarmonyPatch(typeof(MapBox), "applyAttack")]
+    public class UpdateAttacking
+    {
+      static bool Prefix(ref bool __result, AttackData pData, BaseSimObject pTargetToCheck)
+       {
+        int num = (int)pData.initiator.stats[S.damage];
+        int extent;
+        if(pData.initiator.isActor()){
+            extent = pData.initiator.a.data.get("Special Radius");
+        }
+        int range = pData.initiator.stats[S.area_of_effect] + pTargetToCheck.stats[S.size] + extent;
+		int num2;
+		if (pData.critical)
+		{
+			num2 = (int)((float)num * pData.initiator.stats[S.critical_damage_multiplier]);
+		}
+		else
+		{
+			num2 = (int)Toolbox.randomFloat(pData.initiator.stats[S.damage_range] * (float)num, (float)num);
+		}
+		if (pData.initiator.isActor() && pTargetToCheck.isAlive())
+		{
+			pData.initiator.a.addExperience(2);
+		}
+        if(Toolbox.Dist(pTargetToCheck.currentPosition.x, pTargetToCheck.currentPosition.y + pTargetToCheck.getZ(), pData.attack_vector.x, pData.attack_vector.y) < (range - extent){
+		float pDamage = (float)num2;
+		bool pFlash = true;
+		AttackType attack_type = pData.attack_type;
+		BaseSimObject initiator = pData.initiator;
+		bool metallic_weapon = pData.metallic_weapon;
+		pTargetToCheck.getHit(pDamage, pFlash, attack_type, initiator, pData.skip_shake, metallic_weapon);
+		if (pTargetToCheck.isActor() && pData.initiator.isActor() && !pTargetToCheck.isAlive() && pData.initiator.a.asset.animal && pData.initiator.a.asset.diet_meat && pTargetToCheck.a.asset.source_meat)
+		{
+			pData.initiator.a.restoreStatsFromEating(70, 0f, true);
+		}
+		float num3;
+		if (pTargetToCheck.base_data.health > 0)
+		{
+			num3 = 0.2f * pData.initiator.stats[S.knockback];
+		}
+		else
+		{
+			num3 = 0.3f * pData.initiator.stats[S.knockback];
+		}
+		num3 -= num3 * pTargetToCheck.stats[S.knockback_reduction];
+		if (num3 < 0f)
+		{
+			num3 = 0f;
+		}
+		if (num3 > 0f && pTargetToCheck.isActor())
+		{
+			float angle = Toolbox.getAngle(pTargetToCheck.transform.position.x, pTargetToCheck.transform.position.y, pData.attack_vector.x, pData.attack_vector.y);
+			pTargetToCheck.a.addForce(-Mathf.Cos(angle) * num3, -Mathf.Sin(angle) * num3, num3);
+		}
+        }
+        if (pData.initiator.isActor() && pTargetToCheck.isAlive())
+		{
+			pData.initiator.a.attackTargetActions(pTargetToCheck, pData.hit_tile);
+		}
+        return false;
+        
+    }
+ }
 }
