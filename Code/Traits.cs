@@ -1455,58 +1455,6 @@ namespace GodsAndPantheons
         
         }
     }
-    [HarmonyPatch(typeof(MapBox), "checkAttackFor")]
-    public class UpdateRange
-    {
-      static bool Prefix(ref bool __result, AttackData pData, BaseSimObject pTargetToCheck)
-       {
-           if (pTargetToCheck == null)
-		{
-			__result = false;
-		}
-		if (pTargetToCheck == pData.initiator)
-		{
-			__result =  false;
-		}
-		if (!pTargetToCheck.isAlive())
-		{
-			__result =  false;
-		}
-		if (!pData.initiator.isAlive())
-		{
-			__result =  false;
-		}
-		if (!pData.initiator.canAttackTarget(pTargetToCheck))
-		{
-			__result =  false;
-		}
-		float num = Toolbox.Dist(pTargetToCheck.currentPosition.x, pTargetToCheck.currentPosition.y + pTargetToCheck.getZ(), pData.attack_vector.x, pData.attack_vector.y);
-	        int range = 0;
-	        pData.initiator.a.data.get("Special Radius", out range);
-		float num2 = pData.initiator.stats[S.area_of_effect] + pTargetToCheck.stats[S.size] + range;
-		if (num < num2)
-		{
-			Vector3 pPos = pTargetToCheck.currentPosition;
-			pPos = Vector3.MoveTowards(pData.attack_vector, pTargetToCheck.currentPosition, pTargetToCheck.stats[S.size] * 0.9f);
-			pPos.y += pTargetToCheck.getZ();
-			if (pTargetToCheck.spriteRenderer != null && pTargetToCheck.spriteRenderer.enabled)
-			{
-				if (pData.critical)
-				{
-					EffectsLibrary.spawnAt("fx_hit_critical", pPos, 0.1f);
-				}
-				else
-				{
-					EffectsLibrary.spawnAt("fx_hit", pPos, 0.1f);
-				}
-			}
-			MapBox.applyAttack(pData, pTargetToCheck);
-			__result =  true;
-		}
-        return false;
-        
-     }
-    }
     [HarmonyPatch(typeof(MapBox), "applyAttack")]
     public class updateAttack
     {
@@ -1517,7 +1465,7 @@ namespace GodsAndPantheons
         if(pData.initiator.isActor()){
             pData.initiator.a.data.get("Special Radius", out extent);
         }
-        float range = pData.initiator.stats[S.area_of_effect] + pTargetToCheck.stats[S.size] + extent;
+        float range = pData.initiator.stats[S.area_of_effect] + pTargetToCheck.stats[S.size];
 		int num2;
 		if (pData.critical)
 		{
