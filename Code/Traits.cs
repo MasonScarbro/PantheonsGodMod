@@ -1186,13 +1186,13 @@ namespace GodsAndPantheons
         {
             if (pSelf.a != null)
             {
-                
                 if (World.world_era.id == "age_hope")   {    //only in age of hope
                     if(!pSelf.a.hasStatus("God_Of_All")){
                 {
                     pSelf.a.addStatusEffect("God_Of_All"); // add the status I created
                     pSelf.a.data.set("lifespan", 61);
                 }
+			    pSelf.a.data.set("Special Radius", 30);
                     }
                 }
                 else
@@ -1202,6 +1202,7 @@ namespace GodsAndPantheons
                         pSelf.a.finishAllStatusEffects(); // remove the status
                         pSelf.a.data.set("lifespan", 31);
                     }
+		    pSelf.a.data.set("Special Radius", 20);
                 }
 
 
