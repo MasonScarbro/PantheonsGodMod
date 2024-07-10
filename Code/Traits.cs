@@ -1407,6 +1407,54 @@ namespace GodsAndPantheons
               return summoned;
         }
     }
+    [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
+    public class UpdateAttacking
+    {
+        static bool Prefix(ref bool __result, BaseSimObject __instance, BaseSimObject pTarget)
+        {
+            if (__instance == pTarget)
+            {
+                __result = false;
+                return false;
+            }
+            if (pTarget.isBuilding() && __instance.kingdom.race == pTarget.kingdom.race)
+            {
+                __result = false;
+                return false;
+            }
+            if (__instance.isActor() && pTarget.isActor())
+            {
+                Actor a = (Actor)__instance;
+                Actor b = (Actor)pTarget;
+                if (a.hasTrait("Summoned One"))
+                {
+                    Actor Master = Traits.FindMaster(a);
+                    if (Master != a)
+                    {
+                        if (!Master.canAttackTarget(b))
+                        {
+                            __result = false;
+                            return false;
+                        }
+                    }
+                }
+                else if (b.hasTrait("Summoned One"))
+                {
+                    Actor Master = Traits.FindMaster(b);
+                    if (Master != b)
+                    {
+                        if (!a.canAttackTarget(Master))
+                        {
+                            __result = false;
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        
+        }
+    }
     [HarmonyPatch(typeof(MapBox), "applyAttack")]
     public class updateAttack
     {
