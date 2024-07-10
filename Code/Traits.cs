@@ -467,7 +467,7 @@ namespace GodsAndPantheons
                     pTarget.a.addTrait("nightchild");
                     pTarget.a.addTrait("moonchild");
                     pTarget.a.addTrait("regeneration");
-		    pTarget.a.set("SpecialAttack", true);
+		    pTarget.a.data.set("SpecialAttack", true);
                 }
 
 
