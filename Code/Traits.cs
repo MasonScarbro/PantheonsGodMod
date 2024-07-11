@@ -1436,7 +1436,7 @@ namespace GodsAndPantheons
                 Actor b = (Actor)pTarget;
 		if(a.hasTrait("God Hunter")){
 		   bool ishunting = false;
-		   a.data.get("ishunting", ishunting);
+		   a.data.get("ishunting", out ishunting);
 		   if(!ishunting){
 			   if(!b.hasTrait("God of gods")){
 			   __result = false;
