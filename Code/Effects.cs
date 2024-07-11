@@ -69,6 +69,7 @@ namespace GodsAndPantheons
             GodOfGodsEra.path_icon = "ui/icons/IconDemi";
             GodOfGodsEra.description = "Now i have become death, destroyer of worlds";
             GodOfGodsEra.name = "God Of All";
+	    GodOfGodsEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(GodOfGodsEra.id, "God_Of_All", GodOfGodsEra.description); // Localizes the status effect
             AssetManager.status.add(GodOfGodsEra);
 
