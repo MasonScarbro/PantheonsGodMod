@@ -285,6 +285,7 @@ namespace GodsAndPantheons
             godofgods.base_stats[S.speed] += 30f;
             godofgods.base_stats[S.armor] += 50f;
             godofgods.action_death = new WorldAction(ActionLibrary.deathNuke);
+	    godofgods.action_death = (WorldAction)Delegate.Combine(godofgods.action_death, new WorldAction(genericGodsDeath));
             godofgods.action_death = (WorldAction)Delegate.Combine(godofgods.action_death, new WorldAction(genericGodsDeath));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsAutoTrait));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(BringMinions));
@@ -353,6 +354,16 @@ namespace GodsAndPantheons
                }
               return MyMinions;
         }
+        public static bool IsGod(Actor a){
+		return a.hasTrait("God Of The Lich") 
+                || a.hasTrait("God Of The Stars") 
+                || a.hasTrait("God Of Knowledge") 
+                || a.hasTrait("God Of The Night") 
+                || a.hasTrait("God Of Light") 
+                || a.hasTrait("God Of War") 
+                || a.hasTrait("God Of the Earth")
+	        || a.hasTrait("God of Gods");
+	}
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -496,7 +507,8 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            attackedBy.a.addTrait("God Killer");
+	    if(!isGod(attackedBy.a))
+              attackedBy.a.addTrait("God Killer");
             if(Main.savedSettings.deathera)
               World.world.eraManager.setEra(S.age_dark, true);
             return true;
@@ -511,7 +523,8 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            attackedBy.a.addTrait("God Killer");
+	    if(!isGod(attackedBy.a))
+              attackedBy.a.addTrait("God Killer");
             if(Main.savedSettings.deathera)
               World.world.eraManager.setEra(S.age_moon, true);
             return true;
@@ -525,7 +538,8 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            attackedBy.a.addTrait("God Killer");
+	    if(!isGod(attackedBy.a))
+              attackedBy.a.addTrait("God Killer");
             if(Main.savedSettings.deathera)
               World.world.eraManager.setEra(S.age_sun, true);
 
@@ -541,19 +555,7 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            if (attackedBy.a.hasTrait("God Of The Lich") 
-                || attackedBy.a.hasTrait("God Of The Stars") 
-                || attackedBy.a.hasTrait("God Of Knowledge") 
-                || attackedBy.a.hasTrait("God Of The Night") 
-                || attackedBy.a.hasTrait("God Of Light") 
-                || attackedBy.a.hasTrait("God Of War") 
-                || attackedBy.a.hasTrait("God Of the Earth"))
-            {
-                //Gods Wont Replace Weapons
-                return true;
-            }
-            else
-            {
+            if (!isGod(attackedBy.a){
                 ItemData godHuntersScythe = new ItemData();
                 godHuntersScythe.id = "GodHuntersScythe";
                 godHuntersScythe.material = "base";
@@ -1150,6 +1152,7 @@ namespace GodsAndPantheons
                     pTarget.a.addTrait("blessed");
                     pTarget.a.addTrait("frost_proof");
                     pTarget.a.addTrait("fire_proof");
+		    pTarget.a.addTrait("tough");
                 }
 
 
