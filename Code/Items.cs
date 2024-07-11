@@ -541,6 +541,12 @@ namespace GodsAndPantheons
             }
             return false;
         }
+        public static bool GodHunterAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile){
+            if(pTarget != null && pTarget.isActor()){
+                if(isGod(pTarget.a))
+            }
+                
+        }
 
         public static bool earthGodSendMountain(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
