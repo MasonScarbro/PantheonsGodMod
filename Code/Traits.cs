@@ -1150,9 +1150,6 @@ namespace GodsAndPantheons
                     pTarget.a.addTrait("blessed");
                     pTarget.a.addTrait("frost_proof");
                     pTarget.a.addTrait("fire_proof");
-                    pTarget.a.addTrait("tough");
-
-
                 }
 
 
@@ -1479,7 +1476,7 @@ namespace GodsAndPantheons
 		{
 			pData.initiator.a.addExperience(2);
 		}
-	        if (pData.initiator.isActor() && pTargetToCheck.isAlive())
+	        if (pData.initiator.isActor())
 		{
 			pData.initiator.a.attackTargetActions(pTargetToCheck, pData.hit_tile);
 		}
@@ -1488,7 +1485,9 @@ namespace GodsAndPantheons
 		AttackType attack_type = pData.attack_type;
 		BaseSimObject initiator = pData.initiator;
 		bool metallic_weapon = pData.metallic_weapon;
+	        if(pTargetToCheck.isAlive()){
 		pTargetToCheck.getHit(pDamage, pFlash, attack_type, initiator, pData.skip_shake, metallic_weapon);
+		}
 		if (pTargetToCheck.isActor() && pData.initiator.isActor() && !pTargetToCheck.isAlive() && pData.initiator.a.asset.animal && pData.initiator.a.asset.diet_meat && pTargetToCheck.a.asset.source_meat)
 		{
 			pData.initiator.a.restoreStatsFromEating(70, 0f, true);
