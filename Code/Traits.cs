@@ -264,6 +264,7 @@ namespace GodsAndPantheons
             godHunter.path_icon = "ui/icons/godKiller";
             godHunter.base_stats[S.damage] += 0;
             godHunter.base_stats[S.health] += 0;
+	    godHunter.action_special_effect = WorldAction(SuperRegeneration):
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
             godHunter.action_death = (WorldAction)Delegate.Combine(godHunter.action_death, new WorldAction(godHunterDeath));
             AssetManager.traits.add(godHunter);
