@@ -1426,6 +1426,16 @@ namespace GodsAndPantheons
             {
                 Actor a = (Actor)__instance;
                 Actor b = (Actor)pTarget;
+		if(a.hasTrait("God Hunter"){
+		   if(!a.data.get("ishunting")){
+			   if(!b.hasTrait("God of gods")){
+			   _result = false;
+			   return false;
+			   }else{
+			     a.data.set("ishunting", true);
+			   }
+		   }
+		}
                 if (a.hasTrait("Summoned One"))
                 {
                     Actor Master = Traits.FindMaster(a);
