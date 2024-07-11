@@ -264,7 +264,7 @@ namespace GodsAndPantheons
             godHunter.path_icon = "ui/icons/godKiller";
             godHunter.base_stats[S.damage] += 0;
             godHunter.base_stats[S.health] += 0;
-	    godHunter.action_special_effect = WorldAction(SuperRegeneration):
+	    godHunter.action_special_effect = new WorldAction(SuperRegeneration);
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
             godHunter.action_death = (WorldAction)Delegate.Combine(godHunter.action_death, new WorldAction(godHunterDeath));
             AssetManager.traits.add(godHunter);
@@ -345,8 +345,8 @@ namespace GodsAndPantheons
         }
 	public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile)
         {
-		if(Toolbox.randomChance(0.1f){
-			pTarget.a.restoreHealth((int)(actor.getMaxHealth() * 0.05f));
+		if(Toolbox.randomChance(0.1f)){
+			pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * 0.05f));
 		}
 		   return true;
 	}
@@ -1434,10 +1434,12 @@ namespace GodsAndPantheons
             {
                 Actor a = (Actor)__instance;
                 Actor b = (Actor)pTarget;
-		if(a.hasTrait("God Hunter"){
-		   if(!a.data.get("ishunting")){
+		if(a.hasTrait("God Hunter")){
+		   bool ishunting = false;
+		   a.data.get("ishunting", ishunting);
+		   if(!ishunting){
 			   if(!b.hasTrait("God of gods")){
-			   _result = false;
+			   __result = false;
 			   return false;
 			   }else{
 			     a.data.set("ishunting", true);
