@@ -342,6 +342,13 @@ namespace GodsAndPantheons
             }
             return true;
         }
+	public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile)
+        {
+		if(Toolbox.randomChance(0.1f){
+			pTarget.a.restoreHealth((int)(actor.getMaxHealth() * 0.05f));
+		}
+		   return true;
+	}
         public static List<Actor> GetMinions(Actor a){
             List<Actor> MyMinions = new List<Actor>();
             List<Actor> simpleList = World.world.units.getSimpleList();
