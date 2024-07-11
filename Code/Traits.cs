@@ -507,7 +507,7 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-	    if(!isGod(attackedBy.a))
+	    if(!IsGod(attackedBy.a))
               attackedBy.a.addTrait("God Killer");
             if(Main.savedSettings.deathera)
               World.world.eraManager.setEra(S.age_dark, true);
@@ -523,7 +523,7 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-	    if(!isGod(attackedBy.a))
+	    if(!IsGod(attackedBy.a))
               attackedBy.a.addTrait("God Killer");
             if(Main.savedSettings.deathera)
               World.world.eraManager.setEra(S.age_moon, true);
@@ -538,7 +538,7 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-	    if(!isGod(attackedBy.a))
+	    if(!IsGod(attackedBy.a))
               attackedBy.a.addTrait("God Killer");
             if(Main.savedSettings.deathera)
               World.world.eraManager.setEra(S.age_sun, true);
@@ -555,7 +555,7 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            if (!isGod(attackedBy.a){
+            if (!IsGod(attackedBy.a)){
                 ItemData godHuntersScythe = new ItemData();
                 godHuntersScythe.id = "GodHuntersScythe";
                 godHuntersScythe.material = "base";
