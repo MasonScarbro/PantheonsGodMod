@@ -1438,7 +1438,7 @@ namespace GodsAndPantheons
 		   bool ishunting = false;
 		   a.data.get("ishunting", out ishunting);
 		   if(!ishunting){
-			   if(!b.hasTrait("God of gods")){
+			   if(!Traits.IsGod(b)){
 			   __result = false;
 			   return false;
 			   }else{
