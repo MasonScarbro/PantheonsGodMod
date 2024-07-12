@@ -1415,10 +1415,10 @@ return a.hasTrait("God Of The Lich")
                 }
                 else if (b.hasTrait("Summoned One"))
                 {
-                    Actor Master = Traits.FindMaster(b);
-                    if (Master != b)
+                    Actor Masterb = Traits.FindMaster(b);
+                    if (Masterb != b)
                     {
-                        if (!a.canAttackTarget(Master))
+                        if (!a.canAttackTarget(Masterb))
                             __result = false;
                     }
                 }
