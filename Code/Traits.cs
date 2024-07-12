@@ -1418,17 +1418,11 @@ return a.hasTrait("God Of The Lich")
     [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
     public class UpdateAttacking
     {
-        static bool Prefix(ref bool __result, BaseSimObject __instance, BaseSimObject pTarget)
+        static void Postfix(ref bool __result, BaseSimObject __instance, BaseSimObject pTarget)
         {
             if (__instance == pTarget)
             {
                 __result = false;
-                return false;
-            }
-            if (pTarget.isBuilding() && __instance.kingdom.race == pTarget.kingdom.race)
-            {
-                __result = false;
-                return false;
             }
             if (__instance.isActor() && pTarget.isActor())
             {
@@ -1439,10 +1433,9 @@ return a.hasTrait("God Of The Lich")
                     Actor Master = Traits.FindMaster(a);
                     if (Master != a)
                     {
-                        if (!Master.canAttackTarget(b))
+                        if (!Master.canAttackTarget(b) || pTarget.isBuilding())
                         {
                             __result = false;
-                            return false;
                         }
                     }
                 }
@@ -1454,12 +1447,22 @@ return a.hasTrait("God Of The Lich")
                         if (!a.canAttackTarget(Master))
                         {
                             __result = false;
-                            return false;
                         }
                     }
                 }
             }
-            return true;
        }
     }
+    [HarmonyPatch(typeof(MapBox), "applyAttack")]
+    public class updateAttack
+    {
+      static void Postfix(AttackData pData, BaseSimObject pTargetToCheck)
+       {
+	      if (pData.initiator.isActor() && pTargetToCheck.isActor()){
+	      if(pData.initiator.a.hasTrait("God Hunter") && !pTargetToCheck.isAlive() && Traits.IsGod(pTargetToCheck.a)){
+		      pData.initiator.a.killHimself();
+	      }
+	      }
+        }
+ }
 }
