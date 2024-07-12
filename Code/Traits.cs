@@ -93,10 +93,10 @@ namespace GodsAndPantheons
             sunGod.path_icon = "ui/icons/lightGod";
             sunGod.base_stats[S.damage] += 20f;
             sunGod.base_stats[S.health] += 500;
-            sunGod.base_stats[S.attack_speed] += 80f;
+            sunGod.base_stats[S.attack_speed] += 100f;
             sunGod.base_stats[S.critical_chance] += 0.05f;
             sunGod.base_stats[S.speed] += 90f;
-            sunGod.base_stats[S.dodge] += 30f;
+            sunGod.base_stats[S.dodge] += 80f;
             sunGod.base_stats[S.accuracy] += 10f;
             sunGod.base_stats[S.range] += 5f;
             AssetManager.traits.add(sunGod);
@@ -119,7 +119,7 @@ namespace GodsAndPantheons
             darkGod.base_stats[S.attack_speed] += 3f;
             darkGod.base_stats[S.critical_chance] += 0.25f;
             darkGod.base_stats[S.scale] = 0.02f;
-            darkGod.base_stats[S.dodge] += 3f;
+            darkGod.base_stats[S.dodge] += 60f;
             darkGod.base_stats[S.range] += 6f;
             darkGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             darkGod.action_attack_target = new AttackAction(darkGodAttack);
@@ -264,6 +264,7 @@ namespace GodsAndPantheons
             godHunter.path_icon = "ui/icons/godKiller";
             godHunter.base_stats[S.damage] += 0;
             godHunter.base_stats[S.health] += 0;
+	    godHunter.action_special_effect = new WorldAction(SuperRegeneration);
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
             godHunter.action_death = (WorldAction)Delegate.Combine(godHunter.action_death, new WorldAction(godHunterDeath));
             AssetManager.traits.add(godHunter);
@@ -342,6 +343,13 @@ namespace GodsAndPantheons
             }
             return true;
         }
+	public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile)
+        {
+		if(Toolbox.randomChance(0.1f)){
+			pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * 0.05f));
+		}
+		   return true;
+	}
         public static List<Actor> GetMinions(Actor a){
             List<Actor> MyMinions = new List<Actor>();
             List<Actor> simpleList = World.world.units.getSimpleList();
@@ -354,16 +362,17 @@ namespace GodsAndPantheons
                }
               return MyMinions;
         }
-        public static bool IsGod(Actor a){
-		return a.hasTrait("God Of The Lich") 
-                || a.hasTrait("God Of The Stars") 
-                || a.hasTrait("God Of Knowledge") 
-                || a.hasTrait("God Of The Night") 
-                || a.hasTrait("God Of Light") 
-                || a.hasTrait("God Of War") 
-                || a.hasTrait("God Of the Earth")
-	        || a.hasTrait("God of Gods");
-	}
+            public static bool IsGod(Actor a){
+return a.hasTrait("God Of The Lich") 
+|| a.hasTrait("God Of The Stars") 
+|| a.hasTrait("God Of Knowledge") 
+|| a.hasTrait("God Of The Night") 
+|| a.hasTrait("God_Of_Chaos") 
+|| a.hasTrait("God Of War") 
+|| a.hasTrait("God Of the Earth")
+|| a.hasTrait("God Of light")
+|| a.hasTrait("God of gods");
+}
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -375,66 +384,43 @@ namespace GodsAndPantheons
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
                 if(Toolbox.randomChance(GodOfGodsPwrChance1)){
-                if (Toolbox.randomChance(0.5f))
-                {
-                    ActionLibrary.castLightning(null, pTarget, null);
-                }else
-                if (Toolbox.randomChance(0.2f))
-                {
-                    EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f);    //spawn 1 meteorite
-                    pSelf.a.addStatusEffect("invincible", 1f);
+			int decider = Toolbox.randomInt(1, 4);
+		switch(decider){	
+			case 1: ActionLibrary.castLightning(null, pTarget, null); break;
+			case 2: EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f); pSelf.a.addStatusEffect("invincible", 1f); break;
+			case 3: ActionLibrary.castTornado(pSelf, pTarget, pTile); break;
+			case 4: pb.spawnEarthquake(pTarget.a.currentTile, null); break;
                 }
-                else if (Toolbox.randomChance(0.3f))
-                {
-                    ActionLibrary.castTornado(pSelf, pTarget, pTile);
-                }
-                else if (Toolbox.randomChance(0.15f))
-                {
-                    pb.spawnEarthquake(pTarget.a.currentTile, null);
-                }
-                }
+		}
                 if(Toolbox.randomChance(GodOfGodsPwrChance2)){
-                if (Toolbox.randomChance(0.6f))
-                {
-                    Summon(SA.demon, 1, self, pTile);
-                }
-                else if (Toolbox.randomChance(0.7f))
-                {
-                    Summon(SA.evilMage, 1, self, pTile);
-                }
-                else if (Toolbox.randomChance(0.8f))
-                {
-                    Summon(SA.skeleton, 3, self, pTile);
+			int decider = Toolbox.randomInt(1, 3);
+                switch(decider){	
+			case 1: Summon(SA.demon, 1, self, pTile); break;
+			case 2: Summon(SA.evilMage, 1, self, pTile); break;
+			case 3: Summon(SA.skeleton, 3, self, pTile); break;
                 }
                 }
                 if(Toolbox.randomChance(GodOfGodsPwrChance3)){
-                if(Toolbox.randomChance(0.5f))
-                {
-                    ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null);
-                }
-                else
-                if (Toolbox.randomChance(0.4f))
-                {
-                    EffectsLibrary.spawn("fx_explosion_middle", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
-                    pSelf.a.addStatusEffect("invincible", 1f);
-                }else
-                if (Toolbox.randomChance(0.6f))
-                {
+                int decider = Toolbox.randomInt(1, 5);
+                switch(decider){	
+		    case 1: ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null); break;
+				
+		    case 2: EffectsLibrary.spawn("fx_explosion_middle", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
+                    pSelf.a.addStatusEffect("invincible", 1f); break;
+
                     // randomly spawns a flash of fire or acid on the tile 
-                    MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f);
+		    case 3: MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f);
                     MapBox.instance.dropManager.spawn(pTile, "acid", 5f, -1f);
-                    MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f); // Drops fire from distance 5 with scale of one at current tile
-                }else if (Toolbox.randomChance(0.2f))
-                {
-                    Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
+                    MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f); break;
+
+		    case 4: {Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
                     Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
-                    EffectsLibrary.spawnProjectile("lightBallzProjectiles", newPoint, newPoint2, 0.0f);
-                }else if (Toolbox.randomChance(0.2f))
-                {
-                    Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x + 35f, pSelf.currentPosition.y + 95f, (float)pos.x + 1f, (float)pos.y + 1f, pDist, true); // the Point of the projectile launcher 
+                    EffectsLibrary.spawnProjectile("lightBallzProjectiles", newPoint, newPoint2, 0.0f); break;}
+
+		    case 5: {Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x + 35f, pSelf.currentPosition.y + 95f, (float)pos.x + 1f, (float)pos.y + 1f, pDist, true); // the Point of the projectile launcher 
                     Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
                     EffectsLibrary.spawnProjectile("moonFall", newPoint, newPoint2, 0.0f);
-                    pSelf.a.addStatusEffect("invincible", 2f);
+                    pSelf.a.addStatusEffect("invincible", 2f); break;}
                 }
                 }
 
@@ -478,7 +464,6 @@ namespace GodsAndPantheons
                     pTarget.a.addTrait("nightchild");
                     pTarget.a.addTrait("moonchild");
                     pTarget.a.addTrait("regeneration");
-		    pTarget.a.data.set("SpecialAttack", true);
                 }
 
 
@@ -507,7 +492,7 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-	    if(!isGod(attackedBy.a))
+	    if(!IsGod(attackedBy.a))
               attackedBy.a.addTrait("God Killer");
             if(Main.savedSettings.deathera)
               World.world.eraManager.setEra(S.age_dark, true);
@@ -523,7 +508,7 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-	    if(!isGod(attackedBy.a))
+	    if(!IsGod(attackedBy.a))
               attackedBy.a.addTrait("God Killer");
             if(Main.savedSettings.deathera)
               World.world.eraManager.setEra(S.age_moon, true);
@@ -538,7 +523,7 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-	    if(!isGod(attackedBy.a))
+	    if(!IsGod(attackedBy.a))
               attackedBy.a.addTrait("God Killer");
             if(Main.savedSettings.deathera)
               World.world.eraManager.setEra(S.age_sun, true);
@@ -555,7 +540,7 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            if (!isGod(attackedBy.a){
+            if (!IsGod(attackedBy.a)){
                 ItemData godHuntersScythe = new ItemData();
                 godHuntersScythe.id = "GodHuntersScythe";
                 godHuntersScythe.material = "base";
@@ -1192,7 +1177,6 @@ namespace GodsAndPantheons
                     pSelf.a.addStatusEffect("God_Of_All"); // add the status I created
                     pSelf.a.data.set("lifespan", 61);
                 }
-			    pSelf.a.data.set("Special Radius", 30);
                     }
                 }
                 else
@@ -1202,7 +1186,6 @@ namespace GodsAndPantheons
                         pSelf.a.finishAllStatusEffects(); // remove the status
                         pSelf.a.data.set("lifespan", 31);
                     }
-		    pSelf.a.data.set("Special Radius", 20);
                 }
 
 
@@ -1410,115 +1393,52 @@ namespace GodsAndPantheons
     [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
     public class UpdateAttacking
     {
-        static bool Prefix(ref bool __result, BaseSimObject __instance, BaseSimObject pTarget)
+        static void Postfix(ref bool __result, BaseSimObject __instance, BaseSimObject pTarget)
         {
             if (__instance == pTarget)
             {
                 __result = false;
-                return false;
             }
-            if (pTarget.isBuilding() && __instance.kingdom.race == pTarget.kingdom.race)
+            if (__instance.isActor())
             {
-                __result = false;
-                return false;
-            }
-            if (__instance.isActor() && pTarget.isActor())
-            {
-                Actor a = (Actor)__instance;
-                Actor b = (Actor)pTarget;
-                if (a.hasTrait("Summoned One"))
+                Actor a = __instance.a;
+		bool summoned = a.hasTrait("Summoned One");
+		Actor Master = Traits.FindMaster(a);
+		if(pTarget.isActor()){
+                Actor b = pTarget.a;
+                if (summoned && Master != a)
                 {
-                    Actor Master = Traits.FindMaster(a);
-                    if (Master != a)
-                    {
                         if (!Master.canAttackTarget(b))
                         {
                             __result = false;
-                            return false;
                         }
-                    }
                 }
                 else if (b.hasTrait("Summoned One"))
                 {
-                    Actor Master = Traits.FindMaster(b);
-                    if (Master != b)
+                    Actor Masterb = Traits.FindMaster(b);
+                    if (Masterb != b)
                     {
-                        if (!a.canAttackTarget(Master))
-                        {
+                        if (!a.canAttackTarget(Masterb))
                             __result = false;
-                            return false;
-                        }
                     }
                 }
+		}else if(summoned && pTarget.isBuilding() && Master != a){
+			if(Master.kingdom.race == pTarget.kingdom.race)
+				__result = false;
+		}
             }
-            return true;
-        
-        }
+       }
     }
     [HarmonyPatch(typeof(MapBox), "applyAttack")]
     public class updateAttack
     {
-      static bool Prefix(AttackData pData, BaseSimObject pTargetToCheck)
+      static void Postfix(AttackData pData, BaseSimObject pTargetToCheck)
        {
-	        bool newattack = false;
-	        if(pData.initiator.isActor()){
-			pData.initiator.a.data.get("SpecialAttack", out newattack);
-	        }
-	        if(newattack){
-                int num = (int)pData.initiator.stats[S.damage];
-		int num2;
-		if (pData.critical)
-		{
-			num2 = (int)((float)num * pData.initiator.stats[S.critical_damage_multiplier]);
-		}
-		else
-		{
-			num2 = (int)Toolbox.randomFloat(pData.initiator.stats[S.damage_range] * (float)num, (float)num);
-		}
-		if (pData.initiator.isActor() && pTargetToCheck.isAlive())
-		{
-			pData.initiator.a.addExperience(2);
-		}
-	        if (pData.initiator.isActor())
-		{
-			pData.initiator.a.attackTargetActions(pTargetToCheck, pData.hit_tile);
-		}
-		float pDamage = (float)num2;
-		bool pFlash = true;
-		AttackType attack_type = pData.attack_type;
-		BaseSimObject initiator = pData.initiator;
-		bool metallic_weapon = pData.metallic_weapon;
-	        if(pTargetToCheck.isAlive()){
-		pTargetToCheck.getHit(pDamage, pFlash, attack_type, initiator, pData.skip_shake, metallic_weapon);
-		}
-		if (pTargetToCheck.isActor() && pData.initiator.isActor() && !pTargetToCheck.isAlive() && pData.initiator.a.asset.animal && pData.initiator.a.asset.diet_meat && pTargetToCheck.a.asset.source_meat)
-		{
-			pData.initiator.a.restoreStatsFromEating(70, 0f, true);
-		}
-		float num3;
-		if (pTargetToCheck.base_data.health > 0)
-		{
-			num3 = 0.2f * pData.initiator.stats[S.knockback];
-		}
-		else
-		{
-			num3 = 0.3f * pData.initiator.stats[S.knockback];
-		}
-		num3 -= num3 * pTargetToCheck.stats[S.knockback_reduction];
-		if (num3 < 0f)
-		{
-			num3 = 0f;
-		}
-		if (num3 > 0f && pTargetToCheck.isActor())
-		{
-			float angle = Toolbox.getAngle(pTargetToCheck.transform.position.x, pTargetToCheck.transform.position.y, pData.attack_vector.x, pData.attack_vector.y);
-			pTargetToCheck.a.addForce(-Mathf.Cos(angle) * num3, -Mathf.Sin(angle) * num3, num3);
-		}
-			return false;
-		}
-        
-        return true;
-        
-    }
+	      if (pData.initiator.isActor() && pTargetToCheck.isActor()){
+	      if(pData.initiator.a.hasTrait("God Hunter") && !pTargetToCheck.isAlive() && Traits.IsGod(pTargetToCheck.a)){
+		      pData.initiator.a.killHimself();
+	      }
+	      }
+        }
  }
 }

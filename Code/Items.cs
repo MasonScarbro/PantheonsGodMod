@@ -412,10 +412,11 @@ namespace GodsAndPantheons
             godHuntersScytheB.equipmentType = EquipmentType.Weapon;
             godHuntersScytheB.name_class = "item_class_weapon";
             godHuntersScytheB.path_icon = "ui/weapon_icons/icon_GodHuntersScythe_base";
+            godHuntersScytheB.action_attack_target = new AttackAction(GodHunterAttack);
 
             // For Ranged Weapons use "_range"
             AssetManager.items.list.AddItem(godHuntersScytheB);
-            Localization.addLocalization("item_GodHuntersScytheBlank", "The Weapon Chosen by the God Hunters");
+            Localization.addLocalization("item_GodHuntersScytheBlank", "The Weapon Chosen by the God Hunters, Deals 5x more damage to Gods");
             addWeaponsSprite(godHuntersScytheB.id, godHuntersScytheB.materials[0]);
 
 
@@ -454,9 +455,10 @@ namespace GodsAndPantheons
             godHuntersScythe.equipmentType = EquipmentType.Weapon;
             godHuntersScythe.name_class = "item_class_weapon";
             godHuntersScythe.path_icon = "ui/weapon_icons/icon_GodHuntersScythe_base";
+            godHuntersScythe.action_attack_target = new AttackAction(GodHunterAttack);
 
             AssetManager.items.list.AddItem(godHuntersScythe);
-            Localization.addLocalization("item_GodHuntersScythe", "The Weapon Chosen by the God Hunters");
+            Localization.addLocalization("item_GodHuntersScythe", "The Weapon Chosen by the God Hunters, Deals 5x more damage to Gods");
             addWeaponsSprite(godHuntersScythe.id, godHuntersScythe.materials[0]);
 
         }
@@ -540,6 +542,15 @@ namespace GodsAndPantheons
                 return true;
             }
             return false;
+        }
+        public static bool GodHunterAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile){
+            if(pTarget != null && pTarget.isActor()){
+                if(Traits.IsGod(pTarget.a)){
+                    pTarget.getHit(pSelf.stats[S.damage] * 4f, true, AttackType.Weapon, pSelf, false, true);
+                }
+            }
+            return true;
+                
         }
 
         public static bool earthGodSendMountain(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
