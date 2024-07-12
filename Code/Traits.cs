@@ -1272,10 +1272,10 @@ return a.hasTrait("God Of The Lich")
             if (pTarget.a != null)
             {
 
-                WorldTile tile1 = Toolbox.getRandomTileWithinDistance(pTile, 60);
-                WorldTile tile2 = Toolbox.getRandomTileWithinDistance(pTile, 40);
-                List<WorldTile> randTile = List.Of<WorldTile>(new WorldTile[] { tile1, tile2 });
-                WorldTile _tile = Toolbox.getRandomTileWithinDistance(randTile, pTile, 45, 120);
+                WorldTile _tile = Toolbox.getRandomTileWithinDistance(pTile, 60);
+                //WorldTile tile2 = Toolbox.getRandomTileWithinDistance(pTile, 40);
+               // List<WorldTile> randTile = List.Of<WorldTile>(new WorldTile[] { tile1, tile2 });
+               // WorldTile _tile = Toolbox.getRandomTileWithinDistance(randTile, pTile, 45, 120);
                 if (Toolbox.randomChance(warGodPwrChance3/100))
                 {
                     MapBox.instance.dropManager.spawn(_tile, SD.spite, 5f, -1f);
