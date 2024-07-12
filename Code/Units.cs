@@ -98,7 +98,7 @@ namespace GodsAndPantheons
             godHunter.action_liquid = new WorldAction(ActionLibrary.swimToIsland);
             godHunter.base_stats[S.max_age] = 10000f;
             godHunter.base_stats[S.health] = 500;
-            godHunter.base_stats[S.damage] = 100;
+            godHunter.base_stats[S.damage] = 40;
             godHunter.base_stats[S.speed] = 80f;
             godHunter.base_stats[S.armor] = 1;
             godHunter.base_stats[S.attack_speed] = 40;
