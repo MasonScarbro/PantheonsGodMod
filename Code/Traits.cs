@@ -1399,20 +1399,19 @@ return a.hasTrait("God Of The Lich")
             {
                 __result = false;
             }
-            if (__instance.isActor() && pTarget.isActor())
+            if (__instance.isActor())
             {
-                Actor a = (Actor)__instance;
-                Actor b = (Actor)pTarget;
-                if (a.hasTrait("Summoned One"))
+                Actor a = __instance.a;
+		bool summoned = a.hasTrait("Summoned One");
+		Actor Master = Traits.FindMaster(a);
+		if(pTarget.isActor()){
+                Actor b = pTarget.a;
+                if (summoned && Master != a)
                 {
-                    Actor Master = Traits.FindMaster(a);
-                    if (Master != a)
-                    {
-                        if (!Master.canAttackTarget(b) || pTarget.isBuilding())
+                        if (!Master.canAttackTarget(b))
                         {
                             __result = false;
                         }
-                    }
                 }
                 else if (b.hasTrait("Summoned One"))
                 {
@@ -1420,11 +1419,13 @@ return a.hasTrait("God Of The Lich")
                     if (Master != b)
                     {
                         if (!a.canAttackTarget(Master))
-                        {
                             __result = false;
-                        }
                     }
                 }
+		}else if(summoned && pTarget.isBuilding() && Master != a){
+			if(Master.kingdom.race == pTarget.kingdom.race)
+				__result = false;
+		}
             }
        }
     }
