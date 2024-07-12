@@ -96,7 +96,7 @@ namespace GodsAndPantheons
             sunGod.base_stats[S.attack_speed] += 80f;
             sunGod.base_stats[S.critical_chance] += 0.05f;
             sunGod.base_stats[S.speed] += 90f;
-            sunGod.base_stats[S.dodge] += 30f;
+            sunGod.base_stats[S.dodge] += 80f;
             sunGod.base_stats[S.accuracy] += 10f;
             sunGod.base_stats[S.range] += 5f;
             AssetManager.traits.add(sunGod);
