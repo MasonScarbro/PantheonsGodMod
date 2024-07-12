@@ -363,15 +363,15 @@ namespace GodsAndPantheons
               return MyMinions;
         }
             public static bool IsGod(Actor a){
-	return a.hasTrait("God Of The Lich") 
-            || a.hasTrait("God Of The Stars") 
-            || a.hasTrait("God Of Knowledge") 
-            || a.hasTrait("God Of The Night") 
-            || a.hasTrait("God_Of_Chaos") 
-            || a.hasTrait("God Of War") 
-            || a.hasTrait("God Of the Earth")
-	    || a.hasTrait("God Of Light")
-            || a.hasTrait("God of Gods");
+return a.hasTrait("God Of The Lich") 
+|| a.hasTrait("God Of The Stars") 
+|| a.hasTrait("God Of Knowledge") 
+|| a.hasTrait("God Of The Night") 
+|| a.hasTrait("God_Of_Chaos") 
+|| a.hasTrait("God Of War") 
+|| a.hasTrait("God Of the Earth")
+|| a.hasTrait("God Of light")
+|| a.hasTrait("God of gods");
 }
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
