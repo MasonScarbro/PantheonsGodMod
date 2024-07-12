@@ -384,66 +384,43 @@ return a.hasTrait("God Of The Lich")
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
                 if(Toolbox.randomChance(GodOfGodsPwrChance1)){
-                if (Toolbox.randomChance(0.5f))
-                {
-                    ActionLibrary.castLightning(null, pTarget, null);
-                }else
-                if (Toolbox.randomChance(0.2f))
-                {
-                    EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f);    //spawn 1 meteorite
-                    pSelf.a.addStatusEffect("invincible", 1f);
+			int decider = Toolbox.randomInt(1, 4);
+		switch(decider){	
+			case 1: ActionLibrary.castLightning(null, pTarget, null); break;
+			case 2: EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f); pSelf.a.addStatusEffect("invincible", 1f); break;
+			case 3: ActionLibrary.castTornado(pSelf, pTarget, pTile); break;
+			case 4: pb.spawnEarthquake(pTarget.a.currentTile, null); break;
                 }
-                else if (Toolbox.randomChance(0.3f))
-                {
-                    ActionLibrary.castTornado(pSelf, pTarget, pTile);
-                }
-                else if (Toolbox.randomChance(0.15f))
-                {
-                    pb.spawnEarthquake(pTarget.a.currentTile, null);
-                }
-                }
+		}
                 if(Toolbox.randomChance(GodOfGodsPwrChance2)){
-                if (Toolbox.randomChance(0.6f))
-                {
-                    Summon(SA.demon, 1, self, pTile);
-                }
-                else if (Toolbox.randomChance(0.7f))
-                {
-                    Summon(SA.evilMage, 1, self, pTile);
-                }
-                else if (Toolbox.randomChance(0.8f))
-                {
-                    Summon(SA.skeleton, 3, self, pTile);
+			int decider = Toolbox.randomInt(1, 3);
+                switch(decider){	
+			case 1: Summon(SA.demon, 1, self, pTile); break;
+			case 2: Summon(SA.evilMage, 1, self, pTile); break;
+			case 3: Summon(SA.skeleton, 3, self, pTile); break;
                 }
                 }
                 if(Toolbox.randomChance(GodOfGodsPwrChance3)){
-                if(Toolbox.randomChance(0.5f))
-                {
-                    ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null);
-                }
-                else
-                if (Toolbox.randomChance(0.4f))
-                {
-                    EffectsLibrary.spawn("fx_explosion_middle", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
-                    pSelf.a.addStatusEffect("invincible", 1f);
-                }else
-                if (Toolbox.randomChance(0.6f))
-                {
+                int decider = Toolbox.randomInt(1, 5);
+                switch(decider){	
+		    case 1: ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null); break;
+				
+		    case 2: EffectsLibrary.spawn("fx_explosion_middle", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
+                    pSelf.a.addStatusEffect("invincible", 1f); break;
+
                     // randomly spawns a flash of fire or acid on the tile 
-                    MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f);
+		    case 3: MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f);
                     MapBox.instance.dropManager.spawn(pTile, "acid", 5f, -1f);
-                    MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f); // Drops fire from distance 5 with scale of one at current tile
-                }else if (Toolbox.randomChance(0.2f))
-                {
-                    Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
+                    MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f); break;
+
+		    case 4: Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
                     Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
-                    EffectsLibrary.spawnProjectile("lightBallzProjectiles", newPoint, newPoint2, 0.0f);
-                }else if (Toolbox.randomChance(0.2f))
-                {
-                    Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x + 35f, pSelf.currentPosition.y + 95f, (float)pos.x + 1f, (float)pos.y + 1f, pDist, true); // the Point of the projectile launcher 
+                    EffectsLibrary.spawnProjectile("lightBallzProjectiles", newPoint, newPoint2, 0.0f); break;
+
+		    case 5: Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x + 35f, pSelf.currentPosition.y + 95f, (float)pos.x + 1f, (float)pos.y + 1f, pDist, true); // the Point of the projectile launcher 
                     Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
                     EffectsLibrary.spawnProjectile("moonFall", newPoint, newPoint2, 0.0f);
-                    pSelf.a.addStatusEffect("invincible", 2f);
+                    pSelf.a.addStatusEffect("invincible", 2f); break;
                 }
                 }
 
