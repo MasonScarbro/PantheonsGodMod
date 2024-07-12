@@ -1277,15 +1277,15 @@ return a.hasTrait("God Of The Lich")
                 WorldTile tile2 = Toolbox.getRandomTileWithinDistance(pTile, 40);
                 List<WorldTile> randTile = List.Of<WorldTile>(new WorldTile[] { tile1, tile2 });
                 WorldTile _tile = Toolbox.getRandomTileWithinDistance(randTile, pTile, 45, 120);
-                if (Toolbox.randomChance(warGodPwrChance3))
+                if (Toolbox.randomChance(warGodPwrChance3/100))
                 {
                     MapBox.instance.dropManager.spawn(_tile, SD.spite, 5f, -1f);
                 }
-                if (Toolbox.randomChance(warGodPwrChance3))
+                if (Toolbox.randomChance(warGodPwrChance3/100))
                 {
                     MapBox.instance.dropManager.spawn(_tile, SD.discord, 5f, -1f);
                 }
-                if (Toolbox.randomChance(warGodPwrChance3))
+                if (Toolbox.randomChance(warGodPwrChance3 / 100))
                 {
                     MapBox.instance.dropManager.spawn(_tile, SD.inspiration, 5f, -1f);
                 }
@@ -1298,19 +1298,19 @@ return a.hasTrait("God Of The Lich")
         {
             if (pSelf.a != null)
             {
-                if (Toolbox.randomChance(earthGodPwrChance3))
+                if (Toolbox.randomChance(earthGodPwrChance3/100))
                 {
                     ActionLibrary.tryToGrowTree(pSelf);
                 }
-                if (Toolbox.randomChance(earthGodPwrChance3))
+                if (Toolbox.randomChance(earthGodPwrChance3/100))
                 {
                     ActionLibrary.tryToCreatePlants(pSelf);
                 }
-                if (Toolbox.randomChance(earthGodPwrChance3))
+                if (Toolbox.randomChance(earthGodPwrChance3 / 100))
                 {
                     BuildingActions.tryGrowMineralRandom(pSelf.a.currentTile);
                 }
-                if (Toolbox.randomChance(earthGodPwrChance3))
+                if (Toolbox.randomChance(earthGodPwrChance3/100))
                 {
 
                     buildMountain(pTile);
