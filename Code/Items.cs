@@ -416,7 +416,7 @@ namespace GodsAndPantheons
 
             // For Ranged Weapons use "_range"
             AssetManager.items.list.AddItem(godHuntersScytheB);
-            Localization.addLocalization("item_GodHuntersScytheBlank", "The Weapon Chosen by the God Hunters");
+            Localization.addLocalization("item_GodHuntersScytheBlank", "The Weapon Chosen by the God Hunters, Deals 5x more damage to Gods");
             addWeaponsSprite(godHuntersScytheB.id, godHuntersScytheB.materials[0]);
 
 
@@ -458,7 +458,7 @@ namespace GodsAndPantheons
             godHuntersScythe.action_attack_target = new AttackAction(GodHunterAttack);
 
             AssetManager.items.list.AddItem(godHuntersScythe);
-            Localization.addLocalization("item_GodHuntersScythe", "The Weapon Chosen by the God Hunters");
+            Localization.addLocalization("item_GodHuntersScythe", "The Weapon Chosen by the God Hunters, Deals 5x more damage to Gods");
             addWeaponsSprite(godHuntersScythe.id, godHuntersScythe.materials[0]);
 
         }
