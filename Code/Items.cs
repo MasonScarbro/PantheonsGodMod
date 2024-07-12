@@ -412,6 +412,7 @@ namespace GodsAndPantheons
             godHuntersScytheB.equipmentType = EquipmentType.Weapon;
             godHuntersScytheB.name_class = "item_class_weapon";
             godHuntersScytheB.path_icon = "ui/weapon_icons/icon_GodHuntersScythe_base";
+            godHuntersScytheB.action_attack_target = new AttackAction(GodHunterAttack);
 
             // For Ranged Weapons use "_range"
             AssetManager.items.list.AddItem(godHuntersScytheB);
@@ -454,6 +455,7 @@ namespace GodsAndPantheons
             godHuntersScythe.equipmentType = EquipmentType.Weapon;
             godHuntersScythe.name_class = "item_class_weapon";
             godHuntersScythe.path_icon = "ui/weapon_icons/icon_GodHuntersScythe_base";
+            godHuntersScytheB.action_attack_target = new AttackAction(GodHunterAttack);
 
             AssetManager.items.list.AddItem(godHuntersScythe);
             Localization.addLocalization("item_GodHuntersScythe", "The Weapon Chosen by the God Hunters");
