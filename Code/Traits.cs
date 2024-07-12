@@ -1435,12 +1435,6 @@ return a.hasTrait("God Of The Lich")
             {
                 Actor a = (Actor)__instance;
                 Actor b = (Actor)pTarget;
-		if(a.hasTrait("God Hunter"){
-			if(!(Traits.IsGod(b) || __instance.attackedBy == b)){
-				__result = false;
-				return false;
-			}
-			      }
                 if (a.hasTrait("Summoned One"))
                 {
                     Actor Master = Traits.FindMaster(a);
@@ -1466,7 +1460,6 @@ return a.hasTrait("God Of The Lich")
                     }
                 }
             }
-	 }
             return true;
        }
     }
