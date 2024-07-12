@@ -1200,7 +1200,6 @@ return a.hasTrait("God Of The Lich")
                     pSelf.a.addStatusEffect("God_Of_All"); // add the status I created
                     pSelf.a.data.set("lifespan", 61);
                 }
-			    pSelf.a.data.set("Special Radius", 30);
                     }
                 }
                 else
@@ -1210,7 +1209,6 @@ return a.hasTrait("God Of The Lich")
                         pSelf.a.finishAllStatusEffects(); // remove the status
                         pSelf.a.data.set("lifespan", 31);
                     }
-		    pSelf.a.data.set("Special Radius", 20);
                 }
 
 
