@@ -546,7 +546,7 @@ namespace GodsAndPantheons
         public static bool GodHunterAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile){
             if(pTarget != null && pTarget.isActor()){
                 if(Traits.IsGod(pTarget.a)){
-                    pTarget.getHit(pSelf.stats[S.damage] * 9f, true, AttackType.Weapon, pSelf, false, true);
+                    pTarget.getHit(pSelf.stats[S.damage] * 4f, true, AttackType.Weapon, pSelf, false, true);
                 }
             }
             return true;
