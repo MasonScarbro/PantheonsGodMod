@@ -1435,18 +1435,6 @@ return a.hasTrait("God Of The Lich")
             {
                 Actor a = (Actor)__instance;
                 Actor b = (Actor)pTarget;
-		if(a.hasTrait("God Hunter")){
-		   bool ishunting = false;
-		   a.data.get("ishunting", out ishunting);
-		   if(!ishunting){
-			   if(!Traits.IsGod(b)){
-			   __result = false;
-			   return false;
-			   }else{
-			     a.data.set("ishunting", true);
-			   }
-		   }
-		}
                 if (a.hasTrait("Summoned One"))
                 {
                     Actor Master = Traits.FindMaster(a);
