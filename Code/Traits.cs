@@ -93,7 +93,7 @@ namespace GodsAndPantheons
             sunGod.path_icon = "ui/icons/lightGod";
             sunGod.base_stats[S.damage] += 20f;
             sunGod.base_stats[S.health] += 500;
-            sunGod.base_stats[S.attack_speed] += 80f;
+            sunGod.base_stats[S.attack_speed] += 100f;
             sunGod.base_stats[S.critical_chance] += 0.05f;
             sunGod.base_stats[S.speed] += 90f;
             sunGod.base_stats[S.dodge] += 80f;
@@ -119,7 +119,7 @@ namespace GodsAndPantheons
             darkGod.base_stats[S.attack_speed] += 3f;
             darkGod.base_stats[S.critical_chance] += 0.25f;
             darkGod.base_stats[S.scale] = 0.02f;
-            darkGod.base_stats[S.dodge] += 3f;
+            darkGod.base_stats[S.dodge] += 60f;
             darkGod.base_stats[S.range] += 6f;
             darkGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             darkGod.action_attack_target = new AttackAction(darkGodAttack);
@@ -487,7 +487,6 @@ return a.hasTrait("God Of The Lich")
                     pTarget.a.addTrait("nightchild");
                     pTarget.a.addTrait("moonchild");
                     pTarget.a.addTrait("regeneration");
-		    pTarget.a.data.set("SpecialAttack", true);
                 }
 
 
@@ -1463,70 +1462,4 @@ return a.hasTrait("God Of The Lich")
             return true;
        }
     }
-    [HarmonyPatch(typeof(MapBox), "applyAttack")]
-    public class updateAttack
-    {
-      static bool Prefix(AttackData pData, BaseSimObject pTargetToCheck)
-       {
-	        bool newattack = false;
-	        if(pData.initiator.isActor()){
-			pData.initiator.a.data.get("SpecialAttack", out newattack);
-	        }
-	        if(newattack){
-                int num = (int)pData.initiator.stats[S.damage];
-		int num2;
-		if (pData.critical)
-		{
-			num2 = (int)((float)num * pData.initiator.stats[S.critical_damage_multiplier]);
-		}
-		else
-		{
-			num2 = (int)Toolbox.randomFloat(pData.initiator.stats[S.damage_range] * (float)num, (float)num);
-		}
-		if (pData.initiator.isActor() && pTargetToCheck.isAlive())
-		{
-			pData.initiator.a.addExperience(2);
-		}
-	        if (pData.initiator.isActor())
-		{
-			pData.initiator.a.attackTargetActions(pTargetToCheck, pData.hit_tile);
-		}
-		float pDamage = (float)num2;
-		bool pFlash = true;
-		AttackType attack_type = pData.attack_type;
-		BaseSimObject initiator = pData.initiator;
-		bool metallic_weapon = pData.metallic_weapon;
-	        if(pTargetToCheck.isAlive()){
-		pTargetToCheck.getHit(pDamage, pFlash, attack_type, initiator, pData.skip_shake, metallic_weapon);
-		}
-		if (pTargetToCheck.isActor() && pData.initiator.isActor() && !pTargetToCheck.isAlive() && pData.initiator.a.asset.animal && pData.initiator.a.asset.diet_meat && pTargetToCheck.a.asset.source_meat)
-		{
-			pData.initiator.a.restoreStatsFromEating(70, 0f, true);
-		}
-		float num3;
-		if (pTargetToCheck.base_data.health > 0)
-		{
-			num3 = 0.2f * pData.initiator.stats[S.knockback];
-		}
-		else
-		{
-			num3 = 0.3f * pData.initiator.stats[S.knockback];
-		}
-		num3 -= num3 * pTargetToCheck.stats[S.knockback_reduction];
-		if (num3 < 0f)
-		{
-			num3 = 0f;
-		}
-		if (num3 > 0f && pTargetToCheck.isActor())
-		{
-			float angle = Toolbox.getAngle(pTargetToCheck.transform.position.x, pTargetToCheck.transform.position.y, pData.attack_vector.x, pData.attack_vector.y);
-			pTargetToCheck.a.addForce(-Mathf.Cos(angle) * num3, -Mathf.Sin(angle) * num3, num3);
-		}
-			return false;
-		}
-        
-        return true;
-        
-    }
- }
 }
