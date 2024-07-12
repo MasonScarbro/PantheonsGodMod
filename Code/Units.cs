@@ -101,7 +101,7 @@ namespace GodsAndPantheons
             godHunter.base_stats[S.damage] = 30;
             godHunter.base_stats[S.speed] = 80f;
             godHunter.base_stats[S.armor] = 1;
-            godHunter.base_stats[S.attack_speed] = 40;
+            godHunter.base_stats[S.attack_speed] = 100f;
             godHunter.base_stats[S.critical_chance] = 0.1f;
             godHunter.base_stats[S.knockback] = 0.1f;
             godHunter.base_stats[S.knockback_reduction] = 0.1f;
