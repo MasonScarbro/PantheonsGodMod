@@ -455,7 +455,7 @@ namespace GodsAndPantheons
             godHuntersScythe.equipmentType = EquipmentType.Weapon;
             godHuntersScythe.name_class = "item_class_weapon";
             godHuntersScythe.path_icon = "ui/weapon_icons/icon_GodHuntersScythe_base";
-            godHuntersScytheB.action_attack_target = new AttackAction(GodHunterAttack);
+            godHuntersScythe.action_attack_target = new AttackAction(GodHunterAttack);
 
             AssetManager.items.list.AddItem(godHuntersScythe);
             Localization.addLocalization("item_GodHuntersScythe", "The Weapon Chosen by the God Hunters");
@@ -546,7 +546,7 @@ namespace GodsAndPantheons
         public static bool GodHunterAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile){
             if(pTarget != null && pTarget.isActor()){
                 if(Traits.IsGod(pTarget.a)){
-                    pTarget.getHit(pSelf.stats[S.damage] * 9f, true, AttackType.Weapon, pSelf, true, true);
+                    pTarget.getHit(pSelf.stats[S.damage] * 9f, true, AttackType.Weapon, pSelf, false, true);
                 }
             }
             return true;
