@@ -44,6 +44,7 @@ namespace GodsAndPantheons
             
             modsResources = Reflection.GetField(typeof(ResourcesPatch), null, "modsResources") as Dictionary<string, UnityEngine.Object>;
             Effects.init();
+            Group.init();
             Traits.init();
             NewProjectiles.init();
             NewTerraformOptions.init();
