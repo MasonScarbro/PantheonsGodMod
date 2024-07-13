@@ -645,10 +645,6 @@ return a.hasTrait("God Of The Lich")
                     Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
                     EffectsLibrary.spawnProjectile("PagesOfKnowledge", newPoint, newPoint2, 0.0f);
                 }
-                if (Toolbox.randomChance(0.04f))
-                {
-                    ActionLibrary.teleportRandom(null, pTarget, null); // teleports the target
-                }
 
                 return true;
             }
