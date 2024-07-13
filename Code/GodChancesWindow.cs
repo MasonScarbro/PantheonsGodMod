@@ -71,7 +71,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.knowledgeGodChances["KnowledgeGodPwr1%"].active)
                             {
-                                Traits.knowledgeGodPwrChance1 = int.Parse(Main.savedSettings.knowledgeGodChances["KnowledgeGodPwr1%"].value) / 100;
+                                Traits.knowledgeGodPwrChance1 = int.Parse(Main.savedSettings.knowledgeGodChances["KnowledgeGodPwr1%"].value);
                             }
 
                         };
@@ -80,7 +80,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.knowledgeGodChances["KnowledgeGodPwr2%"].active)
                             {
-                                Traits.knowledgeGodPwrChance2 = int.Parse(Main.savedSettings.knowledgeGodChances["KnowledgeGodPwr2%"].value) / 100;
+                                Traits.knowledgeGodPwrChance2 = int.Parse(Main.savedSettings.knowledgeGodChances["KnowledgeGodPwr2%"].value) ;
                             }
 
                         };
@@ -89,7 +89,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.knowledgeGodChances["KnowledgeGodPwr3%"].active)
                             {
-                                Traits.knowledgeGodPwrChance3 = int.Parse(Main.savedSettings.knowledgeGodChances["KnowledgeGodPwr3%"].value) / 100;
+                                Traits.knowledgeGodPwrChance3 = int.Parse(Main.savedSettings.knowledgeGodChances["KnowledgeGodPwr3%"].value) ;
                             }
 
                         };
@@ -98,7 +98,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.knowledgeGodChances["KnowledgeGodPwr4%"].active)
                             {
-                                Traits.knowledgeGodPwrChance4 = int.Parse(Main.savedSettings.knowledgeGodChances["KnowledgeGodPwr4%"].value) / 100;
+                                Traits.knowledgeGodPwrChance4 = int.Parse(Main.savedSettings.knowledgeGodChances["KnowledgeGodPwr4%"].value) ;
                             }
 
                         };
@@ -107,7 +107,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.knowledgeGodChances["KnowledgeGodPwr5%"].active)
                             {
-                                Traits.knowledgeGodPwrChance5 = int.Parse(Main.savedSettings.knowledgeGodChances["KnowledgeGodPwr5%"].value) / 100;
+                                Traits.knowledgeGodPwrChance5 = int.Parse(Main.savedSettings.knowledgeGodChances["KnowledgeGodPwr5%"].value) ;
                             }
 
                         };
@@ -116,7 +116,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.knowledgeGodChances["SummonLightning%"].active)
                             {
-                                Traits.knowledgeGodPwrChance6 = int.Parse(Main.savedSettings.knowledgeGodChances["SummonLightning%"].value) / 100;
+                                Traits.knowledgeGodPwrChance6 = int.Parse(Main.savedSettings.knowledgeGodChances["SummonLightning%"].value) ;
                             }
                             else
                             {
@@ -129,7 +129,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.knowledgeGodChances["SummonMeteor%"].active)
                             {
-                                Traits.knowledgeGodPwrChance7 = int.Parse(Main.savedSettings.knowledgeGodChances["SummonMeteor%"].value) / 100;
+                                Traits.knowledgeGodPwrChance7 = int.Parse(Main.savedSettings.knowledgeGodChances["SummonMeteor%"].value) ;
                             }
                             else
                             {
@@ -142,7 +142,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.knowledgeGodChances["PagesOfKnowledge%"].active)
                             {
-                                Traits.knowledgeGodPwrChance9 = int.Parse(Main.savedSettings.knowledgeGodChances["PagesOfKnowledge%"].value) / 100;
+                                Traits.knowledgeGodPwrChance9 = int.Parse(Main.savedSettings.knowledgeGodChances["PagesOfKnowledge%"].value) ;
                             }
                             else
                             {
@@ -249,7 +249,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.moonGodChances["summonMoonChunk%"].active)
                             {
-                                Traits.starGodPwrChance1 = float.Parse(Main.savedSettings.moonGodChances["summonMoonChunk%"].value) / 100;
+                                Traits.starGodPwrChance1 = float.Parse(Main.savedSettings.moonGodChances["summonMoonChunk%"].value) ;
 
                             }
                             else
@@ -263,7 +263,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.moonGodChances["cometAzure%"].active)
                             {
-                                Traits.starGodPwrChance2 = int.Parse(Main.savedSettings.moonGodChances["cometAzure%"].value) / 100;
+                                Traits.starGodPwrChance2 = int.Parse(Main.savedSettings.moonGodChances["cometAzure%"].value) ;
                             }
                             else
                             {
@@ -276,7 +276,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.moonGodChances["cometShower%"].active)
                             {
-                                Traits.starGodPwrChance3 = int.Parse(Main.savedSettings.moonGodChances["cometShower%"].value) / 100;
+                                Traits.starGodPwrChance3 = int.Parse(Main.savedSettings.moonGodChances["cometShower%"].value) ;
                             }
                             else
                             {
@@ -384,7 +384,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.GodOfGodsChances["Terrain bending%"].active)
                             {
-                                Traits.GodOfGodsPwrChance1 = float.Parse(Main.savedSettings.GodOfGodsChances["Terrain bending%"].value) / 100;
+                                Traits.GodOfGodsPwrChance1 = float.Parse(Main.savedSettings.GodOfGodsChances["Terrain bending%"].value) ;
 
                             }
                             else
@@ -398,7 +398,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.GodOfGodsChances["Summoning%"].active)
                             {
-                                Traits.GodOfGodsPwrChance2 = float.Parse(Main.savedSettings.GodOfGodsChances["Summoning%"].value) / 100;
+                                Traits.GodOfGodsPwrChance2 = float.Parse(Main.savedSettings.GodOfGodsChances["Summoning%"].value) ;
                             }
                             else
                             {
@@ -411,7 +411,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.GodOfGodsChances["Magic%"].active)
                             {
-                                Traits.GodOfGodsPwrChance3 = int.Parse(Main.savedSettings.GodOfGodsChances["Magic%"].value) / 100;
+                                Traits.GodOfGodsPwrChance3 = int.Parse(Main.savedSettings.GodOfGodsChances["Magic%"].value) ;
                             }
                             else
                             {
@@ -519,7 +519,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.darkGodChances["cloudOfDarkness%"].active)
                             {
-                                Traits.darkGodPwrChance1 = float.Parse(Main.savedSettings.darkGodChances["cloudOfDarkness%"].value) / 100;
+                                Traits.darkGodPwrChance1 = float.Parse(Main.savedSettings.darkGodChances["cloudOfDarkness%"].value) ;
 
                             }
                             else
@@ -533,7 +533,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.darkGodChances["blackHole%"].active)
                             {
-                                Traits.darkGodPwrChance2 = float.Parse(Main.savedSettings.darkGodChances["blackHole%"].value) / 100;
+                                Traits.darkGodPwrChance2 = float.Parse(Main.savedSettings.darkGodChances["blackHole%"].value) ;
                             }
                             else
                             {
@@ -546,7 +546,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.darkGodChances["darkDaggers%"].active)
                             {
-                                Traits.darkGodPwrChance3 = int.Parse(Main.savedSettings.darkGodChances["darkDaggers%"].value) / 100;
+                                Traits.darkGodPwrChance3 = int.Parse(Main.savedSettings.darkGodChances["darkDaggers%"].value) ;
                             }
                             else
                             {
@@ -559,7 +559,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.darkGodChances["smokeFlash%"].active)
                             {
-                                Traits.darkGodPwrChance4 = int.Parse(Main.savedSettings.darkGodChances["smokeFlash%"].value) / 100;
+                                Traits.darkGodPwrChance4 = int.Parse(Main.savedSettings.darkGodChances["smokeFlash%"].value) ;
                             }
                             else
                             {
@@ -669,7 +669,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.sunGodChances["flashOfLight%"].active)
                             {
-                                Traits.sunGodPwrChance1 = float.Parse(Main.savedSettings.sunGodChances["flashOfLight%"].value) / 100;
+                                Traits.sunGodPwrChance1 = float.Parse(Main.savedSettings.sunGodChances["flashOfLight%"].value) ;
 
                             }
                             else
@@ -683,7 +683,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.sunGodChances["beamOfLight%"].active)
                             {
-                                Traits.sunGodPwrChance2 = float.Parse(Main.savedSettings.sunGodChances["beamOfLight%"].value) / 100;
+                                Traits.sunGodPwrChance2 = float.Parse(Main.savedSettings.sunGodChances["beamOfLight%"].value) ;
                             }
                             else
                             {
@@ -696,7 +696,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.sunGodChances["speedOfLight%"].active)
                             {
-                                Traits.sunGodPwrChance3 = float.Parse(Main.savedSettings.sunGodChances["speedOfLight%"].value) / 100;
+                                Traits.sunGodPwrChance3 = float.Parse(Main.savedSettings.sunGodChances["speedOfLight%"].value) ;
                             }
                             else
                             {
@@ -709,7 +709,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.sunGodChances["lightBallz%"].active)
                             {
-                                Traits.sunGodPwrChance4 = float.Parse(Main.savedSettings.sunGodChances["lightBallz%"].value) / 100;
+                                Traits.sunGodPwrChance4 = float.Parse(Main.savedSettings.sunGodChances["lightBallz%"].value) ;
                             }
                             else
                             {
@@ -819,7 +819,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.warGodChances["warGodsCry%"].active)
                             {
-                                Traits.warGodPwrChance1 = float.Parse(Main.savedSettings.warGodChances["warGodsCry%"].value) / 100;
+                                Traits.warGodPwrChance1 = float.Parse(Main.savedSettings.warGodChances["warGodsCry%"].value) ;
 
                             }
                             else
@@ -833,7 +833,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.warGodChances["axeThrow%"].active)
                             {
-                                Traits.warGodPwrChance2 = float.Parse(Main.savedSettings.warGodChances["axeThrow%"].value) / 100;
+                                Traits.warGodPwrChance2 = float.Parse(Main.savedSettings.warGodChances["axeThrow%"].value) ;
                             }
                             else
                             {
@@ -846,7 +846,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.warGodChances["seedsOfWar%"].active)
                             {
-                                Traits.warGodPwrChance3 = float.Parse(Main.savedSettings.warGodChances["seedsOfWar%"].value) / 100;
+                                Traits.warGodPwrChance3 = float.Parse(Main.savedSettings.warGodChances["seedsOfWar%"].value) ;
                             }
                             else
                             {
@@ -956,7 +956,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.earthGodChances["earthquake%"].active)
                             {
-                                Traits.earthGodPwrChance1 = float.Parse(Main.savedSettings.earthGodChances["earthquake%"].value) / 100;
+                                Traits.earthGodPwrChance1 = float.Parse(Main.savedSettings.earthGodChances["earthquake%"].value) ;
 
                             }
                             else
@@ -970,7 +970,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.earthGodChances["makeItRain%"].active)
                             {
-                                Traits.earthGodPwrChance2 = float.Parse(Main.savedSettings.earthGodChances["makeItRain%"].value) / 100;
+                                Traits.earthGodPwrChance2 = float.Parse(Main.savedSettings.earthGodChances["makeItRain%"].value) ;
                             }
                             else
                             {
@@ -983,7 +983,7 @@ namespace GodsAndPantheons
                         call = delegate {
                             if (Main.savedSettings.earthGodChances["buildWorld%"].active)
                             {
-                                Traits.earthGodPwrChance3 = float.Parse(Main.savedSettings.earthGodChances["buildWorld%"].value) / 100;
+                                Traits.earthGodPwrChance3 = float.Parse(Main.savedSettings.earthGodChances["buildWorld%"].value) ;
                             }
                             else
                             {

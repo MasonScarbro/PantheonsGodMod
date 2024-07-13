@@ -22,44 +22,44 @@ namespace GodsAndPantheons
     {
 
         //Knowledge Gods Chances
-        public static float knowledgeGodPwrChance1 = 0.2f;
-        public static float knowledgeGodPwrChance2 = 0.01f;
-        public static float knowledgeGodPwrChance3 = 0.01f;
-        public static float knowledgeGodPwrChance4 = 0.05f;
-        public static float knowledgeGodPwrChance5 = 0.04f;
-        public static float knowledgeGodPwrChance6 = 0.02f;
-        public static float knowledgeGodPwrChance7 = 0.005f;
-        public static float knowledgeGodPwrChance8 = 0.01f;
-        public static float knowledgeGodPwrChance9 = 0.09f;
+        public static float knowledgeGodPwrChance1 = 20f;
+        public static float knowledgeGodPwrChance2 = 1f;
+        public static float knowledgeGodPwrChance3 = 1f;
+        public static float knowledgeGodPwrChance4 = 5f;
+        public static float knowledgeGodPwrChance5 = 4f;
+        public static float knowledgeGodPwrChance6 = 2f;
+        public static float knowledgeGodPwrChance7 = 0.5f;
+        public static float knowledgeGodPwrChance8 = 1f;
+        public static float knowledgeGodPwrChance9 = 9f;
         // Moon Gods Power Chances
-        public static float starGodPwrChance1 = 0.0005f;
-        public static float starGodPwrChance2 = 0.01f;
-        public static float starGodPwrChance3 = 0.005f;
+        public static float starGodPwrChance1 = 0.05f;
+        public static float starGodPwrChance2 = 1f;
+        public static float starGodPwrChance3 = 0.5f;
         // NightGods Power Chances
-        public static float darkGodPwrChance1 = 0.0001f;
-        public static float darkGodPwrChance2 = 0.001f;
-        public static float darkGodPwrChance3 = 0.04f;
-        public static float darkGodPwrChance4 = 0.01f;
+        public static float darkGodPwrChance1 = 0.01f;
+        public static float darkGodPwrChance2 = 0.1f;
+        public static float darkGodPwrChance3 = 4f;
+        public static float darkGodPwrChance4 = 1f;
         // Sun God Chances
         public static float sunGodPwrChance1 = 0.01f;
-        public static float sunGodPwrChance2 = 0.08f;
-        public static float sunGodPwrChance3 = 0.02f;
-        public static float sunGodPwrChance4 = 0.005f;
-        public static float sunGodPwrChance5 = 0.0001f;
+        public static float sunGodPwrChance2 = 8f;
+        public static float sunGodPwrChance3 = 2f;
+        public static float sunGodPwrChance4 = 0.5f;
+        public static float sunGodPwrChance5 = 0.01f;
         // War God Chances
-        public static float warGodPwrChance1 = 0.01f;
-        public static float warGodPwrChance2 = 0.03f;
-        public static float warGodPwrChance3 = 0.02f;
+        public static float warGodPwrChance1 = 1f;
+        public static float warGodPwrChance2 = 3f;
+        public static float warGodPwrChance3 = 2f;
         // Earth God Chances
-        public static float earthGodPwrChance1 = 0.05f;
-        public static float earthGodPwrChance2 = 0.1f;
-        public static float earthGodPwrChance3 = 0.01f;
+        public static float earthGodPwrChance1 = 5f;
+        public static float earthGodPwrChance2 = 1f;
+        public static float earthGodPwrChance3 = 1f;
         // Lich God Chances
         public static float lichGodPwrChance1 = 1f;
         //god of Gods Chances
-        public static float GodOfGodsPwrChance1 = 0.3f;
-        public static float GodOfGodsPwrChance2 = 0.2f;
-        public static float GodOfGodsPwrChance3 = 0.1f;
+        public static float GodOfGodsPwrChance1 = 5f;
+        public static float GodOfGodsPwrChance2 = 10f;
+        public static float GodOfGodsPwrChance3 = 8f;
 
 
         public static void init()
@@ -218,7 +218,6 @@ namespace GodsAndPantheons
             PlayerConfig.unlockTrait(warGod.id);
             warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodAutoTrait));
             warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodSeeds));
-            warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
             addTraitToLocalizedLibrary(warGod.id, "God of Conflict, Bravery, Ambition, Many spheres of domain lie with him");
 
 
@@ -380,10 +379,9 @@ return a.hasTrait("God Of The Lich")
             Actor self = (Actor)pSelf;
             if (pTarget != null)
             {
-                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
-                if(Toolbox.randomChance(GodOfGodsPwrChance1)){
+                if(Toolbox.randomChance(GodOfGodsPwrChance1/100)){
 			int decider = Toolbox.randomInt(1, 4);
 		switch(decider){	
 			case 1: ActionLibrary.castLightning(null, pTarget, null); break;
@@ -392,7 +390,7 @@ return a.hasTrait("God Of The Lich")
 			case 4: pb.spawnEarthquake(pTarget.a.currentTile, null); break;
                 }
 		}
-                if(Toolbox.randomChance(GodOfGodsPwrChance2)){
+                if(Toolbox.randomChance(GodOfGodsPwrChance2 / 100)){
 			int decider = Toolbox.randomInt(1, 3);
                 switch(decider){	
 			case 1: Summon(SA.demon, 1, self, pTile); break;
@@ -400,7 +398,7 @@ return a.hasTrait("God Of The Lich")
 			case 3: Summon(SA.skeleton, 3, self, pTile); break;
                 }
                 }
-                if(Toolbox.randomChance(GodOfGodsPwrChance3)){
+                if(Toolbox.randomChance(GodOfGodsPwrChance3 / 100)){
                 int decider = Toolbox.randomInt(1, 5);
                 switch(decider){	
 		    case 1: ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null); break;
@@ -448,7 +446,6 @@ return a.hasTrait("God Of The Lich")
         }
         public static bool GodOfGodsAutoTrait(BaseSimObject pTarget, WorldTile pTile)
         {
-            Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
             if (pTarget.a != null)
             {
                 if (pTarget.a.hasTrait("God Of gods"))
@@ -606,49 +603,48 @@ return a.hasTrait("God Of The Lich")
 
             if (pTarget != null)
             {
-                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
 
-                if (Toolbox.randomChance(knowledgeGodPwrChance1))
+                if (Toolbox.randomChance(knowledgeGodPwrChance1 / 100))
                 {
                     // randomly spawns a flash of fire or acid on the tile 
                     MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f);
                     MapBox.instance.dropManager.spawn(pTile, "acid", 5f, -1f);
                     MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f); // Drops fire from distance 5 with scale of one at current tile
                 }
-                if (Toolbox.randomChance(knowledgeGodPwrChance2))
+                if (Toolbox.randomChance(knowledgeGodPwrChance2 / 100))
                 {
                     ActionLibrary.castCurses(null, pTarget, null); // casts curses
                     ((Actor)pSelf).removeTrait("cursed");
                 }
-                if (Toolbox.randomChance(knowledgeGodPwrChance3))
+                if (Toolbox.randomChance(knowledgeGodPwrChance3 / 100))
                 {
                     ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null); // freezezz the target
                 }
-                if (Toolbox.randomChance(knowledgeGodPwrChance4))
+                if (Toolbox.randomChance(knowledgeGodPwrChance4 / 100))
                 {
                     ActionLibrary.castShieldOnHimself(null, pSelf, null); // Casts a shield for himself !! hint: pSelf !!
                 }
-                if (Toolbox.randomChance(knowledgeGodPwrChance5))
+                if (Toolbox.randomChance(knowledgeGodPwrChance5/100))
                 {
                     ActionLibrary.teleportRandom(null, pTarget, null); // teleports the target
                 }
 
-                if (Toolbox.randomChance(knowledgeGodPwrChance6))
+                if (Toolbox.randomChance(knowledgeGodPwrChance6 / 100))
                 {
                     ActionLibrary.castLightning(null, pTarget, null); // Casts Lightning on the target
                 }
-                if (Toolbox.randomChance(knowledgeGodPwrChance7))
+                if (Toolbox.randomChance(knowledgeGodPwrChance7 / 100))
                 {
                     EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f);    //spawn 1 meteorite
                     pSelf.a.addStatusEffect("invincible", 5f);
                 }
-                if (Toolbox.randomChance(knowledgeGodPwrChance8))
+                if (Toolbox.randomChance(knowledgeGodPwrChance8/100))
                 {
                     EffectsLibrary.spawn("fx_fireball_explosion", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
                     MapAction.damageWorld(pSelf.currentTile, 2, AssetManager.terraform.get("grenade"), null);
                     pSelf.a.addStatusEffect("invincible", 1f);
                 }
-                if (Toolbox.randomChance(knowledgeGodPwrChance9))
+                if (Toolbox.randomChance(knowledgeGodPwrChance9 / 100))
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                     float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -675,15 +671,14 @@ return a.hasTrait("God Of The Lich")
 
             if (pTarget != null)
             {
-                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
 
 
-                if (Toolbox.randomChance(darkGodPwrChance1))
+                if (Toolbox.randomChance(darkGodPwrChance1 / 100))
                 {
                     EffectsLibrary.spawn("fx_antimatter_effect", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
                     pSelf.a.addStatusEffect("invincible", 5f);
                 }
-                if (Toolbox.randomChance(darkGodPwrChance2))
+                if (Toolbox.randomChance(darkGodPwrChance2/100))
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                     float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -693,7 +688,7 @@ return a.hasTrait("God Of The Lich")
 
 
                 }
-                if (Toolbox.randomChance(darkGodPwrChance3))
+                if (Toolbox.randomChance(darkGodPwrChance3 / 100))
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                     float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -703,7 +698,7 @@ return a.hasTrait("God Of The Lich")
 
 
                 }
-                if (Toolbox.randomChance(darkGodPwrChance4))
+                if (Toolbox.randomChance(darkGodPwrChance4/100))
                 {
                     EffectsLibrary.spawnAtTile("fx_smokeFlash_dej", pTile, 0.1f);
                     MapAction.damageWorld(pTarget.currentTile, 5, AssetManager.terraform.get("lightning_power"), null);
@@ -725,10 +720,9 @@ return a.hasTrait("God Of The Lich")
 
             if (pTarget != null)
             {
-                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
 
 
-                if (Toolbox.randomChance(starGodPwrChance1))
+                if (Toolbox.randomChance(starGodPwrChance1 / 100))
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                     float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -737,7 +731,7 @@ return a.hasTrait("God Of The Lich")
                     EffectsLibrary.spawnProjectile("moonFall", newPoint, newPoint2, 0.0f);
                     pSelf.a.addStatusEffect("invincible", 2f);
                 }
-                if (Toolbox.randomChance(starGodPwrChance2))
+                if (Toolbox.randomChance(starGodPwrChance2 / 100))
                 {
                     EffectsLibrary.spawnAtTile("fx_cometAzureDown_dej", pTarget.a.currentTile, 0.1f);
                     MapAction.applyTileDamage(pTarget.currentTile, 8, AssetManager.terraform.get("cometAzureDownDamage"));
@@ -746,7 +740,7 @@ return a.hasTrait("God Of The Lich")
                     World.world.applyForce(pTarget.currentTile.neighbours[0], 4, 0.4f, false, true, 200, null, pTarget, null);
                     pSelf.a.addStatusEffect("invincible", 5f);
                 }
-                if (Toolbox.randomChance(starGodPwrChance3))
+                if (Toolbox.randomChance(starGodPwrChance3 / 100))
                 {
                     EffectsLibrary.spawnAtTile("fx_cometShower_dej", pTarget.a.currentTile, 0.09f);
                     MapAction.applyTileDamage(pTarget.currentTile, 2f, AssetManager.terraform.get("cometRain"));
@@ -786,22 +780,21 @@ return a.hasTrait("God Of The Lich")
             if (pTarget != null)
             {
 
-                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
                 PowerLibrary pb = new PowerLibrary();
 
-                if (Toolbox.randomChance(sunGodPwrChance1))
+                if (Toolbox.randomChance(sunGodPwrChance1 / 100))
                 {
                     pb.divineLightFX(pTarget.a.currentTile, null);
                     EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
                     pSelf.a.addStatusEffect("invincible", 5f);
                 }
-                if (Toolbox.randomChance(sunGodPwrChance2))
+                if (Toolbox.randomChance(sunGodPwrChance2/100))
                 {
                     pb.divineLightFX(pTarget.a.currentTile, null);
                     pTarget.a.addStatusEffect("burning", 5f);
 
                 }
-                if (Toolbox.randomChance(sunGodPwrChance3))
+                if (Toolbox.randomChance(sunGodPwrChance3/100))
                 {
                     pb.divineLightFX(pTarget.a.currentTile, null);
                     EffectsLibrary.spawn("fx_thunder_flash", pSelf.a.currentTile, null, null, 0f, -1f, -1f);
@@ -810,7 +803,7 @@ return a.hasTrait("God Of The Lich")
 
 
                 }
-                if (Toolbox.randomChance(sunGodPwrChance4))
+                if (Toolbox.randomChance(sunGodPwrChance4 / 100))
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                     float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -820,7 +813,7 @@ return a.hasTrait("God Of The Lich")
                 }
                 //EffectsLibrary.spawnAtTile("fx_multiFlash_dej", pTile, 0.01f);
 
-                if (Toolbox.randomChance(sunGodPwrChance5))
+                if (Toolbox.randomChance(sunGodPwrChance5 / 100))
                 {
                     //TO BE USED AS IMACT ACTION FOR LIGHT PROJECILES LATER
                     int count = 0;
@@ -866,11 +859,9 @@ return a.hasTrait("God Of The Lich")
 
             if (pTarget != null)
             {
-
-                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
                 PowerLibrary pb = new PowerLibrary();
 
-                if (Toolbox.randomChance(warGodPwrChance1))
+                if (Toolbox.randomChance(warGodPwrChance1 / 100))
                 {
                     EffectsLibrary.spawnExplosionWave(pSelf.currentTile.posV3, 1f, 1f);
                     pSelf.a.addStatusEffect("WarGodsCry", 30f);
@@ -881,7 +872,7 @@ return a.hasTrait("God Of The Lich")
                     World.world.applyForce(pSelf.currentTile, 4, 0.4f, false, true, 20, null, pTarget, null);
 
                 }
-                if (Toolbox.randomChance(warGodPwrChance2))
+                if (Toolbox.randomChance(warGodPwrChance2 / 100))
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                     float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -905,14 +896,13 @@ return a.hasTrait("God Of The Lich")
 
             if (pTarget != null)
             {
-                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
                 PowerLibrary pb = new PowerLibrary();
 
-                if (Toolbox.randomChance(earthGodPwrChance1))
+                if (Toolbox.randomChance(earthGodPwrChance1/ 100))
                 {
                     pb.spawnEarthquake(pTarget.a.currentTile, null);
                 }
-                if (Toolbox.randomChance(earthGodPwrChance2))
+                if (Toolbox.randomChance(earthGodPwrChance2/ 100))
                 {
                     pb.spawnCloudRain(pTarget.a.currentTile, null);
                     pb.spawnCloudSnow(pTarget.a.currentTile, null);
@@ -935,10 +925,8 @@ return a.hasTrait("God Of The Lich")
 
             if (pTarget != null)
             {
-                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
 
-
-                if (Toolbox.randomChance(lichGodPwrChance1))
+                if (Toolbox.randomChance(lichGodPwrChance1 / 100))
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                     float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -985,7 +973,6 @@ return a.hasTrait("God Of The Lich")
 
         public static bool knowledgeGodAutoTrait(BaseSimObject pTarget, WorldTile pTile)
         {
-            Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
             if (pTarget.a != null)
             {
                 if (pTarget.a.hasTrait("God Of Knowledge"))
@@ -1011,7 +998,6 @@ return a.hasTrait("God Of The Lich")
 
         public static bool darkGodAutoTrait(BaseSimObject pTarget, WorldTile pTile)
         {
-            Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
             if (pTarget.a != null)
             {
                 if (pTarget.a.hasTrait("God Of the Night"))
@@ -1036,7 +1022,6 @@ return a.hasTrait("God Of The Lich")
 
         public static bool starsGodAutoTrait(BaseSimObject pTarget, WorldTile pTile)
         {
-            Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
             if (pTarget.a != null)
             {
                 if (pTarget.a.hasTrait("God Of the Stars"))
@@ -1287,19 +1272,19 @@ return a.hasTrait("God Of The Lich")
             if (pTarget.a != null)
             {
 
-                WorldTile tile1 = Toolbox.getRandomTileWithinDistance(pTile, 60);
-                WorldTile tile2 = Toolbox.getRandomTileWithinDistance(pTile, 40);
-                List<WorldTile> randTile = List.Of<WorldTile>(new WorldTile[] { tile1, tile2 });
-                WorldTile _tile = Toolbox.getRandomTileWithinDistance(randTile, pTile, 45, 120);
-                if (Toolbox.randomChance(warGodPwrChance3))
+                WorldTile _tile = Toolbox.getRandomTileWithinDistance(pTile, 60);
+                //WorldTile tile2 = Toolbox.getRandomTileWithinDistance(pTile, 40);
+               // List<WorldTile> randTile = List.Of<WorldTile>(new WorldTile[] { tile1, tile2 });
+               // WorldTile _tile = Toolbox.getRandomTileWithinDistance(randTile, pTile, 45, 120);
+                if (Toolbox.randomChance(warGodPwrChance3/100))
                 {
                     MapBox.instance.dropManager.spawn(_tile, SD.spite, 5f, -1f);
                 }
-                if (Toolbox.randomChance(warGodPwrChance3))
+                if (Toolbox.randomChance(warGodPwrChance3/100))
                 {
                     MapBox.instance.dropManager.spawn(_tile, SD.discord, 5f, -1f);
                 }
-                if (Toolbox.randomChance(warGodPwrChance3))
+                if (Toolbox.randomChance(warGodPwrChance3 / 100))
                 {
                     MapBox.instance.dropManager.spawn(_tile, SD.inspiration, 5f, -1f);
                 }
@@ -1312,19 +1297,19 @@ return a.hasTrait("God Of The Lich")
         {
             if (pSelf.a != null)
             {
-                if (Toolbox.randomChance(earthGodPwrChance3))
+                if (Toolbox.randomChance(earthGodPwrChance3/100))
                 {
                     ActionLibrary.tryToGrowTree(pSelf);
                 }
-                if (Toolbox.randomChance(earthGodPwrChance3))
+                if (Toolbox.randomChance(earthGodPwrChance3/100))
                 {
                     ActionLibrary.tryToCreatePlants(pSelf);
                 }
-                if (Toolbox.randomChance(earthGodPwrChance3))
+                if (Toolbox.randomChance(earthGodPwrChance3 / 100))
                 {
                     BuildingActions.tryGrowMineralRandom(pSelf.a.currentTile);
                 }
-                if (Toolbox.randomChance(earthGodPwrChance3))
+                if (Toolbox.randomChance(earthGodPwrChance3/100))
                 {
 
                     buildMountain(pTile);
