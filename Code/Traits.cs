@@ -896,7 +896,7 @@ return a.hasTrait("God Of The Lich")
                     pb.spawnCloudRain(pTarget.a.currentTile, null);
                     pb.spawnCloudSnow(pTarget.a.currentTile, null);
                 }
-                if (Toolbox.randomChance(0.02f))
+                if (Toolbox.randomChance(earthGodPwrChance3/100))
                 {
                     pb.spawnBoulder(pTarget.a.currentTile, null);
                 }
