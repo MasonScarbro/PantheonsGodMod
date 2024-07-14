@@ -23,21 +23,17 @@ public static class GodWeaponManager
     public static bool godGiveWeapon(BaseSimObject pTarget, WorldTile pTile)
     {
 
-        if (count == 1)
+       /* if (count == 1)
         {
             Debug.Log("IGNORE THIS ERROR AND KEEP PLAYING!");
-        }
-
-
-
-
-
+        }*/ //why is this here??? just uses more cpu
 
         if (pTarget.a != null)
         {
             bool gottenweapon = false;
             pTarget.a.data.get("gottenweapon", out gottenweapon);
-            if(!gottenweapon){
+            if (pTarget.a.asset.use_items && !gottenweapon)
+            {
             if (pTarget.a.hasTrait("God Of War"))
             {
                 ItemData axeOfFuryD = new ItemData();
@@ -147,8 +143,8 @@ public static class GodWeaponManager
 
             }
             pTarget.a.updateStats();
-            pTarget.a.data.set("gottenweapon", true);
             count++;
+            pTarget.a.data.set("gottenweapon", true);
             return true;
             }
         }

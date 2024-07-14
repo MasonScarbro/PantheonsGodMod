@@ -14,6 +14,7 @@ using System.Text;
 using ai;
 using HarmonyLib;
 using NCMS.Utils;
+using static UnityEngine.GraphicsBuffer;
 
 
 namespace GodsAndPantheons
@@ -191,6 +192,7 @@ namespace GodsAndPantheons
             subGod.base_stats[S.scale] = 0.02f;
             subGod.base_stats[S.critical_chance] += 0.05f;
             subGod.group_id = "GodTraits";
+            subGod.action_special_effect = (WorldAction)Delegate.Combine(subGod.action_special_effect, new WorldAction(godKillerAutoTrait));
             AddTrait(subGod, "These Are the gods that have smaller importance");
 
             ActorTrait warGod = new ActorTrait();
@@ -257,8 +259,9 @@ namespace GodsAndPantheons
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
             godHunter.action_death = (WorldAction)Delegate.Combine(godHunter.action_death, new WorldAction(godHunterDeath));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(godKillerAutoTrait));
+            godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(ChaseGod));
             godHunter.group_id = "GodTraits";
-            AddTrait(godHunter, "The God Hunter");
+            AddTrait(godHunter, "He will stop at NOTHING to kill a god");
             //my traits
             ActorTrait godofgods = new ActorTrait();
             godofgods.id = "God Of gods";
@@ -316,6 +319,28 @@ namespace GodsAndPantheons
             }
             return true;
         }
+        //if god is too far away the god hunter will teleport to them
+        public static bool ChaseGod(BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (pTarget.isActor())
+            {
+                BaseSimObject? a = Reflection.GetField(typeof(ActorBase), pTarget, "attackTarget") as BaseSimObject;
+                if (a != null)
+                {
+                    if (Traits.IsGod(a.a))
+                    {
+                        float pDist = Vector2.Distance(pTarget.currentPosition, a.currentPosition);
+                        if (pDist > 30)
+                        {
+                            EffectsLibrary.spawnAt("fx_teleport_blue", a.currentPosition, pTarget.stats[S.scale]);
+                            SuperRegeneration(pTarget, pTile);
+                            pTarget.a.spawnOn(a.currentTile, 0f);
+                        }
+                    }
+                }
+            }
+                    return true;
+        }
         public static void AddTrait(ActorTrait Trait, string disc)
         {
             AssetManager.traits.add(Trait);
@@ -355,16 +380,17 @@ namespace GodsAndPantheons
               return MyMinions;
         }
             public static bool IsGod(Actor a){
-return a.hasTrait("God Of The Lich") 
-|| a.hasTrait("God Of The Stars") 
-|| a.hasTrait("God Of Knowledge") 
-|| a.hasTrait("God Of The Night") 
-|| a.hasTrait("God_Of_Chaos") 
-|| a.hasTrait("God Of War") 
-|| a.hasTrait("God Of the Earth")
-|| a.hasTrait("God Of light")
-|| a.hasTrait("God of gods");
-}
+            return a.hasTrait("God Of The Lich")
+            || a.hasTrait("God Of The Stars")
+            || a.hasTrait("God Of Knowledge")
+            || a.hasTrait("God Of The Night")
+            || a.hasTrait("God_Of_Chaos")
+            || a.hasTrait("God Of War")
+            || a.hasTrait("God Of the Earth")
+            || a.hasTrait("God Of light")
+            || a.hasTrait("God of gods")
+            || a.hasTrait("LesserGod");
+         }
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -1106,13 +1132,10 @@ return a.hasTrait("God Of The Lich")
 
             if (pTarget.a != null)
             {
-                if (pTarget.a.hasTrait("God Killer"))
-                {
                     pTarget.a.addTrait("blessed");
                     pTarget.a.addTrait("frost_proof");
                     pTarget.a.addTrait("fire_proof");
-		    pTarget.a.addTrait("tough");
-                }
+		            pTarget.a.addTrait("tough");
 
 
             }
@@ -1376,32 +1399,46 @@ return a.hasTrait("God Of The Lich")
             if (__instance.isActor())
             {
                 Actor a = __instance.a;
-		bool summoned = a.hasTrait("Summoned One");
-		Actor Master = Traits.FindMaster(a);
-		if(pTarget.isActor()){
-                Actor b = pTarget.a;
-                if (summoned && Master != a)
+            if(a.hasTrait("Summoned One"))
                 {
-                        if (!Master.canAttackTarget(b))
+                    Actor Master = Traits.FindMaster(a);
+                    if(Master != a)
+                    {
+                        if (!Master.canAttackTarget(pTarget))
                         {
                             __result = false;
                         }
+                    }
                 }
-                else if (b.hasTrait("Summoned One"))
+             else 
+		     if (pTarget.isActor()){
+                Actor b = pTarget.a;
+                if (b.hasTrait("Summoned One"))
                 {
-                    Actor Masterb = Traits.FindMaster(b);
-                    if (Masterb != b)
+                    Actor Master = Traits.FindMaster(b);
+                    if (Master != b)
                     {
-                        if (!a.canAttackTarget(Masterb))
+                        if (!a.canAttackTarget(Master))
                             __result = false;
                     }
                 }
-		}else if(summoned && pTarget.isBuilding() && Master != a){
-			if(Master.kingdom.race == pTarget.kingdom.race)
-				__result = false;
-		}
+		      }
             }
        }
+    }
+    [HarmonyPatch(typeof(ActorBase), "clearAttackTarget")]
+    public class KEEPATTACKING
+    {
+        static bool Prefix(ActorBase __instance)
+        {
+            if (__instance.hasTrait("God Hunter")){
+                BaseSimObject? a = Reflection.GetField(typeof(ActorBase), __instance, "attackTarget") as BaseSimObject;
+                if (a != null) {
+                    if (Traits.IsGod(a.a) && a.isAlive()) { return false; }
+                }
+            }
+            return true;
+        }
     }
     [HarmonyPatch(typeof(MapBox), "applyAttack")]
     public class updateAttack
@@ -1410,6 +1447,7 @@ return a.hasTrait("God Of The Lich")
        {
 	      if (pData.initiator.isActor() && pTargetToCheck.isActor()){
 	      if(pData.initiator.a.hasTrait("God Hunter") && !pTargetToCheck.isAlive() && Traits.IsGod(pTargetToCheck.a)){
+              EffectsLibrary.spawnAt("fx_teleport_blue", pData.initiator.currentPosition, pData.initiator.stats[S.scale]);
 		      pData.initiator.a.killHimself();
 	      }
 	      }
