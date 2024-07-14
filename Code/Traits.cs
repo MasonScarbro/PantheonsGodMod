@@ -83,9 +83,8 @@ namespace GodsAndPantheons
             //chaosGod.action_death = new WorldAction(ActionLibrary.turnIntoDemon);
             chaosGod.action_death = (WorldAction)Delegate.Combine(chaosGod.action_death, new WorldAction(chaosGodsTrick));
             chaosGod.base_stats[S.scale] = 0.08f;
-            AssetManager.traits.add(chaosGod);
-            PlayerConfig.unlockTrait(chaosGod.id);
-            addTraitToLocalizedLibrary(chaosGod.id, "Tis's The God Of Chaos!");
+            chaosGod.group_id = "GodTraits";
+            AddTrait(chaosGod, "Tis's The God Of Chaos!");
 
 
             ActorTrait sunGod = new ActorTrait();
@@ -99,8 +98,6 @@ namespace GodsAndPantheons
             sunGod.base_stats[S.dodge] += 80f;
             sunGod.base_stats[S.accuracy] += 10f;
             sunGod.base_stats[S.range] += 5f;
-            AssetManager.traits.add(sunGod);
-            PlayerConfig.unlockTrait(sunGod.id);
             sunGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             sunGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(sunGodAutoTrait));
             sunGod.action_attack_target = new AttackAction(ActionLibrary.addBurningEffectOnTarget);
@@ -108,7 +105,8 @@ namespace GodsAndPantheons
             sunGod.action_attack_target = new AttackAction(sunGodAttack);
             sunGod.action_death = (WorldAction)Delegate.Combine(sunGod.action_death, new WorldAction(sunGodsDeath));
             sunGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(sunGodEraStatus));
-            addTraitToLocalizedLibrary(sunGod.id, "The God Of light, controls the very light that shines and can pass through with great speed");
+            sunGod.group_id = "GodTraits";
+            AddTrait(sunGod, "The God Of light, controls the very light that shines and can pass through with great speed");
 
 
             ActorTrait darkGod = new ActorTrait();
@@ -125,10 +123,9 @@ namespace GodsAndPantheons
             darkGod.action_attack_target = new AttackAction(darkGodAttack);
             darkGod.action_death = (WorldAction)Delegate.Combine(darkGod.action_death, new WorldAction(darkGodsDeath));
             darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(darkGodEraStatus));
-            AssetManager.traits.add(darkGod);
-            PlayerConfig.unlockTrait(darkGod.id);
             darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(darkGodAutoTrait));
-            addTraitToLocalizedLibrary(darkGod.id, "The God Of darkness, thievery and the shadows of which is his domain ");
+            darkGod.group_id = "GodTraits";
+            AddTrait(darkGod, "The God Of darkness, thievery and the shadows of which is his domain ");
 
             ActorTrait knowledgeGod = new ActorTrait();
             knowledgeGod.id = "God Of Knowledge";
@@ -145,10 +142,9 @@ namespace GodsAndPantheons
             knowledgeGod.action_death = (WorldAction)Delegate.Combine(knowledgeGod.action_death, new WorldAction(genericGodsDeath));
             knowledgeGod.action_attack_target = new AttackAction(knowledgeGodAttack);
             knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgeGodEraStatus));
-            AssetManager.traits.add(knowledgeGod);
-            PlayerConfig.unlockTrait(knowledgeGod.id);
             knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgeGodAutoTrait));
-            addTraitToLocalizedLibrary(knowledgeGod.id, "The God Of Knowledge, His mind excedes Time he knows all");
+            knowledgeGod.group_id = "GodTraits";
+            AddTrait(knowledgeGod, "The God Of Knowledge, His mind excedes Time he knows all");
 
             ActorTrait starsGod = new ActorTrait();
             starsGod.id = "God Of the Stars";
@@ -165,10 +161,9 @@ namespace GodsAndPantheons
             starsGod.action_attack_target = new AttackAction(ActionLibrary.addFrozenEffectOnTarget);
             starsGod.action_attack_target += new AttackAction(starsGodAttack);
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodEraStatus));
-            AssetManager.traits.add(starsGod);
-            PlayerConfig.unlockTrait(starsGod.id);
+            starsGod.group_id = "GodTraits";
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodAutoTrait));
-            addTraitToLocalizedLibrary(starsGod.id, "Now Cometh the Age of stars, A Thousand Year Voyage under the wisdom of the moon");
+            AddTrait(starsGod, "Now Cometh the Age of stars, A Thousand Year Voyage under the wisdom of the moon");
 
             ActorTrait earthGod = new ActorTrait();
             earthGod.id = "God Of the Earth";
@@ -181,12 +176,11 @@ namespace GodsAndPantheons
             earthGod.base_stats[S.range] += 10f;
             earthGod.base_stats[S.intelligence] += 3f;
             earthGod.action_attack_target = new AttackAction(earthGodAttack);
-            AssetManager.traits.add(earthGod);
-            PlayerConfig.unlockTrait(earthGod.id);
+            earthGod.group_id = "GodTraits";
             earthGod.action_special_effect = new WorldAction(earthGodBuildWorld);
             earthGod.action_special_effect += new WorldAction(GodWeaponManager.godGiveWeapon);
             earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(earthGodAutoTrait));
-            addTraitToLocalizedLibrary(earthGod.id, "God of the Natural Enviornment, The titan of creation");
+            AddTrait(earthGod, "God of the Natural Enviornment, The titan of creation");
 
             ActorTrait subGod = new ActorTrait();
             subGod.id = "LesserGod";
@@ -196,9 +190,8 @@ namespace GodsAndPantheons
             subGod.base_stats[S.attack_speed] += 1f;
             subGod.base_stats[S.scale] = 0.02f;
             subGod.base_stats[S.critical_chance] += 0.05f;
-            AssetManager.traits.add(subGod);
-            PlayerConfig.unlockTrait(subGod.id);
-            addTraitToLocalizedLibrary(subGod.id, "These Are the gods that have smaller importance");
+            subGod.group_id = "GodTraits";
+            AddTrait(subGod, "These Are the gods that have smaller importance");
 
             ActorTrait warGod = new ActorTrait();
             warGod.id = "God Of War";
@@ -214,11 +207,10 @@ namespace GodsAndPantheons
             warGod.action_death = (WorldAction)Delegate.Combine(warGod.action_death, new WorldAction(genericGodsDeath));
             warGod.action_attack_target = new AttackAction(warGodAttack);
             warGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
-            AssetManager.traits.add(warGod);
-            PlayerConfig.unlockTrait(warGod.id);
             warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodAutoTrait));
             warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodSeeds));
-            addTraitToLocalizedLibrary(warGod.id, "God of Conflict, Bravery, Ambition, Many spheres of domain lie with him");
+            warGod.group_id = "GodTraits";
+            AddTrait(warGod, "God of Conflict, Bravery, Ambition, Many spheres of domain lie with him");
 
 
             ActorTrait lichGod = new ActorTrait();
@@ -236,10 +228,9 @@ namespace GodsAndPantheons
             lichGod.action_attack_target = new AttackAction(lichGodAttack);
             lichGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(lichGodAutoTrait));
-            AssetManager.traits.add(lichGod);
-            PlayerConfig.unlockTrait(lichGod.id);
+            lichGod.group_id = "GodTraits";
             
-            addTraitToLocalizedLibrary(lichGod.id, "God of Dead Souls, Corruption, and Rot, Many spheres of domain lie with him");
+            AddTrait(lichGod, "God of Dead Souls, Corruption, and Rot, Many spheres of domain lie with him");
 
             ActorTrait godKiller = new ActorTrait();
             godKiller.id = "God Killer";
@@ -252,10 +243,9 @@ namespace GodsAndPantheons
             godKiller.base_stats[S.scale] = 0.01f;
             godKiller.base_stats[S.range] += 4f;
             godKiller.base_stats[S.warfare] += 4f;
-            AssetManager.traits.add(godKiller);
-            PlayerConfig.unlockTrait(godKiller.id);
             godKiller.action_special_effect = (WorldAction)Delegate.Combine(godKiller.action_special_effect, new WorldAction(godKillerAutoTrait));
-            addTraitToLocalizedLibrary(godKiller.id, "To Kill a God is nearly to become one");
+            godKiller.group_id = "GodTraits";
+            AddTrait(godKiller, "To Kill a God is nearly to become one");
 
 
             ActorTrait godHunter = new ActorTrait();
@@ -263,13 +253,12 @@ namespace GodsAndPantheons
             godHunter.path_icon = "ui/icons/godKiller";
             godHunter.base_stats[S.damage] += 0;
             godHunter.base_stats[S.health] += 0;
-	    godHunter.action_special_effect = new WorldAction(SuperRegeneration);
+	        godHunter.action_special_effect = new WorldAction(SuperRegeneration);
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
             godHunter.action_death = (WorldAction)Delegate.Combine(godHunter.action_death, new WorldAction(godHunterDeath));
-            AssetManager.traits.add(godHunter);
-            PlayerConfig.unlockTrait(godHunter.id);
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(godKillerAutoTrait));
-            addTraitToLocalizedLibrary(godHunter.id, "The God Hunter");
+            godHunter.group_id = "GodTraits";
+            AddTrait(godHunter, "The God Hunter");
             //my traits
             ActorTrait godofgods = new ActorTrait();
             godofgods.id = "God Of gods";
@@ -285,16 +274,15 @@ namespace GodsAndPantheons
             godofgods.base_stats[S.speed] += 30f;
             godofgods.base_stats[S.armor] += 50f;
             godofgods.action_death = new WorldAction(ActionLibrary.deathNuke);
-	    godofgods.action_death = (WorldAction)Delegate.Combine(godofgods.action_death, new WorldAction(genericGodsDeath));
+	        godofgods.action_death = (WorldAction)Delegate.Combine(godofgods.action_death, new WorldAction(genericGodsDeath));
             godofgods.action_death = (WorldAction)Delegate.Combine(godofgods.action_death, new WorldAction(genericGodsDeath));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsAutoTrait));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(BringMinions));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsEraStatus));
             godofgods.base_stats[S.scale] = 0.075f;
             godofgods.action_attack_target += new AttackAction(GodOfGodsAttack);
-            AssetManager.traits.add(godofgods);
-            PlayerConfig.unlockTrait(godofgods.id);
-            addTraitToLocalizedLibrary(godofgods.id, "The god who rules among all");
+            godofgods.group_id = "GodTraits";
+            AddTrait(godofgods, "The god who rules among all");
             ActorTrait SummonedOne = new ActorTrait();
             SummonedOne.id = "Summoned One";
             SummonedOne.path_icon = "ui/icons/iconBlessing";
@@ -307,8 +295,7 @@ namespace GodsAndPantheons
             SummonedOne.group_id = TraitGroup.special;
             SummonedOne.can_be_given = false;
             SummonedOne.action_special_effect = (WorldAction)Delegate.Combine(SummonedOne.action_special_effect, new WorldAction(GodOfGodsEraStatus));
-            AssetManager.traits.add(SummonedOne);
-            addTraitToLocalizedLibrary(SummonedOne.id, "A creature summoned by God himself in order to aid them in battle, DO NOT MODIFY THE NAME OF THIS CREATURE!");
+            AddTrait(SummonedOne, "A creature summoned by God himself in order to aid them in battle, DO NOT MODIFY THE NAME OF THIS CREATURE!");
             
             //this to make it so summoned ones dont fight their Master and his allies
             var harmony = new Harmony("com.Gods.Pantheons");
@@ -328,6 +315,12 @@ namespace GodsAndPantheons
                 a.killHimself(false, AttackType.Age, false, true, true);
             }
             return true;
+        }
+        public static void AddTrait(ActorTrait Trait, string disc)
+        {
+            AssetManager.traits.add(Trait);
+            PlayerConfig.unlockTrait(Trait.id);
+            addTraitToLocalizedLibrary(Trait.id, disc);
         }
         public static bool BringMinions(BaseSimObject pTarget, WorldTile pTile)
         {
@@ -651,10 +644,6 @@ return a.hasTrait("God Of The Lich")
                     Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
                     Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
                     EffectsLibrary.spawnProjectile("PagesOfKnowledge", newPoint, newPoint2, 0.0f);
-                }
-                if (Toolbox.randomChance(0.04f))
-                {
-                    ActionLibrary.teleportRandom(null, pTarget, null); // teleports the target
                 }
 
                 return true;
