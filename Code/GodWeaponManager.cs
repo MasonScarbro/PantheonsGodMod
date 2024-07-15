@@ -136,7 +136,7 @@ public static class GodWeaponManager
             {
                 //Debug.Log("Why No Activate!?!?!?");
                 ItemData godHuntersScythe = new ItemData();
-                godHuntersScythe.id = "GodHuntersScytheBlank";
+                godHuntersScythe.id = "GodHuntersScythe";
                 godHuntersScythe.material = "base";
                 pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(godHuntersScythe);
                 pTarget.a.setStatsDirty();
