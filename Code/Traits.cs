@@ -1400,31 +1400,33 @@ namespace GodsAndPantheons
             if (__instance.isActor())
             {
                 Actor a = __instance.a;
-            if(a.hasTrait("Summoned One"))
+                if (a.hasTrait("Summoned One"))
                 {
                     Actor Master = Traits.FindMaster(a);
-                    if(Master != a)
+                    if (Master != a)
                     {
                         if (!Master.canAttackTarget(pTarget))
                         {
                             __result = false;
+                            return;
                         }
                     }
                 }
-             else 
-		     if (pTarget.isActor()){
+            }
+             if (pTarget.isActor())
+            {
                 Actor b = pTarget.a;
                 if (b.hasTrait("Summoned One"))
                 {
                     Actor Master = Traits.FindMaster(b);
                     if (Master != b)
                     {
-                        if (!a.canAttackTarget(Master))
+                        if (!__instance.canAttackTarget(Master))
                             __result = false;
                     }
                 }
-		      }
             }
+            
        }
     }
     [HarmonyPatch(typeof(ActorBase), "clearAttackTarget")]
