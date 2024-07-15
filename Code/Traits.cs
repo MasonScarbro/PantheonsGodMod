@@ -389,7 +389,7 @@ namespace GodsAndPantheons
             || a.hasTrait("God Of War")
             || a.hasTrait("God Of the Earth")
             || a.hasTrait("God Of light")
-            || a.hasTrait("God Of gods)
+            || a.hasTrait("God Of gods")
             || a.hasTrait("LesserGod");
          }
         //god of gods attack
