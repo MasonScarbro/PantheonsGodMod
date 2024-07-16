@@ -383,7 +383,7 @@ namespace GodsAndPantheons
             return a.hasTrait("God Of The Lich")
             || a.hasTrait("God Of The Stars")
             || a.hasTrait("God Of Knowledge")
-            || a.hasTrait("God Of The Night")
+            || a.hasTrait("God Of the Night")
             || a.hasTrait("God_Of_Chaos")
             || a.hasTrait("God Of War")
             || a.hasTrait("God Of the Earth")
