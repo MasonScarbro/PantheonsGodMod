@@ -63,7 +63,7 @@ namespace GodsAndPantheons
         public static float GodOfGodsPwrChance2 = 10f;
         public static float GodOfGodsPwrChance3 = 8f;
 
-
+        static PowerLibrary pb;
         public static void init()
         {
 
@@ -299,7 +299,7 @@ namespace GodsAndPantheons
             SummonedOne.can_be_given = false;
             SummonedOne.action_special_effect = (WorldAction)Delegate.Combine(SummonedOne.action_special_effect, new WorldAction(GodOfGodsEraStatus));
             AddTrait(SummonedOne, "A creature summoned by God himself in order to aid them in battle, DO NOT MODIFY THE NAME OF THIS CREATURE!");
-            
+            pb = new PowerLibrary();
             //this to make it so summoned ones dont fight their Master and his allies
             var harmony = new Harmony("com.Gods.Pantheons");
             harmony.PatchAll();
@@ -394,7 +394,6 @@ namespace GodsAndPantheons
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            PowerLibrary pb = new PowerLibrary();
             Actor self = (Actor)pSelf;
             if (pTarget != null)
             {
@@ -564,9 +563,9 @@ namespace GodsAndPantheons
         public static bool chaosGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             var chaosGodPwr1Chance = Toolbox.randomChance(0.01f);
-            var chaosGodPwr2Chance = Toolbox.randomChance(0.02f);
+            var chaosGodPwr2Chance = Toolbox.randomChance(0.05f);
 
-            if (pTarget != null)
+            if (pTarget != null && pSelf.isActor())
             {
                 if (chaosGodPwr1Chance)
                 {
@@ -577,15 +576,25 @@ namespace GodsAndPantheons
                     EffectsLibrary.spawnProjectile("fireBallX", newPoint, newPoint2, 0.0f);
 
                 }
+                //new ability: unleach chaos
                 if (chaosGodPwr2Chance)
                 {
-                    Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
-                    float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
-                    Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                    Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
-                    EffectsLibrary.spawnProjectile("boneFire", newPoint, newPoint2, 0.0f);
-
-
+                    bool hasmadness = pSelf.a.hasTrait("madness");
+                    DropsLibrary.action_madness(pTile);
+                    if(!hasmadness) pSelf.a.removeTrait("madness");
+                    
+                    World.world.getObjectsInChunks(pTile, 5, MapObjectType.Actor);
+                    foreach (Actor Actor in World.world.temp_map_objects)
+                    {
+                            if(Actor.a.hasTrait("Summoned One"))
+                            {
+                                Actor.a.data.setName("Corrupted One");
+                            }
+                    }
+                }
+                if (Toolbox.randomChance(0.05f))
+                {
+                    pb.spawnBoulder(pTarget.a.currentTile, null);
                 }
 
 
@@ -625,12 +634,7 @@ namespace GodsAndPantheons
                 }
                 if (Toolbox.randomChance(knowledgeGodPwrChance5/100))
                 {
-                    ActionLibrary.teleportRandom(null, pTarget, null); // teleports the target
-                }
-
-                if (Toolbox.randomChance(knowledgeGodPwrChance6 / 100))
-                {
-                    ActionLibrary.castLightning(null, pTarget, null); // Casts Lightning on the target
+                    ActionLibrary.teleportRandom(null, pTarget, null); // flee
                 }
                 if (Toolbox.randomChance(knowledgeGodPwrChance7 / 100))
                 {
@@ -715,17 +719,6 @@ namespace GodsAndPantheons
 
             if (pTarget != null)
             {
-
-
-                if (Toolbox.randomChance(starGodPwrChance1 / 100))
-                {
-                    Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
-                    float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
-                    Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x + 35f, pSelf.currentPosition.y + 95f, (float)pos.x + 1f, (float)pos.y + 1f, pDist, true); // the Point of the projectile launcher 
-                    Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
-                    EffectsLibrary.spawnProjectile("moonFall", newPoint, newPoint2, 0.0f);
-                    pSelf.a.addStatusEffect("invincible", 2f);
-                }
                 if (Toolbox.randomChance(starGodPwrChance2 / 100))
                 {
                     EffectsLibrary.spawnAtTile("fx_cometAzureDown_dej", pTarget.a.currentTile, 0.1f);
@@ -775,7 +768,6 @@ namespace GodsAndPantheons
             if (pTarget != null)
             {
 
-                PowerLibrary pb = new PowerLibrary();
 
                 if (Toolbox.randomChance(sunGodPwrChance1 / 100))
                 {
@@ -854,7 +846,6 @@ namespace GodsAndPantheons
 
             if (pTarget != null)
             {
-                PowerLibrary pb = new PowerLibrary();
 
                 if (Toolbox.randomChance(warGodPwrChance1 / 100))
                 {
@@ -867,19 +858,6 @@ namespace GodsAndPantheons
                     World.world.applyForce(pSelf.currentTile, 4, 0.4f, false, true, 20, null, pTarget, null);
 
                 }
-                if (Toolbox.randomChance(warGodPwrChance2 / 100))
-                {
-                    Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
-                    float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
-                    Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                    Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
-                    EffectsLibrary.spawnProjectile("WarAxeProjectile1", newPoint, newPoint2, 0.0f);
-
-                }
-
-
-
-
                 return true;
             }
             return false;
@@ -891,7 +869,6 @@ namespace GodsAndPantheons
 
             if (pTarget != null)
             {
-                PowerLibrary pb = new PowerLibrary();
 
                 if (Toolbox.randomChance(earthGodPwrChance1/ 100))
                 {
@@ -901,10 +878,6 @@ namespace GodsAndPantheons
                 {
                     pb.spawnCloudRain(pTarget.a.currentTile, null);
                     pb.spawnCloudSnow(pTarget.a.currentTile, null);
-                }
-                if (Toolbox.randomChance(earthGodPwrChance3/100))
-                {
-                    pb.spawnBoulder(pTarget.a.currentTile, null);
                 }
 
 
@@ -916,24 +889,8 @@ namespace GodsAndPantheons
 
         public static bool lichGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            
-
-            if (pTarget != null)
-            {
-
-                if (Toolbox.randomChance(lichGodPwrChance1 / 100))
-                {
-                    Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
-                    float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
-                    Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                    Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
-                    EffectsLibrary.spawnProjectile("waveOfMutilationProjectile", newPoint, newPoint2, 0.0f);
-                }
-
-
-                return true;
-            }
-            return false;
+           
+            return true;
         }
 
 
@@ -1429,7 +1386,7 @@ namespace GodsAndPantheons
        {
 	      if (pData.initiator.isActor() && pTargetToCheck.isActor()){
 	      if(pData.initiator.a.hasTrait("God Hunter") && !pTargetToCheck.isAlive() && Traits.IsGod(pTargetToCheck.a)){
-              EffectsLibrary.spawnAt("fx_teleport_blue", pData.initiator.currentPosition, pData.initiator.stats[S.scale]);
+              EffectsLibrary.spawnAt("fx_teleportStart_dej", pData.initiator.currentPosition, pData.initiator.stats[S.scale]);
 		      pData.initiator.a.killHimself();
 	      }
 	      }
