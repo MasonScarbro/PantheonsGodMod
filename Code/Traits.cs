@@ -258,7 +258,6 @@ namespace GodsAndPantheons
             godHunter.base_stats[S.health] += 0;
 	        godHunter.action_special_effect = new WorldAction(SuperRegeneration);
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
-            godHunter.action_death = (WorldAction)Delegate.Combine(godHunter.action_death, new WorldAction(godHunterDeath));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(godKillerAutoTrait));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(ChaseGod));
             godHunter.group_id = "GodTraits";
@@ -545,26 +544,6 @@ namespace GodsAndPantheons
             if(Main.savedSettings.deathera)
               World.world.eraManager.setEra(S.age_sun, true);
 
-
-            return true;
-
-        }
-
-        public static bool godHunterDeath(BaseSimObject pTarget, WorldTile pTile = null)
-        {
-            BaseSimObject attackedBy = pTarget.a.attackedBy;
-            if (!((BaseSimObject)attackedBy != null) || !attackedBy.isActor() || !attackedBy.isAlive())
-            {
-                return false;
-            }
-            if (!IsGod(attackedBy.a)){
-                ItemData godHuntersScythe = new ItemData();
-                godHuntersScythe.id = "GodHuntersScythe";
-                godHuntersScythe.material = "base";
-                attackedBy.a.equipment.getSlot(EquipmentType.Weapon).setItem(godHuntersScythe);
-                attackedBy.a.setStatsDirty();
-
-            }
 
             return true;
 

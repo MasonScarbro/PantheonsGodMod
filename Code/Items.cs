@@ -383,9 +383,9 @@ namespace GodsAndPantheons
             godHuntersScythe.materials = List.Of<string>(new string[] { "base" });
             godHuntersScythe.base_stats[S.fertility] = 0.0f;
             godHuntersScythe.base_stats[S.max_children] = 0f;
-            godHuntersScythe.base_stats[S.attack_speed] += 5f;
+            godHuntersScythe.base_stats[S.attack_speed] += 6f;
             godHuntersScythe.base_stats[S.damage] += 20;
-            godHuntersScythe.base_stats[S.speed] -= 3f;
+            godHuntersScythe.base_stats[S.speed] += 3f;
             godHuntersScythe.base_stats[S.health] = 1;
             godHuntersScythe.base_stats[S.accuracy] = -2f;
             godHuntersScythe.base_stats[S.range] = 3;
@@ -404,7 +404,7 @@ namespace GodsAndPantheons
             godHuntersScythe.base_stats[S.loyalty_traits] = 0f;
             godHuntersScythe.base_stats[S.cities] = 0;
             godHuntersScythe.base_stats[S.zone_range] = 0.1f;
-            godHuntersScythe.equipment_value = 3000;
+            godHuntersScythe.equipment_value = 2000;
             godHuntersScythe.path_slash_animation = "effects/slashes/slash_sword";
             godHuntersScythe.tech_needed = String.Empty;
             godHuntersScythe.quality = ItemQuality.Legendary;
