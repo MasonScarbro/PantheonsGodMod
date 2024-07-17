@@ -322,24 +322,58 @@ namespace GodsAndPantheons
         //if god is too far away the god hunter will teleport to them
         public static bool ChaseGod(BaseSimObject pTarget, WorldTile pTile)
         {
-            if (pTarget.isActor())
+            if (pTarget.isActor() && Main.savedSettings.HunterAssasins)
             {
                 BaseSimObject? a = Reflection.GetField(typeof(ActorBase), pTarget, "attackTarget") as BaseSimObject;
                 if (a != null)
                 {
                     if (Traits.IsGod(a.a))
                     {
-                        float pDist = Vector2.Distance(pTarget.currentPosition, a.currentPosition);
-                        if (pDist > 30)
+                        if (TeleportNearActor(pTarget.a, a, 30, false, true)) SuperRegenerate(pTarget, 0.5f, 10);
+                    }
+                }
+                else if (Toolbox.randomChance(0.5f))
+                {
+                    if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(true, pTarget.a), pTarget.currentTile), 60, false, true)) SuperRegenerate(pTarget, 0.5f, 25);
+                }
+                
+            }
+                    return true;
+        }
+        public static List<Actor> FindGods(bool CanAttack, Actor a)
+        {
+            List<Actor> Gods = new List<Actor>();
+            List<Actor> simpleList = World.world.units.getSimpleList();
+            foreach (Actor actor in simpleList)
+            {
+                if (IsGod(actor) && (!CanAttack || a.canAttackTarget(actor))){
+                    Gods.Add(actor);
+                }
+            }
+            return Gods;
+        }
+        //returns true if teleported
+        public static bool TeleportNearActor(Actor Actor, BaseSimObject Target, int distance, bool AllTiles = false, bool MustBeFar = false, byte Attempts = 10)
+        {
+            if (Target != null)
+            {
+                if (!MustBeFar || (Vector2.Distance(Target.currentPosition, Actor.currentPosition) > distance)){
+                    byte attempts = 0;
+                    while (attempts < Attempts)
+                    {
+                        WorldTile _tile = Toolbox.getRandomTileWithinDistance(Target.currentTile, distance);
+                        attempts++;
+                        if (AllTiles || (_tile.Type.ground && !_tile.Type.block && _tile.isSameIsland(Target.currentTile)))
                         {
-                            EffectsLibrary.spawnAt("fx_teleport_blue", a.currentPosition, pTarget.stats[S.scale]);
-                            SuperRegeneration(pTarget, pTile);
-                            pTarget.a.spawnOn(a.currentTile, 0f);
+                            Actor.cancelAllBeh(null);
+                            EffectsLibrary.spawnAt("fx_teleport_blue", _tile.posV3, Actor.stats[S.scale]);
+                            Actor.spawnOn(_tile, 0f);
+                            return true;
                         }
                     }
                 }
             }
-                    return true;
+            return false;
         }
         public static void AddTrait(ActorTrait Trait, string disc)
         {
@@ -355,6 +389,7 @@ namespace GodsAndPantheons
                 float pDist = Vector2.Distance(pTarget.currentPosition, a.currentPosition);
                 if(pDist > 50){
                     EffectsLibrary.spawnAt("fx_teleport_blue", pTarget.currentPosition, a.stats[S.scale]);
+                    a.cancelAllBeh(null);
                     a.spawnOn(pTarget.currentTile, 0f);
                 }
             }
@@ -364,9 +399,19 @@ namespace GodsAndPantheons
         {
 		if(Toolbox.randomChance(0.1f)){
 			pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * 0.05f));
+                return true;
 		}
-		   return true;
+		   return false;
 	}
+        public static bool SuperRegenerate(BaseSimObject pTarget, float chance, int percent)
+        {
+            if (Toolbox.randomChance(chance))
+            {
+                pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * (percent/100)));
+                return true;
+            }
+            return false;
+        }
         public static List<Actor> GetMinions(Actor a){
             List<Actor> MyMinions = new List<Actor>();
             List<Actor> simpleList = World.world.units.getSimpleList();
@@ -389,7 +434,8 @@ namespace GodsAndPantheons
             || a.hasTrait("God Of the Earth")
             || a.hasTrait("God Of light")
             || a.hasTrait("God Of gods")
-            || a.hasTrait("LesserGod");
+            || a.hasTrait("LesserGod")
+            || a.asset.id == SA.crabzilla; //crabzilla is obviously a god, duhh
          }
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -460,7 +506,6 @@ namespace GodsAndPantheons
                 actor.data.set("life", 0);
                 actor.data.set("lifespan", 31);
             }
-
         }
         public static bool GodOfGodsAutoTrait(BaseSimObject pTarget, WorldTile pTile)
         {
@@ -507,8 +552,6 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-	    if(!IsGod(attackedBy.a))
-              attackedBy.a.addTrait("God Killer");
             if(Main.savedSettings.deathera)
               World.world.eraManager.setEra(S.age_dark, true);
             return true;
@@ -523,8 +566,6 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-	    if(!IsGod(attackedBy.a))
-              attackedBy.a.addTrait("God Killer");
             if(Main.savedSettings.deathera)
               World.world.eraManager.setEra(S.age_moon, true);
             return true;
@@ -538,8 +579,6 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-	    if(!IsGod(attackedBy.a))
-              attackedBy.a.addTrait("God Killer");
             if(Main.savedSettings.deathera)
               World.world.eraManager.setEra(S.age_sun, true);
 
@@ -555,7 +594,6 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            attackedBy.a.addTrait("God Killer");
             return true;
 
         }
@@ -1270,7 +1308,10 @@ namespace GodsAndPantheons
             }
             return false;
         }
-
+        public static void StealSouls(Actor a, Actor b)
+        {
+            ///not finushed
+        }
 
         public static void buildMountain(WorldTile pTile)
         {
@@ -1310,7 +1351,7 @@ namespace GodsAndPantheons
             localizedText.Add("trait_" + id + "_info", description);
 
         }
-
+        //returns the summoned if unable to find master
         public static Actor FindMaster(Actor summoned)
            {
               List<Actor> simpleList = World.world.units.getSimpleList();
@@ -1370,7 +1411,8 @@ namespace GodsAndPantheons
     {
         static bool Prefix(ActorBase __instance)
         {
-            if (__instance.hasTrait("God Hunter")){
+            if (__instance.hasTrait("God Hunter") && Main.savedSettings.HunterAssasins)
+            {
                 BaseSimObject? a = Reflection.GetField(typeof(ActorBase), __instance, "attackTarget") as BaseSimObject;
                 if (a != null) {
                     if (Traits.IsGod(a.a) && a.isAlive()) { return false; }
@@ -1379,17 +1421,15 @@ namespace GodsAndPantheons
             return true;
         }
     }
-    [HarmonyPatch(typeof(MapBox), "applyAttack")]
+    [HarmonyPatch(typeof(Actor), "newKillAction")]
     public class updateAttack
     {
-      static void Postfix(AttackData pData, BaseSimObject pTargetToCheck)
+      static void Prefix(Actor __instance, Actor pDeadUnit)
        {
-	      if (pData.initiator.isActor() && pTargetToCheck.isActor()){
-	      if(pData.initiator.a.hasTrait("God Hunter") && !pTargetToCheck.isAlive() && Traits.IsGod(pTargetToCheck.a)){
-              EffectsLibrary.spawnAt("fx_teleportStart_dej", pData.initiator.currentPosition, pData.initiator.stats[S.scale]);
-		      pData.initiator.a.killHimself();
-	      }
-	      }
+                if (Traits.IsGod(pDeadUnit))
+                {
+                __instance.addTrait("God Killer");
+                }
         }
  }
 }

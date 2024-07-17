@@ -67,6 +67,7 @@ namespace GodsAndPantheons
 
         };
         public bool deathera = true;
+        public bool HunterAssasins = true;
 
 
     }
