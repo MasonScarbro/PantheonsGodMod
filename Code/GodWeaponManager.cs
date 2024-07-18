@@ -30,9 +30,7 @@ public static class GodWeaponManager
 
         if (pTarget.a != null)
         {
-            bool gottenweapon = false;
-            pTarget.a.data.get("gottenweapon", out gottenweapon);
-            if (pTarget.a.asset.use_items && !gottenweapon)
+            if (pTarget.a.asset.use_items && pTarget.a.equipment.weapon.isEmpty())
             {
             if (pTarget.a.hasTrait("God Of War"))
             {
@@ -136,15 +134,14 @@ public static class GodWeaponManager
             {
                 //Debug.Log("Why No Activate!?!?!?");
                 ItemData godHuntersScythe = new ItemData();
-                godHuntersScythe.id = "GodHuntersScytheBlank";
+                godHuntersScythe.id = "GodHuntersScythe";
                 godHuntersScythe.material = "base";
                 pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(godHuntersScythe);
                 pTarget.a.setStatsDirty();
 
             }
             pTarget.a.updateStats();
-            count++;
-            pTarget.a.data.set("gottenweapon", true);
+           // count++;
             return true;
             }
         }

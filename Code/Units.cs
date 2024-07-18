@@ -98,15 +98,15 @@ namespace GodsAndPantheons
             godHunter.action_liquid = new WorldAction(ActionLibrary.swimToIsland);
             godHunter.base_stats[S.max_age] = 10000f;
             godHunter.base_stats[S.health] = 250;
-            godHunter.base_stats[S.damage] = 13;
-            godHunter.base_stats[S.speed] = 80f;
-            godHunter.base_stats[S.armor] = 1;
-            godHunter.base_stats[S.attack_speed] = 100f;
+            godHunter.base_stats[S.damage] = 16f;
+            godHunter.base_stats[S.speed] = 85f;
+            godHunter.base_stats[S.armor] = 1f;
+            godHunter.base_stats[S.attack_speed] = 110f;
             godHunter.base_stats[S.critical_chance] = 0.1f;
             godHunter.base_stats[S.knockback] = 0.1f;
             godHunter.base_stats[S.knockback_reduction] = 0.1f;
-            godHunter.base_stats[S.accuracy] = 1f;
-            godHunter.base_stats[S.range] = 3;
+            godHunter.base_stats[S.accuracy] = 8f;
+            godHunter.base_stats[S.range] = 1f;
             godHunter.base_stats[S.targets] = 1f;
             godHunter.base_stats[S.dodge] = 1f;
             

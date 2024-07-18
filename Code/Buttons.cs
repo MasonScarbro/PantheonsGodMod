@@ -68,16 +68,30 @@ namespace GodsAndPantheons
                     tab.transform,
                     KnowledgeGodWindow.openWindow
               );
-            PowerButtons.CreateButton(
+            PowerButton button = PowerButtons.CreateButton(
                     "ToggleDeathEras",
                     Resources.Load<Sprite>("ui/Icons/ages/iconAgeHope"),
-                    "Chance Modfier",
+                    "Option modifier",
                     "should deaths change the era?",
                     new Vector2(388, 18),
-                    ButtonType.Click,
+                    ButtonType.Toggle,
                     tab.transform,
                     ToggleEra
               );
+            if (Main.savedSettings.deathera)
+                PowerButtons.ToggleButton(button.name);
+            PowerButton button2 = PowerButtons.CreateButton(
+                    "HunterAssassins",
+                    Resources.Load<Sprite>("ui/Icons/godKiller"),
+                    "option modifier",
+                    "if enabled, god hunters will become assassins and will hunt down gods",
+                    new Vector2(424, 18),
+                    ButtonType.Toggle,
+                    tab.transform,
+                    ToggleAssassins
+              );
+            if (Main.savedSettings.HunterAssasins)
+                PowerButtons.ToggleButton(button2.name);
             PowerButtons.CreateButton(
                     "GodOfGodsWindow",
                     Resources.Load<Sprite>("ui/Icons/IconDemi"),
@@ -152,11 +166,13 @@ namespace GodsAndPantheons
             return true;
         }
         public static void ToggleEra(){
-            if(Main.savedSettings.deathera){
-                Main.savedSettings.deathera = false;
-            }else{
-                Main.savedSettings.deathera = true;
-            }
+                Main.savedSettings.deathera = !Main.savedSettings.deathera;
+                Main.saveSettings();
+        }
+        public static void ToggleAssassins()
+        {
+            Main.savedSettings.HunterAssasins = !Main.savedSettings.HunterAssasins;
+            Main.saveSettings();
         }
     }
 }

@@ -65,7 +65,7 @@ namespace GodsAndPantheons
             //.projectile = "rock" 
             spearOfLight.action_attack_target = new AttackAction(sunGodFuryStrikesAttack);
             AssetManager.items.list.AddItem(spearOfLight);
-            Localization.addLocalization("item_SpearOfLight", "Spear Of Divine Light");
+            Localization.Add("item_SpearOfLight", "Spear Of Divine Light");
             addWeaponsSprite(spearOfLight.id, spearOfLight.materials[0]);
 
 
@@ -100,6 +100,7 @@ namespace GodsAndPantheons
             axeOfFury.equipment_value = 3000;
             axeOfFury.path_slash_animation = "effects/slashes/slash_spear";
             axeOfFury.tech_needed = "weapon_axe";
+            axeOfFury.action_attack_target = new AttackAction(WarGodThrow);
             axeOfFury.quality = ItemQuality.Legendary;
             axeOfFury.equipmentType = EquipmentType.Weapon;
             axeOfFury.name_class = "item_class_weapon";
@@ -110,7 +111,7 @@ namespace GodsAndPantheons
             //.projectile = "rock" 
 
             AssetManager.items.list.AddItem(axeOfFury);
-            Localization.addLocalization("item_AxeOfFury", "Axe Of War");
+            Localization.Add("item_AxeOfFury", "Axe Of War");
             addWeaponsSprite(axeOfFury.id, axeOfFury.materials[0]);
 
 
@@ -156,7 +157,7 @@ namespace GodsAndPantheons
             //.projectile = "rock" 
 
             AssetManager.items.list.AddItem(darkDagger);
-            Localization.addLocalization("item_DarkDagger", "Dagger Of Darkness");
+            Localization.Add("item_DarkDagger", "Dagger Of Darkness");
             addWeaponsSprite(darkDagger.id, darkDagger.materials[0]);
 
 
@@ -193,6 +194,7 @@ namespace GodsAndPantheons
             maceOfDestruction.tech_needed = String.Empty;
             maceOfDestruction.quality = ItemQuality.Legendary;
             maceOfDestruction.equipmentType = EquipmentType.Weapon;
+            maceOfDestruction.action_attack_target = new AttackAction(UnleashHell);
             maceOfDestruction.name_class = "item_class_weapon";
             maceOfDestruction.path_icon = "ui/weapon_icons/icon_MaceOfDestruction_adamantine";
             // For Ranged Weapons use "_range"
@@ -201,7 +203,7 @@ namespace GodsAndPantheons
             //.projectile = "rock" 
 
             AssetManager.items.list.AddItem(maceOfDestruction);
-            Localization.addLocalization("item_MaceOfDestruction", "Mace Of Destruction");
+            Localization.Add("item_MaceOfDestruction", "Mace Of Destruction");
             addWeaponsSprite(maceOfDestruction.id, maceOfDestruction.materials[0]);
 
             ItemAsset staffOfKnowledge = AssetManager.items.clone("StaffOfKnowledge", "_range");
@@ -216,7 +218,7 @@ namespace GodsAndPantheons
             staffOfKnowledge.base_stats[S.speed] += 1f;
             staffOfKnowledge.base_stats[S.health] = 1;
             staffOfKnowledge.base_stats[S.accuracy] = 1f;
-            staffOfKnowledge.base_stats[S.range] = 1;
+            staffOfKnowledge.base_stats[S.range] = 5;
             staffOfKnowledge.base_stats[S.armor] = 1;
             staffOfKnowledge.base_stats[S.scale] = 0.0f;
             staffOfKnowledge.base_stats[S.dodge] = 1f;
@@ -240,13 +242,14 @@ namespace GodsAndPantheons
             staffOfKnowledge.attackType = WeaponType.Range;
             staffOfKnowledge.name_class = "item_class_weapon";
             staffOfKnowledge.path_icon = "ui/weapon_icons/icon_StaffOfKnowledge_base";
+            staffOfKnowledge.action_attack_target = new AttackAction(UnleashLightning);
             // For Ranged Weapons use "_range"
             staffOfKnowledge.base_stats[S.projectiles] = 12f;
             staffOfKnowledge.base_stats[S.damage_range] = 0.9f;
             staffOfKnowledge.projectile = "wordsOfKnowledgeProjectile";
 
             AssetManager.items.list.AddItem(staffOfKnowledge);
-            Localization.addLocalization("item_StaffOfKnowledge", "Staff Of Knowledge");
+            Localization.Add("item_StaffOfKnowledge", "Staff Of Knowledge");
             addWeaponsSprite(staffOfKnowledge.id, staffOfKnowledge.materials[0]);
 
             ItemAsset cometScepter = AssetManager.items.clone("CometScepter", "_range");
@@ -285,13 +288,14 @@ namespace GodsAndPantheons
             cometScepter.attackType = WeaponType.Range;
             cometScepter.name_class = "item_class_weapon";
             cometScepter.path_icon = "ui/weapon_icons/icon_CometScepter_base";
+            cometScepter.action_attack_target = new AttackAction(UnleashMoonFall);
             // For Ranged Weapons use "_range"
             cometScepter.base_stats[S.projectiles] = 4f;
             cometScepter.base_stats[S.damage_range] = 0.9f;
             cometScepter.projectile = "starShowerProjectile";
 
             AssetManager.items.list.AddItem(cometScepter);
-            Localization.addLocalization("item_CometScepter", "Scepter Of The Stars");
+            Localization.Add("item_CometScepter", "Scepter Of The Stars");
             addWeaponsSprite(cometScepter.id, cometScepter.materials[0]);
 
 
@@ -333,7 +337,7 @@ namespace GodsAndPantheons
             hammerOfCreation.action_attack_target = (AttackAction)Delegate.Combine(hammerOfCreation.action_attack_target, new AttackAction(earthGodSendMountain));
             // For Ranged Weapons use "_range"
             AssetManager.items.list.AddItem(hammerOfCreation);
-            Localization.addLocalization("item_HammerOfCreation", "Hammer Of Creation");
+            Localization.Add("item_HammerOfCreation", "Hammer Of Creation");
             addWeaponsSprite(hammerOfCreation.id, hammerOfCreation.materials[0]);
 
             ItemAsset lichGodsGreatSword = AssetManager.items.clone("LichGodsGreatSword", "_melee");
@@ -369,70 +373,27 @@ namespace GodsAndPantheons
             lichGodsGreatSword.tech_needed = String.Empty;
             lichGodsGreatSword.quality = ItemQuality.Legendary;
             lichGodsGreatSword.equipmentType = EquipmentType.Weapon;
+            lichGodsGreatSword.action_attack_target = new AttackAction(LichGodAttack);
             lichGodsGreatSword.name_class = "item_class_weapon";
             lichGodsGreatSword.path_icon = "ui/weapon_icons/icon_LichGodsGreatSword_base";
             
             // For Ranged Weapons use "_range"
             AssetManager.items.list.AddItem(lichGodsGreatSword);
-            Localization.addLocalization("item_LichGodsGreatSword", "GreatSword Of The Lich");
+            Localization.Add("item_LichGodsGreatSword", "GreatSword Of The Lich");
             addWeaponsSprite(lichGodsGreatSword.id, lichGodsGreatSword.materials[0]);
 
-
-            ItemAsset godHuntersScytheB = AssetManager.items.clone("GodHuntersScytheBlank", "_melee");
-            godHuntersScytheB.id = "GodHuntersScytheBlank";
-            godHuntersScytheB.name_templates = List.Of<string>(new string[] { "God Hunters Scythe" });
-            godHuntersScytheB.materials = List.Of<string>(new string[] { "base" });
-            godHuntersScytheB.base_stats[S.fertility] = 0.0f;
-            godHuntersScytheB.base_stats[S.max_children] = 0f;
-            godHuntersScytheB.base_stats[S.attack_speed] += 5f;
-            godHuntersScytheB.base_stats[S.damage] += 20;
-            godHuntersScytheB.base_stats[S.speed] += 1f;
-            godHuntersScytheB.base_stats[S.health] = 1;
-            godHuntersScytheB.base_stats[S.accuracy] = 1f;
-            godHuntersScytheB.base_stats[S.range] = 2;
-            godHuntersScytheB.base_stats[S.armor] = 3;
-            godHuntersScytheB.base_stats[S.scale] = 0.0f;
-            godHuntersScytheB.base_stats[S.dodge] += 4f;
-            godHuntersScytheB.base_stats[S.targets] = 3f;
-            godHuntersScytheB.base_stats[S.critical_chance] += 0.1f;
-            godHuntersScytheB.base_stats[S.knockback] = 0.2f;
-            godHuntersScytheB.base_stats[S.knockback_reduction] = 0.1f;
-            godHuntersScytheB.base_stats[S.intelligence] += 0f;
-            godHuntersScytheB.base_stats[S.warfare] = 0;
-            godHuntersScytheB.base_stats[S.diplomacy] = 0;
-            godHuntersScytheB.base_stats[S.stewardship] = 0;
-            godHuntersScytheB.base_stats[S.opinion] = 0f;
-            godHuntersScytheB.base_stats[S.loyalty_traits] = 0f;
-            godHuntersScytheB.base_stats[S.cities] = 0;
-            godHuntersScytheB.base_stats[S.zone_range] = 0.1f;
-            godHuntersScytheB.equipment_value = 3000;
-            godHuntersScytheB.path_slash_animation = "effects/slashes/slash_sword";
-            godHuntersScytheB.tech_needed = String.Empty;
-            godHuntersScytheB.quality = ItemQuality.Legendary;
-            godHuntersScytheB.equipmentType = EquipmentType.Weapon;
-            godHuntersScytheB.name_class = "item_class_weapon";
-            godHuntersScytheB.path_icon = "ui/weapon_icons/icon_GodHuntersScythe_base";
-            godHuntersScytheB.action_attack_target = new AttackAction(GodHunterAttack);
-
-            // For Ranged Weapons use "_range"
-            AssetManager.items.list.AddItem(godHuntersScytheB);
-            Localization.addLocalization("item_GodHuntersScytheBlank", "The Weapon Chosen by the God Hunters, Deals 5x more damage to Gods");
-            addWeaponsSprite(godHuntersScytheB.id, godHuntersScytheB.materials[0]);
-
-
-            // for humans
             ItemAsset godHuntersScythe = AssetManager.items.clone("GodHuntersScythe", "_melee");
             godHuntersScythe.id = "GodHuntersScythe";
             godHuntersScythe.name_templates = List.Of<string>(new string[] { "God Hunters Scythe" });
             godHuntersScythe.materials = List.Of<string>(new string[] { "base" });
             godHuntersScythe.base_stats[S.fertility] = 0.0f;
             godHuntersScythe.base_stats[S.max_children] = 0f;
-            godHuntersScythe.base_stats[S.attack_speed] += 10f;
-            godHuntersScythe.base_stats[S.damage] += 25;
+            godHuntersScythe.base_stats[S.attack_speed] += 6f;
+            godHuntersScythe.base_stats[S.damage] += 20;
             godHuntersScythe.base_stats[S.speed] += 3f;
             godHuntersScythe.base_stats[S.health] = 1;
-            godHuntersScythe.base_stats[S.accuracy] = 1f;
-            godHuntersScythe.base_stats[S.range] = 2;
+            godHuntersScythe.base_stats[S.accuracy] = -2f;
+            godHuntersScythe.base_stats[S.range] = 3;
             godHuntersScythe.base_stats[S.armor] = 3;
             godHuntersScythe.base_stats[S.scale] = 0.0f;
             godHuntersScythe.base_stats[S.dodge] += 4f;
@@ -448,7 +409,7 @@ namespace GodsAndPantheons
             godHuntersScythe.base_stats[S.loyalty_traits] = 0f;
             godHuntersScythe.base_stats[S.cities] = 0;
             godHuntersScythe.base_stats[S.zone_range] = 0.1f;
-            godHuntersScythe.equipment_value = 3000;
+            godHuntersScythe.equipment_value = 4000;
             godHuntersScythe.path_slash_animation = "effects/slashes/slash_sword";
             godHuntersScythe.tech_needed = String.Empty;
             godHuntersScythe.quality = ItemQuality.Legendary;
@@ -458,7 +419,7 @@ namespace GodsAndPantheons
             godHuntersScythe.action_attack_target = new AttackAction(GodHunterAttack);
 
             AssetManager.items.list.AddItem(godHuntersScythe);
-            Localization.addLocalization("item_GodHuntersScythe", "The Weapon Chosen by the God Hunters, Deals 5x more damage to Gods");
+            Localization.Add("item_GodHuntersScythe", "The Weapon Chosen by the God Hunters, Deals 5x more damage to Gods");
             addWeaponsSprite(godHuntersScythe.id, godHuntersScythe.materials[0]);
 
         }
@@ -467,7 +428,6 @@ namespace GodsAndPantheons
         {
             if (pTarget != null)
             {
-                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
                 if (Toolbox.randomChance(80.0f))
                 {
                     pTarget.CallMethod("addStatusEffect", "burning", 15f);
@@ -485,8 +445,58 @@ namespace GodsAndPantheons
 
         static bool NoneAttackSomeoneAction(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile = null)
         {
-
             return false;
+            
+        }
+        static bool UnleashLightning(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (Toolbox.randomChance(Traits.knowledgeGodPwrChance6 / 100))
+            {
+                ActionLibrary.castLightning(null, pTarget, null); // Casts Lightning on the target
+            }
+            return true;
+
+        }
+        static bool UnleashMoonFall(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (Toolbox.randomChance(Traits.starGodPwrChance1 / 100))
+            {
+                Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
+                float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
+                Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x + 35f, pSelf.currentPosition.y + 95f, (float)pos.x + 1f, (float)pos.y + 1f, pDist, true); // the Point of the projectile launcher 
+                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+                EffectsLibrary.spawnProjectile("moonFall", newPoint, newPoint2, 0.0f);
+                pSelf.a.addStatusEffect("invincible", 2f);
+            }
+            return true;
+        }
+        static bool UnleashHell(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (Toolbox.randomChance(0.1f))
+            {
+                Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
+                float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
+                Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
+                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+                EffectsLibrary.spawnProjectile("boneFire", newPoint, newPoint2, 0.0f);
+
+
+            }
+            return true;
+            
+        }
+        static bool WarGodThrow(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (Toolbox.randomChance(Traits.warGodPwrChance2 / 100))
+            {
+                Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
+                float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
+                Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
+                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+                EffectsLibrary.spawnProjectile("WarAxeProjectile1", newPoint, newPoint2, 0.0f);
+
+            }
+            return true;
 
         }
         static bool NoneRegularAction(BaseSimObject pTarget, WorldTile pTile = null)
@@ -506,7 +516,6 @@ namespace GodsAndPantheons
         {
             if (pTarget != null)
             {
-                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
                 if (Toolbox.randomChance(0.9f))
                 {
 
@@ -546,19 +555,37 @@ namespace GodsAndPantheons
         public static bool GodHunterAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile){
             if(pTarget != null && pTarget.isActor()){
                 if(Traits.IsGod(pTarget.a)){
-                    pTarget.getHit(pSelf.stats[S.damage] * 4f, true, AttackType.Weapon, pSelf, false, true);
+                    pTarget.getHit(pSelf.stats[S.damage] * 2f, true, AttackType.Weapon, pSelf, false, true);
                 }
             }
             return true;
                 
         }
+        public static bool LichGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (pTarget != null)
+            {
 
-        public static bool earthGodSendMountain(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+                if (Toolbox.randomChance(Traits.lichGodPwrChance1 / 100))
+                {
+                    Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
+                    float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
+                    Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
+                    Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+                    EffectsLibrary.spawnProjectile("waveOfMutilationProjectile", newPoint, newPoint2, 0.0f);
+                }
+
+
+            }
+            return true;
+        }
+
+            public static bool earthGodSendMountain(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (pSelf.a != null)
             {
                 
-                if (Toolbox.randomChance(0.1f))
+                if (Toolbox.randomChance(Traits.earthGodPwrChance3))
                 {
 
                     buildMountainPath(pTile, pSelf, pTarget);

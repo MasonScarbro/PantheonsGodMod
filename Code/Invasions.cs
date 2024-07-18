@@ -2,6 +2,7 @@ namespace GodsAndPantheons
 {
     class Invasions
     {
+        public static Actor nextInvader;
         public static void init()
         {
             DisasterAsset hunterInvasion = new DisasterAsset();
