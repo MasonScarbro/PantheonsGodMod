@@ -285,7 +285,20 @@ namespace GodsAndPantheons
 
                         };
                         break;
-                    
+                    case "summonWolf%":
+                        call = delegate {
+                            if (Main.savedSettings.moonGodChances["summonWolf%"].active)
+                            {
+                                Traits.starGodPwrChance4 = int.Parse(Main.savedSettings.moonGodChances["summonWolf%"].value);
+                            }
+                            else
+                            {
+                                Traits.starGodPwrChance4 = 0;
+                            }
+
+                        };
+                        break;
+
                 }
                 if (call != null)
                 {
@@ -566,6 +579,20 @@ namespace GodsAndPantheons
                                 Traits.darkGodPwrChance4 = 0;
                             }
                             
+
+                        };
+                        break;
+                    case "summonDarkOne%":
+                        call = delegate {
+                            if (Main.savedSettings.darkGodChances["summonDarkOne%"].active)
+                            {
+                                Traits.darkGodPwrChance5 = int.Parse(Main.savedSettings.darkGodChances["summonDarkOne%"].value);
+                            }
+                            else
+                            {
+                                Traits.darkGodPwrChance5 = 0;
+                            }
+
 
                         };
                         break;
@@ -1040,4 +1067,153 @@ namespace GodsAndPantheons
 
     }
 
+    class LichGodWindow : MonoBehaviour
+    {
+        private static GameObject contents;
+        private static GameObject scrollView;
+        private static Vector2 originalSize;
+        public static LichGodWindow instance;
+
+
+        public static void init()
+        {
+
+            contents = WindowManager.windowContents["LichGodWindow"];
+            instance = new GameObject("LichGodWindowInstance").AddComponent<LichGodWindow>();
+            scrollView = GameObject.Find($"/Canvas Container Main/Canvas - Windows/windows/LichGodWindow/Background/Scroll View");
+            originalSize = contents.GetComponent<RectTransform>().sizeDelta;
+            VerticalLayoutGroup layoutGroup = contents.AddComponent<VerticalLayoutGroup>();
+            layoutGroup.childControlHeight = false;
+            layoutGroup.childControlWidth = false;
+            layoutGroup.childForceExpandHeight = false;
+            layoutGroup.childForceExpandWidth = false;
+            layoutGroup.childScaleHeight = true;
+            layoutGroup.childScaleWidth = true;
+            layoutGroup.childAlignment = TextAnchor.UpperCenter;
+            layoutGroup.spacing = 50;
+            loadSettingOptions();
+        }
+
+        private static void loadSettingOptions()
+        {
+            loadInputOptions();
+
+
+        }
+
+        public static void openWindow()
+        {
+            Windows.ShowWindow("LichGodWindow");
+        }
+
+        private static void loadInputOptions()
+        {
+            contents.GetComponent<RectTransform>().sizeDelta += new Vector2(0, ((Main.savedSettings.lichGodChances.Count)) * 250);
+            foreach (KeyValuePair<string, InputOption> kv in Main.savedSettings.lichGodChances)
+            {
+
+                UnityAction call = null;
+                switch (kv.Key)
+                {
+                    case "waveOfMutilation%":
+                        call = delegate {
+                            if (Main.savedSettings.lichGodChances["waveOfMutilation%"].active)
+                            {
+                                Traits.lichGodPwrChance1 = float.Parse(Main.savedSettings.lichGodChances["waveOfMutilation%"].value);
+
+                            }
+                            else
+                            {
+                                Traits.lichGodPwrChance1 = 0;
+                            }
+
+                        };
+                        break;
+                    case "summonSkele%":
+                        call = delegate {
+                            if (Main.savedSettings.lichGodChances["summonSkele%"].active)
+                            {
+                                Traits.lichGodPwrChance2 = float.Parse(Main.savedSettings.lichGodChances["summonSkele%"].value);
+                            }
+                            else
+                            {
+                                Traits.lichGodPwrChance2 = 0;
+                            }
+
+                        };
+                        break;
+                    case "summonDead%":
+                        call = delegate {
+                            if (Main.savedSettings.lichGodChances["summonDead%"].active)
+                            {
+                                Traits.lichGodPwrChance3 = float.Parse(Main.savedSettings.lichGodChances["summonDead%"].value);
+                            }
+                            else
+                            {
+                                Traits.lichGodPwrChance3 = 0;
+                            }
+
+
+                        };
+                        break;
+                    case "rigorMortisHand%":
+                        call = delegate {
+                            if (Main.savedSettings.lichGodChances["rigorMortisHand%"].active)
+                            {
+                                Traits.lichGodPwrChance4 = float.Parse(Main.savedSettings.lichGodChances["rigorMortisHand%"].value);
+                            }
+                            else
+                            {
+                                Traits.lichGodPwrChance4 = 0;
+                            }
+
+
+                        };
+                        break;
+
+                }
+                if (call != null)
+                {
+                    call.Invoke();
+
+                    NameInput input = NewUI.createInputOption(
+                        "LichGodWindow",
+                        $"{kv.Key}_setting",
+                        kv.Key,
+                        "Modify The Value Of This Setting",
+                        0,
+                        contents,
+                        kv.Value.value
+                    );
+                    input.inputField.characterValidation = InputField.CharacterValidation.Integer;
+                    input.inputField.onValueChanged.AddListener(delegate {
+                        string pValue = NewUI.checkStatInput(input);
+                        Main.modifyGodOption(kv.Key, pValue, PowerButtons.GetToggleValue($"{kv.Key}Button"), call);
+                        input.setText(pValue);
+                    });
+
+                    PowerButton activeButton = PowerButtons.CreateButton(
+                        $"{kv.Key}Button",
+                        Mod.EmbededResources.LoadSprite($"{Mod.Info.Name}.Resources.units.icon.png"),
+                        "Activate Setting",
+                        "",
+                        new Vector2(200, 0),
+                        ButtonType.Toggle,
+                        input.transform.parent.transform,
+                        delegate {
+                            string pValue = NewUI.checkStatInput(input);
+                            Main.modifyGodOption(kv.Key, pValue, PowerButtons.GetToggleValue($"{kv.Key}Button"), call);
+                            input.setText(pValue);
+                        }
+                    );
+                    if (kv.Value.active)
+                    {
+                        PowerButtons.ToggleButton($"{kv.Key}Button");
+                    }
+                    activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
+                }
+            }
+        }
+
+    }
 }

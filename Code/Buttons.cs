@@ -47,6 +47,18 @@ namespace GodsAndPantheons
             godHunterSpawn.click_action = new PowerActionWithID(callSpawnUnit);
             AssetManager.powers.add(godHunterSpawn);
 
+
+            var darkOneSpawn = new GodPower();
+            darkOneSpawn.id = "DarkOne";
+            darkOneSpawn.showSpawnEffect = true;
+            darkOneSpawn.multiple_spawn_tip = true;
+            darkOneSpawn.actorSpawnHeight = 3f;
+            darkOneSpawn.name = "DarkOne";
+            darkOneSpawn.spawnSound = "spawnelf";
+            darkOneSpawn.actor_asset_id = "DarkOne";
+            darkOneSpawn.click_action = new PowerActionWithID(callSpawnUnit);
+            AssetManager.powers.add(darkOneSpawn);
+
             PowerButtons.CreateButton(
               "GodHunter",
               Resources.Load<Sprite>("ui/Icons/godKiller"),
@@ -57,6 +69,17 @@ namespace GodsAndPantheons
               tab.transform,
               null
               
+          );
+            PowerButtons.CreateButton(
+              "DarkOne",
+              Resources.Load<Sprite>("ui/Icons/godKiller"),
+              "DarkOne Spawn",
+              "Spawn a GodHunter",
+              new Vector2(100, -18),
+              ButtonType.GodPower,
+              tab.transform,
+              null
+
           );
             PowerButtons.CreateButton(
                     "KnowledgeGodWindow",
@@ -151,6 +174,16 @@ namespace GodsAndPantheons
                     ButtonType.Click,
                     tab.transform,
                     EarthGodWindow.openWindow
+              );
+            PowerButtons.CreateButton(
+                    "LichGodWindow",
+                    Resources.Load<Sprite>("ui/Icons/lichGod"),
+                    "Chance Modfier",
+                    "Manage The Gods Powers",
+                    new Vector2(460, 18),
+                    ButtonType.Click,
+                    tab.transform,
+                    LichGodWindow.openWindow
               );
 
         }

@@ -120,6 +120,7 @@ namespace GodsAndPantheons
             Main.savedSettings.sunGodChances[key] = new InputOption { active = active, value = value };
             Main.savedSettings.warGodChances[key] = new InputOption { active = active, value = value };
             Main.savedSettings.earthGodChances[key] = new InputOption { active = active, value = value };
+            Main.savedSettings.lichGodChances[key] = new InputOption { active = active, value = value };
             Main.savedSettings.GodOfGodsChances[key] = new InputOption { active = active, value = value };
             saveSettings();
             if (call != null)

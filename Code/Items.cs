@@ -389,7 +389,7 @@ namespace GodsAndPantheons
             godHuntersScythe.base_stats[S.fertility] = 0.0f;
             godHuntersScythe.base_stats[S.max_children] = 0f;
             godHuntersScythe.base_stats[S.attack_speed] += 6f;
-            godHuntersScythe.base_stats[S.damage] += 20;
+            godHuntersScythe.base_stats[S.damage] += 30;
             godHuntersScythe.base_stats[S.speed] += 3f;
             godHuntersScythe.base_stats[S.health] = 1;
             godHuntersScythe.base_stats[S.accuracy] = -2f;

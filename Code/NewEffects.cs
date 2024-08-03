@@ -119,6 +119,21 @@ namespace GodsAndPantheons
                 time_between_frames = 0.08f
             });
             World.world.stackEffects.CallMethod("add", effect6);
+
+            var effect7 = AssetManager.effects_library.add(new EffectAsset
+            {
+                id = "fx_handgrab_dej",
+                use_basic_prefab = true,
+                sorting_layer_id = "EffectsBack",
+                sprite_path = "effects/fx_handgrab_dej",
+                show_on_mini_map = true,
+                limit = 100,
+                draw_light_area = true,
+                draw_light_size = 2f,
+                draw_light_area_offset_y = 0f,
+                time_between_frames = 0.1f
+            });
+            World.world.stackEffects.CallMethod("add", effect7);
             //World.world.stackEffects.checkInit();
         }
     }

@@ -35,15 +35,17 @@ namespace GodsAndPantheons
         {
             {"summonMoonChunk%", new InputOption{active = true, value = "0.05" }},
             {"cometAzure%", new InputOption{active = true, value = "1" }},
-            {"cometShower%", new InputOption{active = true, value = "1" }}
-            
+            {"cometShower%", new InputOption{active = true, value = "1" }},
+            {"summonWolf%", new InputOption{active = true, value = "5" }}
+
         };
         public Dictionary<string, InputOption> darkGodChances = new Dictionary<string, InputOption>
         {
             {"cloudOfDarkness%", new InputOption{active = true, value = "0.01" }},
             {"blackHole%", new InputOption{active = true, value = "0.1" }},
             {"darkDaggers%", new InputOption{active = true, value = "4" }},
-            {"smokeFlash%", new InputOption{active = true, value = "1" }}
+            {"smokeFlash%", new InputOption{active = true, value = "1" }},
+            {"summonDarkOne%", new InputOption{active = true, value = "4" }},
         };
         public Dictionary<string, InputOption> sunGodChances = new Dictionary<string, InputOption>
         {
@@ -64,6 +66,14 @@ namespace GodsAndPantheons
             {"earthquake%", new InputOption{active = true, value = "5" }},
             {"makeItRain%", new InputOption{active = true, value = "10" }},
             {"buildWorld%", new InputOption{active = true, value = "1" }},
+
+        };
+        public Dictionary<string, InputOption> lichGodChances = new Dictionary<string, InputOption>
+        {
+            {"waveOfMutilation%", new InputOption{active = true, value = "20" }},
+            {"summonSkele%", new InputOption{active = true, value = "2" }},
+            {"summonDead%", new InputOption{active = true, value = "3" }},
+            {"rigorMortisHand%", new InputOption{active = true, value = "5" }},
 
         };
         public bool deathera = true;

@@ -97,11 +97,11 @@ namespace GodsAndPantheons
             godHunter.actorSize = ActorSize.S13_Human;
             godHunter.action_liquid = new WorldAction(ActionLibrary.swimToIsland);
             godHunter.base_stats[S.max_age] = 10000f;
-            godHunter.base_stats[S.health] = 250;
-            godHunter.base_stats[S.damage] = 16f;
-            godHunter.base_stats[S.speed] = 85f;
+            godHunter.base_stats[S.health] = 275;
+            godHunter.base_stats[S.damage] = 30f;
+            godHunter.base_stats[S.speed] = 75f;
             godHunter.base_stats[S.armor] = 1f;
-            godHunter.base_stats[S.attack_speed] = 110f;
+            godHunter.base_stats[S.attack_speed] = 90f;
             godHunter.base_stats[S.critical_chance] = 0.1f;
             godHunter.base_stats[S.knockback] = 0.1f;
             godHunter.base_stats[S.knockback_reduction] = 0.1f;
@@ -111,10 +111,79 @@ namespace GodsAndPantheons
             godHunter.base_stats[S.dodge] = 1f;
             
             AssetManager.actor_library.add(godHunter);
-            AssetManager.actor_library.CallMethod("loadShadow", godHunter);;
+            AssetManager.actor_library.CallMethod("loadShadow", godHunter);
             AssetManager.actor_library.CallMethod("addTrait", "immortal");
             AssetManager.actor_library.CallMethod("addTrait", "God Hunter");
             Localization.addLocalization(godHunter.nameLocale, godHunter.nameLocale);
+
+
+            var darkOne = AssetManager.actor_library.clone("DarkOne", "_mob");
+            darkOne.nameLocale = "DarkOne";
+            darkOne.nameTemplate = "alien_name";
+            darkOne.job = "move_mob";
+            darkOne.race = SK.undead;
+            darkOne.defaultAttack = "base";
+            darkOne.kingdom = SK.undead;
+            darkOne.skeletonID = "skeleton_cursed";
+            darkOne.zombieID = "zombie";
+            darkOne.icon = "walk_0";
+            darkOne.animation_swim = "walk_0,walk_1,walk_2,walk_3";
+            darkOne.animation_walk = "walk_0,walk_1,walk_2,walk_3";
+            darkOne.texture_path = "DarkOne";
+            darkOne.run_to_water_when_on_fire = true;
+            darkOne.canBeKilledByStuff = true;
+            darkOne.canBeKilledByLifeEraser = true;
+            darkOne.canAttackBuildings = false;
+            darkOne.canBeMovedByPowers = true;
+            darkOne.canBeHurtByPowers = true;
+            darkOne.canTurnIntoZombie = false;
+            darkOne.canBeInspected = true;
+            darkOne.hideOnMinimap = false;
+            darkOne.use_items = true;
+            darkOne.take_items = true;
+            darkOne.needFood = false;
+            darkOne.diet_meat = false;
+            darkOne.inspect_home = true;
+            darkOne.disableJumpAnimation = true;
+            darkOne.has_soul = true;
+            darkOne.swampCreature = false;
+            darkOne.oceanCreature = false;
+            darkOne.landCreature = true;
+            darkOne.can_turn_into_demon_in_age_of_chaos = false;
+            darkOne.canTurnIntoIceOne = false;
+            darkOne.canTurnIntoTumorMonster = false;
+            darkOne.canTurnIntoMush = false;
+            darkOne.dieInLava = true;
+            darkOne.dieOnBlocks = false;
+            darkOne.dieOnGround = false;
+            darkOne.dieByLightning = true;
+            darkOne.damagedByOcean = false;
+            darkOne.damagedByRain = false;
+            darkOne.flying = false;
+            darkOne.very_high_flyer = false;
+            darkOne.hideFavoriteIcon = false;
+            darkOne.can_edit_traits = true;
+            darkOne.canBeKilledByDivineLight = true;
+            darkOne.ignoredByInfinityCoin = true;
+            darkOne.actorSize = ActorSize.S13_Human;
+            darkOne.action_liquid = new WorldAction(ActionLibrary.swimToIsland);
+            darkOne.base_stats[S.max_age] = 1f;
+            darkOne.base_stats[S.health] = 100;
+            darkOne.base_stats[S.damage] = 25f;
+            darkOne.base_stats[S.speed] = 35f;
+            darkOne.base_stats[S.armor] = 0f;
+            darkOne.base_stats[S.attack_speed] = 50f;
+            darkOne.base_stats[S.critical_chance] = 0.1f;
+            darkOne.base_stats[S.knockback] = 0.1f;
+            darkOne.base_stats[S.knockback_reduction] = 0.1f;
+            darkOne.base_stats[S.accuracy] = 8f;
+            darkOne.base_stats[S.range] = 1f;
+            darkOne.base_stats[S.targets] = 1f;
+            darkOne.base_stats[S.dodge] = 15f;
+
+            AssetManager.actor_library.add(darkOne);
+            AssetManager.actor_library.CallMethod("loadShadow", darkOne); ;
+            Localization.addLocalization(darkOne.nameLocale, darkOne.nameLocale);
         }
     }
 }
