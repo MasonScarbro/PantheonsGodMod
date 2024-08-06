@@ -1,24 +1,6 @@
-using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
-using NCMS;
 using NCMS.Utils;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using ReflectionUtility;
-using Assets.SimpleZip;
-
 
 namespace GodsAndPantheons
 {
@@ -89,7 +71,7 @@ namespace GodsAndPantheons
                     new Vector2(136, 18),
                     ButtonType.Click,
                     tab.transform,
-                    KnowledgeGodWindow.openWindow
+                    WindowManager.windows["KnowledgeGodWindow"].openWindow
               );
             PowerButton button = PowerButtons.CreateButton(
                     "ToggleDeathEras",
@@ -123,7 +105,7 @@ namespace GodsAndPantheons
                     new Vector2(352, 18),
                     ButtonType.Click,
                     tab.transform,
-                    GodOfGodsWindow.openWindow
+                    WindowManager.windows["GodOfGodsWindow"].openWindow
               );
             PowerButtons.CreateButton(
                     "MoonGodWindow",
@@ -133,7 +115,7 @@ namespace GodsAndPantheons
                     new Vector2(172, 18),
                     ButtonType.Click,
                     tab.transform,
-                    MoonGodWindow.openWindow
+                    WindowManager.windows["MoonGodWindow"].openWindow
               );
             PowerButtons.CreateButton(
                     "DarkGodWindow",
@@ -143,7 +125,7 @@ namespace GodsAndPantheons
                     new Vector2(208, 18),
                     ButtonType.Click,
                     tab.transform,
-                    DarkGodWindow.openWindow
+                    WindowManager.windows["DarkGodWindow"].openWindow
               );
             PowerButtons.CreateButton(
                     "SunGodWindow",
@@ -153,7 +135,7 @@ namespace GodsAndPantheons
                     new Vector2(244, 18),
                     ButtonType.Click,
                     tab.transform,
-                    SunGodWindow.openWindow
+                    WindowManager.windows["SunGodWindow"].openWindow
               );
             PowerButtons.CreateButton(
                     "WarGodWindow",
@@ -163,7 +145,7 @@ namespace GodsAndPantheons
                     new Vector2(280, 18),
                     ButtonType.Click,
                     tab.transform,
-                    WarGodWindow.openWindow
+                    WindowManager.windows["WarGodWindow"].openWindow
               );
             PowerButtons.CreateButton(
                     "EarthGodWindow",
@@ -173,7 +155,7 @@ namespace GodsAndPantheons
                     new Vector2(316, 18),
                     ButtonType.Click,
                     tab.transform,
-                    EarthGodWindow.openWindow
+                    WindowManager.windows["EarthGodWindow"].openWindow
               );
             PowerButtons.CreateButton(
                     "LichGodWindow",
@@ -183,7 +165,7 @@ namespace GodsAndPantheons
                     new Vector2(460, 18),
                     ButtonType.Click,
                     tab.transform,
-                    LichGodWindow.openWindow
+                    WindowManager.windows["LichGodWindow"].openWindow
               );
 
         }

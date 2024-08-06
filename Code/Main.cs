@@ -2,30 +2,22 @@
 AUTHOR: MASON SCARBRO
 VERSION: 1.0.0
 */
-using System;
 using System.IO;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Reflection;
 using NCMS;
 using NCMS.Utils;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using ReflectionUtility;
-using HarmonyLib;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 namespace GodsAndPantheons
 {
     [ModEntry]
     class Main : MonoBehaviour
     {
         
-        private static string correctSettingsVersion = "0.0.2";
+        private static string correctSettingsVersion = "0.1.0";
         public static SavedSettings savedSettings = new SavedSettings();
         internal static Dictionary<string, UnityEngine.Object> modsResources;
         public static Main instance;
@@ -52,7 +44,6 @@ namespace GodsAndPantheons
             Items.init();
             Units.init();
             Tab.init();
-            Buttons.init();
             Invasions.init();
             
             instance = this;
@@ -71,6 +62,7 @@ namespace GodsAndPantheons
             allWindows["kingdom"].gameObject.SetActive(false);
             yield return new WaitForSeconds(1f);
             WindowManager.init();
+            Buttons.init();
         }
         public static Dictionary<Actor, Actor> listOfTamedBeasts = new Dictionary<Actor, Actor>();
         public static void saveSettings(SavedSettings previousSettings = null)
@@ -112,21 +104,10 @@ namespace GodsAndPantheons
             savedSettings = loadedData;
             return true;
         }
-        public static void modifyGodOption(string key, string value, bool active, UnityAction call = null)
+        public static void modifyGodOption(string ID, string key, string value, bool active)
         {
-            Main.savedSettings.knowledgeGodChances[key] = new InputOption { active = active, value = value };
-            Main.savedSettings.moonGodChances[key] = new InputOption { active = active, value = value };
-            Main.savedSettings.darkGodChances[key] = new InputOption { active = active, value = value };
-            Main.savedSettings.sunGodChances[key] = new InputOption { active = active, value = value };
-            Main.savedSettings.warGodChances[key] = new InputOption { active = active, value = value };
-            Main.savedSettings.earthGodChances[key] = new InputOption { active = active, value = value };
-            Main.savedSettings.lichGodChances[key] = new InputOption { active = active, value = value };
-            Main.savedSettings.GodOfGodsChances[key] = new InputOption { active = active, value = value };
+            savedSettings.Chances[ID][key] = new InputOption { active = active, value = value };
             saveSettings();
-            if (call != null)
-            {
-                call.Invoke();
-            }
         }
     }
 }
