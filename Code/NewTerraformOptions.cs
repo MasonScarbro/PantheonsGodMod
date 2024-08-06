@@ -2,14 +2,8 @@
 AUTHOR: MASON SCARBRO
 VERSION: 1.0.0
 */
-using System.Reflection;
-using NCMS;
-using NCMS.Utils;
+
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using ReflectionUtility;
 
 namespace GodsAndPantheons
 {

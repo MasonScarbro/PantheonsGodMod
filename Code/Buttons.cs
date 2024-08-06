@@ -1,24 +1,6 @@
-using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
-using NCMS;
 using NCMS.Utils;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using ReflectionUtility;
-using Assets.SimpleZip;
-
 
 namespace GodsAndPantheons
 {

@@ -2,23 +2,15 @@
 AUTHOR: MASON SCARBRO
 VERSION: 1.0.0
 */
-using System;
 using System.IO;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Reflection;
 using NCMS;
 using NCMS.Utils;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using ReflectionUtility;
-using HarmonyLib;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 namespace GodsAndPantheons
 {
     [ModEntry]

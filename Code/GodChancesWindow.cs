@@ -1,31 +1,18 @@
-using System;
-using System.IO;
-using System.Text;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using NCMS;
 using NCMS.Utils;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using ReflectionUtility;
-using UnityEngine.UIElements;
-
-
 
 namespace GodsAndPantheons
 {
     class GodWindow : MonoBehaviour
     {
-        private  GameObject contents;
+        private GameObject contents;
         string ID;
-        public void init(string id)
+        public void init(string id, GameObject content)
         {
             ID = id;
-            contents = WindowManager.windowContents[ID];
+            contents = content;
             VerticalLayoutGroup layoutGroup = contents.AddComponent<VerticalLayoutGroup>();
             layoutGroup.childControlHeight = false;
             layoutGroup.childControlWidth = false;
@@ -35,12 +22,12 @@ namespace GodsAndPantheons
             layoutGroup.childScaleWidth = true;
             layoutGroup.childAlignment = TextAnchor.UpperCenter;
             layoutGroup.spacing = 50;
-            loadSettingOptions();
+            LoadSettingOptions();
         }
 
-        private void loadSettingOptions()
+        private void LoadSettingOptions()
         {
-            loadInputOptions();
+            LoadInputOptions();
         }
 
         public void openWindow()
@@ -48,7 +35,7 @@ namespace GodsAndPantheons
             Windows.ShowWindow(ID);
         }
 
-        private void loadInputOptions()
+        private void LoadInputOptions()
         {
             Dictionary<string, InputOption> options = Main.savedSettings.Chances[ID];
             contents.GetComponent<RectTransform>().sizeDelta += new Vector2(0, (options.Count) * 250);

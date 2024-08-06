@@ -1,16 +1,11 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using NCMS;
 using NCMS.Utils;
 using UnityEngine;
-using ReflectionUtility;
 
 namespace GodsAndPantheons
 {
     class WindowManager
     {
-        public static Dictionary<string, GameObject> windowContents = new Dictionary<string, GameObject>();
         public static Dictionary<string, GodWindow> windows = new Dictionary<string, GodWindow>();
         public static void init()
         {
@@ -34,10 +29,8 @@ namespace GodsAndPantheons
             content = GameObject.Find($"/Canvas Container Main/Canvas - Windows/windows/{window.name}/Background/Scroll View/Viewport/Content");
             if (content != null)
             {
-                windowContents.Add(id, content);
-
                 windows.Add(id, scrollView.AddComponent<GodWindow>());
-                scrollView.GetComponent<GodWindow>().init(id);
+                scrollView.GetComponent<GodWindow>().init(id, content);
                 scrollView.gameObject.SetActive(true);
             }
         }
