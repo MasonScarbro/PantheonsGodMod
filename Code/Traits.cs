@@ -22,52 +22,7 @@ namespace GodsAndPantheons
 {
     class Traits
     {
-
-        //Knowledge Gods Chances
-        public static float knowledgeGodPwrChance1 = 20f;
-        public static float knowledgeGodPwrChance2 = 1f;
-        public static float knowledgeGodPwrChance3 = 1f;
-        public static float knowledgeGodPwrChance4 = 5f;
-        public static float knowledgeGodPwrChance5 = 4f;
-        public static float knowledgeGodPwrChance6 = 2f;
-        public static float knowledgeGodPwrChance7 = 0.5f;
-        public static float knowledgeGodPwrChance8 = 1f;
-        public static float knowledgeGodPwrChance9 = 9f;
-        // Moon Gods Power Chances
-        public static float starGodPwrChance1 = 0.05f;
-        public static float starGodPwrChance2 = 1f;
-        public static float starGodPwrChance3 = 0.5f;
-        public static float starGodPwrChance4 = 5f;
-        // NightGods Power Chances
-        public static float darkGodPwrChance1 = 0.01f;
-        public static float darkGodPwrChance2 = 0.1f;
-        public static float darkGodPwrChance3 = 4f;
-        public static float darkGodPwrChance4 = 1f;
-        public static float darkGodPwrChance5 = 4f;
-        // Sun God Chances
-        public static float sunGodPwrChance1 = 0.01f;
-        public static float sunGodPwrChance2 = 8f;
-        public static float sunGodPwrChance3 = 2f;
-        public static float sunGodPwrChance4 = 0.5f;
-        public static float sunGodPwrChance5 = 0.01f;
-        // War God Chances
-        public static float warGodPwrChance1 = 1f;
-        public static float warGodPwrChance2 = 3f;
-        public static float warGodPwrChance3 = 2f;
-        // Earth God Chances
-        public static float earthGodPwrChance1 = 5f;
-        public static float earthGodPwrChance2 = 1f;
-        public static float earthGodPwrChance3 = 1f;
-        // Lich God Chances
-        public static float lichGodPwrChance1 = 10f;
-        public static float lichGodPwrChance2 = 2f;
-        public static float lichGodPwrChance3 = 3f;
-        public static float lichGodPwrChance4 = 5f;
-        //god of Gods Chances
-        public static float GodOfGodsPwrChance1 = 5f;
-        public static float GodOfGodsPwrChance2 = 10f;
-        public static float GodOfGodsPwrChance3 = 8f;
-       
+        public static float GetChance(string ID, string Chance) => Main.savedSettings.Chances[ID][Chance].active ? float.Parse(Main.savedSettings.Chances[ID][Chance].value) : 0;
 
         static PowerLibrary pb;
         public static void init()
@@ -130,6 +85,7 @@ namespace GodsAndPantheons
             darkGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             darkGod.action_attack_target = new AttackAction(darkGodAttack);
             darkGod.action_death = (WorldAction)Delegate.Combine(darkGod.action_death, new WorldAction(darkGodsDeath));
+            darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(BringMinions));
             darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(darkGodEraStatus));
             darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(darkGodAutoTrait));
             darkGod.group_id = "GodTraits";
@@ -169,6 +125,7 @@ namespace GodsAndPantheons
             starsGod.action_attack_target = new AttackAction(ActionLibrary.addFrozenEffectOnTarget);
             starsGod.action_attack_target += new AttackAction(starsGodAttack);
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodEraStatus));
+            starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(BringMinions));
             starsGod.group_id = "GodTraits";
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodAutoTrait));
             AddTrait(starsGod, "Now Cometh the Age of stars, A Thousand Year Voyage under the wisdom of the moon");
@@ -185,6 +142,7 @@ namespace GodsAndPantheons
             earthGod.base_stats[S.intelligence] += 3f;
             earthGod.action_attack_target = new AttackAction(earthGodAttack);
             earthGod.group_id = "GodTraits";
+            earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(BringMinions));
             earthGod.action_special_effect = new WorldAction(earthGodBuildWorld);
             earthGod.action_special_effect += new WorldAction(GodWeaponManager.godGiveWeapon);
             earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(earthGodAutoTrait));
@@ -236,6 +194,7 @@ namespace GodsAndPantheons
             lichGod.action_death = (WorldAction)Delegate.Combine(lichGod.action_death, new WorldAction(genericGodsDeath));
             lichGod.action_attack_target = new AttackAction(lichGodAttack);
             lichGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
+            lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(BringMinions));
             lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(lichGodAutoTrait));
             lichGod.group_id = "GodTraits";
 
@@ -304,7 +263,7 @@ namespace GodsAndPantheons
             SummonedOne.action_special_effect += new WorldAction(SummonedBeing);
             SummonedOne.group_id = TraitGroup.special;
             SummonedOne.can_be_given = false;
-            SummonedOne.action_special_effect = (WorldAction)Delegate.Combine(SummonedOne.action_special_effect, new WorldAction(GodOfGodsEraStatus));
+            SummonedOne.action_special_effect = (WorldAction)Delegate.Combine(SummonedOne.action_special_effect, new WorldAction(SummonedOneEraStatus));
             AddTrait(SummonedOne, "A creature summoned by God himself in order to aid them in battle, DO NOT MODIFY THE NAME OF THIS CREATURE!");
             pb = new PowerLibrary();
             //this to make it so summoned ones dont fight their Master and his allies
@@ -374,7 +333,7 @@ namespace GodsAndPantheons
                         attempts++;
                         if (AllTiles || (_tile.Type.ground && !_tile.Type.block && _tile.isSameIsland(Target.currentTile)))
                         {
-                            Actor.cancelAllBeh(null);
+                            Actor.cancelAllBeh();
                             EffectsLibrary.spawnAt("fx_teleport_blue", _tile.posV3, Actor.stats[S.scale]);
                             Actor.spawnOn(_tile, 0f);
                             return true;
@@ -400,7 +359,7 @@ namespace GodsAndPantheons
                 if (pDist > 50)
                 {
                     EffectsLibrary.spawnAt("fx_teleport_blue", pTarget.currentPosition, a.stats[S.scale]);
-                    a.cancelAllBeh(null);
+                    a.cancelAllBeh();
                     a.spawnOn(pTarget.currentTile, 0f);
                 }
             }
@@ -408,6 +367,7 @@ namespace GodsAndPantheons
         }
         public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile)
         {
+
             if (Toolbox.randomChance(0.1f))
             {
                 pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * 0.05f));
@@ -459,7 +419,7 @@ namespace GodsAndPantheons
             {
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
-                if (Toolbox.randomChance(GodOfGodsPwrChance1 / 100))
+                if (Toolbox.randomChance(GetChance("GodOfGodsWindow", "Terrain bending%") / 100))
                 {
                     int decider = Toolbox.randomInt(1, 4);
                     switch (decider)
@@ -470,7 +430,7 @@ namespace GodsAndPantheons
                         case 4: pb.spawnEarthquake(pTarget.a.currentTile, null); break;
                     }
                 }
-                if (Toolbox.randomChance(GodOfGodsPwrChance2 / 100))
+                if (Toolbox.randomChance(GetChance("GodOfGodsWindow", "Summoning%") / 100))
                 {
                     int decider = Toolbox.randomInt(1, 3);
                     switch (decider)
@@ -480,7 +440,7 @@ namespace GodsAndPantheons
                         case 3: Summon(SA.skeleton, 3, pSelf, pTile); break;
                     }
                 }
-                if (Toolbox.randomChance(GodOfGodsPwrChance3 / 100))
+                if (Toolbox.randomChance(GetChance("GodOfGodsWindow", "Magic%") / 100))
                 {
                     int decider = Toolbox.randomInt(1, 5);
                     switch (decider)
@@ -676,48 +636,45 @@ namespace GodsAndPantheons
 
         public static bool knowledgeGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-
-
-
             if (pTarget != null)
             {
 
-                if (Toolbox.randomChance(knowledgeGodPwrChance1 / 100))
+                if (Toolbox.randomChance(GetChance("KnowledgeGodWindow", "KnowledgeGodPwr1%") / 100))
                 {
                     // randomly spawns a flash of fire or acid on the tile 
                     MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f);
                     MapBox.instance.dropManager.spawn(pTile, "acid", 5f, -1f);
                     MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f); // Drops fire from distance 5 with scale of one at current tile
                 }
-                if (Toolbox.randomChance(knowledgeGodPwrChance2 / 100))
+                if (Toolbox.randomChance(GetChance("KnowledgeGodWindow", "KnowledgeGodPwr2%") / 100))
                 {
                     ActionLibrary.castCurses(null, pTarget, null); // casts curses
                     ((Actor)pSelf).removeTrait("cursed");
                 }
-                if (Toolbox.randomChance(knowledgeGodPwrChance3 / 100))
+                if (Toolbox.randomChance(GetChance("KnowledgeGodWindow", "KnowledgeGodPwr3%") / 100))
                 {
                     ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null); // freezezz the target
                 }
-                if (Toolbox.randomChance(knowledgeGodPwrChance4 / 100))
+                if (Toolbox.randomChance(GetChance("KnowledgeGodWindow", "KnowledgeGodPwr4%") / 100))
                 {
                     ActionLibrary.castShieldOnHimself(null, pSelf, null); // Casts a shield for himself !! hint: pSelf !!
                 }
-                if (Toolbox.randomChance(knowledgeGodPwrChance5 / 100))
+                if (Toolbox.randomChance(GetChance("KnowledgeGodWindow", "KnowledgeGodPwr5%") / 100))
                 {
                     ActionLibrary.teleportRandom(null, pTarget, null); // flee
                 }
-                if (Toolbox.randomChance(knowledgeGodPwrChance7 / 100))
+                if (Toolbox.randomChance(GetChance("KnowledgeGodWindow", "SummonLightning%") / 100))
                 {
                     EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f);    //spawn 1 meteorite
                     pSelf.a.addStatusEffect("invincible", 5f);
                 }
-                if (Toolbox.randomChance(knowledgeGodPwrChance8 / 100))
+                if (Toolbox.randomChance(GetChance("KnowledgeGodWindow", "SummonMeteor%") / 100))
                 {
                     EffectsLibrary.spawn("fx_fireball_explosion", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
                     MapAction.damageWorld(pSelf.currentTile, 2, AssetManager.terraform.get("grenade"), null);
                     pSelf.a.addStatusEffect("invincible", 1f);
                 }
-                if (Toolbox.randomChance(knowledgeGodPwrChance9 / 100))
+                if (Toolbox.randomChance(GetChance("KnowledgeGodWindow", "PagesOfKnowledge%") / 100))
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                     float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -734,20 +691,16 @@ namespace GodsAndPantheons
 
         public static bool darkGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-
-
-
-
             if (pTarget != null)
             {
 
 
-                if (Toolbox.randomChance(darkGodPwrChance1 / 100))
+                if (Toolbox.randomChance(GetChance("DarkGodWindow", "cloudOfDarkness%") / 100))
                 {
                     EffectsLibrary.spawn("fx_antimatter_effect", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
                     pSelf.a.addStatusEffect("invincible", 5f);
                 }
-                if (Toolbox.randomChance(darkGodPwrChance2 / 100))
+                if (Toolbox.randomChance(GetChance("DarkGodWindow", "blackHole%") / 100))
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                     float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -757,7 +710,7 @@ namespace GodsAndPantheons
 
 
                 }
-                if (Toolbox.randomChance(darkGodPwrChance3 / 100))
+                if (Toolbox.randomChance(GetChance("DarkGodWindow", "darkDaggers%") / 100))
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                     float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -767,7 +720,7 @@ namespace GodsAndPantheons
 
 
                 }
-                if (Toolbox.randomChance(darkGodPwrChance4 / 100))
+                if (Toolbox.randomChance(GetChance("DarkGodWindow", "smokeFlash%") / 100))
                 {
                     EffectsLibrary.spawnAtTile("fx_smokeFlash_dej", pTile, 0.1f);
                     MapAction.damageWorld(pTarget.currentTile, 5, AssetManager.terraform.get("lightning_power"), null);
@@ -775,7 +728,7 @@ namespace GodsAndPantheons
                     World.world.applyForce(pTarget.currentTile, 2, 0.4f, false, true, 20, null, pTarget, null);
 
                 }
-                if (Toolbox.randomChance(darkGodPwrChance5 / 100))
+                if (Toolbox.randomChance(GetChance("DarkGodWindow", "summonDarkOne%") / 100))
                 {
                     Summon("DarkOne", 4, pSelf, pTile);
                 }
@@ -795,7 +748,7 @@ namespace GodsAndPantheons
             {
                 Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
                 
-                if (Toolbox.randomChance(starGodPwrChance2 / 100))
+                if (Toolbox.randomChance(GetChance("MoonGodWindow", "cometAzure%") / 100))
                 {
                     EffectsLibrary.spawnAtTile("fx_cometAzureDown_dej", pTarget.a.currentTile, 0.1f);
                     MapAction.applyTileDamage(pTarget.currentTile, 8, AssetManager.terraform.get("cometAzureDownDamage"));
@@ -804,7 +757,7 @@ namespace GodsAndPantheons
                     World.world.applyForce(pTarget.currentTile.neighbours[0], 4, 0.4f, false, true, 200, null, pTarget, null);
                     pSelf.a.addStatusEffect("invincible", 5f);
                 }
-                if (Toolbox.randomChance(starGodPwrChance3 / 100))
+                if (Toolbox.randomChance(GetChance("MoonGodWindow", "cometShower%") / 100))
                 {
                     EffectsLibrary.spawnAtTile("fx_cometShower_dej", pTarget.a.currentTile, 0.09f);
                     MapAction.applyTileDamage(pTarget.currentTile, 2f, AssetManager.terraform.get("cometRain"));
@@ -826,7 +779,7 @@ namespace GodsAndPantheons
 
 
                 }
-                if (Toolbox.randomChance(starGodPwrChance4 / 100))
+                if (Toolbox.randomChance(GetChance("MoonGodWindow", "summonWolf%") / 100))
                 {
                     Summon(SA.wolf, 3, pSelf, pTile);
                 }
@@ -849,19 +802,19 @@ namespace GodsAndPantheons
             {
 
 
-                if (Toolbox.randomChance(sunGodPwrChance1 / 100))
+                if (Toolbox.randomChance(GetChance("SunGodWindow", "flashOfLight%") / 100))
                 {
                     pb.divineLightFX(pTarget.a.currentTile, null);
                     EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
                     pSelf.a.addStatusEffect("invincible", 5f);
                 }
-                if (Toolbox.randomChance(sunGodPwrChance2 / 100))
+                if (Toolbox.randomChance(GetChance("SunGodWindow", "beamOfLight%") / 100))
                 {
                     pb.divineLightFX(pTarget.a.currentTile, null);
                     pTarget.a.addStatusEffect("burning", 5f);
 
                 }
-                if (Toolbox.randomChance(sunGodPwrChance3 / 100))
+                if (Toolbox.randomChance(GetChance("SunGodWindow", "speedOfLight%") / 100))
                 {
                     pb.divineLightFX(pTarget.a.currentTile, null);
                     EffectsLibrary.spawn("fx_thunder_flash", pSelf.a.currentTile, null, null, 0f, -1f, -1f);
@@ -870,7 +823,7 @@ namespace GodsAndPantheons
 
 
                 }
-                if (Toolbox.randomChance(sunGodPwrChance4 / 100))
+                if (Toolbox.randomChance(GetChance("SunGodWindow", "lightBallz%") / 100))
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                     float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -879,8 +832,8 @@ namespace GodsAndPantheons
                     EffectsLibrary.spawnProjectile("lightBallzProjectiles", newPoint, newPoint2, 0.0f);
                 }
                 //EffectsLibrary.spawnAtTile("fx_multiFlash_dej", pTile, 0.01f);
-
-                if (Toolbox.randomChance(sunGodPwrChance5 / 100))
+                //not finushed?
+                if (Toolbox.randomChance(0 / 100))
                 {
                     //TO BE USED AS IMACT ACTION FOR LIGHT PROJECILES LATER
                     int count = 0;
@@ -927,7 +880,7 @@ namespace GodsAndPantheons
             if (pTarget != null)
             {
 
-                if (Toolbox.randomChance(warGodPwrChance1 / 100))
+                if (Toolbox.randomChance(GetChance("WarGodWindow", "warGodsCry%") / 100))
                 {
                     EffectsLibrary.spawnExplosionWave(pSelf.currentTile.posV3, 1f, 1f);
                     pSelf.a.addStatusEffect("WarGodsCry", 30f);
@@ -938,7 +891,7 @@ namespace GodsAndPantheons
                     World.world.applyForce(pSelf.currentTile, 4, 0.4f, false, true, 20, null, pTarget, null);
 
                 }
-                if (Toolbox.randomChance(warGodPwrChance1 / 100))
+                if (Toolbox.randomChance(GetChance("WarGodWindow", "seedsOfWar%") / 100))
                 {
                     WorldTile _tile = Toolbox.getRandomTileWithinDistance(pTarget.a.currentTile, 5);
                     // Spawns Rage Cloud above enemy
@@ -972,21 +925,19 @@ namespace GodsAndPantheons
                 
                 
 
-                if (Toolbox.randomChance(earthGodPwrChance1 / 100))
+                if (Toolbox.randomChance(GetChance("EarthGodWindow", "earthquake%") / 100))
                 {
                     pb.spawnEarthquake(pTarget.a.currentTile, null);
                 }
-                if (Toolbox.randomChance(earthGodPwrChance2 / 100))
+                if (Toolbox.randomChance(GetChance("EarthGodWindow", "makeItRain%") / 100))
                 {
                     pb.spawnCloudRain(pTarget.a.currentTile, null);
                     pb.spawnCloudSnow(pTarget.a.currentTile, null);
                 }
-                if (Toolbox.randomChance(earthGodPwrChance2 / 100))
+                if (Toolbox.randomChance(GetChance("EarthGodWindow", "SummonDruid%") / 100))
                 {
                     Summon(SA.druid, 1, pSelf, pTile);
                 }
-
-
                 return true;
             }
             return false;
@@ -996,25 +947,22 @@ namespace GodsAndPantheons
         public static bool lichGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             Actor self = (Actor)pSelf;
-            if (Toolbox.randomChance(lichGodPwrChance2 / 100))
+            if (Toolbox.randomChance(GetChance("LichGodWindow", "summonSkele%") / 100))
             {
                 //Lich God Summons Skeletons
                 Summon(SA.skeleton, 8, pSelf, pTile);
             }
-            if (Toolbox.randomChance(lichGodPwrChance3 / 100))
+            if (Toolbox.randomChance(GetChance("LichGodWindow", "summonDead%") / 100))
             {
                 //Lich God Summons Zombie
                 Summon(SA.walker, 2, pSelf, pTile);
             }
-            if (Toolbox.randomChance(lichGodPwrChance4 / 100))
+            if (Toolbox.randomChance(GetChance("LichGodWindow", "rigorMortisHand%") / 100))
             {
                 //Lich God Summons RigorMortis Hand
                 EffectsLibrary.spawnAtTile("fx_handgrab_dej", pTarget.a.currentTile, 0.1f);
                 pTarget.a.addStatusEffect("slowness");
                 pTarget.a.addStatusEffect("poisoned");
-
-
-
             }
             return true;
         }
@@ -1227,6 +1175,43 @@ namespace GodsAndPantheons
             }
             return true;
         }
+        private static bool SummonedOneEraStatus(BaseSimObject pSelf, WorldTile pTile)
+        {
+            if (pSelf.a != null)
+            {
+                bool InEra = false;
+                Actor master = FindMaster(pSelf.a);
+                if(master != pSelf.a)
+                {
+                    if (master.hasStatus("God_Of_All"))
+                    {
+                        pSelf.a.addStatusEffect("God_Of_All"); 
+                        InEra = true;
+                    }
+                    if (master.hasStatus("Nights_Prevail"))
+                    {
+                        pSelf.a.addStatusEffect("Nights_Prevail"); 
+                        InEra = true;
+                    }
+                    if (master.hasStatus("Stars_Prevail"))
+                    {
+                        pSelf.a.addStatusEffect("Stars_Prevail"); 
+                        InEra = true;
+                    }
+                }
+                if (InEra)
+                {
+                    pSelf.a.data.set("lifespan", 61);
+                    SuperRegeneration(pSelf, pTile);
+                }
+                else
+                {
+                    pSelf.a.finishAllStatusEffects(); // remove the status
+                    pSelf.a.data.set("lifespan", 31);
+                }
+            }
+            return true;
+        }
         private static bool GodOfGodsEraStatus(BaseSimObject pSelf, WorldTile pTile)
         {
             if (pSelf.a != null)
@@ -1237,7 +1222,7 @@ namespace GodsAndPantheons
                     {
                         {
                             pSelf.a.addStatusEffect("God_Of_All"); // add the status I created
-                            pSelf.a.data.set("lifespan", 61);
+                           
                         }
                     }
                 }
@@ -1249,8 +1234,6 @@ namespace GodsAndPantheons
                         pSelf.a.data.set("lifespan", 31);
                     }
                 }
-
-
             }
             return true;
         }
@@ -1353,15 +1336,15 @@ namespace GodsAndPantheons
                 //WorldTile tile2 = Toolbox.getRandomTileWithinDistance(pTile, 40);
                 // List<WorldTile> randTile = List.Of<WorldTile>(new WorldTile[] { tile1, tile2 });
                 // WorldTile _tile = Toolbox.getRandomTileWithinDistance(randTile, pTile, 45, 120);
-                if (Toolbox.randomChance(warGodPwrChance3 / 100))
+                if (Toolbox.randomChance(GetChance("WarGodWindow", "seedsOfWar%") / 100))
                 {
                     MapBox.instance.dropManager.spawn(_tile, SD.spite, 5f, -1f);
                 }
-                if (Toolbox.randomChance(warGodPwrChance3 / 100))
+                if (Toolbox.randomChance(GetChance("WarGodWindow", "seedsOfWar%") / 100))
                 {
                     MapBox.instance.dropManager.spawn(_tile, SD.discord, 5f, -1f);
                 }
-                if (Toolbox.randomChance(warGodPwrChance3 / 100))
+                if (Toolbox.randomChance(GetChance("WarGodWindow", "seedsOfWar%") / 100))
                 {
                     MapBox.instance.dropManager.spawn(_tile, SD.inspiration, 5f, -1f);
                 }
@@ -1374,19 +1357,19 @@ namespace GodsAndPantheons
         {
             if (pSelf.a != null)
             {
-                if (Toolbox.randomChance(earthGodPwrChance3 / 100))
+                if (Toolbox.randomChance(GetChance("EarthGodWindow", "buildWorld%") / 100))
                 {
                     ActionLibrary.tryToGrowTree(pSelf);
                 }
-                if (Toolbox.randomChance(earthGodPwrChance3 / 100))
+                if (Toolbox.randomChance(GetChance("EarthGodWindow", "buildWorld%") / 100))
                 {
                     ActionLibrary.tryToCreatePlants(pSelf);
                 }
-                if (Toolbox.randomChance(earthGodPwrChance3 / 100))
+                if (Toolbox.randomChance(GetChance("EarthGodWindow", "buildWorld%") / 100))
                 {
                     BuildingActions.tryGrowMineralRandom(pSelf.a.currentTile);
                 }
-                if (Toolbox.randomChance(earthGodPwrChance3 / 100))
+                if (Toolbox.randomChance(GetChance("EarthGodWindow", "buildWorld%") / 100))
                 {
 
                     buildMountain(pTile);

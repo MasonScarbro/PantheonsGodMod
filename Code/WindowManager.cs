@@ -11,8 +11,7 @@ namespace GodsAndPantheons
     class WindowManager
     {
         public static Dictionary<string, GameObject> windowContents = new Dictionary<string, GameObject>();
-        public static Dictionary<string, ScrollWindow> createdWindows = new Dictionary<string, ScrollWindow>();
-
+        public static Dictionary<string, GodWindow> windows = new Dictionary<string, GodWindow>();
         public static void init()
         {
             
@@ -25,15 +24,6 @@ namespace GodsAndPantheons
             newWindow("EarthGodWindow", "Earth Chance Modifier");
             newWindow("LichGodWindow", "Lich Chance Modifier");
             newWindow("GodOfGodsWindow", "Godly Chance Modifier");
-            KnowledgeGodWindow.init();
-            MoonGodWindow.init();
-            DarkGodWindow.init();
-            SunGodWindow.init();
-            WarGodWindow.init();
-            EarthGodWindow.init();
-            LichGodWindow.init();
-            GodOfGodsWindow.init();
-            //GodChancesWindow.init();
         }
 
         private static void newWindow(string id, string title)
@@ -41,15 +31,16 @@ namespace GodsAndPantheons
             ScrollWindow window;
             GameObject content;
             window = Windows.CreateNewWindow(id, title);
-            createdWindows.Add(id, window);
 
             GameObject scrollView = GameObject.Find($"/Canvas Container Main/Canvas - Windows/windows/{window.name}/Background/Scroll View");
-            scrollView.gameObject.SetActive(true);
-
             content = GameObject.Find($"/Canvas Container Main/Canvas - Windows/windows/{window.name}/Background/Scroll View/Viewport/Content");
             if (content != null)
             {
                 windowContents.Add(id, content);
+
+                windows.Add(id, scrollView.AddComponent<GodWindow>());
+                scrollView.GetComponent<GodWindow>().init(id);
+                scrollView.gameObject.SetActive(true);
             }
         }
     }

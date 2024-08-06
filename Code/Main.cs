@@ -52,7 +52,6 @@ namespace GodsAndPantheons
             Items.init();
             Units.init();
             Tab.init();
-            Buttons.init();
             Invasions.init();
             
             instance = this;
@@ -71,6 +70,7 @@ namespace GodsAndPantheons
             allWindows["kingdom"].gameObject.SetActive(false);
             yield return new WaitForSeconds(1f);
             WindowManager.init();
+            Buttons.init();
         }
         public static Dictionary<Actor, Actor> listOfTamedBeasts = new Dictionary<Actor, Actor>();
         public static void saveSettings(SavedSettings previousSettings = null)
@@ -112,21 +112,10 @@ namespace GodsAndPantheons
             savedSettings = loadedData;
             return true;
         }
-        public static void modifyGodOption(string key, string value, bool active, UnityAction call = null)
+        public static void modifyGodOption(string ID, string key, string value, bool active)
         {
-            Main.savedSettings.knowledgeGodChances[key] = new InputOption { active = active, value = value };
-            Main.savedSettings.moonGodChances[key] = new InputOption { active = active, value = value };
-            Main.savedSettings.darkGodChances[key] = new InputOption { active = active, value = value };
-            Main.savedSettings.sunGodChances[key] = new InputOption { active = active, value = value };
-            Main.savedSettings.warGodChances[key] = new InputOption { active = active, value = value };
-            Main.savedSettings.earthGodChances[key] = new InputOption { active = active, value = value };
-            Main.savedSettings.lichGodChances[key] = new InputOption { active = active, value = value };
-            Main.savedSettings.GodOfGodsChances[key] = new InputOption { active = active, value = value };
+            savedSettings.Chances[ID][key] = new InputOption { active = active, value = value };
             saveSettings();
-            if (call != null)
-            {
-                call.Invoke();
-            }
         }
     }
 }

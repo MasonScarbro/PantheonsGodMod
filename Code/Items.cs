@@ -450,7 +450,7 @@ namespace GodsAndPantheons
         }
         static bool UnleashLightning(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(Traits.knowledgeGodPwrChance6 / 100))
+            if (Toolbox.randomChance(Traits.GetChance("KnowledgeGodWindow", "SummonLightning%") / 100))
             {
                 ActionLibrary.castLightning(null, pTarget, null); // Casts Lightning on the target
             }
@@ -459,7 +459,7 @@ namespace GodsAndPantheons
         }
         static bool UnleashMoonFall(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(Traits.starGodPwrChance1 / 100))
+            if (Toolbox.randomChance(Traits.GetChance("MoonGodWindow", "summonMoonChunk%") / 100))
             {
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -487,7 +487,7 @@ namespace GodsAndPantheons
         }
         static bool WarGodThrow(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(Traits.warGodPwrChance2 / 100))
+            if (Toolbox.randomChance(Traits.GetChance("WarGodWindow", "axeThrow%") / 100))
             {
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -566,7 +566,7 @@ namespace GodsAndPantheons
             if (pTarget != null)
             {
 
-                if (Toolbox.randomChance(Traits.lichGodPwrChance1 / 100))
+                if (Toolbox.randomChance(Traits.GetChance("LichGodWindow", "waveOfMutilation%") / 100))
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                     float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -585,7 +585,7 @@ namespace GodsAndPantheons
             if (pSelf.a != null)
             {
                 
-                if (Toolbox.randomChance(Traits.earthGodPwrChance3))
+                if (Toolbox.randomChance(Traits.GetChance("EarthGodWindow", "buildWorld%")))
                 {
 
                     buildMountainPath(pTile, pSelf, pTarget);

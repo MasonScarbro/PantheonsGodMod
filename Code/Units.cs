@@ -139,8 +139,8 @@ namespace GodsAndPantheons
             darkOne.canTurnIntoZombie = false;
             darkOne.canBeInspected = true;
             darkOne.hideOnMinimap = false;
-            darkOne.use_items = true;
-            darkOne.take_items = true;
+            darkOne.use_items = false;
+            darkOne.take_items = false; //doesn't have hands
             darkOne.needFood = false;
             darkOne.diet_meat = false;
             darkOne.inspect_home = true;
