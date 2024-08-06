@@ -14,8 +14,6 @@ namespace GodsAndPantheons
         public static Dictionary<string, GodWindow> windows = new Dictionary<string, GodWindow>();
         public static void init()
         {
-            
-            
             newWindow("KnowledgeGodWindow", "Knowledge Chance Modfier");
             newWindow("MoonGodWindow", "Ranni Chance Modifier");
             newWindow("DarkGodWindow", "Dark Chance Modifier");
