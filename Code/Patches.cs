@@ -157,13 +157,13 @@ namespace GodsAndPantheons
                 string window = Traits.TraitToWindow(trait);
                 if (window != null)
                 {
-                    if (Toolbox.randomChance(Traits.GetChance(window, Traits.TraitToInherit(trait))/75))
+                   foreach (KeyValuePair<string, float> kvp in Traits.TraitStats[trait])
                     {
-                        foreach (KeyValuePair<string, float> kvp in Traits.TraitStats[trait])
-                        {
-                            __instance.get("Demi" + kvp.Key, out float value);
-                            __instance.set("Demi"+kvp.Key, (kvp.Value/2) + Random.Range(-(kvp.Value/2.5f), kvp.Value/2.5f)+value);
-                        }
+                       if (Toolbox.randomChance(Traits.GetChance(window, Traits.TraitToInherit(trait)) / 75))
+                       {
+                         __instance.get("Demi" + kvp.Key, out float value);
+                         __instance.set("Demi"+kvp.Key, (kvp.Value/2) + Random.Range(-(kvp.Value/2.5f), kvp.Value/2.5f)+value);
+                       }
                     }
                 }
             }
