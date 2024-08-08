@@ -162,7 +162,7 @@ namespace GodsAndPantheons
                         foreach (KeyValuePair<string, float> kvp in Traits.TraitStats[trait])
                         {
                             __instance.get("Demi" + kvp.Key, out float value);
-                            __instance.set("Demi"+kvp.Key, (kvp.Value/2) + Random.Range(-(kvp.Value/1.5f), kvp.Value/1.5f)+value);
+                            __instance.set("Demi"+kvp.Key, (kvp.Value/2) + Random.Range(-(kvp.Value/2.5f), kvp.Value/2.5f)+value);
                         }
                     }
                 }
