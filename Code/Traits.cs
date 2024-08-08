@@ -7,6 +7,7 @@ using UnityEngine;
 using ReflectionUtility;
 using System.Collections.Generic;
 using HarmonyLib;
+using Amazon.Runtime.Internal.Transform;
 
 
 namespace GodsAndPantheons
@@ -15,43 +16,196 @@ namespace GodsAndPantheons
     {
         public static float GetChance(string ID, string Chance) => Main.savedSettings.Chances[ID][Chance].active ? float.Parse(Main.savedSettings.Chances[ID][Chance].value) : 0;
 
+        public static Dictionary<string, Dictionary<string, float>> TraitStats = new Dictionary<string, Dictionary<string, float>>()
+        {
+            {"God_Of_Chaos", new Dictionary<string, float>(){
+                {S.damage, 30f},
+                {S.health, 800},
+                {S.attack_speed, 15f},
+                {S.critical_chance, 0.05f},
+                {S.range, 8f},
+                {S.scale, 0.08f},
+             }
+            },
+            {"God Of light", new Dictionary<string, float>(){
+                {S.damage, 20f},
+                {S.health, 500f},
+                {S.attack_speed, 100f},
+                {S.critical_chance, 0.05f},
+                {S.range, 5f},
+                {S.speed, 90f},
+                {S.dodge, 80f},
+                {S.accuracy, 10f},
+             }
+            },
+            {"God Of the Night", new Dictionary<string, float>(){
+                {S.damage, 20f},
+                {S.health, 550f},
+                {S.attack_speed, 3f},
+                {S.critical_chance, 0.25f},
+                {S.range, 6f},
+                {S.scale, 0.02f},
+                {S.dodge, 60f}
+             }
+            },
+            {"God Of Knowledge", new Dictionary<string, float>(){
+                {S.damage, 20f},
+                {S.health, 600f},
+                {S.attack_speed, 1f},
+                {S.critical_chance, 0.25f},
+                {S.range, 15f},
+                {S.scale, 0.04f},
+                {S.intelligence, 35f},
+                {S.accuracy, 10f}
+             }
+            },
+            {"God Of the Stars", new Dictionary<string, float>(){
+                {S.damage, 25f},
+                {S.health, 600f},
+                {S.attack_speed, 1f},
+                {S.critical_chance, 0.05f},
+                {S.range, 15f},
+                {S.scale, 0.02f},
+                {S.intelligence, 3f},
+             }
+            },
+            {"God Of the Earth", new Dictionary<string, float>(){
+                {S.damage, 40f},
+                {S.health, 1000f},
+                {S.attack_speed, 1f},
+                {S.armor, 30f},
+                {S.scale, 0.1f},
+                {S.range, 10f},
+                {S.intelligence, 3f}
+             }
+            },
+            {"LesserGod", new Dictionary<string, float>(){
+                {S.damage, 5f},
+                {S.health, 400f},
+                {S.attack_speed, 1f},
+                {S.critical_chance, 0.05f},
+                {S.scale, 0.02f},
+             }
+            },
+            {"God Of War", new Dictionary<string, float>(){
+                {S.damage, 100f},
+                {S.health, 700f},
+                {S.attack_speed, 35f},
+                {S.armor, 20f},
+                {S.knockback_reduction, 0.05f},
+                {S.scale, 0.03f},
+                {S.range, 8f},
+                {S.warfare, 40f},
+             }
+            },
+            {"God Of The Lich", new Dictionary<string, float>(){
+                {S.damage, 100f},
+                {S.health, 700f},
+                {S.attack_speed, 35f},
+                {S.armor, 20f},
+                {S.knockback_reduction, 0.05f},
+                {S.scale, 0.03f},
+                {S.range, 8f},
+                {S.warfare, 40f},
+             }
+            },
+            {"God Killer", new Dictionary<string, float>(){
+                {S.damage, 10f},
+                {S.health, 100f},
+                {S.attack_speed, 15f},
+                {S.armor, 5f},
+                {S.knockback_reduction, 0.1f},
+                {S.scale, 0.01f},
+                {S.range, 4f},
+                {S.warfare, 4f},
+             }
+            },
+            {"God Hunter", new Dictionary<string, float>(){
+             }
+            },
+            {"God Of gods", new Dictionary<string, float>(){
+                {S.damage, 200f},
+                {S.health, 1000f},
+                {S.attack_speed, 60f},
+                {S.critical_chance, 0.5f},
+                {S.intelligence, 30f},
+                {S.armor, 50f},
+                {S.scale, 0.075f},
+                {S.range, 20f},
+                {S.dodge, 35f},
+                {S.accuracy, 15f},
+                {S.speed, 30f}
+             }
+            },
+            {"Summoned One", new Dictionary<string, float>(){
+                {S.damage, 10f},
+                {S.health, 20f},
+                {S.armor, 10f},
+                {S.knockback_reduction, 0.5f},
+                {S.max_age, -20000f},
+             }
+            },
+            {"Demi God", new Dictionary<string, float>(){
+                {S.damage, 10f},
+                {S.health, 10f},
+                {S.armor, 10f},
+                {S.knockback_reduction, 0.5f},
+             }
+            }
+        };
+        public static string TraitToWindow(string Trait)
+        {
+            switch (Trait)
+            {
+                case "God_Of_Chaos": return "ChaosGodWindow";
+                case "God Of light": return "SunGodWindow";
+                case "God Of the Night": return "DarkGodWindow";
+                case "God Of Knowledge": return "KnowledgeGodWindow";
+                case "God Of the Stars": return "MoonGodWindow";
+                case "God Of the Earth": return "EarthGodWindow";
+                case "God Of War": return "WarGodWindow";
+                case "God Of The Lich": return "LichGodWindow";
+                case "God Of gods": return "GodOfGodsWindow";
+                default: return null;
+            }
+        }
+        //no chance can have the same name even if in different windows
+        public static string TraitToInherit(string Trait)
+        {
+            switch (Trait)
+            {
+                case "God_Of_Chaos": return "iNHERIT%";
+                case "God Of light": return "INHERit%";
+                case "God Of the Night": return "INHErit%";
+                case "God Of Knowledge": return "inherit%";
+                case "God Of the Stars": return "INHerit%";
+                case "God Of the Earth": return "INHERIT%";
+                case "God Of War": return "INHERIt%";
+                case "God Of The Lich": return "Inherit%";
+                case "God Of gods": return "INherit%";
+                default: return null;
+            }
+        }
         static PowerLibrary pb;
         public static void init()
         {
 
-            /* The Clans could be the way to control inheritence and assign the lesser god or demi god trait */
-
+            /* Nuh uh*/
 
             ActorTrait chaosGod = new ActorTrait();
             chaosGod.id = "God_Of_Chaos";
             chaosGod.path_icon = "ui/icons/chaosGod";
-            chaosGod.base_stats[S.damage] += 30f;
-            chaosGod.base_stats[S.health] += 800;
-            chaosGod.base_stats[S.attack_speed] += 5f;
-            chaosGod.base_stats[S.attack_speed] += 10f;
-            chaosGod.base_stats[S.critical_chance] += 0.05f;
-            chaosGod.base_stats[S.range] += 8f;
             chaosGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             chaosGod.action_attack_target = new AttackAction(ActionLibrary.addBurningEffectOnTarget);
             chaosGod.action_attack_target = new AttackAction(chaosGodAttack);
             //chaosGod.action_death = new WorldAction(ActionLibrary.turnIntoDemon);
             chaosGod.action_death = (WorldAction)Delegate.Combine(chaosGod.action_death, new WorldAction(chaosGodsTrick));
-            chaosGod.base_stats[S.scale] = 0.08f;
             chaosGod.group_id = "GodTraits";
             AddTrait(chaosGod, "Tis's The God Of Chaos!");
-
 
             ActorTrait sunGod = new ActorTrait();
             sunGod.id = "God Of light";
             sunGod.path_icon = "ui/icons/lightGod";
-            sunGod.base_stats[S.damage] += 20f;
-            sunGod.base_stats[S.health] += 500;
-            sunGod.base_stats[S.attack_speed] += 100f;
-            sunGod.base_stats[S.critical_chance] += 0.05f;
-            sunGod.base_stats[S.speed] += 90f;
-            sunGod.base_stats[S.dodge] += 80f;
-            sunGod.base_stats[S.accuracy] += 10f;
-            sunGod.base_stats[S.range] += 5f;
             sunGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             sunGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(sunGodAutoTrait));
             sunGod.action_attack_target = new AttackAction(ActionLibrary.addBurningEffectOnTarget);
@@ -62,17 +216,9 @@ namespace GodsAndPantheons
             sunGod.group_id = "GodTraits";
             AddTrait(sunGod, "The God Of light, controls the very light that shines and can pass through with great speed");
 
-
             ActorTrait darkGod = new ActorTrait();
             darkGod.id = "God Of the Night";
             darkGod.path_icon = "ui/icons/godDark";
-            darkGod.base_stats[S.damage] += 20f;
-            darkGod.base_stats[S.health] += 550;
-            darkGod.base_stats[S.attack_speed] += 3f;
-            darkGod.base_stats[S.critical_chance] += 0.25f;
-            darkGod.base_stats[S.scale] = 0.02f;
-            darkGod.base_stats[S.dodge] += 60f;
-            darkGod.base_stats[S.range] += 6f;
             darkGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             darkGod.action_attack_target = new AttackAction(darkGodAttack);
             darkGod.action_death = (WorldAction)Delegate.Combine(darkGod.action_death, new WorldAction(darkGodsDeath));
@@ -85,32 +231,17 @@ namespace GodsAndPantheons
             ActorTrait knowledgeGod = new ActorTrait();
             knowledgeGod.id = "God Of Knowledge";
             knowledgeGod.path_icon = "ui/icons/knowledgeGod";
-            knowledgeGod.base_stats[S.damage] += 20f;
-            knowledgeGod.base_stats[S.health] += 600;
-            knowledgeGod.base_stats[S.attack_speed] += 1f;
-            knowledgeGod.base_stats[S.critical_chance] += 0.25f;
-            knowledgeGod.base_stats[S.range] += 15f;
-            knowledgeGod.base_stats[S.scale] = 0.04f;
-            knowledgeGod.base_stats[S.intelligence] += 35f;
-            knowledgeGod.base_stats[S.accuracy] += 10f;
             knowledgeGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             knowledgeGod.action_death = (WorldAction)Delegate.Combine(knowledgeGod.action_death, new WorldAction(genericGodsDeath));
             knowledgeGod.action_attack_target = new AttackAction(knowledgeGodAttack);
             knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgeGodEraStatus));
             knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgeGodAutoTrait));
             knowledgeGod.group_id = "GodTraits";
-            AddTrait(knowledgeGod, "The God Of Knowledge, His mind excedes Time he knows all");
+            AddTrait(knowledgeGod, "The God Of Knowledge, His mind excedes Time, he knows all");
 
             ActorTrait starsGod = new ActorTrait();
             starsGod.id = "God Of the Stars";
             starsGod.path_icon = "ui/icons/starsGod";
-            starsGod.base_stats[S.damage] += 25f;
-            starsGod.base_stats[S.health] += 600;
-            starsGod.base_stats[S.attack_speed] += 1f;
-            starsGod.base_stats[S.critical_chance] += 0.05f;
-            starsGod.base_stats[S.scale] = 0.02f;
-            starsGod.base_stats[S.range] += 15f;
-            starsGod.base_stats[S.intelligence] += 3f;
             starsGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             starsGod.action_death = (WorldAction)Delegate.Combine(starsGod.action_death, new WorldAction(starsGodsDeath));
             starsGod.action_attack_target = new AttackAction(ActionLibrary.addFrozenEffectOnTarget);
@@ -124,13 +255,6 @@ namespace GodsAndPantheons
             ActorTrait earthGod = new ActorTrait();
             earthGod.id = "God Of the Earth";
             earthGod.path_icon = "ui/icons/earthGod";
-            earthGod.base_stats[S.damage] += 40f;
-            earthGod.base_stats[S.health] += 1000;
-            earthGod.base_stats[S.attack_speed] += 1f;
-            earthGod.base_stats[S.armor] += 30f;
-            earthGod.base_stats[S.scale] = 0.1f;
-            earthGod.base_stats[S.range] += 10f;
-            earthGod.base_stats[S.intelligence] += 3f;
             earthGod.action_attack_target = new AttackAction(earthGodAttack);
             earthGod.group_id = "GodTraits";
             earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(BringMinions));
@@ -142,11 +266,6 @@ namespace GodsAndPantheons
             ActorTrait subGod = new ActorTrait();
             subGod.id = "LesserGod";
             subGod.path_icon = "ui/icons/subGod";
-            subGod.base_stats[S.damage] += 5f;
-            subGod.base_stats[S.health] += 400;
-            subGod.base_stats[S.attack_speed] += 1f;
-            subGod.base_stats[S.scale] = 0.02f;
-            subGod.base_stats[S.critical_chance] += 0.05f;
             subGod.group_id = "GodTraits";
             subGod.action_special_effect = (WorldAction)Delegate.Combine(subGod.action_special_effect, new WorldAction(godKillerAutoTrait));
             AddTrait(subGod, "These Are the gods that have smaller importance");
@@ -154,15 +273,6 @@ namespace GodsAndPantheons
             ActorTrait warGod = new ActorTrait();
             warGod.id = "God Of War";
             warGod.path_icon = "ui/icons/warGod";
-            warGod.base_stats[S.damage] += 100f;
-            warGod.base_stats[S.health] += 700;
-            warGod.base_stats[S.attack_speed] += 35f;
-            warGod.base_stats[S.armor] += 20f;
-            warGod.base_stats[S.knockback_reduction] += 0.5f;
-            warGod.base_stats[S.scale] = 0.03f;
-            warGod.base_stats[S.range] += 8f;
-            warGod.base_stats[S.warfare] += 40f;
-            warGod.action_death = (WorldAction)Delegate.Combine(warGod.action_death, new WorldAction(genericGodsDeath));
             warGod.action_attack_target = new AttackAction(warGodAttack);
             warGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodAutoTrait));
@@ -174,34 +284,17 @@ namespace GodsAndPantheons
             ActorTrait lichGod = new ActorTrait();
             lichGod.id = "God Of The Lich";
             lichGod.path_icon = "ui/icons/lichGod";
-            lichGod.base_stats[S.damage] += 100f;
-            lichGod.base_stats[S.health] += 700;
-            lichGod.base_stats[S.attack_speed] += 35f;
-            lichGod.base_stats[S.armor] += 20f;
-            lichGod.base_stats[S.knockback_reduction] += 0.5f;
-            lichGod.base_stats[S.scale] = 0.03f;
-            lichGod.base_stats[S.range] += 8f;
-            lichGod.base_stats[S.warfare] += 40f;
             lichGod.action_death = (WorldAction)Delegate.Combine(lichGod.action_death, new WorldAction(genericGodsDeath));
             lichGod.action_attack_target = new AttackAction(lichGodAttack);
             lichGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(BringMinions));
             lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(lichGodAutoTrait));
             lichGod.group_id = "GodTraits";
-
             AddTrait(lichGod, "God of Dead Souls, Corruption, and Rot, Many spheres of domain lie with him");
 
             ActorTrait godKiller = new ActorTrait();
             godKiller.id = "God Killer";
             godKiller.path_icon = "ui/icons/godKiller";
-            godKiller.base_stats[S.damage] += 10f;
-            godKiller.base_stats[S.health] += 100;
-            godKiller.base_stats[S.attack_speed] += 15f;
-            godKiller.base_stats[S.armor] += 5f;
-            godKiller.base_stats[S.knockback_reduction] += 0.1f;
-            godKiller.base_stats[S.scale] = 0.01f;
-            godKiller.base_stats[S.range] += 4f;
-            godKiller.base_stats[S.warfare] += 4f;
             godKiller.action_special_effect = (WorldAction)Delegate.Combine(godKiller.action_special_effect, new WorldAction(godKillerAutoTrait));
             godKiller.group_id = "GodTraits";
             AddTrait(godKiller, "To Kill a God is nearly to become one");
@@ -210,31 +303,18 @@ namespace GodsAndPantheons
             ActorTrait godHunter = new ActorTrait();
             godHunter.id = "God Hunter";
             godHunter.path_icon = "ui/icons/godKiller";
-            godHunter.base_stats[S.damage] += 0;
-            godHunter.base_stats[S.health] += 0;
             godHunter.action_special_effect = new WorldAction(SuperRegeneration);
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(godKillerAutoTrait));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(ChaseGod));
             godHunter.group_id = "GodTraits";
             AddTrait(godHunter, "He will stop at NOTHING to kill a god");
+
             //my traits
             ActorTrait godofgods = new ActorTrait();
             godofgods.id = "God Of gods";
-            godofgods.path_icon = "ui/icons/IconDemi";
-            godofgods.base_stats[S.damage] += 200;
-            godofgods.base_stats[S.health] += 1000;
-            godofgods.base_stats[S.attack_speed] += 60f;
-            godofgods.base_stats[S.critical_chance] += 0.5f;
-            godofgods.base_stats[S.intelligence] += 40f;
-            godofgods.base_stats[S.range] += 20f;
-            godofgods.base_stats[S.dodge] += 35f;
-            godofgods.base_stats[S.accuracy] += 15f;
-            godofgods.base_stats[S.speed] += 30f;
-            godofgods.base_stats[S.armor] += 50f;
+            godofgods.path_icon = "ui/icons/godKiller";
             godofgods.action_death = new WorldAction(ActionLibrary.deathNuke);
-            godofgods.action_death = (WorldAction)Delegate.Combine(godofgods.action_death, new WorldAction(genericGodsDeath));
-            godofgods.action_death = (WorldAction)Delegate.Combine(godofgods.action_death, new WorldAction(genericGodsDeath));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsAutoTrait));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(BringMinions));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsEraStatus));
@@ -246,20 +326,24 @@ namespace GodsAndPantheons
             ActorTrait SummonedOne = new ActorTrait();
             SummonedOne.id = "Summoned One";
             SummonedOne.path_icon = "ui/icons/iconBlessing";
-            SummonedOne.base_stats[S.damage] += 10;
-            SummonedOne.base_stats[S.health] += 20;
-            SummonedOne.base_stats[S.armor] += 10;
-            SummonedOne.base_stats[S.knockback_reduction] += 0.5f;
-            SummonedOne.base_stats[S.max_age] = -20000f;
             SummonedOne.action_special_effect += new WorldAction(SummonedBeing);
             SummonedOne.group_id = TraitGroup.special;
             SummonedOne.can_be_given = false;
             SummonedOne.action_special_effect = (WorldAction)Delegate.Combine(SummonedOne.action_special_effect, new WorldAction(SummonedOneEraStatus));
             AddTrait(SummonedOne, "A creature summoned by God himself in order to aid them in battle, DO NOT MODIFY THE NAME OF THIS CREATURE!");
+
+            ActorTrait DemiGod = new ActorTrait();
+            DemiGod.id = "Demi God";
+            DemiGod.path_icon = "ui/icons/IconDemi";
+            DemiGod.base_stats[S.damage] += 10;
+            DemiGod.base_stats[S.health] += 10;
+            DemiGod.base_stats[S.armor] += 10;
+            DemiGod.base_stats[S.knockback_reduction] += 0.5f;
+            DemiGod.base_stats[S.max_age] += 15;
+            DemiGod.group_id = TraitGroup.special;
+            DemiGod.can_be_given = false;
+            AddTrait(DemiGod, "The Demi God, offspring of Gods and Mortals");
             pb = new PowerLibrary();
-            //this to make it so summoned ones dont fight their Master and his allies
-            var harmony = new Harmony("com.Gods.Pantheons");
-            harmony.PatchAll();
         }
         //to make summoned ones only live for like 30 secounds
         public static bool SummonedBeing(BaseSimObject pTarget, WorldTile pTile)
@@ -336,6 +420,11 @@ namespace GodsAndPantheons
         }
         public static void AddTrait(ActorTrait Trait, string disc)
         {
+            foreach(KeyValuePair<string, float> kvp in TraitStats[Trait.id])
+            {
+                Trait.base_stats[kvp.Key] = kvp.Value;
+            }
+            Trait.inherit = -99999999999999f;
             AssetManager.traits.add(Trait);
             PlayerConfig.unlockTrait(Trait.id);
             addTraitToLocalizedLibrary(Trait.id, disc);
@@ -389,18 +478,33 @@ namespace GodsAndPantheons
             return MyMinions;
         }
         public static bool IsGod(Actor a)
-        {
-            return a.hasTrait("God Of The Lich")
-            || a.hasTrait("God Of The Stars")
-            || a.hasTrait("God Of Knowledge")
-            || a.hasTrait("God Of the Night")
-            || a.hasTrait("God_Of_Chaos")
-            || a.hasTrait("God Of War")
-            || a.hasTrait("God Of the Earth")
-            || a.hasTrait("God Of light")
-            || a.hasTrait("God Of gods")
-            || a.hasTrait("LesserGod")
+            => GetGodTraits(a).Count > 0
             || a.asset.id == SA.crabzilla; //crabzilla is obviously a god, duhh
+        
+        public static bool IsGodTrait(string a)
+             => a.Equals("God Of The Lich")
+            || a.Equals("God Of The Stars")
+            || a.Equals("God Of Knowledge")
+            || a.Equals("God Of the Night")
+            || a.Equals("God_Of_Chaos")
+            || a.Equals("God Of War")
+            || a.Equals("God Of the Earth")
+            || a.Equals("God Of light")
+            || a.Equals("God Of gods")
+            || a.Equals("LesserGod");
+        
+        public static List<string> GetGodTraits(Actor a) => GetGodTraits(a.data.traits);
+        public static List<string> GetGodTraits(List<string> pTraits)
+        {
+            List<string> list = new List<string>();
+            foreach (string trait in pTraits)
+            {
+                if (IsGodTrait(trait))
+                {
+                    list.Add(trait);
+                }
+            }
+            return list;
         }
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -470,7 +574,7 @@ namespace GodsAndPantheons
             return false;
         }
         //summon ability
-        public static void Summon(string creature, int times, BaseSimObject pSelf, WorldTile Ptile)
+        public static void Summon(string creature, int times, BaseSimObject pSelf, WorldTile Ptile, int lifespan = 31)
         {
             Actor self = (Actor)pSelf;
             for (int i = 0; i < times; i++)
@@ -484,12 +588,9 @@ namespace GodsAndPantheons
                 actor.addTrait("acid_proof");
                 actor.removeTrait("immortal");
                 actor.data.set("life", 0);
-                actor.data.set("lifespan", 31);
+                actor.data.set("lifespan", lifespan);
             }
         }
-
-        
-
         public static bool GodOfGodsAutoTrait(BaseSimObject pTarget, WorldTile pTile)
         {
             if (pTarget.a != null)
@@ -573,7 +674,7 @@ namespace GodsAndPantheons
         public static bool genericGodsDeath(BaseSimObject pTarget, WorldTile pTile = null)
         {
             BaseSimObject attackedBy = pTarget.a.attackedBy;
-            if (!((BaseSimObject)attackedBy != null) || !attackedBy.isActor() || !attackedBy.isAlive())
+            if (!(attackedBy != null) || !attackedBy.isActor() || !attackedBy.isAlive())
             {
                 return false;
             }
@@ -583,12 +684,9 @@ namespace GodsAndPantheons
 
         public static bool chaosGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            var chaosGodPwr1Chance = Toolbox.randomChance(0.01f);
-            var chaosGodPwr2Chance = Toolbox.randomChance(0.05f);
-
             if (pTarget != null && pSelf.isActor())
             {
-                if (chaosGodPwr1Chance)
+                if (Toolbox.randomChance(GetChance("ChaosGodWindow", "Power1%") /100))
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                     float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -598,7 +696,7 @@ namespace GodsAndPantheons
 
                 }
                 //new ability: unleach chaos
-                if (chaosGodPwr2Chance)
+                if (Toolbox.randomChance(GetChance("ChaosGodWindow", "Power2%") / 100))
                 {
                     bool hasmadness = pSelf.a.hasTrait("madness");
                     DropsLibrary.action_madness(pTile);
@@ -613,7 +711,7 @@ namespace GodsAndPantheons
                         }
                     }
                 }
-                if (Toolbox.randomChance(0.05f))
+                if (Toolbox.randomChance(GetChance("ChaosGodWindow", "Power3%") / 100))
                 {
                     pb.spawnBoulder(pTarget.a.currentTile, null);
                 }
@@ -737,8 +835,6 @@ namespace GodsAndPantheons
 
             if (pTarget != null)
             {
-                Actor a = Reflection.GetField(pTarget.GetType(), pTarget, "a") as Actor;
-                
                 if (Toolbox.randomChance(GetChance("MoonGodWindow", "cometAzure%") / 100))
                 {
                     EffectsLibrary.spawnAtTile("fx_cometAzureDown_dej", pTarget.a.currentTile, 0.1f);
@@ -1427,74 +1523,6 @@ namespace GodsAndPantheons
                 }
             }
             return summoned;
-        }
-    }
-    [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
-    public class UpdateAttacking
-    {
-        static void Postfix(ref bool __result, BaseSimObject __instance, BaseSimObject pTarget)
-        {
-            if (__instance == pTarget)
-            {
-                __result = false;
-            }
-            if (__instance.isActor())
-            {
-                Actor a = __instance.a;
-                if (a.hasTrait("Summoned One"))
-                {
-                    Actor Master = Traits.FindMaster(a);
-                    if (Master != a)
-                    {
-                        if (!Master.canAttackTarget(pTarget))
-                        {
-                            __result = false;
-                            return;
-                        }
-                    }
-                }
-            }
-            if (pTarget.isActor())
-            {
-                Actor b = pTarget.a;
-                if (b.hasTrait("Summoned One"))
-                {
-                    Actor Master = Traits.FindMaster(b);
-                    if (Master != b)
-                    {
-                        if (!__instance.canAttackTarget(Master))
-                            __result = false;
-                    }
-                }
-            }
-
-        }
-    }
-    [HarmonyPatch(typeof(ActorBase), "clearAttackTarget")]
-    public class KEEPATTACKING
-    {
-        static bool Prefix(ActorBase __instance)
-        {
-            if (__instance.hasTrait("God Hunter") && Main.savedSettings.HunterAssasins)
-            {
-                BaseSimObject? a = Reflection.GetField(typeof(ActorBase), __instance, "attackTarget") as BaseSimObject;
-                if (a != null)
-                {
-                    if (Traits.IsGod(a.a) && a.isAlive()) { return false; }
-                }
-            }
-            return true;
-        }
-    }
-    [HarmonyPatch(typeof(Actor), "newKillAction")]
-    public class updateAttack
-    {
-        static void Prefix(Actor __instance, Actor pDeadUnit)
-        {
-            if (Traits.IsGod(pDeadUnit))
-            {
-                __instance.addTrait("God Killer");
-            }
         }
     }
 }

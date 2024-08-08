@@ -17,6 +17,7 @@ namespace GodsAndPantheons
             newWindow("EarthGodWindow", "Earth Chance Modifier");
             newWindow("LichGodWindow", "Lich Chance Modifier");
             newWindow("GodOfGodsWindow", "Godly Chance Modifier");
+            newWindow("ChaosGodWindow", "Chaotic Chance Modifier");
         }
 
         private static void newWindow(string id, string title)
