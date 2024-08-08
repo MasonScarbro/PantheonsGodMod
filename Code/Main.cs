@@ -11,16 +11,18 @@ using NCMS.Utils;
 using UnityEngine;
 using ReflectionUtility;
 using Newtonsoft.Json;
+using HarmonyLib;
 namespace GodsAndPantheons
 {
     [ModEntry]
     class Main : MonoBehaviour
     {
         
-        private static string correctSettingsVersion = "0.1.0";
+        private static string correctSettingsVersion = "0.1.1";
         public static SavedSettings savedSettings = new SavedSettings();
         internal static Dictionary<string, UnityEngine.Object> modsResources;
         public static Main instance;
+        static Harmony _harmony;
         void Awake()
         {
             loadSettings();
@@ -45,8 +47,10 @@ namespace GodsAndPantheons
             Units.init();
             Tab.init();
             Invasions.init();
-            
             instance = this;
+            //APPLY PATCHES
+            _harmony = new Harmony("Com.Pantheon.Gods");
+            _harmony.PatchAll();
         }
         IEnumerator Start()
         {

@@ -466,7 +466,7 @@ namespace GodsAndPantheons
         }
         static bool UnleashHell(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(0.1f))
+            if (Toolbox.randomChance(Traits.GetChance("ChaosGodWindow", "Power4%") / 100))
             {
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -604,7 +604,6 @@ namespace GodsAndPantheons
             if (selfTiles != null)
             {
                 int length = selfTiles.Count;
-                Debug.Log("Self: " + selfTiles.Count);
                 for (int i = 0; i < selfTiles.Count; i++)
                 {
                     
@@ -619,7 +618,6 @@ namespace GodsAndPantheons
             }
             if (targetTiles != null)
             {
-                Debug.Log("Target: " + targetTiles.Count);
                 if (selfTiles.Count == 0)
                 {
                     for (int i = 0; i < targetTiles.Count; i++)

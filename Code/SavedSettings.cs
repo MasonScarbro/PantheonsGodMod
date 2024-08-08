@@ -6,7 +6,9 @@ namespace GodsAndPantheons
     [Serializable]
     public class SavedSettings
     {
-        public string settingVersion = "0.1.0";
+        public string settingVersion = "0.1.1";
+        //inheritance of the god traits is stored here, if the baby has two parents and both of them are god's or has one parent who is a god, it use the inherit for the chance
+        //if it has a god parent and normal parent it will use the inherit for the chance of changing the stats of the demi god trait for the baby
         public Dictionary<string, Dictionary<string, InputOption>> Chances = new Dictionary<string, Dictionary<string, InputOption>>
         {
             {"KnowledgeGodWindow",
@@ -19,7 +21,8 @@ namespace GodsAndPantheons
               {"KnowledgeGodPwr5%", new InputOption{active = true, value = "4" }},
               {"SummonLightning%", new InputOption{active = true, value = "2" }},
               {"SummonMeteor%", new InputOption{active = true, value = "1" }},
-              {"PagesOfKnowledge%", new InputOption{active = true, value = "1" }}
+              {"PagesOfKnowledge%", new InputOption{active = true, value = "1" }},
+              {"inherit%", new InputOption{active = true, value = "10" }}
              }   
             },
             {"LichGodWindow", 
@@ -28,7 +31,8 @@ namespace GodsAndPantheons
                 {"waveOfMutilation%", new InputOption{active = true, value = "20" }},
                 {"summonSkele%", new InputOption{active = true, value = "2" }},
                 {"summonDead%", new InputOption{active = true, value = "3" }},
-                {"rigorMortisHand%", new InputOption{active = true, value = "5" }}
+                {"rigorMortisHand%", new InputOption{active = true, value = "5" }},
+                {"Inherit%", new InputOption{active = true, value = "10" }}
               } 
             },
             {"GodOfGodsWindow",
@@ -36,7 +40,8 @@ namespace GodsAndPantheons
               {
                  {"Terrain bending%", new InputOption{active = true, value = "20" }},
                  {"Summoning%", new InputOption{active = true, value = "1" }},
-                 {"Magic%", new InputOption{active = true, value = "1" }}
+                 {"Magic%", new InputOption{active = true, value = "1" }},
+                 {"INherit%", new InputOption{active = true, value = "10" }}
               }
             },
             {"MoonGodWindow",
@@ -45,7 +50,8 @@ namespace GodsAndPantheons
                  {"summonMoonChunk%", new InputOption{active = true, value = "0.05" }},
                  {"cometAzure%", new InputOption{active = true, value = "1" }},
                  {"cometShower%", new InputOption{active = true, value = "1" }},
-                 {"summonWolf%", new InputOption{active = true, value = "5" }}
+                 {"summonWolf%", new InputOption{active = true, value = "5" }},
+                 {"INHerit%", new InputOption{active = true, value = "10" }}
               }
             },
             {"DarkGodWindow",
@@ -55,7 +61,8 @@ namespace GodsAndPantheons
                   {"blackHole%", new InputOption{active = true, value = "0.1" }},
                   {"darkDaggers%", new InputOption{active = true, value = "4" }},
                   {"smokeFlash%", new InputOption{active = true, value = "1" }},
-                  {"summonDarkOne%", new InputOption{active = true, value = "4" }}
+                  {"summonDarkOne%", new InputOption{active = true, value = "4" }},
+                  {"INHErit%", new InputOption{active = true, value = "10" }}
               }
             },
             {"SunGodWindow",
@@ -64,7 +71,8 @@ namespace GodsAndPantheons
                   {"flashOfLight%", new InputOption{active = true, value = "1" }},
                   {"beamOfLight%", new InputOption{active = true, value = "8" }},
                   {"speedOfLight%", new InputOption{active = true, value = "2" }},
-                  {"lightBallz%", new InputOption{active = true, value = "0.5" }}
+                  {"lightBallz%", new InputOption{active = true, value = "0.5" }},
+                  {"INHERit%", new InputOption{active = true, value = "10" }}
               }
             },
             {"WarGodWindow",
@@ -72,7 +80,8 @@ namespace GodsAndPantheons
               {
                   {"warGodsCry%", new InputOption{active = true, value = "1" }},
                   {"axeThrow%", new InputOption{active = true, value = "3" }},
-                  {"seedsOfWar%", new InputOption{active = true, value = "2" }}
+                  {"seedsOfWar%", new InputOption{active = true, value = "2" }},
+                  {"INHERIt%", new InputOption{active = true, value = "10" }}
               }
             },
             {"EarthGodWindow",
@@ -81,7 +90,18 @@ namespace GodsAndPantheons
                   {"earthquake%", new InputOption{active = true, value = "5" }},
                   {"makeItRain%", new InputOption{active = true, value = "10" }},
                   {"buildWorld%", new InputOption{active = true, value = "1" }},
-                  {"SummonDruid%", new InputOption{active = true, value = "10" }}
+                  {"SummonDruid%", new InputOption{active = true, value = "10" }},
+                  {"INHERIT%", new InputOption{active = true, value = "10" }}
+              }
+            },
+            {"ChaosGodWindow",
+                new Dictionary<string, InputOption>
+              {
+                  {"Power1%", new InputOption{active = true, value = "1" }},
+                  {"Power2%", new InputOption{active = true, value = "5" }},
+                  {"Power3%", new InputOption{active = true, value = "1" }},
+                  {"Power4%", new InputOption{active = true, value = "10" }},
+                  {"iNHERIT%", new InputOption{active = true, value = "10" }}
               }
             }
         };

@@ -167,6 +167,16 @@ namespace GodsAndPantheons
                     tab.transform,
                     WindowManager.windows["LichGodWindow"].openWindow
               );
+            PowerButtons.CreateButton(
+                    "ChaosGodWindow",
+                    Resources.Load<Sprite>("ui/Icons/chaosGod"),
+                    "Chance Modfier",
+                    "Manage The Gods Powers",
+                    new Vector2(498, 18),
+                    ButtonType.Click,
+                    tab.transform,
+                    WindowManager.windows["ChaosGodWindow"].openWindow
+              );
 
         }
 
