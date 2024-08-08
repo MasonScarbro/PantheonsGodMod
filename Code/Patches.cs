@@ -91,6 +91,10 @@ namespace GodsAndPantheons
                 }
                 godparents++;
             }
+            else if(pTraits.Contains("Demi God"))
+            {
+                __instance.set("Demi Child", true);
+            }
             __instance.set("godparents", godparents);
             __instance.set("parents", parents);
         }
@@ -117,6 +121,20 @@ namespace GodsAndPantheons
                   {
                     pData.removeBool(trait);
                   }
+            }
+            else
+            {
+                pData.get("Demi Child", out bool demichild);
+                if (demichild)
+                {
+                    if (Toolbox.randomChance(0.3f)) pData.addTrait("blessed");
+                    if (Toolbox.randomChance(0.4f)) pData.addTrait("giant");
+                    if (Toolbox.randomChance(0.5f)) pData.addTrait("strong");
+                    if (Toolbox.randomChance(0.6f)) pData.addTrait("frost_proof");
+                    if (Toolbox.randomChance(0.7f)) pData.addTrait("tough");
+                    if (Toolbox.randomChance(0.2f)) pData.addTrait("immortal");
+                    pData.removeBool("Demi Child");
+                }
             }
             pData.removeInt("parents");
             pData.removeInt("godparents");

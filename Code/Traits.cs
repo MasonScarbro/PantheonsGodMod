@@ -494,12 +494,12 @@ namespace GodsAndPantheons
             || a.Equals("LesserGod");
         
         public static List<string> GetGodTraits(Actor a) => GetGodTraits(a.data.traits);
-        public static List<string> GetGodTraits(List<string> pTraits)
+        public static List<string> GetGodTraits(List<string> pTraits, bool includedemigods = false)
         {
             List<string> list = new List<string>();
             foreach (string trait in pTraits)
             {
-                if (IsGodTrait(trait))
+                if (IsGodTrait(trait) || (trait.Equals("Demi God") && includedemigods))
                 {
                     list.Add(trait);
                 }
