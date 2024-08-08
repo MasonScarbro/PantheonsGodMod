@@ -1446,11 +1446,11 @@ namespace GodsAndPantheons
             {
                 if (Toolbox.randomChance(GetChance("EarthGodWindow", "buildWorld%") / 100))
                 {
-                    ActionLibrary.tryToGrowTree(pSelf);
+                    ActionLibrary.tryToGrowTree(pSelf, pTile);
                 }
                 if (Toolbox.randomChance(GetChance("EarthGodWindow", "buildWorld%") / 100))
                 {
-                    ActionLibrary.tryToCreatePlants(pSelf);
+                    ActionLibrary.tryToCreatePlants(pSelf, pTile);
                 }
                 if (Toolbox.randomChance(GetChance("EarthGodWindow", "buildWorld%") / 100))
                 {
