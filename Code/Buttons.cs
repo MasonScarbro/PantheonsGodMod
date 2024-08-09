@@ -99,7 +99,7 @@ namespace GodsAndPantheons
                 PowerButtons.ToggleButton(button2.name);
             PowerButtons.CreateButton(
                     "GodOfGodsWindow",
-                    Resources.Load<Sprite>("ui/Icons/IconDemi"),
+                    Resources.Load<Sprite>("ui/Icons/GodofGods"),
                     "Chance Modfier",
                     "Manage The Gods Powers",
                     new Vector2(352, 18),

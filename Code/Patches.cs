@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using ai;
+using HarmonyLib;
 using NeoModLoader.General;
 using ReflectionUtility;
 using System.Collections.Generic;
@@ -74,78 +75,109 @@ namespace GodsAndPantheons
             }
         }
     }
-    [HarmonyPatch(typeof(ActorData), "inheritTraits")]
+    [HarmonyPatch(typeof(ActorTool), "getBabyColor")]
     public class InheritGodTraits
     {
-        static void Postfix(ActorData __instance, List<string> pTraits)
+        static void Postfix(Actor pActor1, Actor pActor2)
         {
-            __instance.get("parents", out int parents);
-            __instance.get("godparents", out int godparents);
-            parents++;
-            List<string> godtraits = Traits.GetGodTraits(pTraits);
-            if (godtraits.Count > 0)
+            if (HavingChild)
             {
-                foreach(string trait in godtraits)
+                int parents = pActor2 != null ? 2 : 1;
+                int godparents = Traits.IsGod(pActor1) ? 1 : 0;
+                int demiparents = pActor1.data.traits.Contains("Demi God") ? 1 : 0;
+                List<string> parentdata = new List<string>(getinheritedgodtraits(pActor1.data));
+                List<string> godtraits = new List<string>(Traits.GetGodTraits(pActor1));
+                if (parents == 2)
                 {
-                    __instance.set(trait, true);
+                    godtraits.AddRange(Traits.GetGodTraits(pActor2));
+                    parentdata.AddRange(getinheritedgodtraits(pActor2.data));
+                    godparents += Traits.IsGod(pActor2) ? 1 : 0;
+                    demiparents += pActor2.data.traits.Contains("Demi God") ? 1 : 0;
                 }
-                godparents++;
+                if (godparents > 0)
+                {
+                    if (parents == godparents)
+                    {
+                        inheritgodtraits(godtraits, ref Child);
+                    }
+                    else
+                    {
+                        if (demiparents > 0 && Toolbox.randomChance(0.5f))
+                        {
+                            inheritgodtraits(godtraits, ref Child);
+                        }
+                        else
+                        {
+                            MakeDemiGod(godtraits, ref Child);
+                        }
+                    }
+                }
+                else if (demiparents > 0)
+                {
+                    if (parents == demiparents)
+                    {
+                        if (Toolbox.randomChance(0.25f))
+                        {
+                            inheritgodtraits(parentdata, ref Child);
+                        }
+                        else
+                        {
+                            MakeDemiGod(parentdata, ref Child);
+                        }
+                    }
+                    else
+                    {
+                        if (Toolbox.randomChance(0.3f)) Child.addTrait("blessed");
+                        if (Toolbox.randomChance(0.4f)) Child.addTrait("giant");
+                        if (Toolbox.randomChance(0.5f)) Child.addTrait("strong");
+                        if (Toolbox.randomChance(0.6f)) Child.addTrait("frost_proof");
+                        if (Toolbox.randomChance(0.7f)) Child.addTrait("tough");
+                        if (Toolbox.randomChance(0.2f)) Child.addTrait("immortal");
+                    }
+                }
+                HavingChild = false;
             }
-            else if(pTraits.Contains("Demi God"))
-            {
-                __instance.set("Demi Child", true);
-            }
-            __instance.set("godparents", godparents);
-            __instance.set("parents", parents);
         }
-    }
-    [HarmonyPatch(typeof(City), "spawnPopPoint")]
-    public class CreateDemiGods
-    {
-        static void Prefix(ActorData pData)
+        static void inheritgodtraits(List<string> godtraits, ref ActorData __instance)
         {
-            pData.get("parents", out int parents);
-            pData.get("godparents", out int godparents);
-            if (godparents > 0)
+            foreach (string trait in godtraits)
             {
-                List<string> data = getinheritedgodtraits(pData);
-                  if ((parents == 1) || (parents == 2 && godparents == 2))
-                  {
-                     inheritgodtraits(data, pData);
-                  }
-                  else
-                  {
-                      MakeDemiGod(data, pData);
-                  }
-                  foreach(string trait in data)
-                  {
-                    pData.removeBool(trait);
-                  }
-            }
-            else
-            {
-                pData.get("Demi Child", out bool demichild);
-                if (demichild)
+                string window = Traits.TraitToWindow(trait);
+                if (window != null)
                 {
-                    if (Toolbox.randomChance(0.3f)) pData.addTrait("blessed");
-                    if (Toolbox.randomChance(0.4f)) pData.addTrait("giant");
-                    if (Toolbox.randomChance(0.5f)) pData.addTrait("strong");
-                    if (Toolbox.randomChance(0.6f)) pData.addTrait("frost_proof");
-                    if (Toolbox.randomChance(0.7f)) pData.addTrait("tough");
-                    if (Toolbox.randomChance(0.2f)) pData.addTrait("immortal");
-                    pData.removeBool("Demi Child");
+                    if (Toolbox.randomChance(Traits.GetChance(window, Traits.TraitToInherit(trait)) / 100))
+                    {
+                        __instance.addTrait(trait);
+                    }
                 }
             }
-            pData.removeInt("parents");
-            pData.removeInt("godparents");
-
+        }
+        static void MakeDemiGod(List<string> godtraits, ref ActorData __instance)
+        {
+            __instance.addTrait("Demi God");
+            foreach (string trait in godtraits)
+            {
+                __instance.set("Demi" + trait, true);
+                string window = Traits.TraitToWindow(trait);
+                if (window != null)
+                {
+                    foreach (KeyValuePair<string, float> kvp in Traits.TraitStats[trait])
+                    {
+                        if (Toolbox.randomChance(Traits.GetChance(window, Traits.TraitToInherit(trait)) / 75))
+                        {
+                            __instance.get("Demi" + kvp.Key, out float value);
+                            __instance.set("Demi" + kvp.Key, (kvp.Value / 2) + Random.Range(-(kvp.Value / 2.5f), kvp.Value / 2.5f) + value);
+                        }
+                    }
+                }
+            }
         }
         static List<string> getinheritedgodtraits(ActorData pData)
         {
             List<string> traits = new List<string>();
-            foreach(string key in Traits.TraitStats.Keys)
+            foreach (string key in Traits.TraitStats.Keys)
             {
-                pData.get(key, out bool value);
+                pData.get("Demi"+key, out bool value);
                 if (value)
                 {
                     traits.Add(key);
@@ -153,38 +185,16 @@ namespace GodsAndPantheons
             }
             return traits;
         }
-        static void inheritgodtraits(List<string> godtraits, ActorData __instance)
+        public static bool HavingChild = false;
+        public static ActorData Child;
+    }
+    [HarmonyPatch(typeof(ActorData), "inheritTraits")]
+    public class ChildData
+    {
+        static void Postfix(ActorData __instance)
         {
-            foreach (string trait in godtraits)
-            {
-                string window = Traits.TraitToWindow(trait);
-                if (window != null)
-                {
-                    if (Toolbox.randomChance(Traits.GetChance(window, Traits.TraitToInherit(trait))/100))
-                    {
-                        __instance.addTrait(trait);
-                    }
-                }
-            }
-        }
-        static void MakeDemiGod(List<string> godtraits, ActorData __instance)
-        {
-            __instance.traits.Add("Demi God");
-            foreach (string trait in godtraits)
-            {
-                string window = Traits.TraitToWindow(trait);
-                if (window != null)
-                {
-                   foreach (KeyValuePair<string, float> kvp in Traits.TraitStats[trait])
-                    {
-                       if (Toolbox.randomChance(Traits.GetChance(window, Traits.TraitToInherit(trait)) / 75))
-                       {
-                         __instance.get("Demi" + kvp.Key, out float value);
-                         __instance.set("Demi"+kvp.Key, (kvp.Value/2) + Random.Range(-(kvp.Value/2.5f), kvp.Value/2.5f)+value);
-                       }
-                    }
-                }
-            }
+            InheritGodTraits.Child = __instance;
+            InheritGodTraits.HavingChild = true;
         }
     }
     [HarmonyPatch(typeof(ActorBase), "calculateFertility")]
