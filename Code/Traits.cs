@@ -196,6 +196,7 @@ namespace GodsAndPantheons
             chaosGod.id = "God_Of_Chaos";
             chaosGod.path_icon = "ui/icons/chaosGod";
             chaosGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
+            chaosGod.action_special_effect = (WorldAction)Delegate.Combine(chaosGod.action_special_effect, new WorldAction(warGodAutoTrait));
             chaosGod.action_attack_target = new AttackAction(ActionLibrary.addBurningEffectOnTarget);
             chaosGod.action_attack_target = new AttackAction(chaosGodAttack);
             //chaosGod.action_death = new WorldAction(ActionLibrary.turnIntoDemon);
@@ -1183,7 +1184,7 @@ namespace GodsAndPantheons
 
             if (pTarget.a != null)
             {
-                if (pTarget.a.hasTrait("God Of War"))
+               // if (pTarget.a.hasTrait("God Of War"))
                 {
                     pTarget.a.addTrait("blessed");
                     pTarget.a.addTrait("strong");
