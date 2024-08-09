@@ -314,7 +314,7 @@ namespace GodsAndPantheons
             //my traits
             ActorTrait godofgods = new ActorTrait();
             godofgods.id = "God Of gods";
-            godofgods.path_icon = "ui/icons/godKiller";
+            godofgods.path_icon = "ui/icons/GodofGods";
             godofgods.action_death = new WorldAction(ActionLibrary.deathNuke);
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsAutoTrait));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(BringMinions));

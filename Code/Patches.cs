@@ -76,7 +76,7 @@ namespace GodsAndPantheons
         }
     }
     [HarmonyPatch(typeof(ActorTool), "getBabyColor")]
-    public class ParentData
+    public class InheritGodTraits
     {
         static void Postfix(Actor pActor1, Actor pActor2)
         {
@@ -96,13 +96,13 @@ namespace GodsAndPantheons
                 }
                 if (godparents > 0)
                 {
-                    if ((parents == 1) || (parents == 2 && godparents == 2))
+                    if (parents == godparents)
                     {
                         inheritgodtraits(godtraits, ref Child);
                     }
                     else
                     {
-                        if (demiparents > 0 && Toolbox.randomChance(0.1f))
+                        if (demiparents > 0 && Toolbox.randomChance(0.5f))
                         {
                             inheritgodtraits(godtraits, ref Child);
                         }
@@ -114,7 +114,7 @@ namespace GodsAndPantheons
                 }
                 else if (demiparents > 0)
                 {
-                    if ((parents == 1) || (parents == 2 && demiparents == 2))
+                    if (parents == demiparents)
                     {
                         if (Toolbox.randomChance(0.25f))
                         {
@@ -189,12 +189,12 @@ namespace GodsAndPantheons
         public static ActorData Child;
     }
     [HarmonyPatch(typeof(ActorData), "inheritTraits")]
-    public class InheritGodTraits
+    public class ChildData
     {
         static void Postfix(ActorData __instance)
         {
-            ParentData.Child = __instance;
-            ParentData.HavingChild = true;
+            InheritGodTraits.Child = __instance;
+            InheritGodTraits.HavingChild = true;
         }
     }
     [HarmonyPatch(typeof(ActorBase), "calculateFertility")]
