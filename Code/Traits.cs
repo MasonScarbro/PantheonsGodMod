@@ -1101,7 +1101,7 @@ namespace GodsAndPantheons
                 {
                     pTarget.a.addTrait("blessed");
                     pTarget.a.addTrait("genius");
-                    pTarget.a.addTrait("frost_proof");
+                    pTarget.a.addTrait("freeze_proof");
                     pTarget.a.addTrait("fire_proof");
                     pTarget.a.addTrait("fire_blood");
                     pTarget.a.addTrait("tough");

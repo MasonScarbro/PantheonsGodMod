@@ -131,7 +131,7 @@ namespace GodsAndPantheons
                         if (Toolbox.randomChance(0.3f)) Child.addTrait("blessed");
                         if (Toolbox.randomChance(0.4f)) Child.addTrait("giant");
                         if (Toolbox.randomChance(0.5f)) Child.addTrait("strong");
-                        if (Toolbox.randomChance(0.6f)) Child.addTrait("frost_proof");
+                        if (Toolbox.randomChance(0.6f)) Child.addTrait("freeze_proof");
                         if (Toolbox.randomChance(0.7f)) Child.addTrait("tough");
                         if (Toolbox.randomChance(0.2f)) Child.addTrait("immortal");
                     }
