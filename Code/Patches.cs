@@ -154,7 +154,7 @@ namespace GodsAndPantheons
         }
         static void MakeDemiGod(List<string> godtraits, ref ActorData __instance)
         {
-            __instance.traits.Add("Demi God");
+            __instance.addTrait("Demi God");
             foreach (string trait in godtraits)
             {
                 __instance.set("Demi" + trait, true);
