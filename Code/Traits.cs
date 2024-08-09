@@ -425,7 +425,7 @@ namespace GodsAndPantheons
             {
                 Trait.base_stats[kvp.Key] = kvp.Value;
             }
-            Trait.inherit = -99999999999999f;
+            Trait.inherit = -99999999999999;
             AssetManager.traits.add(Trait);
             PlayerConfig.unlockTrait(Trait.id);
             addTraitToLocalizedLibrary(Trait.id, disc);
@@ -448,7 +448,6 @@ namespace GodsAndPantheons
         }
         public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile)
         {
-
             if (Toolbox.randomChance(0.1f))
             {
                 pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * 0.05f));
@@ -473,7 +472,11 @@ namespace GodsAndPantheons
             {
                 if (actor.getName().Equals($"Summoned by {a.getName()}") && actor.hasTrait("Summoned One"))
                 {
-                    MyMinions.Add(actor);
+                    actor.data.get("Master", out string master);
+                    if (a.data.id.Equals(master))
+                    {
+                        MyMinions.Add(actor);
+                    }
                 }
             }
             return MyMinions;
@@ -582,6 +585,7 @@ namespace GodsAndPantheons
             {
                 Actor actor = World.world.units.spawnNewUnit(creature, Ptile, true, 3f);
                 actor.data.name = $"Summoned by {self.getName()}";
+                actor.data.set("Master", self.data.id);
                 actor.addTrait("Summoned One");
                 actor.addTrait("regeneration");
                 actor.addTrait("madness");
@@ -878,7 +882,11 @@ namespace GodsAndPantheons
             }
             return false;
         }
-
+        public static void CorruptSummonedOne(Actor SummonedOne)
+        {
+            SummonedOne.data.setName("Corrupted One");
+            SummonedOne.data.set("Master", "skghjerywghdfn");
+        }
 
 
         public static bool sunGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -1520,7 +1528,11 @@ namespace GodsAndPantheons
             {
                 if (summoned.getName().Equals($"Summoned by {actor.getName()}"))
                 {
-                    return actor;
+                    summoned.data.get("Master", out string master);
+                    if (actor.data.id.Equals(master))
+                    {
+                        return actor;
+                    }
                 }
             }
             return summoned;

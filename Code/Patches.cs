@@ -1,4 +1,5 @@
 ﻿using ai;
+using ai.behaviours;
 using HarmonyLib;
 using NeoModLoader.General;
 using ReflectionUtility;
@@ -75,24 +76,24 @@ namespace GodsAndPantheons
             }
         }
     }
-    [HarmonyPatch(typeof(ActorTool), "getBabyColor")]
+    [HarmonyPatch(typeof(CityBehProduceUnit), "checkGreatClan")]
     public class InheritGodTraits
     {
-        static void Postfix(Actor pActor1, Actor pActor2)
+        static void Postfix(Actor pParent1, Actor pParent2)
         {
             if (HavingChild)
             {
-                int parents = pActor2 != null ? 2 : 1;
-                int godparents = Traits.IsGod(pActor1) ? 1 : 0;
-                int demiparents = pActor1.data.traits.Contains("Demi God") ? 1 : 0;
-                List<string> parentdata = new List<string>(getinheritedgodtraits(pActor1.data));
-                List<string> godtraits = new List<string>(Traits.GetGodTraits(pActor1));
+                int parents = pParent2 != null ? 2 : 1;
+                int godparents = Traits.IsGod(pParent1) ? 1 : 0;
+                int demiparents = pParent1.data.traits.Contains("Demi God") ? 1 : 0;
+                List<string> parentdata = new List<string>(getinheritedgodtraits(pParent1.data));
+                List<string> godtraits = new List<string>(Traits.GetGodTraits(pParent1));
                 if (parents == 2)
                 {
-                    godtraits.AddRange(Traits.GetGodTraits(pActor2));
-                    parentdata.AddRange(getinheritedgodtraits(pActor2.data));
-                    godparents += Traits.IsGod(pActor2) ? 1 : 0;
-                    demiparents += pActor2.data.traits.Contains("Demi God") ? 1 : 0;
+                    godtraits.AddRange(Traits.GetGodTraits(pParent2));
+                    parentdata.AddRange(getinheritedgodtraits(pParent2.data));
+                    godparents += Traits.IsGod(pParent2) ? 1 : 0;
+                    demiparents += pParent2.data.traits.Contains("Demi God") ? 1 : 0;
                 }
                 if (godparents > 0)
                 {
@@ -191,10 +192,13 @@ namespace GodsAndPantheons
     [HarmonyPatch(typeof(ActorData), "inheritTraits")]
     public class ChildData
     {
-        static void Postfix(ActorData __instance)
+        static void Postfix(ActorData __instance, List<string> pTraits)
         {
-            InheritGodTraits.Child = __instance;
-            InheritGodTraits.HavingChild = true;
+            if (!InheritGodTraits.HavingChild && Traits.GetGodTraits(pTraits, true).Count > 0) { }
+            {
+                InheritGodTraits.Child = __instance;
+                InheritGodTraits.HavingChild = true;
+            }
         }
     }
     [HarmonyPatch(typeof(ActorBase), "calculateFertility")]
