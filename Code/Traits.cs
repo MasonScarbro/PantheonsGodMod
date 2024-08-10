@@ -12,14 +12,13 @@ using Amazon.Runtime.Internal.Transform;
 
 namespace GodsAndPantheons
 {
-    //Contains the traits and their abilities
+    //Contains the traits and their abilities & Stats
     partial class Traits
     {
-        public static float GetChance(string ID, string Chance) => Main.savedSettings.Chances[ID][Chance].active ? float.Parse(Main.savedSettings.Chances[ID][Chance].value) : 0;
 
         public static Dictionary<string, Dictionary<string, float>> TraitStats = new Dictionary<string, Dictionary<string, float>>()
         {
-            {"God_Of_Chaos", new Dictionary<string, float>(){
+            {"God Of Chaos", new Dictionary<string, float>(){
                 {S.damage, 30f},
                 {S.health, 800},
                 {S.attack_speed, 15f},
@@ -154,39 +153,153 @@ namespace GodsAndPantheons
              }
             }
         };
-        public static string TraitToWindow(string Trait)
+        public static Dictionary<string, List<string>> AutoTraits = new Dictionary<string, List<string>>()
         {
-            switch (Trait)
-            {
-                case "God_Of_Chaos": return "ChaosGodWindow";
-                case "God Of light": return "SunGodWindow";
-                case "God Of the Night": return "DarkGodWindow";
-                case "God Of Knowledge": return "KnowledgeGodWindow";
-                case "God Of the Stars": return "MoonGodWindow";
-                case "God Of the Earth": return "EarthGodWindow";
-                case "God Of War": return "WarGodWindow";
-                case "God Of The Lich": return "LichGodWindow";
-                case "God Of gods": return "GodOfGodsWindow";
-                default: return null;
-            }
-        }
-        //no chance can have the same name even if in different windows
-        public static string TraitToInherit(string Trait)
-        {
-            switch (Trait)
-            {
-                case "God_Of_Chaos": return "iNHERIT%";
-                case "God Of light": return "INHERit%";
-                case "God Of the Night": return "INHErit%";
-                case "God Of Knowledge": return "inherit%";
-                case "God Of the Stars": return "INHerit%";
-                case "God Of the Earth": return "INHERIT%";
-                case "God Of War": return "INHERIt%";
-                case "God Of The Lich": return "Inherit%";
-                case "God Of gods": return "INherit%";
-                default: return null;
-            }
-        }
+            {"God Of gods", new List<string>()
+             {
+                "blessed", 
+                "poison_immune",
+                "fire_proof",
+                "acid_Proof",
+                "freeze_proof",
+                "shiny",
+                "energized",
+                "immortal",
+                "nightchild",
+                "moonchild",
+                "regeneration"
+             }
+            },
+            {"God Of light", new List<string>()
+             {
+                "blessed",
+                "shiny",
+                "agile",
+                "fire_proof",
+                "fire_blood",
+                "weightless",
+                "fast",
+                "energized",
+                "light_lamp",
+                "immortal",
+             }
+            },
+            {"God Of Knowledge", new List<string>()
+             {
+                "blessed",
+                "genius",
+                "fire_proof",
+                "fire_blood",
+                "freeze_proof",
+                "tough",
+                "energized",
+                "immortal",
+                "strong_minded",
+                "wise",
+             }
+            },
+            {"God Of the Night", new List<string>()
+             {
+                "blessed",
+                "bloodlust",
+                "agile",
+                "cold_aura",
+                "freeze_proof",
+                "nightchild",
+                "energized",
+                "immortal",
+                "strong_minded",
+                "moonchild",
+             }
+            },
+            {"God Of the Stars", new List<string>()
+             {
+                "blessed",
+                "bloodlust",
+                "weightless",
+                "shiny",
+                "freeze_proof",
+                "nightchild",
+                "energized",
+                "immortal",
+                "strong_minded",
+                "moonchild",
+             }
+            },
+            {"God Of the Earth", new List<string>()
+             {
+                "blessed",
+                "giant",
+                "strong",
+                "fat",
+                "freeze_proof",
+                "tough",
+                "immortal",
+             }
+            },
+            {"God Of Chaos", new List<string>()
+             {
+                "blessed",
+                "giant",
+                "strong",
+                "fat",
+                "freeze_proof",
+                "tough",
+                "immortal",
+             }
+            },
+            {"God Of War", new List<string>()
+             {
+                "blessed",
+                "strong",
+                "ambitious",
+                "freeze_proof",
+                "pyromaniac",
+                "veteran",
+                "immortal",
+                "tough"
+             }
+            },
+            {"God Of The Lich", new List<string>()
+             {
+                "blessed",
+                "strong",
+                "acid_touch",
+                "acid_blood",
+                "freeze_proof",
+                "acid_proof",
+                "regeneration",
+                "immortal",
+                "tough",
+             }
+            },
+            {"LesserGod", new List<string>()
+             {
+                "blessed",
+                "fire_proof",
+                "freeze_proof",
+                "tough",
+             }
+            },
+            {"God Killer", new List<string>()
+             {
+                "blessed",
+                "fire_proof",
+                "freeze_proof",
+                "tough",
+             }
+            },
+            {"God Hunter", new List<string>()
+             {
+                "blessed",
+                "fire_proof",
+                "freeze_proof",
+                "tough",
+             }
+            },
+
+        };
+        
         static PowerLibrary pb;
         public static void init()
         {
@@ -194,10 +307,10 @@ namespace GodsAndPantheons
             /* Nuh uh*/
 
             ActorTrait chaosGod = new ActorTrait();
-            chaosGod.id = "God_Of_Chaos";
+            chaosGod.id = "God Of Chaos";
             chaosGod.path_icon = "ui/icons/chaosGod";
             chaosGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
-            chaosGod.action_special_effect = (WorldAction)Delegate.Combine(chaosGod.action_special_effect, new WorldAction(warGodAutoTrait));
+            chaosGod.action_special_effect = (WorldAction)Delegate.Combine(chaosGod.action_special_effect, new WorldAction(AutoTrait));
             chaosGod.action_attack_target = new AttackAction(ActionLibrary.addBurningEffectOnTarget);
             chaosGod.action_attack_target = new AttackAction(chaosGodAttack);
             //chaosGod.action_death = new WorldAction(ActionLibrary.turnIntoDemon);
@@ -209,7 +322,7 @@ namespace GodsAndPantheons
             sunGod.id = "God Of light";
             sunGod.path_icon = "ui/icons/lightGod";
             sunGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
-            sunGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(sunGodAutoTrait));
+            sunGod.action_special_effect = (WorldAction)Delegate.Combine(sunGod.action_special_effect, new WorldAction(AutoTrait));
             sunGod.action_attack_target = new AttackAction(ActionLibrary.addBurningEffectOnTarget);
             sunGod.action_attack_target = new AttackAction(ActionLibrary.addSlowEffectOnTarget);
             sunGod.action_attack_target = new AttackAction(sunGodAttack);
@@ -226,7 +339,7 @@ namespace GodsAndPantheons
             darkGod.action_death = (WorldAction)Delegate.Combine(darkGod.action_death, new WorldAction(darkGodsDeath));
             darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(BringMinions));
             darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(darkGodEraStatus));
-            darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(darkGodAutoTrait));
+            darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(AutoTrait));
             darkGod.group_id = "GodTraits";
             AddTrait(darkGod, "The God Of darkness, thievery and the shadows of which is his domain ");
 
@@ -237,7 +350,7 @@ namespace GodsAndPantheons
             knowledgeGod.action_death = (WorldAction)Delegate.Combine(knowledgeGod.action_death, new WorldAction(genericGodsDeath));
             knowledgeGod.action_attack_target = new AttackAction(knowledgeGodAttack);
             knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgeGodEraStatus));
-            knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgeGodAutoTrait));
+            knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(AutoTrait));
             knowledgeGod.group_id = "GodTraits";
             AddTrait(knowledgeGod, "The God Of Knowledge, His mind excedes Time, he knows all");
 
@@ -251,7 +364,7 @@ namespace GodsAndPantheons
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodEraStatus));
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(BringMinions));
             starsGod.group_id = "GodTraits";
-            starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(starsGodAutoTrait));
+            starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(AutoTrait));
             AddTrait(starsGod, "Now Cometh the Age of stars, A Thousand Year Voyage under the wisdom of the moon");
 
             ActorTrait earthGod = new ActorTrait();
@@ -262,14 +375,14 @@ namespace GodsAndPantheons
             earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(BringMinions));
             earthGod.action_special_effect = new WorldAction(earthGodBuildWorld);
             earthGod.action_special_effect += new WorldAction(GodWeaponManager.godGiveWeapon);
-            earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(earthGodAutoTrait));
+            earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(AutoTrait));
             AddTrait(earthGod, "God of the Natural Enviornment, The titan of creation");
 
             ActorTrait subGod = new ActorTrait();
             subGod.id = "LesserGod";
             subGod.path_icon = "ui/icons/subGod";
             subGod.group_id = "GodTraits";
-            subGod.action_special_effect = (WorldAction)Delegate.Combine(subGod.action_special_effect, new WorldAction(godKillerAutoTrait));
+            subGod.action_special_effect = (WorldAction)Delegate.Combine(subGod.action_special_effect, new WorldAction(AutoTrait));
             AddTrait(subGod, "These Are the gods that have smaller importance");
 
             ActorTrait warGod = new ActorTrait();
@@ -277,7 +390,7 @@ namespace GodsAndPantheons
             warGod.path_icon = "ui/icons/warGod";
             warGod.action_attack_target = new AttackAction(warGodAttack);
             warGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
-            warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodAutoTrait));
+            warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(AutoTrait));
             warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodSeeds));
             warGod.group_id = "GodTraits";
             AddTrait(warGod, "God of Conflict, Bravery, Ambition, Many spheres of domain lie with him");
@@ -290,14 +403,14 @@ namespace GodsAndPantheons
             lichGod.action_attack_target = new AttackAction(lichGodAttack);
             lichGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(BringMinions));
-            lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(lichGodAutoTrait));
+            lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(AutoTrait));
             lichGod.group_id = "GodTraits";
             AddTrait(lichGod, "God of Dead Souls, Corruption, and Rot, Many spheres of domain lie with him");
 
             ActorTrait godKiller = new ActorTrait();
             godKiller.id = "God Killer";
             godKiller.path_icon = "ui/icons/godKiller";
-            godKiller.action_special_effect = (WorldAction)Delegate.Combine(godKiller.action_special_effect, new WorldAction(godKillerAutoTrait));
+            godKiller.action_special_effect = (WorldAction)Delegate.Combine(godKiller.action_special_effect, new WorldAction(AutoTrait));
             godKiller.group_id = "GodTraits";
             AddTrait(godKiller, "To Kill a God is nearly to become one");
 
@@ -307,7 +420,7 @@ namespace GodsAndPantheons
             godHunter.path_icon = "ui/icons/godKiller";
             godHunter.action_special_effect = new WorldAction(SuperRegeneration);
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
-            godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(godKillerAutoTrait));
+            godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(AutoTrait));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(ChaseGod));
             godHunter.group_id = "GodTraits";
             AddTrait(godHunter, "He will stop at NOTHING to kill a god");
@@ -317,7 +430,7 @@ namespace GodsAndPantheons
             godofgods.id = "God Of gods";
             godofgods.path_icon = "ui/icons/GodofGods";
             godofgods.action_death = new WorldAction(ActionLibrary.deathNuke);
-            godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsAutoTrait));
+            godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(AutoTrait));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(BringMinions));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsEraStatus));
             godofgods.base_stats[S.scale] = 0.075f;
@@ -383,17 +496,7 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        public static void AddTrait(ActorTrait Trait, string disc)
-        {
-            foreach(KeyValuePair<string, float> kvp in TraitStats[Trait.id])
-            {
-                Trait.base_stats[kvp.Key] = kvp.Value;
-            }
-            Trait.inherit = -99999999999999;
-            AssetManager.traits.add(Trait);
-            PlayerConfig.unlockTrait(Trait.id);
-            addTraitToLocalizedLibrary(Trait.id, disc);
-        }
+        
         public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(0.1f))
@@ -470,29 +573,6 @@ namespace GodsAndPantheons
             }
             return false;
         }
-        public static bool GodOfGodsAutoTrait(BaseSimObject pTarget, WorldTile pTile)
-        {
-            if (pTarget.a != null)
-            {
-                if (pTarget.a.hasTrait("God Of gods"))
-                {
-                    pTarget.a.addTrait("blessed");
-                    pTarget.a.addTrait("poison_immune");
-                    pTarget.a.addTrait("fire_proof");
-                    pTarget.a.addTrait("acid_Proof");
-                    pTarget.a.addTrait("freeze_proof");
-                    pTarget.a.addTrait("shiny");
-                    pTarget.a.addTrait("energized");
-                    pTarget.a.addTrait("immortal");
-                    pTarget.a.addTrait("nightchild");
-                    pTarget.a.addTrait("moonchild");
-                    pTarget.a.addTrait("regeneration");
-                }
-
-
-            }
-            return true;
-        }
 
         public static bool chaosGodsTrick(BaseSimObject pSelf, WorldTile pTile = null)
         {
@@ -500,7 +580,7 @@ namespace GodsAndPantheons
 
             if (Main.savedSettings.deathera)
                 World.world.eraManager.setEra(S.age_chaos, true);
-            pActor.removeTrait("God_Of_Chaos");
+            pActor.removeTrait("God Of Chaos");
 
 
             return true;
@@ -930,194 +1010,19 @@ namespace GodsAndPantheons
             }
             return true;
         }
-
-
-        public static bool sunGodAutoTrait(BaseSimObject pTarget, WorldTile pTile)
+        public static bool AutoTrait(BaseSimObject pTarget, WorldTile pTile)
         {
-
-            if (pTarget.a != null)
-            {
-                if (pTarget.a.hasTrait("God Of light"))
+            if (pTarget.isActor()) {
+                foreach (string trait in AutoTraits.Keys)
                 {
-                    pTarget.a.addTrait("blessed");
-                    pTarget.a.addTrait("shiny");
-                    pTarget.a.addTrait("agile");
-                    pTarget.a.addTrait("fire_proof");
-                    pTarget.a.addTrait("fire_blood");
-                    pTarget.a.addTrait("weightless");
-                    pTarget.a.addTrait("fast");
-                    pTarget.a.addTrait("energized");
-                    pTarget.a.addTrait("light_lamp");
-                    pTarget.a.addTrait("immortal");
-
+                    if (pTarget.a.hasTrait(trait))
+                    {
+                        AddAutoTraits(pTarget.a.data, trait);
+                    }
                 }
-
-
             }
             return true;
         }
-
-
-
-
-
-        public static bool knowledgeGodAutoTrait(BaseSimObject pTarget, WorldTile pTile)
-        {
-            if (pTarget.a != null)
-            {
-                if (pTarget.a.hasTrait("God Of Knowledge"))
-                {
-                    pTarget.a.addTrait("blessed");
-                    pTarget.a.addTrait("genius");
-                    pTarget.a.addTrait("freeze_proof");
-                    pTarget.a.addTrait("fire_proof");
-                    pTarget.a.addTrait("fire_blood");
-                    pTarget.a.addTrait("tough");
-                    pTarget.a.addTrait("strong_minded");
-                    pTarget.a.addTrait("energized");
-                    pTarget.a.addTrait("immortal");
-                    pTarget.a.addTrait("wise");
-
-
-                }
-
-
-            }
-            return true;
-        }
-
-        public static bool darkGodAutoTrait(BaseSimObject pTarget, WorldTile pTile)
-        {
-            if (pTarget.a != null)
-            {
-                if (pTarget.a.hasTrait("God Of the Night"))
-                {
-                    pTarget.a.addTrait("blessed");
-                    pTarget.a.addTrait("bloodlust");
-                    pTarget.a.addTrait("agile");
-                    pTarget.a.addTrait("frost_proof");
-                    pTarget.a.addTrait("weightless");
-                    pTarget.a.addTrait("cold_aura");
-                    pTarget.a.addTrait("energized");
-                    pTarget.a.addTrait("immortal");
-                    pTarget.a.addTrait("nightchild");
-                    pTarget.a.addTrait("moonchild");
-
-                }
-
-
-            }
-            return true;
-        }
-
-        public static bool starsGodAutoTrait(BaseSimObject pTarget, WorldTile pTile)
-        {
-            if (pTarget.a != null)
-            {
-                if (pTarget.a.hasTrait("God Of the Stars"))
-                {
-                    pTarget.a.addTrait("blessed");
-                    pTarget.a.addTrait("agile");
-                    pTarget.a.addTrait("frost_proof");
-                    pTarget.a.addTrait("weightless");
-                    pTarget.a.addTrait("shiny");
-                    pTarget.a.addTrait("energized");
-                    pTarget.a.addTrait("immortal");
-                    pTarget.a.addTrait("nightchild");
-                    pTarget.a.addTrait("moonchild");
-
-                }
-
-
-            }
-            return true;
-        }
-
-        public static bool earthGodAutoTrait(BaseSimObject pTarget, WorldTile pTile)
-        {
-
-            if (pTarget.a != null)
-            {
-                if (pTarget.a.hasTrait("God Of the Earth"))
-                {
-                    pTarget.a.addTrait("blessed");
-                    pTarget.a.addTrait("giant");
-                    pTarget.a.addTrait("strong");
-                    pTarget.a.addTrait("frost_proof");
-                    pTarget.a.addTrait("fat");
-                    pTarget.a.addTrait("tough");
-                    pTarget.a.addTrait("immortal");
-
-                }
-
-
-            }
-            return true;
-        }
-
-        public static bool warGodAutoTrait(BaseSimObject pTarget, WorldTile pTile)
-        {
-
-            if (pTarget.a != null)
-            {
-               // if (pTarget.a.hasTrait("God Of War"))
-                {
-                    pTarget.a.addTrait("blessed");
-                    pTarget.a.addTrait("strong");
-                    pTarget.a.addTrait("frost_proof");
-                    pTarget.a.addTrait("ambitious");
-                    pTarget.a.addTrait("pyromaniac");
-                    pTarget.a.addTrait("veteran");
-                    pTarget.a.addTrait("tough");
-                    pTarget.a.addTrait("immortal");
-
-                }
-
-
-            }
-            return true;
-        }
-
-        public static bool lichGodAutoTrait(BaseSimObject pTarget, WorldTile pTile)
-        {
-
-            if (pTarget.a != null)
-            {
-                if (pTarget.a.hasTrait("God Of The Lich"))
-                {
-                    pTarget.a.addTrait("blessed");
-                    pTarget.a.addTrait("strong");
-                    pTarget.a.addTrait("frost_proof");
-                    pTarget.a.addTrait("acid_touch");
-                    pTarget.a.addTrait("acid_blood");
-                    pTarget.a.addTrait("acid_proof");
-                    pTarget.a.addTrait("regeneration");
-                    pTarget.a.addTrait("tough");
-                    pTarget.a.addTrait("immortal");
-
-                }
-
-
-            }
-            return true;
-        }
-
-        public static bool godKillerAutoTrait(BaseSimObject pTarget, WorldTile pTile)
-        {
-
-            if (pTarget.a != null)
-            {
-                pTarget.a.addTrait("blessed");
-                pTarget.a.addTrait("frost_proof");
-                pTarget.a.addTrait("fire_proof");
-                pTarget.a.addTrait("tough");
-
-
-            }
-            return true;
-        }
-
-
         private static bool sunGodEraStatus(BaseSimObject pSelf, WorldTile pTile)
         {
             if (pSelf.a != null)

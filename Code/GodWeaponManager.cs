@@ -87,7 +87,7 @@ public static class GodWeaponManager
 
             }
 
-            if (pTarget.a.hasTrait("God_Of_Chaos"))
+            if (pTarget.a.hasTrait("God Of Chaos"))
             {
                 ItemData maceOfDestructionD = new ItemData();
                 maceOfDestructionD.id = "MaceOfDestruction";

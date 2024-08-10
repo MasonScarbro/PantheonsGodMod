@@ -108,9 +108,9 @@ namespace GodsAndPantheons
             savedSettings = loadedData;
             return true;
         }
-        public static void modifyGodOption(string ID, string key, string value, bool active)
+        public static void modifyGodOption(string ID, string key, bool active, string? value = null)
         {
-            savedSettings.Chances[ID][key] = new InputOption { active = active, value = value };
+            savedSettings.Chances[ID][key] = new InputOption { active = active, value = value ?? savedSettings.Chances[ID][key].value};
             saveSettings();
         }
     }

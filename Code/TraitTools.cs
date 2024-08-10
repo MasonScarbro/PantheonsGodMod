@@ -24,10 +24,42 @@ namespace GodsAndPantheons
             }
             return summoned;
         }
+        public static void AddTrait(ActorTrait Trait, string disc)
+        {
+            foreach (KeyValuePair<string, float> kvp in TraitStats[Trait.id])
+            {
+                Trait.base_stats[kvp.Key] = kvp.Value;
+            }
+            Trait.inherit = -99999999999999;
+            AssetManager.traits.add(Trait);
+            PlayerConfig.unlockTrait(Trait.id);
+            addTraitToLocalizedLibrary(Trait.id, disc);
+        }
         public static void CorruptSummonedOne(Actor SummonedOne)
         {
             SummonedOne.data.setName("Corrupted One");
             SummonedOne.data.removeString("Master");
+        }
+        public static void AddAutoTraits(ActorData a, string trait, bool mustbeinherited = false)
+        {
+            foreach (string autotrait in AutoTraits[trait])
+            {
+                if (Toolbox.randomChance(GetChance(TraitToWindow(trait), TraitToInherit(trait)) / 100) || !mustbeinherited)
+                {
+                    a.addTrait(autotrait);
+                }
+            }
+        }
+        public static bool AutoTrait(ActorData pTarget, List<string> traits, bool mustbeinherited = false)
+        {
+             foreach (string trait in AutoTraits.Keys)
+             {
+               if (traits.Contains(trait))
+               {
+                 AddAutoTraits(pTarget, trait, mustbeinherited);
+               }
+             }
+            return true;
         }
         //summon ability
         public static void Summon(string creature, int times, BaseSimObject pSelf, WorldTile Ptile, int lifespan = 31)
@@ -74,7 +106,7 @@ namespace GodsAndPantheons
             || a.Equals("God Of The Stars")
             || a.Equals("God Of Knowledge")
             || a.Equals("God Of the Night")
-            || a.Equals("God_Of_Chaos")
+            || a.Equals("God Of Chaos")
             || a.Equals("God Of War")
             || a.Equals("God Of the Earth")
             || a.Equals("God Of light")
@@ -155,6 +187,117 @@ namespace GodsAndPantheons
                 }
             }
             return false;
+        }
+        public static float GetChance(string ID, string Chance) => Main.savedSettings.Chances.ContainsKey(ID) ? Main.savedSettings.Chances[ID].ContainsKey(Chance) ? Main.savedSettings.Chances[ID][Chance].active ? float.Parse(Main.savedSettings.Chances[ID][Chance].value) : 0 : 0 : 0;
+        public static string TraitToWindow(string Trait)
+        {
+            switch (Trait)
+            {
+                case "God Of Chaos": return "ChaosGodWindow";
+                case "God Of light": return "SunGodWindow";
+                case "God Of the Night": return "DarkGodWindow";
+                case "God Of Knowledge": return "KnowledgeGodWindow";
+                case "God Of the Stars": return "MoonGodWindow";
+                case "God Of the Earth": return "EarthGodWindow";
+                case "God Of War": return "WarGodWindow";
+                case "God Of The Lich": return "LichGodWindow";
+                case "God Of gods": return "GodOfGodsWindow";
+                default: return null;
+            }
+        }
+        //no chance can have the same name even if in different windows
+        public static string TraitToInherit(string Trait)
+        {
+            switch (Trait)
+            {
+                case "God Of Chaos": return "iNHERIT%";
+                case "God Of light": return "INHERit%";
+                case "God Of the Night": return "INHErit%";
+                case "God Of Knowledge": return "inherit%";
+                case "God Of the Stars": return "INHerit%";
+                case "God Of the Earth": return "INHERIT%";
+                case "God Of War": return "INHERIt%";
+                case "God Of The Lich": return "Inherit%";
+                case "God Of gods": return "INherit%";
+                default: return null;
+            }
+        }
+        //kill me
+        public static List<KeyValuePair<string, float>> GetDemiStats(ActorData pData)
+        {
+            List<KeyValuePair<string, float>> stats = new List<KeyValuePair<string, float>>();
+            pData.get("Demi" + S.speed, out float speed);
+            pData.get("Demi" + S.health, out float health);
+            pData.get("Demi" + S.critical_chance, out float crit);
+            pData.get("Demi" + S.damage, out float damage);
+            pData.get("Demi" + S.armor, out float armor);
+            pData.get("Demi" + S.attack_speed, out float attackSpeed);
+            pData.get("Demi" + S.accuracy, out float accuracy);
+            pData.get("Demi" + S.range, out float range);
+            pData.get("Demi" + S.scale, out float scale);
+            pData.get("Demi" + S.intelligence, out float intell);
+            pData.get("Demi" + S.knockback_reduction, out float knockback_reduction);
+            pData.get("Demi" + S.warfare, out float warfare);
+            stats.Add(new KeyValuePair<string, float>(S.speed, speed));
+            stats.Add(new KeyValuePair<string, float>(S.critical_chance, crit));
+            stats.Add(new KeyValuePair<string, float>(S.health, health));
+            stats.Add(new KeyValuePair<string, float>(S.damage, damage));
+            stats.Add(new KeyValuePair<string, float>(S.armor, armor));
+            stats.Add(new KeyValuePair<string, float>(S.attack_speed, attackSpeed));
+            stats.Add(new KeyValuePair<string, float>(S.accuracy, accuracy));
+            stats.Add(new KeyValuePair<string, float>(S.range, range));
+            stats.Add(new KeyValuePair<string, float>(S.scale, scale));
+            stats.Add(new KeyValuePair<string, float>(S.intelligence, intell));
+            stats.Add(new KeyValuePair<string, float>(S.knockback_reduction, knockback_reduction));
+            stats.Add(new KeyValuePair<string, float>(S.warfare, warfare));
+            return stats;
+        }
+        public static void inheritgodtraits(List<string> godtraits, ref ActorData God)
+        {
+            foreach (string trait in godtraits)
+            {
+                string window = TraitToWindow(trait);
+                if (window != null)
+                {
+                    if (Toolbox.randomChance(GetChance(window, TraitToInherit(trait)) / 100))
+                    {
+                        God.addTrait(trait);
+                    }
+                }
+            }
+        }
+        public static void MakeDemiGod(List<string> godtraits, ref ActorData DemiGod)
+        {
+            DemiGod.addTrait("Demi God");
+            foreach (string trait in godtraits)
+            {
+                DemiGod.set("Demi" + trait, true);
+                string window = TraitToWindow(trait);
+                if (window != null)
+                {
+                    foreach (KeyValuePair<string, float> kvp in Traits.TraitStats[trait])
+                    {
+                        if (Toolbox.randomChance(GetChance(window, TraitToInherit(trait)) / 75))
+                        {
+                            DemiGod.get("Demi" + kvp.Key, out float value);
+                            DemiGod.set("Demi" + kvp.Key, (kvp.Value / 2) + Random.Range(-(kvp.Value / 2.5f), kvp.Value / 2.5f) + value);
+                        }
+                    }
+                }
+            }
+        }
+        public static List<string> getinheritedgodtraits(ActorData pData)
+        {
+            List<string> traits = new List<string>();
+            foreach (string key in Traits.TraitStats.Keys)
+            {
+                pData.get("Demi" + key, out bool value);
+                if (value)
+                {
+                    traits.Add(key);
+                }
+            }
+            return traits;
         }
     }
 }
