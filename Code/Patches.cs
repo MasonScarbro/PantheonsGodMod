@@ -141,7 +141,7 @@ namespace GodsAndPantheons
     {
         static void Postfix(ActorData __instance, List<string> pTraits)
         {
-            if (!InheritGodTraits.HavingChild && Traits.GetGodTraits(pTraits, true).Count > 0) { }
+            if (!InheritGodTraits.HavingChild && Traits.GetGodTraits(pTraits, true).Count > 0)
             {
                 InheritGodTraits.Child = __instance;
                 InheritGodTraits.HavingChild = true;
