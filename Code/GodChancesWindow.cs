@@ -56,7 +56,7 @@ namespace GodsAndPantheons
                     input.inputField.characterValidation = InputField.CharacterValidation.Integer;
                     input.inputField.onValueChanged.AddListener(delegate {
                         string pValue = NewUI.checkStatInput(input);
-                        Main.modifyGodOption(ID,kv.Key, pValue, PowerButtons.GetToggleValue($"{kv.Key}Button"));
+                        Main.modifyGodOption(ID,kv.Key, PowerButtons.GetToggleValue($"{kv.Key}Button"), pValue);
                         input.setText(pValue);
                     });
 
@@ -68,11 +68,7 @@ namespace GodsAndPantheons
                         new Vector2(200, 0),
                         ButtonType.Toggle,
                         input.transform.parent.transform,
-                        delegate {
-                            string pValue = NewUI.checkStatInput(input);
-                            Main.modifyGodOption(ID,kv.Key, pValue, PowerButtons.GetToggleValue($"{kv.Key}Button"));
-                            input.setText(pValue);
-                        }
+                        delegate { Main.modifyGodOption(ID, kv.Key, PowerButtons.GetToggleValue($"{kv.Key}Button")); }
                     );
                     if (kv.Value.active)
                     {
