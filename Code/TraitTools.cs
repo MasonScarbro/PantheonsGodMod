@@ -44,7 +44,7 @@ namespace GodsAndPantheons
         {
             foreach (string autotrait in AutoTraits[trait])
             {
-                if (Toolbox.randomChance(GetChance(TraitToWindow(trait), "inherit%") / 100) || !mustbeinherited)
+                if (Toolbox.randomChance(GetChance(TraitToWindow(trait), trait+"inherit%") / 100) || !mustbeinherited)
                 {
                     a.addTrait(autotrait);
                 }
@@ -240,7 +240,7 @@ namespace GodsAndPantheons
             foreach (string trait in godtraits)
             {
                 string window = TraitToWindow(trait);
-                if (Toolbox.randomChance(GetChance(window, "inherit%", 50) / 100))
+                if (Toolbox.randomChance(GetChance(window, trait+"inherit%", 50) / 100))
                 {
                   God.addTrait(trait);
                 }
@@ -255,7 +255,7 @@ namespace GodsAndPantheons
                 string window = TraitToWindow(trait);
                 foreach (KeyValuePair<string, float> kvp in TraitStats[trait])
                 {
-                  if (Toolbox.randomChance(GetChance(window, "inherit%", 50) / 75))
+                  if (Toolbox.randomChance(GetChance(window, trait + "inherit%", 50) / 75))
                   {
                     DemiGod.get("Demi" + kvp.Key, out float value);
                     DemiGod.set("Demi" + kvp.Key, (kvp.Value / 2) + Random.Range(-(kvp.Value / 2.5f), kvp.Value / 2.5f) + value);

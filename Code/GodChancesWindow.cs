@@ -46,7 +46,7 @@ namespace GodsAndPantheons
                 {
                     NameInput input = NewUI.createInputOption(
                         ID,
-                        $"{kv.Key}_setting_"+ID,
+                        $"{kv.Key}_setting_",
                         kv.Key,
                         "Modify The Value Of This Setting",
                         0,
