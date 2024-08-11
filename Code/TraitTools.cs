@@ -205,7 +205,6 @@ namespace GodsAndPantheons
                 _ => "",
             };
         }
-        //no chance can have the same name even if in different windows
         //kill me
         public static List<KeyValuePair<string, float>> GetDemiStats(ActorData pData)
         {
