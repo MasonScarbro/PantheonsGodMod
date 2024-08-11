@@ -7,7 +7,7 @@ namespace GodsAndPantheons
 {
     class GodWindow : MonoBehaviour
     {
-        public GameObject contents;
+        private GameObject contents;
         string ID;
         public void init(string id, GameObject content)
         {
@@ -41,12 +41,12 @@ namespace GodsAndPantheons
             contents.GetComponent<RectTransform>().sizeDelta += new Vector2(0, (options.Count) * 250);
             foreach (KeyValuePair<string, InputOption> kv in options)
             {
-                
+
                 if (options.ContainsKey(kv.Key))
                 {
                     NameInput input = NewUI.createInputOption(
                         ID,
-                        $"{kv.Key}_setting_",
+                        $"{kv.Key}_setting",
                         kv.Key,
                         "Modify The Value Of This Setting",
                         0,
@@ -56,7 +56,7 @@ namespace GodsAndPantheons
                     input.inputField.characterValidation = InputField.CharacterValidation.Integer;
                     input.inputField.onValueChanged.AddListener(delegate {
                         string pValue = NewUI.checkStatInput(input);
-                        Main.modifyGodOption(ID,kv.Key, PowerButtons.GetToggleValue($"{kv.Key}Button"), pValue);
+                        Main.modifyGodOption(ID, kv.Key, PowerButtons.GetToggleValue($"{kv.Key}Button"), pValue);
                         input.setText(pValue);
                     });
 
