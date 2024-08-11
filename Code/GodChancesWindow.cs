@@ -7,7 +7,7 @@ namespace GodsAndPantheons
 {
     class GodWindow : MonoBehaviour
     {
-        private GameObject contents;
+        public GameObject contents;
         string ID;
         public void init(string id, GameObject content)
         {
@@ -46,7 +46,7 @@ namespace GodsAndPantheons
                 {
                     NameInput input = NewUI.createInputOption(
                         ID,
-                        $"{kv.Key}_setting",
+                        $"{kv.Key}_setting_"+ID,
                         kv.Key,
                         "Modify The Value Of This Setting",
                         0,
