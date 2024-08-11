@@ -44,7 +44,7 @@ namespace GodsAndPantheons
         {
             foreach (string autotrait in AutoTraits[trait])
             {
-                if (Toolbox.randomChance(GetChance(TraitToWindow(trait), TraitToInherit(trait)) / 100) || !mustbeinherited)
+                if (Toolbox.randomChance(GetChance(TraitToWindow(trait), trait+"inherit%") / 100) || !mustbeinherited)
                 {
                     a.addTrait(autotrait);
                 }
@@ -188,39 +188,22 @@ namespace GodsAndPantheons
             }
             return false;
         }
-        public static float GetChance(string ID, string Chance) => Main.savedSettings.Chances.ContainsKey(ID) ? Main.savedSettings.Chances[ID].ContainsKey(Chance) ? Main.savedSettings.Chances[ID][Chance].active ? float.Parse(Main.savedSettings.Chances[ID][Chance].value) : 0 : 0 : 0;
+        public static float GetChance(string ID, string Chance, float Default = 0) => Main.savedSettings.Chances.ContainsKey(ID) ? Main.savedSettings.Chances[ID].ContainsKey(Chance) ? Main.savedSettings.Chances[ID][Chance].active ? float.Parse(Main.savedSettings.Chances[ID][Chance].value) : 0 : Default : Default;
         public static string TraitToWindow(string Trait)
         {
-            switch (Trait)
+            return Trait switch
             {
-                case "God Of Chaos": return "ChaosGodWindow";
-                case "God Of light": return "SunGodWindow";
-                case "God Of the Night": return "DarkGodWindow";
-                case "God Of Knowledge": return "KnowledgeGodWindow";
-                case "God Of the Stars": return "MoonGodWindow";
-                case "God Of the Earth": return "EarthGodWindow";
-                case "God Of War": return "WarGodWindow";
-                case "God Of The Lich": return "LichGodWindow";
-                case "God Of gods": return "GodOfGodsWindow";
-                default: return null;
-            }
-        }
-        //no chance can have the same name even if in different windows
-        public static string TraitToInherit(string Trait)
-        {
-            switch (Trait)
-            {
-                case "God Of Chaos": return "iNHERIT%";
-                case "God Of light": return "INHERit%";
-                case "God Of the Night": return "INHErit%";
-                case "God Of Knowledge": return "inherit%";
-                case "God Of the Stars": return "INHerit%";
-                case "God Of the Earth": return "INHERIT%";
-                case "God Of War": return "INHERIt%";
-                case "God Of The Lich": return "Inherit%";
-                case "God Of gods": return "INherit%";
-                default: return null;
-            }
+                "God Of Chaos" => "ChaosGodWindow",
+                "God Of light" => "SunGodWindow",
+                "God Of the Night" => "DarkGodWindow",
+                "God Of Knowledge" => "KnowledgeGodWindow",
+                "God Of the Stars" => "MoonGodWindow",
+                "God Of the Earth" => "EarthGodWindow",
+                "God Of War" => "WarGodWindow",
+                "God Of The Lich" => "LichGodWindow",
+                "God Of gods" => "GodOfGodsWindow",
+                _ => "",
+            };
         }
         //kill me
         public static List<KeyValuePair<string, float>> GetDemiStats(ActorData pData)
@@ -257,12 +240,9 @@ namespace GodsAndPantheons
             foreach (string trait in godtraits)
             {
                 string window = TraitToWindow(trait);
-                if (window != null)
+                if (Toolbox.randomChance(GetChance(window, trait+"inherit%", 50) / 100))
                 {
-                    if (Toolbox.randomChance(GetChance(window, TraitToInherit(trait)) / 100))
-                    {
-                        God.addTrait(trait);
-                    }
+                  God.addTrait(trait);
                 }
             }
         }
@@ -273,23 +253,20 @@ namespace GodsAndPantheons
             {
                 DemiGod.set("Demi" + trait, true);
                 string window = TraitToWindow(trait);
-                if (window != null)
+                foreach (KeyValuePair<string, float> kvp in TraitStats[trait])
                 {
-                    foreach (KeyValuePair<string, float> kvp in Traits.TraitStats[trait])
-                    {
-                        if (Toolbox.randomChance(GetChance(window, TraitToInherit(trait)) / 75))
-                        {
-                            DemiGod.get("Demi" + kvp.Key, out float value);
-                            DemiGod.set("Demi" + kvp.Key, (kvp.Value / 2) + Random.Range(-(kvp.Value / 2.5f), kvp.Value / 2.5f) + value);
-                        }
-                    }
+                  if (Toolbox.randomChance(GetChance(window, trait + "inherit%", 50) / 75))
+                  {
+                    DemiGod.get("Demi" + kvp.Key, out float value);
+                    DemiGod.set("Demi" + kvp.Key, (kvp.Value / 2) + Random.Range(-(kvp.Value / 2.5f), kvp.Value / 2.5f) + value);
+                  }
                 }
             }
         }
         public static List<string> getinheritedgodtraits(ActorData pData)
         {
             List<string> traits = new List<string>();
-            foreach (string key in Traits.TraitStats.Keys)
+            foreach (string key in TraitStats.Keys)
             {
                 pData.get("Demi" + key, out bool value);
                 if (value)
