@@ -41,14 +41,13 @@ namespace GodsAndPantheons
                 }
             }
         }
-        public static bool AutoTrait(ActorData pTarget, List<string> traits, bool mustbeinherited = false)
+        public static bool AutoTrait(ActorData pTarget, List<string> traits, bool CanBeInherited = false)
         {
              foreach (string trait in AutoTraits.Keys)
              {
                if (traits.Contains(trait))
                {
-                    
-                    AddAutoTraits(pTarget, trait, mustbeinherited);
+                  AddAutoTraits(pTarget, trait, CanBeInherited);
                }
              }
             return true;
