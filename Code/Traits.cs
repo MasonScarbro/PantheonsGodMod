@@ -146,6 +146,9 @@ namespace GodsAndPantheons
              }
             },
             {"Demi God", new Dictionary<string, float>(){
+             }
+            },
+            {"Failed God", new Dictionary<string, float>(){
                 {S.damage, 10f},
                 {S.health, 10f},
                 {S.armor, 10f},
@@ -296,8 +299,7 @@ namespace GodsAndPantheons
                 "freeze_proof",
                 "tough",
              }
-            },
-
+            }
         };
         
         static PowerLibrary pb;
@@ -433,7 +435,6 @@ namespace GodsAndPantheons
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(AutoTrait));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(BringMinions));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsEraStatus));
-            godofgods.base_stats[S.scale] = 0.075f;
             godofgods.action_attack_target += new AttackAction(GodOfGodsAttack);
             godofgods.group_id = "GodTraits";
             AddTrait(godofgods, "The god who rules among all");
@@ -450,14 +451,17 @@ namespace GodsAndPantheons
             ActorTrait DemiGod = new ActorTrait();
             DemiGod.id = "Demi God";
             DemiGod.path_icon = "ui/icons/IconDemi";
-            DemiGod.base_stats[S.damage] += 10;
-            DemiGod.base_stats[S.health] += 10;
-            DemiGod.base_stats[S.armor] += 10;
-            DemiGod.base_stats[S.knockback_reduction] += 0.5f;
-            DemiGod.base_stats[S.max_age] += 15;
             DemiGod.group_id = TraitGroup.special;
             DemiGod.can_be_given = false;
             AddTrait(DemiGod, "The Demi God, offspring of Gods and Mortals");
+            pb = new PowerLibrary();
+
+            ActorTrait FailedGod = new ActorTrait();
+            FailedGod.id = "Failed God";
+            FailedGod.path_icon = "ui/icons/iconCurse";
+            FailedGod.group_id = TraitGroup.special;
+            FailedGod.can_be_given = false;
+            AddTrait(FailedGod, "his Genes were recessive");
             pb = new PowerLibrary();
         }
         //to make summoned ones only live for like 30 secounds

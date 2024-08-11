@@ -45,24 +45,22 @@ namespace GodsAndPantheons
             localizeStatus(darkGodEra.id, "Nights_Prevail", darkGodEra.description); // Localizes the status effect
             AssetManager.status.add(darkGodEra);
 
-	    StatusEffect GodOfGodsEra = new StatusEffect();
+	        StatusEffect GodOfGodsEra = new StatusEffect();
             GodOfGodsEra.id = "God_Of_All";
             GodOfGodsEra.duration = 7000f;
             GodOfGodsEra.base_stats[S.mod_armor] = 0.5f;
-	    GodOfGodsEra.base_stats[S.mod_damage] = 0.5f;
-	    GodOfGodsEra.base_stats[S.range] += 10;
+	        GodOfGodsEra.base_stats[S.mod_damage] = 0.5f;
+	        GodOfGodsEra.base_stats[S.range] += 10;
             GodOfGodsEra.base_stats[S.mod_health] = 0.5f;
             GodOfGodsEra.base_stats[S.speed] += 70;
             GodOfGodsEra.base_stats[S.knockback_reduction] += 0.5f;
             GodOfGodsEra.base_stats[S.mod_crit] = 0.5f;
             GodOfGodsEra.base_stats[S.attack_speed] += 40f;
-	    GodOfGodsEra.base_stats[S.scale] += 0.075f;
+	        GodOfGodsEra.base_stats[S.scale] += 0.075f;
             GodOfGodsEra.base_stats[S.dodge] += 40f;
-            GodOfGodsEra.path_icon = "ui/icons/IconDemi";
+            GodOfGodsEra.path_icon = "ui/icons/GodofGods";
             GodOfGodsEra.description = "Now i have become death, destroyer of worlds";
             GodOfGodsEra.name = "God Of All";
-	    GodOfGodsEra.action = new WorldAction(Traits.SuperRegeneration);
-	    GodOfGodsEra.action_interval = 2f;
             localizeStatus(GodOfGodsEra.id, "God_Of_All", GodOfGodsEra.description); // Localizes the status effect
             AssetManager.status.add(GodOfGodsEra);
 

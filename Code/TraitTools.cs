@@ -235,6 +235,11 @@ namespace GodsAndPantheons
                 {
                   God.addTrait(trait);
                 }
+                else
+                {
+                    God.addTrait("Failed God");
+                    God.set("Demi" + trait, true);
+                }
             }
         }
         public static void MakeDemiGod(List<string> godtraits, ref ActorData DemiGod)
