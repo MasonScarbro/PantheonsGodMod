@@ -23,7 +23,7 @@ namespace GodsAndPantheons
                 if (a.hasTrait("Summoned One"))
                 {
                     Actor Master = Traits.FindMaster(a);
-                    if (Master != a)
+                    if (Master != null)
                     {
                         if (!Master.canAttackTarget(pTarget))
                         {
@@ -39,7 +39,7 @@ namespace GodsAndPantheons
                 if (b.hasTrait("Summoned One"))
                 {
                     Actor Master = Traits.FindMaster(b);
-                    if (Master != b)
+                    if (Master != null)
                     {
                         if (!__instance.canAttackTarget(Master))
                             __result = false;
@@ -100,16 +100,13 @@ namespace GodsAndPantheons
                     {
                         Traits.inheritgodtraits(godtraits, ref Child);
                     }
+                    else if (demiparents > 0 && Toolbox.randomChance(0.5f))
+                    {
+                       Traits.inheritgodtraits(godtraits, ref Child);
+                    }
                     else
                     {
-                        if (demiparents > 0 && Toolbox.randomChance(0.5f))
-                        {
-                            Traits.inheritgodtraits(godtraits, ref Child);
-                        }
-                        else
-                        {
-                            Traits.MakeDemiGod(godtraits, ref Child);
-                        }
+                       Traits.MakeDemiGod(godtraits, ref Child);
                     }
                 }
                 else if (demiparents > 0)

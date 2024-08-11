@@ -445,7 +445,7 @@ namespace GodsAndPantheons
             SummonedOne.group_id = TraitGroup.special;
             SummonedOne.can_be_given = false;
             SummonedOne.action_special_effect = (WorldAction)Delegate.Combine(SummonedOne.action_special_effect, new WorldAction(SummonedOneEraStatus));
-            AddTrait(SummonedOne, "A creature summoned by God himself in order to aid them in battle, DO NOT MODIFY THE NAME OF THIS CREATURE!");
+            AddTrait(SummonedOne, "A creature summoned by God himself in order to aid them in battle");
 
             ActorTrait DemiGod = new ActorTrait();
             DemiGod.id = "Demi God";
@@ -713,14 +713,12 @@ namespace GodsAndPantheons
                 }
                 if (Toolbox.randomChance(GetChance("KnowledgeGodWindow", "SummonLightning%") / 100))
                 {
-                    EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f);    //spawn 1 meteorite
-                    pSelf.a.addStatusEffect("invincible", 5f);
+                    ActionLibrary.castLightning(null, pTarget, null); // Casts Lightning on the target
                 }
                 if (Toolbox.randomChance(GetChance("KnowledgeGodWindow", "SummonMeteor%") / 100))
                 {
-                    EffectsLibrary.spawn("fx_fireball_explosion", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
-                    MapAction.damageWorld(pSelf.currentTile, 2, AssetManager.terraform.get("grenade"), null);
-                    pSelf.a.addStatusEffect("invincible", 1f);
+                    EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f);    //spawn 1 meteorite
+                    pSelf.a.addStatusEffect("invincible", 5f);
                 }
                 if (Toolbox.randomChance(GetChance("KnowledgeGodWindow", "PagesOfKnowledge%") / 100))
                 {
@@ -1050,7 +1048,7 @@ namespace GodsAndPantheons
             {
                 bool InEra = false;
                 Actor master = FindMaster(pSelf.a);
-                if(master != pSelf.a)
+                if(master != null)
                 {
                     if (master.hasStatus("God_Of_All"))
                     {

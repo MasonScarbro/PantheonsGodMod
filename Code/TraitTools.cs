@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace GodsAndPantheons
@@ -7,22 +8,12 @@ namespace GodsAndPantheons
     //contains tools for working with the traits
     partial class Traits
     {
-        //returns the summoned if unable to find master
+        //returns null if unable to find master
         public static Actor FindMaster(Actor summoned)
         {
-            List<Actor> simpleList = World.world.units.getSimpleList();
-            foreach (Actor actor in simpleList)
-            {
-                if (summoned.getName().Equals($"Summoned by {actor.getName()}"))
-                {
-                    summoned.data.get("Master", out string master, "");
-                    if (actor.data.id.Equals(master))
-                    {
-                        return actor;
-                    }
-                }
-            }
-            return summoned;
+            summoned.data.get("Master", out string master, "");
+            Actor Mymaster = World.world.units.get(master);
+            return Mymaster != default(Actor) ? Mymaster : null;
         }
         public static void AddTrait(ActorTrait Trait, string disc)
         {
