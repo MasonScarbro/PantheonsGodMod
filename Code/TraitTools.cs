@@ -47,7 +47,7 @@ namespace GodsAndPantheons
              {
                if (traits.Contains(trait))
                {
-                    pTarget.set("Demi" + trait, true);
+                    
                     AddAutoTraits(pTarget, trait, mustbeinherited);
                }
              }

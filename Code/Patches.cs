@@ -5,6 +5,7 @@ using NeoModLoader.General;
 using ReflectionUtility;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 //Harmony Patches
 namespace GodsAndPantheons
 {
@@ -126,6 +127,10 @@ namespace GodsAndPantheons
                     }
                     else
                     {
+                        foreach(string t in godtraits)
+                        {
+                            Child.set("Demi" + t, true);
+                        }
                         Traits.AutoTrait(Child, godtraits, true);
                     }
                 }
