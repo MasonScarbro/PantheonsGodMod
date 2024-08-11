@@ -146,6 +146,9 @@ namespace GodsAndPantheons
              }
             },
             {"Demi God", new Dictionary<string, float>(){
+             }
+            },
+            {"Failed God", new Dictionary<string, float>(){
                 {S.damage, 10f},
                 {S.health, 10f},
                 {S.armor, 10f},
@@ -296,8 +299,7 @@ namespace GodsAndPantheons
                 "freeze_proof",
                 "tough",
              }
-            },
-
+            }
         };
         
         static PowerLibrary pb;
@@ -433,7 +435,6 @@ namespace GodsAndPantheons
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(AutoTrait));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(BringMinions));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(GodOfGodsEraStatus));
-            godofgods.base_stats[S.scale] = 0.075f;
             godofgods.action_attack_target += new AttackAction(GodOfGodsAttack);
             godofgods.group_id = "GodTraits";
             AddTrait(godofgods, "The god who rules among all");
@@ -445,19 +446,22 @@ namespace GodsAndPantheons
             SummonedOne.group_id = TraitGroup.special;
             SummonedOne.can_be_given = false;
             SummonedOne.action_special_effect = (WorldAction)Delegate.Combine(SummonedOne.action_special_effect, new WorldAction(SummonedOneEraStatus));
-            AddTrait(SummonedOne, "A creature summoned by God himself in order to aid them in battle, DO NOT MODIFY THE NAME OF THIS CREATURE!");
+            AddTrait(SummonedOne, "A creature summoned by God himself in order to aid them in battle");
 
             ActorTrait DemiGod = new ActorTrait();
             DemiGod.id = "Demi God";
             DemiGod.path_icon = "ui/icons/IconDemi";
-            DemiGod.base_stats[S.damage] += 10;
-            DemiGod.base_stats[S.health] += 10;
-            DemiGod.base_stats[S.armor] += 10;
-            DemiGod.base_stats[S.knockback_reduction] += 0.5f;
-            DemiGod.base_stats[S.max_age] += 15;
             DemiGod.group_id = TraitGroup.special;
             DemiGod.can_be_given = false;
             AddTrait(DemiGod, "The Demi God, offspring of Gods and Mortals");
+            pb = new PowerLibrary();
+
+            ActorTrait FailedGod = new ActorTrait();
+            FailedGod.id = "Failed God";
+            FailedGod.path_icon = "ui/icons/iconCurse";
+            FailedGod.group_id = TraitGroup.special;
+            FailedGod.can_be_given = false;
+            AddTrait(FailedGod, "his Genes were recessive");
             pb = new PowerLibrary();
         }
         //to make summoned ones only live for like 30 secounds
@@ -713,14 +717,12 @@ namespace GodsAndPantheons
                 }
                 if (Toolbox.randomChance(GetChance("KnowledgeGodWindow", "SummonLightning%") / 100))
                 {
-                    EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f);    //spawn 1 meteorite
-                    pSelf.a.addStatusEffect("invincible", 5f);
+                    ActionLibrary.castLightning(null, pTarget, null); // Casts Lightning on the target
                 }
                 if (Toolbox.randomChance(GetChance("KnowledgeGodWindow", "SummonMeteor%") / 100))
                 {
-                    EffectsLibrary.spawn("fx_fireball_explosion", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
-                    MapAction.damageWorld(pSelf.currentTile, 2, AssetManager.terraform.get("grenade"), null);
-                    pSelf.a.addStatusEffect("invincible", 1f);
+                    EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f);    //spawn 1 meteorite
+                    pSelf.a.addStatusEffect("invincible", 5f);
                 }
                 if (Toolbox.randomChance(GetChance("KnowledgeGodWindow", "PagesOfKnowledge%") / 100))
                 {
@@ -1050,7 +1052,7 @@ namespace GodsAndPantheons
             {
                 bool InEra = false;
                 Actor master = FindMaster(pSelf.a);
-                if(master != pSelf.a)
+                if(master != null)
                 {
                     if (master.hasStatus("God_Of_All"))
                     {
