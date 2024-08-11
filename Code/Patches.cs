@@ -84,7 +84,7 @@ namespace GodsAndPantheons
             {
                 int parents = pParent2 != null ? 2 : 1;
                 int godparents = Traits.IsGod(pParent1) || pParent1.data.hasTrait("Failed God") ? 1 : 0;
-                int demiparents = pParent1.data.hasTrait("Demi God") || pParent1.data.hasTrait("Failed God") ? 1 : 0;
+                int demiparents = pParent1.data.hasTrait("Demi God") ? 1 : 0;
                 List<string> godtraits = new List<string>(Traits.GetGodTraits(pParent1));
                 godtraits.AddRange(Traits.getinheritedgodtraits(pParent1.data));
                 if (parents == 2)
@@ -92,7 +92,7 @@ namespace GodsAndPantheons
                     godtraits.AddRange(Traits.GetGodTraits(pParent2));
                     godtraits.AddRange(Traits.getinheritedgodtraits(pParent2.data));
                     godparents += Traits.IsGod(pParent2) || pParent2.data.hasTrait("Failed God") ? 1 : 0;
-                    demiparents += pParent2.data.hasTrait("Demi God") || pParent2.data.hasTrait("Failed God") ? 1 : 0;
+                    demiparents += pParent2.data.hasTrait("Demi God") ? 1 : 0;
                 }
                 if (godparents > 0)
                 {
