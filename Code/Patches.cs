@@ -83,16 +83,18 @@ namespace GodsAndPantheons
             if (HavingChild)
             {
                 int parents = pParent2 != null ? 2 : 1;
-                int godparents = Traits.IsGod(pParent1) || pParent1.data.hasTrait("Failed God") ? 1 : 0;
-                int demiparents = pParent1.data.hasTrait("Demi God") ? 1 : 0;
+                int godparents = Traits.IsGod(pParent1) ? 1 : 0;
+                var parent1data = Traits.getinheritedgodtraits(pParent1.data);
+                int demiparents = parent1data.Count > 0 ? 1 : 0;
                 List<string> godtraits = new List<string>(Traits.GetGodTraits(pParent1));
-                godtraits.AddRange(Traits.getinheritedgodtraits(pParent1.data));
+                godtraits.AddRange(parent1data);
                 if (parents == 2)
                 {
                     godtraits.AddRange(Traits.GetGodTraits(pParent2));
-                    godtraits.AddRange(Traits.getinheritedgodtraits(pParent2.data));
+                    var parent2data = Traits.getinheritedgodtraits(pParent2.data);
+                    godtraits.AddRange(parent2data);
                     godparents += Traits.IsGod(pParent2) || pParent2.data.hasTrait("Failed God") ? 1 : 0;
-                    demiparents += pParent2.data.hasTrait("Demi God") ? 1 : 0;
+                    demiparents += parent2data.Count > 0 ? 1 : 0;
                 }
                 if (godparents > 0)
                 {
@@ -138,7 +140,7 @@ namespace GodsAndPantheons
     {
         static void Postfix(ActorData __instance, List<string> pTraits)
         {
-            if (!InheritGodTraits.HavingChild && (Traits.GetGodTraits(pTraits, true).Count > 0 || pTraits.Contains("Failed God")))
+            if (!InheritGodTraits.HavingChild && (Traits.GetGodTraits(pTraits, true).Count > 0 || Traits.getinheritedgodtraits(__instance).Count > 0))
             {
                 InheritGodTraits.Child = __instance;
                 InheritGodTraits.HavingChild = true;
