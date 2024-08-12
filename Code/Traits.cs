@@ -491,7 +491,7 @@ namespace GodsAndPantheons
             DemiGod.path_icon = "ui/icons/IconDemi";
             DemiGod.group_id = TraitGroup.special;
             DemiGod.can_be_given = false;
-            AddTrait(DemiGod, "The Demi God, offspring of Gods and Mortals");
+            AddTrait(DemiGod, "The Demi God, offspring of Gods and Mortals, the stat's of this trait are determined by the stats of his parent's");
             pb = new PowerLibrary();
 
             ActorTrait FailedGod = new ActorTrait();
