@@ -30,6 +30,7 @@ namespace GodsAndPantheons
         {
             SummonedOne.data.setName("Corrupted One");
             SummonedOne.data.removeString("Master");
+            SummonedOne.addTrait("madness");
         }
         public static void AddAutoTraits(ActorData a, string trait, bool mustbeinherited = false)
         {
@@ -63,7 +64,7 @@ namespace GodsAndPantheons
                 actor.data.set("Master", self.data.id);
                 actor.addTrait("Summoned One");
                 actor.addTrait("regeneration");
-                actor.addTrait("madness");
+                actor.setKingdom(self.kingdom);
                 actor.addTrait("fire_proof");
                 actor.addTrait("acid_proof");
                 actor.removeTrait("immortal");
@@ -94,7 +95,7 @@ namespace GodsAndPantheons
 
         public static bool IsGodTrait(string a)
              => a.Equals("God Of The Lich")
-            || a.Equals("God Of The Stars")
+            || a.Equals("God Of the Stars")
             || a.Equals("God Of Knowledge")
             || a.Equals("God Of the Night")
             || a.Equals("God Of Chaos")
@@ -132,6 +133,10 @@ namespace GodsAndPantheons
             List<Actor> Minions = GetMinions(b);
             foreach (Actor a in Minions)
             {
+                if(a.kingdom != b.kingdom)
+                {
+                    a.setKingdom(b.kingdom);
+                }
                 float pDist = Vector2.Distance(pTarget.currentPosition, a.currentPosition);
                 if (pDist > 50)
                 {
@@ -217,6 +222,7 @@ namespace GodsAndPantheons
             pData.get("Demi" + S.warfare, out float warfare);
             pData.get("Demi" + S.fertility, out float fertility);
             pData.get("Demi" + S.max_children, out float maxchildren);
+            pData.get("Demi" + S.max_age, out float maxage);
             stats.Add(new KeyValuePair<string, float>(S.speed, speed));
             stats.Add(new KeyValuePair<string, float>(S.critical_chance, crit));
             stats.Add(new KeyValuePair<string, float>(S.health, health));
@@ -231,6 +237,7 @@ namespace GodsAndPantheons
             stats.Add(new KeyValuePair<string, float>(S.warfare, warfare));
             stats.Add(new KeyValuePair<string, float>(S.fertility, fertility));
             stats.Add(new KeyValuePair<string, float>(S.max_children, maxchildren));
+            stats.Add(new KeyValuePair<string, float>(S.max_age, maxage));
             return stats;
         }
         public static void Inheritgodtraits(List<string> godtraits, ref ActorData God)

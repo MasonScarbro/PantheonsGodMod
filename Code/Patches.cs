@@ -8,46 +8,6 @@ using UnityEngine;
 //Harmony Patches
 namespace GodsAndPantheons
 {
-    [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
-    public class UpdateAttacking
-    {
-        static void Postfix(ref bool __result, BaseSimObject __instance, BaseSimObject pTarget)
-        {
-            if (__instance == pTarget)
-            {
-                __result = false;
-            }
-            if (__instance.isActor())
-            {
-                Actor a = __instance.a;
-                if (a.hasTrait("Summoned One"))
-                {
-                    Actor Master = Traits.FindMaster(a);
-                    if (Master != null)
-                    {
-                        if (!Master.canAttackTarget(pTarget))
-                        {
-                            __result = false;
-                            return;
-                        }
-                    }
-                }
-            }
-            if (pTarget.isActor())
-            {
-                Actor b = pTarget.a;
-                if (b.hasTrait("Summoned One"))
-                {
-                    Actor Master = Traits.FindMaster(b);
-                    if (Master != null)
-                    {
-                        if (!__instance.canAttackTarget(Master))
-                            __result = false;
-                    }
-                }
-            }
-        }
-    }
     [HarmonyPatch(typeof(ActorBase), "clearAttackTarget")]
     public class KEEPATTACKING
     {

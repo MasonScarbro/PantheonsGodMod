@@ -99,6 +99,7 @@ namespace GodsAndPantheons
                 {S.scale, 0.02f},
                 {S.max_children, 4},
                 {S.fertility, 0.5f},
+                {S.max_age, 30}
              }
             },
             {"God Of War", new Dictionary<string, float>(){
@@ -1046,14 +1047,20 @@ namespace GodsAndPantheons
         public static bool AutoTrait(BaseSimObject pTarget, WorldTile pTile)
         {
             if (pTarget.isActor()) {
-                foreach (string trait in AutoTraits.Keys)
+                pTarget.a.data.get("AutoTraited", out bool AutoTraited);
+                if (!AutoTraited)
                 {
-                    if (pTarget.a.hasTrait(trait))
+                    foreach (string trait in AutoTraits.Keys)
                     {
-                        AddAutoTraits(pTarget.a.data, trait);
+                        if (pTarget.a.hasTrait(trait))
+                        {
+                            AddAutoTraits(pTarget.a.data, trait);
+                        }
                     }
+                    pTarget.setStatsDirty();
+                    pTarget.a.restoreHealth(pTarget.a.getMaxHealth());
+                    pTarget.a.data.set("AutoTraited", true);
                 }
-                pTarget.setStatsDirty();
             }
             return true;
         }
