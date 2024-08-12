@@ -35,19 +35,19 @@ namespace GodsAndPantheons
         {
             foreach (string autotrait in AutoTraits[trait])
             {
-                if (Toolbox.randomChance(GetChance(TraitToWindow(trait), trait+"inherit%") / 100) || !mustbeinherited)
+                if (Toolbox.randomChance(GetEnhancedChance(trait, trait+"inherit%")) || !mustbeinherited)
                 {
                     a.addTrait(autotrait);
                 }
             }
         }
-        public static bool AutoTrait(ActorData pTarget, List<string> traits, bool CanBeInherited = false)
+        public static bool AutoTrait(ActorData pTarget, List<string> traits, bool MustBeInherited = false)
         {
-             foreach (string trait in AutoTraits.Keys)
+            foreach (string trait in AutoTraits.Keys)
              {
                if (traits.Contains(trait))
                {
-                  AddAutoTraits(pTarget, trait, CanBeInherited);
+                  AddAutoTraits(pTarget, trait, MustBeInherited);
                }
              }
             return true;
@@ -179,10 +179,13 @@ namespace GodsAndPantheons
             }
             return false;
         }
+        //returns the raw chance
         public static float GetChance(string ID, string Chance, float Default = 0) => Main.savedSettings.Chances.ContainsKey(ID) ? Main.savedSettings.Chances[ID].ContainsKey(Chance) ? Main.savedSettings.Chances[ID][Chance].active ? float.Parse(Main.savedSettings.Chances[ID][Chance].value) : 0 : Default : Default;
-        public static string TraitToWindow(string Trait)
-        {
-            return Trait switch
+        //returns 2 if the trait's era is one, 1 if it is not, Default if the trait is not found
+        public static float GetEraMultiplier(string trait, float Default = 1) => TraitEras.Keys.Contains(trait) ? World.world_era.id == TraitEras[trait].Key ? 2 : 1f : Default;
+        //returns the chance of the trait multiplied by its era multiplier devided by the devisor
+        public static float GetEnhancedChance(string trait, string chance, float DefaultChance = 0, float DefaultMult = 1, float devisor = 100) => GetChance(TraitToWindow(trait), chance, DefaultChance) * GetEraMultiplier(trait, DefaultMult) / devisor;
+        public static string TraitToWindow(string Trait) => Trait switch
             {
                 "God Of Chaos" => "ChaosGodWindow",
                 "God Of light" => "SunGodWindow",
@@ -195,7 +198,7 @@ namespace GodsAndPantheons
                 "God Of gods" => "GodOfGodsWindow",
                 _ => "",
             };
-        }
+
         //kill me
         public static List<KeyValuePair<string, float>> GetDemiStats(ActorData pData)
         {
@@ -212,6 +215,8 @@ namespace GodsAndPantheons
             pData.get("Demi" + S.intelligence, out float intell);
             pData.get("Demi" + S.knockback_reduction, out float knockback_reduction);
             pData.get("Demi" + S.warfare, out float warfare);
+            pData.get("Demi" + S.fertility, out float fertility);
+            pData.get("Demi" + S.max_children, out float maxchildren);
             stats.Add(new KeyValuePair<string, float>(S.speed, speed));
             stats.Add(new KeyValuePair<string, float>(S.critical_chance, crit));
             stats.Add(new KeyValuePair<string, float>(S.health, health));
@@ -224,14 +229,15 @@ namespace GodsAndPantheons
             stats.Add(new KeyValuePair<string, float>(S.intelligence, intell));
             stats.Add(new KeyValuePair<string, float>(S.knockback_reduction, knockback_reduction));
             stats.Add(new KeyValuePair<string, float>(S.warfare, warfare));
+            stats.Add(new KeyValuePair<string, float>(S.fertility, fertility));
+            stats.Add(new KeyValuePair<string, float>(S.max_children, maxchildren));
             return stats;
         }
-        public static void inheritgodtraits(List<string> godtraits, ref ActorData God)
+        public static void Inheritgodtraits(List<string> godtraits, ref ActorData God)
         {
             foreach (string trait in godtraits)
             {
-                string window = TraitToWindow(trait);
-                if (Toolbox.randomChance(GetChance(window, trait+"inherit%", 50) / 100))
+                if (Toolbox.randomChance(GetEnhancedChance(trait, trait+"inherit%", 50)))
                 {
                   God.addTrait(trait);
                 }
@@ -248,10 +254,9 @@ namespace GodsAndPantheons
             foreach (string trait in godtraits)
             {
                 DemiGod.set("Demi" + trait, true);
-                string window = TraitToWindow(trait);
                 foreach (KeyValuePair<string, float> kvp in TraitStats[trait])
                 {
-                  if (Toolbox.randomChance(GetChance(window, trait + "inherit%", 50) / 75))
+                  if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%", 50, 1, 75)))
                   {
                     DemiGod.get("Demi" + kvp.Key, out float value);
                     DemiGod.set("Demi" + kvp.Key, (kvp.Value / 2) + Random.Range(-(kvp.Value / 2.5f), kvp.Value / 2.5f) + value);
@@ -259,13 +264,13 @@ namespace GodsAndPantheons
                 }
             }
         }
-        public static List<string> getinheritedgodtraits(ActorData pData)
+        public static List<string> Getinheritedgodtraits(ActorData pData)
         {
             List<string> traits = new List<string>();
             foreach (string key in TraitStats.Keys)
             {
-                pData.get("Demi" + key, out bool value);
-                if (value)
+                pData.get("Demi" + key, out bool inherited);
+                if (inherited)
                 {
                     traits.Add(key);
                 }

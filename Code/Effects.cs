@@ -88,12 +88,11 @@ namespace GodsAndPantheons
             StatusEffect starsGodEra = new StatusEffect();
             starsGodEra.id = "Stars_Prevail";
             starsGodEra.duration = 7000f;
-            starsGodEra.base_stats[S.armor] += 50;
             starsGodEra.base_stats[S.health] += 500;
             starsGodEra.base_stats[S.speed] += 30;
             starsGodEra.base_stats[S.knockback_reduction] += 0.8f;
             starsGodEra.base_stats[S.knockback] += 1f;
-            starsGodEra.base_stats[S.armor] += 50f;
+            starsGodEra.base_stats[S.mod_armor] += 0.2f;
             starsGodEra.base_stats[S.attack_speed] += 80f;
             starsGodEra.path_icon = "ui/icons/starsGod";
             starsGodEra.description = "The Age Of Stars is Apon Us";
@@ -101,22 +100,74 @@ namespace GodsAndPantheons
             localizeStatus(starsGodEra.id, "Stars_Prevail", starsGodEra.description); // Localizes the status effect
             AssetManager.status.add(starsGodEra);
 
+            StatusEffect EarthGodEra = new StatusEffect();
+            EarthGodEra.id = "Earth Prevails";
+            EarthGodEra.duration = 7000f;
+            EarthGodEra.base_stats[S.health] += 500;
+            EarthGodEra.base_stats[S.speed] += 10;
+            EarthGodEra.base_stats[S.knockback_reduction] += 0.8f;
+            EarthGodEra.base_stats[S.knockback] += 1f;
+            EarthGodEra.base_stats[S.mod_armor] += 0.4f;
+            EarthGodEra.base_stats[S.scale] += 0.075f;
+            EarthGodEra.base_stats[S.attack_speed] += 80f;
+            EarthGodEra.path_icon = "ui/icons/earthGod";
+            EarthGodEra.description = "The World, shrowded in my home";
+            EarthGodEra.name = "Earth Prevails";
+            localizeStatus(EarthGodEra.id, "Earth Prevails", EarthGodEra.description); // Localizes the status effect
+            AssetManager.status.add(EarthGodEra);
+
             StatusEffect warGodEra = new StatusEffect();
-            warGodEra.id = "War_Prevail";
+            warGodEra.id = "Despair Prevails";
             warGodEra.duration = 7000f;
             warGodEra.base_stats[S.armor] += 50;
             warGodEra.base_stats[S.health] += 500;
             warGodEra.base_stats[S.speed] += 30;
-            warGodEra.base_stats[S.knockback_reduction] += 1f;
+            warGodEra.base_stats[S.knockback_reduction] += 2f;
             warGodEra.base_stats[S.knockback] += 2f;
             warGodEra.base_stats[S.armor] += 50f;
             warGodEra.base_stats[S.attack_speed] += 8f;
             warGodEra.base_stats[S.damage] += 30f;
             warGodEra.path_icon = "ui/icons/warGod";
-            warGodEra.description = "The Era Of war War Prevails";
-            warGodEra.name = "status_title_War_Prevail";
-            localizeStatus(warGodEra.id, "War_Prevail", warGodEra.description); // Localizes the status effect
+            warGodEra.description = "There is Power in despair for some";
+            warGodEra.name = "Despair Prevails";
+            localizeStatus(warGodEra.id, "Despair Prevails", warGodEra.description); // Localizes the status effect
             AssetManager.status.add(warGodEra);
+
+            StatusEffect lichgodera = new StatusEffect
+            {
+                id = "Sorrow Prevails",
+                duration = 7000f,
+            };
+            lichgodera.base_stats[S.armor] += 50;
+            lichgodera.base_stats[S.health] += 500;
+            lichgodera.base_stats[S.speed] += 30;
+            lichgodera.base_stats[S.knockback_reduction] += 2f;
+            lichgodera.base_stats[S.knockback] += 2f;
+            lichgodera.base_stats[S.armor] += 50f;
+            lichgodera.base_stats[S.attack_speed] += 8f;
+            lichgodera.base_stats[S.damage] += 30f;
+            lichgodera.path_icon = "ui/icons/lichGod";
+            lichgodera.description = "Sorrow is my Power";
+            lichgodera.name = "Sorrow Prevails";
+            localizeStatus(lichgodera.id, "Sorrow Prevails", lichgodera.description); // Localizes the status effect
+            AssetManager.status.add(lichgodera);
+
+            StatusEffect chaosgodsera = new StatusEffect();
+            chaosgodsera.duration = 7000f;
+            chaosgodsera.id = "Chaos Prevails";
+            chaosgodsera.path_icon = "ui/icons/chaosGod";
+            chaosgodsera.name = "Chaos Prevails";
+            chaosgodsera.description = "Chaos Sooths My Soul";
+            chaosgodsera.base_stats[S.armor] += 50;
+            chaosgodsera.base_stats[S.health] += 500;
+            chaosgodsera.base_stats[S.speed] += 30;
+            chaosgodsera.base_stats[S.knockback_reduction] += 2f;
+            chaosgodsera.base_stats[S.knockback] += 2f;
+            chaosgodsera.base_stats[S.armor] += 50f;
+            chaosgodsera.base_stats[S.attack_speed] += 8f;
+            chaosgodsera.base_stats[S.damage] += 30f;
+            localizeStatus(chaosgodsera.id, "Chaos Prevails", chaosgodsera.description); // Localizes the status effect
+            AssetManager.status.add(chaosgodsera);
 
             StatusEffect warGodsCry = new StatusEffect();
             warGodsCry.id = "WarGodsCry";
