@@ -8,6 +8,7 @@ using ReflectionUtility;
 using System.Collections.Generic;
 using HarmonyLib;
 using Amazon.Runtime.Internal.Transform;
+using static UnityEngine.GraphicsBuffer;
 
 
 namespace GodsAndPantheons
@@ -506,10 +507,8 @@ namespace GodsAndPantheons
         public static bool SummonedBeing(BaseSimObject pTarget, WorldTile pTile)
         {
             Actor a = (Actor)pTarget;
-            int life;
-            int lifespan;
-            a.data.get("lifespan", out lifespan);
-            a.data.get("life", out life);
+            a.data.get("lifespan", out int lifespan);
+            a.data.get("life", out int life);
             a.data.set("life", life + 1);
             if (life + 1 > lifespan)
             {
@@ -1047,20 +1046,18 @@ namespace GodsAndPantheons
         public static bool AutoTrait(BaseSimObject pTarget, WorldTile pTile)
         {
             if (pTarget.isActor()) {
-                pTarget.a.data.get("AutoTraited", out bool AutoTraited);
-                if (!AutoTraited)
-                {
-                    foreach (string trait in AutoTraits.Keys)
-                    {
-                        if (pTarget.a.hasTrait(trait))
-                        {
-                            AddAutoTraits(pTarget.a.data, trait);
-                        }
-                    }
-                    pTarget.setStatsDirty();
-                    pTarget.a.restoreHealth(pTarget.a.getMaxHealth());
-                    pTarget.a.data.set("AutoTraited", true);
-                }
+               bool autoTraited = false;
+               foreach (string trait in AutoTraits.Keys)
+               {
+                 if (pTarget.a.hasTrait(trait))
+                 {
+                     autoTraited = AddAutoTraits(pTarget.a, trait);
+                 }
+               }
+               if (autoTraited)
+               {
+                  pTarget.a.restoreHealth(pTarget.a.getMaxHealth());
+               }
             }
             return true;
         }
@@ -1074,7 +1071,11 @@ namespace GodsAndPantheons
                     {
                         if (World.world_era.id == TraitEras[era].Key)
                         {
-                            pSelf.addStatusEffect(TraitEras[era].Value);
+                            if (!pSelf.hasStatus(TraitEras[era].Value))
+                            {
+                                pSelf.addStatusEffect(TraitEras[era].Value);
+                                pSelf.a.restoreHealth(pSelf.a.getMaxHealth());
+                            }
                         }
                         else if (pSelf.hasStatus(TraitEras[era].Value))
                         {

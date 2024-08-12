@@ -42,6 +42,21 @@ namespace GodsAndPantheons
                 }
             }
         }
+        public static bool AddAutoTraits(Actor a, string trait, bool mustbeinherited = false)
+        {
+            bool returned = false;
+            foreach (string autotrait in AutoTraits[trait])
+            {
+                if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%")) || !mustbeinherited)
+                {
+                    if (a.addTrait(autotrait))
+                    {
+                        returned = true;
+                    }
+                }
+            }
+            return returned;
+        }
         public static bool AutoTrait(ActorData pTarget, List<string> traits, bool MustBeInherited = false)
         {
             foreach (string trait in AutoTraits.Keys)
