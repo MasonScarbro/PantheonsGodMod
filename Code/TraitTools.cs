@@ -268,6 +268,7 @@ namespace GodsAndPantheons
                 }
             }
         }
+        //gets god traits which are stored in the data of failed gods / demigods
         public static List<string> Getinheritedgodtraits(ActorData pData)
         {
             List<string> traits = new List<string>();

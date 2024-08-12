@@ -511,6 +511,7 @@ namespace GodsAndPantheons
             {
                 a.data.setName("Corrupted One");
                 a.data.removeString("Master");
+                a.removeTrait("Summoned One");
                 return false;
             }
             ;
