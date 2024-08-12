@@ -89,13 +89,14 @@ namespace GodsAndPantheons
         }
         public static List<Actor> GetMinions(Actor a)
         {
-            List<Actor> MyMinions = new List<Actor>(World.world.units.getSimpleList());
-            foreach (Actor actor in MyMinions)
+            List<Actor> MyMinions = new List<Actor>();
+            List<Actor> simpleList = World.world.units.getSimpleList();
+            foreach (Actor actor in simpleList)
             {
                actor.data.get("Master", out string master, "");
-               if (!a.data.id.Equals(master))
+               if (a.data.id.Equals(master))
                {
-                  MyMinions.Remove(actor);
+                  MyMinions.Add(actor);
                }
             }
             return MyMinions;
