@@ -26,12 +26,6 @@ namespace GodsAndPantheons
             PlayerConfig.unlockTrait(Trait.id);
             addTraitToLocalizedLibrary(Trait.id, disc);
         }
-        public static void CorruptSummonedOne(Actor SummonedOne)
-        {
-            SummonedOne.data.setName("Corrupted One");
-            SummonedOne.data.removeString("Master");
-            SummonedOne.addTrait("madness");
-        }
         public static void AddAutoTraits(ActorData a, string trait, bool mustbeinherited = false)
         {
             foreach (string autotrait in AutoTraits[trait])

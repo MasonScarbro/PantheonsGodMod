@@ -507,6 +507,13 @@ namespace GodsAndPantheons
         public static bool SummonedBeing(BaseSimObject pTarget, WorldTile pTile)
         {
             Actor a = (Actor)pTarget;
+            if (a.hasTrait("madness"))
+            {
+                a.data.setName("Corrupted One");
+                a.data.removeString("Master");
+                return false;
+            }
+            ;
             a.data.get("lifespan", out int lifespan);
             a.data.get("life", out int life);
             a.data.set("life", life + 1);
@@ -540,7 +547,10 @@ namespace GodsAndPantheons
         
         public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile)
         {
-           pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * 0.05f));
+            if (Toolbox.randomChance(0.1f))
+            {
+                pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * 0.05f));
+            }
            return true;
         }
         //god of gods attack
@@ -689,33 +699,19 @@ namespace GodsAndPantheons
                     Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
                     Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
                     EffectsLibrary.spawnProjectile("fireBallX", newPoint, newPoint2, 0.0f);
-
                 }
                 //new ability: unleach chaos
                 if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "Power2%")))
                 {
                     bool hasmadness = pSelf.a.hasTrait("madness");
                     DropsLibrary.action_madness(pTile);
-                    if (!hasmadness) pSelf.a.removeTrait("madness");
-
-                    World.world.getObjectsInChunks(pTile, 5, MapObjectType.Actor);
-                    foreach (Actor Actor in World.world.temp_map_objects)
-                    {
-                        if (Actor.hasTrait("Summoned One"))
-                        {
-                            CorruptSummonedOne(Actor);
-                        }
-                    }
+                    if (!hasmadness) pSelf.a.removeTrait("madness");}
                 }
                 if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "Power3%")))
                 {
                     pb.spawnBoulder(pTarget.a.currentTile, null);
                 }
-
-
                 return true;
-            }
-            return false;
         }
 
 
