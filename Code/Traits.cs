@@ -526,12 +526,12 @@ namespace GodsAndPantheons
                 {
                     if (IsGod(a.a))
                     {
-                        if (TeleportNearActor(pTarget.a, a, 30, false, true)) SuperRegeneration(pTarget, 0.5f, 10);
+                        if (TeleportNearActor(pTarget.a, a, 30, false, true)) SuperRegeneration(pTarget, pTile);
                     }
                 }
                 else if (Toolbox.randomChance(0.5f))
                 {
-                    if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(true, pTarget.a), pTarget.currentTile), 60, false, true)) SuperRegeneration(pTarget, 0.5f, 25);
+                    if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(true, pTarget.a), pTarget.currentTile), 60, false, true)) SuperRegeneration(pTarget, pTile);
                 }
 
             }
@@ -540,12 +540,8 @@ namespace GodsAndPantheons
         
         public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(0.1f))
-            {
-                pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * 0.05f));
-                return true;
-            }
-            return false;
+           pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * 0.05f));
+           return true;
         }
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)

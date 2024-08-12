@@ -89,18 +89,14 @@ namespace GodsAndPantheons
         }
         public static List<Actor> GetMinions(Actor a)
         {
-            List<Actor> MyMinions = new List<Actor>();
-            List<Actor> simpleList = World.world.units.getSimpleList();
-            foreach (Actor actor in simpleList)
+            List<Actor> MyMinions = new List<Actor>(World.world.units.getSimpleList());
+            foreach (Actor actor in MyMinions)
             {
-                if (actor.getName().Equals($"Summoned by {a.getName()}") && actor.hasTrait("Summoned One"))
-                {
-                    actor.data.get("Master", out string master, "");
-                    if (a.data.id.Equals(master))
-                    {
-                        MyMinions.Add(actor);
-                    }
-                }
+               actor.data.get("Master", out string master, "");
+               if (!a.data.id.Equals(master))
+               {
+                  MyMinions.Remove(actor);
+               }
             }
             return MyMinions;
         }
@@ -132,15 +128,6 @@ namespace GodsAndPantheons
                 }
             }
             return list;
-        }
-        public static bool SuperRegeneration(BaseSimObject pTarget, float chance, int percent)
-        {
-            if (Toolbox.randomChance(chance))
-            {
-                pTarget.a.restoreHealth(pTarget.a.getMaxHealth() * (percent / 100));
-                return true;
-            }
-            return false;
         }
         public static bool BringMinions(BaseSimObject pTarget, WorldTile pTile)
         {
