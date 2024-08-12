@@ -463,7 +463,6 @@ namespace GodsAndPantheons
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(AutoTrait));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(ChaseGod));
-            godHunter.special_effect_interval = 10;
             godHunter.group_id = "GodTraits";
             AddTrait(godHunter, "He will stop at NOTHING to kill a god");
 
@@ -541,7 +540,10 @@ namespace GodsAndPantheons
         
         public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile)
         {
-           pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * 0.05f));
+            if (Toolbox.randomChance(0.1f))
+            {
+                pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * 0.05f));
+            }
            return true;
         }
         //god of gods attack

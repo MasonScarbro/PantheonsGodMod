@@ -25,7 +25,7 @@ namespace GodsAndPantheons
             sunGodEra.path_icon = "ui/icons/lightGod";
             sunGodEra.description = "The World, Light up";
             sunGodEra.name = "status_title_Lights_Prevail";
-            sunGodEra.action_interval = 20;
+            sunGodEra.action_interval = 2;
             sunGodEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(sunGodEra.id, "Lights_Prevail", sunGodEra.description); // Localizes the status effect
             AssetManager.status.add(sunGodEra);
@@ -43,7 +43,7 @@ namespace GodsAndPantheons
             darkGodEra.path_icon = "ui/icons/godDark";
             darkGodEra.description = "The world, shrouded in my domain";
             darkGodEra.name = "status_title_Nights_Prevail";
-            darkGodEra.action_interval = 20;
+            darkGodEra.action_interval = 2;
             darkGodEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(darkGodEra.id, "Nights_Prevail", darkGodEra.description); // Localizes the status effect
             AssetManager.status.add(darkGodEra);
@@ -64,7 +64,7 @@ namespace GodsAndPantheons
             GodOfGodsEra.path_icon = "ui/icons/GodofGods";
             GodOfGodsEra.description = "Now i have become death, destroyer of worlds";
             GodOfGodsEra.name = "God Of All";
-            GodOfGodsEra.action_interval = 20;
+            GodOfGodsEra.action_interval = 2;
             GodOfGodsEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(GodOfGodsEra.id, "God_Of_All", GodOfGodsEra.description); // Localizes the status effect
             AssetManager.status.add(GodOfGodsEra);
@@ -86,7 +86,7 @@ namespace GodsAndPantheons
             knowledgeGodEra.path_icon = "ui/icons/knowledgeGod";
             knowledgeGodEra.description = "The era of Knowledge has come to pass";
             knowledgeGodEra.name = "status_title_Knowledge_Prevail";
-            knowledgeGodEra.action_interval = 20;
+            knowledgeGodEra.action_interval = 2;
             knowledgeGodEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(knowledgeGodEra.id, "Knowledge_Prevail", knowledgeGodEra.description); // Localizes the status effect
             AssetManager.status.add(knowledgeGodEra);
@@ -120,7 +120,7 @@ namespace GodsAndPantheons
             EarthGodEra.path_icon = "ui/icons/earthGod";
             EarthGodEra.description = "The World, shrowded in my home";
             EarthGodEra.name = "Earth Prevails";
-            EarthGodEra.action_interval = 20;
+            EarthGodEra.action_interval = 2;
             EarthGodEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(EarthGodEra.id, "Earth Prevails", EarthGodEra.description); // Localizes the status effect
             AssetManager.status.add(EarthGodEra);
@@ -138,7 +138,7 @@ namespace GodsAndPantheons
             warGodEra.path_icon = "ui/icons/warGod";
             warGodEra.description = "There is Power in despair for some";
             warGodEra.name = "Despair Prevails";
-            warGodEra.action_interval = 20;
+            warGodEra.action_interval = 2;
             warGodEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(warGodEra.id, "Despair Prevails", warGodEra.description); // Localizes the status effect
             AssetManager.status.add(warGodEra);
@@ -158,7 +158,7 @@ namespace GodsAndPantheons
             lichgodera.path_icon = "ui/icons/lichGod";
             lichgodera.description = "Sorrow is my Power";
             lichgodera.name = "Sorrow Prevails";
-            lichgodera.action_interval = 20;
+            lichgodera.action_interval = 2;
             lichgodera.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(lichgodera.id, "Sorrow Prevails", lichgodera.description); // Localizes the status effect
             AssetManager.status.add(lichgodera);
@@ -176,7 +176,7 @@ namespace GodsAndPantheons
             chaosgodsera.base_stats[S.knockback] += 2f;
             chaosgodsera.base_stats[S.attack_speed] += 8f;
             chaosgodsera.base_stats[S.damage] += 30f;
-            chaosgodsera.action_interval = 20;
+            chaosgodsera.action_interval = 2;
             chaosgodsera.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(chaosgodsera.id, "Chaos Prevails", chaosgodsera.description); // Localizes the status effect
             AssetManager.status.add(chaosgodsera);
