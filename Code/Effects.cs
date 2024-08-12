@@ -25,6 +25,8 @@ namespace GodsAndPantheons
             sunGodEra.path_icon = "ui/icons/lightGod";
             sunGodEra.description = "The World, Light up";
             sunGodEra.name = "status_title_Lights_Prevail";
+            sunGodEra.action_interval = 20;
+            sunGodEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(sunGodEra.id, "Lights_Prevail", sunGodEra.description); // Localizes the status effect
             AssetManager.status.add(sunGodEra);
 
@@ -32,16 +34,17 @@ namespace GodsAndPantheons
             StatusEffect darkGodEra = new StatusEffect();
             darkGodEra.id = "Nights_Prevail";
             darkGodEra.duration = 7000f;
-            darkGodEra.base_stats[S.armor] += 55;
+            darkGodEra.base_stats[S.mod_armor] += 0.55f;
             darkGodEra.base_stats[S.health] += 500;
             darkGodEra.base_stats[S.speed] += 30;
             darkGodEra.base_stats[S.knockback_reduction] += 0.6f;
             darkGodEra.base_stats[S.knockback] += 2f;
-            darkGodEra.base_stats[S.armor] += 50f;
             darkGodEra.base_stats[S.attack_speed] += 8f;
             darkGodEra.path_icon = "ui/icons/godDark";
             darkGodEra.description = "The world, shrouded in my domain";
             darkGodEra.name = "status_title_Nights_Prevail";
+            darkGodEra.action_interval = 20;
+            darkGodEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(darkGodEra.id, "Nights_Prevail", darkGodEra.description); // Localizes the status effect
             AssetManager.status.add(darkGodEra);
 
@@ -61,18 +64,19 @@ namespace GodsAndPantheons
             GodOfGodsEra.path_icon = "ui/icons/GodofGods";
             GodOfGodsEra.description = "Now i have become death, destroyer of worlds";
             GodOfGodsEra.name = "God Of All";
+            GodOfGodsEra.action_interval = 20;
+            GodOfGodsEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(GodOfGodsEra.id, "God_Of_All", GodOfGodsEra.description); // Localizes the status effect
             AssetManager.status.add(GodOfGodsEra);
 
             StatusEffect knowledgeGodEra = new StatusEffect();
             knowledgeGodEra.id = "Knowledge_Prevail";
             knowledgeGodEra.duration = 7000f;
-            knowledgeGodEra.base_stats[S.armor] += 30;
+            knowledgeGodEra.base_stats[S.mod_armor] = 0.3f;
             knowledgeGodEra.base_stats[S.health] += 500;
             knowledgeGodEra.base_stats[S.speed] += 20;
             knowledgeGodEra.base_stats[S.knockback_reduction] += 0.9f;
             knowledgeGodEra.base_stats[S.knockback] += 1f;
-            knowledgeGodEra.base_stats[S.armor] += 50f;
             knowledgeGodEra.base_stats[S.attack_speed] += 20f;
             knowledgeGodEra.base_stats[S.intelligence] += 200f;
             knowledgeGodEra.base_stats[S.stewardship] += 20f;
@@ -82,46 +86,104 @@ namespace GodsAndPantheons
             knowledgeGodEra.path_icon = "ui/icons/knowledgeGod";
             knowledgeGodEra.description = "The era of Knowledge has come to pass";
             knowledgeGodEra.name = "status_title_Knowledge_Prevail";
+            knowledgeGodEra.action_interval = 20;
+            knowledgeGodEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(knowledgeGodEra.id, "Knowledge_Prevail", knowledgeGodEra.description); // Localizes the status effect
             AssetManager.status.add(knowledgeGodEra);
 
             StatusEffect starsGodEra = new StatusEffect();
             starsGodEra.id = "Stars_Prevail";
             starsGodEra.duration = 7000f;
-            starsGodEra.base_stats[S.armor] += 50;
             starsGodEra.base_stats[S.health] += 500;
             starsGodEra.base_stats[S.speed] += 30;
             starsGodEra.base_stats[S.knockback_reduction] += 0.8f;
             starsGodEra.base_stats[S.knockback] += 1f;
-            starsGodEra.base_stats[S.armor] += 50f;
+            starsGodEra.base_stats[S.mod_armor] += 0.2f;
             starsGodEra.base_stats[S.attack_speed] += 80f;
             starsGodEra.path_icon = "ui/icons/starsGod";
             starsGodEra.description = "The Age Of Stars is Apon Us";
             starsGodEra.name = "status_title_Stars_Prevail";
+            starsGodEra.action_interval = 20;
+            starsGodEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(starsGodEra.id, "Stars_Prevail", starsGodEra.description); // Localizes the status effect
             AssetManager.status.add(starsGodEra);
 
+            StatusEffect EarthGodEra = new StatusEffect();
+            EarthGodEra.id = "Earth Prevails";
+            EarthGodEra.duration = 7000f;
+            EarthGodEra.base_stats[S.health] += 500;
+            EarthGodEra.base_stats[S.mod_speed] += 0.25f;
+            EarthGodEra.base_stats[S.knockback_reduction] += 0.8f;
+            EarthGodEra.base_stats[S.knockback] += 1f;
+            EarthGodEra.base_stats[S.mod_armor] += 0.4f;
+            EarthGodEra.base_stats[S.attack_speed] += 80f;
+            EarthGodEra.path_icon = "ui/icons/earthGod";
+            EarthGodEra.description = "The World, shrowded in my home";
+            EarthGodEra.name = "Earth Prevails";
+            EarthGodEra.action_interval = 20;
+            EarthGodEra.action = new WorldAction(Traits.SuperRegeneration);
+            localizeStatus(EarthGodEra.id, "Earth Prevails", EarthGodEra.description); // Localizes the status effect
+            AssetManager.status.add(EarthGodEra);
+
             StatusEffect warGodEra = new StatusEffect();
-            warGodEra.id = "War_Prevail";
+            warGodEra.id = "Despair Prevails";
             warGodEra.duration = 7000f;
-            warGodEra.base_stats[S.armor] += 50;
+            warGodEra.base_stats[S.mod_armor] += .5f;
             warGodEra.base_stats[S.health] += 500;
             warGodEra.base_stats[S.speed] += 30;
-            warGodEra.base_stats[S.knockback_reduction] += 1f;
+            warGodEra.base_stats[S.knockback_reduction] += 2f;
             warGodEra.base_stats[S.knockback] += 2f;
-            warGodEra.base_stats[S.armor] += 50f;
             warGodEra.base_stats[S.attack_speed] += 8f;
             warGodEra.base_stats[S.damage] += 30f;
             warGodEra.path_icon = "ui/icons/warGod";
-            warGodEra.description = "The Era Of war War Prevails";
-            warGodEra.name = "status_title_War_Prevail";
-            localizeStatus(warGodEra.id, "War_Prevail", warGodEra.description); // Localizes the status effect
+            warGodEra.description = "There is Power in despair for some";
+            warGodEra.name = "Despair Prevails";
+            warGodEra.action_interval = 20;
+            warGodEra.action = new WorldAction(Traits.SuperRegeneration);
+            localizeStatus(warGodEra.id, "Despair Prevails", warGodEra.description); // Localizes the status effect
             AssetManager.status.add(warGodEra);
 
+            StatusEffect lichgodera = new StatusEffect
+            {
+                id = "Sorrow Prevails",
+                duration = 7000f,
+            };
+            lichgodera.base_stats[S.mod_armor] += 0.5f;
+            lichgodera.base_stats[S.health] += 500;
+            lichgodera.base_stats[S.speed] += 30;
+            lichgodera.base_stats[S.knockback_reduction] += 2f;
+            lichgodera.base_stats[S.knockback] += 2f;
+            lichgodera.base_stats[S.attack_speed] += 8f;
+            lichgodera.base_stats[S.mod_damage] += 0.3f;
+            lichgodera.path_icon = "ui/icons/lichGod";
+            lichgodera.description = "Sorrow is my Power";
+            lichgodera.name = "Sorrow Prevails";
+            lichgodera.action_interval = 20;
+            lichgodera.action = new WorldAction(Traits.SuperRegeneration);
+            localizeStatus(lichgodera.id, "Sorrow Prevails", lichgodera.description); // Localizes the status effect
+            AssetManager.status.add(lichgodera);
+
+            StatusEffect chaosgodsera = new StatusEffect();
+            chaosgodsera.duration = 7000f;
+            chaosgodsera.id = "Chaos Prevails";
+            chaosgodsera.path_icon = "ui/icons/chaosGod";
+            chaosgodsera.name = "Chaos Prevails";
+            chaosgodsera.description = "Chaos Sooths My Soul";
+            chaosgodsera.base_stats[S.mod_armor] += 0.5f;
+            chaosgodsera.base_stats[S.health] += 500;
+            chaosgodsera.base_stats[S.speed] += 30;
+            chaosgodsera.base_stats[S.knockback_reduction] += 2f;
+            chaosgodsera.base_stats[S.knockback] += 2f;
+            chaosgodsera.base_stats[S.attack_speed] += 8f;
+            chaosgodsera.base_stats[S.damage] += 30f;
+            chaosgodsera.action_interval = 20;
+            chaosgodsera.action = new WorldAction(Traits.SuperRegeneration);
+            localizeStatus(chaosgodsera.id, "Chaos Prevails", chaosgodsera.description); // Localizes the status effect
+            AssetManager.status.add(chaosgodsera);
             StatusEffect warGodsCry = new StatusEffect();
             warGodsCry.id = "WarGodsCry";
             warGodsCry.duration = 7000f;
-            warGodsCry.base_stats[S.armor] += 50;
+            warGodsCry.base_stats[S.mod_armor] += 0.40f;
             warGodsCry.base_stats[S.health] += 60;
             warGodsCry.base_stats[S.speed] += 10;
             warGodsCry.base_stats[S.knockback_reduction] += 3f;
@@ -131,6 +193,7 @@ namespace GodsAndPantheons
             warGodsCry.path_icon = "ui/icons/warGod";
             warGodsCry.description = "A Cry Of Anger and Rage";
             warGodsCry.name = "WarGodsCry";
+            
             localizeStatus(warGodsCry.id, "WarGodsCry", warGodsCry.description); // Localizes the status effect
             AssetManager.status.add(warGodsCry);
 

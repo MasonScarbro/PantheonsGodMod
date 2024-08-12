@@ -56,7 +56,7 @@ namespace GodsAndPantheons
             godHunter.canBeInspected = true;
             godHunter.hideOnMinimap = false;
             godHunter.use_items = true;
-            godHunter.take_items = true;
+            godHunter.take_items = false;
             godHunter.needFood = false;
             godHunter.diet_meat = false;
             godHunter.inspect_home = true;

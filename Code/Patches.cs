@@ -5,50 +5,9 @@ using NeoModLoader.General;
 using ReflectionUtility;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 //Harmony Patches
 namespace GodsAndPantheons
 {
-    [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
-    public class UpdateAttacking
-    {
-        static void Postfix(ref bool __result, BaseSimObject __instance, BaseSimObject pTarget)
-        {
-            if (__instance == pTarget)
-            {
-                __result = false;
-            }
-            if (__instance.isActor())
-            {
-                Actor a = __instance.a;
-                if (a.hasTrait("Summoned One"))
-                {
-                    Actor Master = Traits.FindMaster(a);
-                    if (Master != null)
-                    {
-                        if (!Master.canAttackTarget(pTarget))
-                        {
-                            __result = false;
-                            return;
-                        }
-                    }
-                }
-            }
-            if (pTarget.isActor())
-            {
-                Actor b = pTarget.a;
-                if (b.hasTrait("Summoned One"))
-                {
-                    Actor Master = Traits.FindMaster(b);
-                    if (Master != null)
-                    {
-                        if (!__instance.canAttackTarget(Master))
-                            __result = false;
-                    }
-                }
-            }
-        }
-    }
     [HarmonyPatch(typeof(ActorBase), "clearAttackTarget")]
     public class KEEPATTACKING
     {
@@ -85,27 +44,25 @@ namespace GodsAndPantheons
             {
                 int parents = pParent2 != null ? 2 : 1;
                 int godparents = Traits.IsGod(pParent1) ? 1 : 0;
-                var parent1data = Traits.getinheritedgodtraits(pParent1.data);
-                int demiparents = parent1data.Count > 0 ? 1 : 0;
+                int demiparents = pParent1.data.hasTrait("Demi God") || pParent1.data.hasTrait("Failed God") ? 1 : 0;
                 List<string> godtraits = new List<string>(Traits.GetGodTraits(pParent1));
-                godtraits.AddRange(parent1data);
+                AddRange(godtraits, Traits.Getinheritedgodtraits(pParent1.data));
                 if (parents == 2)
                 {
-                    godtraits.AddRange(Traits.GetGodTraits(pParent2));
-                    var parent2data = Traits.getinheritedgodtraits(pParent2.data);
-                    godtraits.AddRange(parent2data);
-                    godparents += Traits.IsGod(pParent2) || pParent2.data.hasTrait("Failed God") ? 1 : 0;
-                    demiparents += parent2data.Count > 0 ? 1 : 0;
+                    AddRange(godtraits, Traits.GetGodTraits(pParent2));
+                    AddRange(godtraits, Traits.Getinheritedgodtraits(pParent2.data));
+                    godparents += Traits.IsGod(pParent2) ? 1 : 0;
+                    demiparents += pParent2.data.hasTrait("Demi God") || pParent2.data.hasTrait("Failed God") ? 1 : 0;
                 }
                 if (godparents > 0)
                 {
                     if (parents == godparents)
                     {
-                        Traits.inheritgodtraits(godtraits, ref Child);
+                        Traits.Inheritgodtraits(godtraits, ref Child);
                     }
-                    else if (demiparents > 0 && Toolbox.randomChance(0.5f))
+                    else if (demiparents > 0 && Toolbox.randomChance(0.75f))
                     {
-                       Traits.inheritgodtraits(godtraits, ref Child);
+                       Traits.Inheritgodtraits(godtraits, ref Child);
                     }
                     else
                     {
@@ -116,21 +73,25 @@ namespace GodsAndPantheons
                 {
                     if (parents == demiparents)
                     {
-                        if (Toolbox.randomChance(0.25f))
+                        if (Toolbox.randomChance(0.5f))
                         {
-                            Traits.inheritgodtraits(godtraits, ref Child);
+                            Traits.Inheritgodtraits(godtraits, ref Child);
                         }
                         else
                         {
                             Traits.MakeDemiGod(godtraits, ref Child);
                         }
                     }
+                    else if (Toolbox.randomChance(0.5f))
+                    {
+                        Child.addTrait("Failed God");
+                        foreach(string trait in godtraits)
+                        {
+                            Child.set("Demi" + trait, true);
+                        }
+                    }
                     else
                     {
-                        foreach(string t in godtraits)
-                        {
-                            Child.set("Demi" + t, true);
-                        }
                         Traits.AutoTrait(Child, godtraits, true);
                     }
                 }
@@ -139,13 +100,23 @@ namespace GodsAndPantheons
         }
         public static bool HavingChild = false;
         public static ActorData Child;
+        static void AddRange(List<string> list, List<string> range)
+        {
+            foreach(string s in range)
+            {
+                if (!list.Contains(s))
+                {
+                    list.Add(s);
+                }
+            }
+        }
     }
     [HarmonyPatch(typeof(ActorData), "inheritTraits")]
     public class ChildData
     {
         static void Postfix(ActorData __instance, List<string> pTraits)
         {
-            if (!InheritGodTraits.HavingChild && (Traits.GetGodTraits(pTraits, true).Count > 0 || Traits.getinheritedgodtraits(__instance).Count > 0))
+            if (!InheritGodTraits.HavingChild && (Traits.GetGodTraits(pTraits, true).Count > 0 || pTraits.Contains("Failed God")))
             {
                 InheritGodTraits.Child = __instance;
                 InheritGodTraits.HavingChild = true;
@@ -169,10 +140,5 @@ namespace GodsAndPantheons
                 __instance[pStats[i].Key] += pStats[i].Value;
             }
         }
-    }
-    [HarmonyPatch(typeof(Actor), "takeItems")]
-    public class DontTakeScytheIfGod
-    {
-       static bool Prefix(Actor __instance, Actor pActor) => !(Traits.IsGod(__instance) && pActor.hasTrait("God Hunter"));
     }
 }
