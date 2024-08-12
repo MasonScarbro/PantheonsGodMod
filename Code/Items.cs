@@ -403,7 +403,7 @@ namespace GodsAndPantheons
             godHuntersScythe.base_stats[S.loyalty_traits] = 0f;
             godHuntersScythe.base_stats[S.cities] = 0;
             godHuntersScythe.base_stats[S.zone_range] = 0.1f;
-            godHuntersScythe.equipment_value = 4000;
+            godHuntersScythe.equipment_value = 1800;
             godHuntersScythe.path_slash_animation = "effects/slashes/slash_sword";
             godHuntersScythe.tech_needed = String.Empty;
             godHuntersScythe.quality = ItemQuality.Legendary;

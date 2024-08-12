@@ -141,9 +141,4 @@ namespace GodsAndPantheons
             }
         }
     }
-    [HarmonyPatch(typeof(Actor), "takeItems")]
-    public class DontTakeScytheIfGod
-    {
-       static bool Prefix(Actor __instance, Actor pActor) => !(Traits.IsGod(__instance) && pActor.hasTrait("God Hunter"));
-    }
 }
