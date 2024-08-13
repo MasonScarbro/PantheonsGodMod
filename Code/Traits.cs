@@ -873,71 +873,73 @@ namespace GodsAndPantheons
 
             if (pTarget != null)
             {
-
-
-                if (Toolbox.randomChance(GetEnhancedChance("God Of light", "flashOfLight%")))
+                if (pTarget.isActor())
                 {
-                    pb.divineLightFX(pTarget.a.currentTile, null);
-                    EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
-                    pSelf.a.addStatusEffect("invincible", 5f);
-                }
-                if (Toolbox.randomChance(GetEnhancedChance("God Of light", "beamOfLight%")))
-                {
-                    pb.divineLightFX(pTarget.a.currentTile, null);
-                    pTarget.a.addStatusEffect("burning", 5f);
 
-                }
-                if (Toolbox.randomChance(GetEnhancedChance("God Of light", "speedOfLight%")))
-                {
-                    pb.divineLightFX(pTarget.a.currentTile, null);
-                    EffectsLibrary.spawn("fx_thunder_flash", pSelf.a.currentTile, null, null, 0f, -1f, -1f);
-                    pSelf.a.addStatusEffect("caffeinated", 10f);
-                    pTarget.a.addStatusEffect("slowness", 10f);
-
-
-                }
-                if (Toolbox.randomChance(GetEnhancedChance("God Of light", "lightBallz%")))
-                {
-                    Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
-                    float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
-                    Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                    Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
-                    EffectsLibrary.spawnProjectile("lightBallzProjectiles", newPoint, newPoint2, 0.0f);
-                }
-                //EffectsLibrary.spawnAtTile("fx_multiFlash_dej", pTile, 0.01f);
-                //not finushed?
-                if (Toolbox.randomChance(0 / 100))
-                {
-                    //TO BE USED AS IMACT ACTION FOR LIGHT PROJECILES LATER
-                    int count = 0;
-                    Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
-                    float pDist = Vector2.Distance(pTarget.currentPosition, pos);
-                    Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
-
-                    EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[2].neighbours[2].neighbours[1].neighbours[1].neighbours[2], null, null, 0f, -1f, -1f);
-                    count++;
-                    //???????????????????????????????????????????????????????????????????????????
-                    if (count == 1)
+                    if (Toolbox.randomChance(GetEnhancedChance("God Of light", "flashOfLight%")))
                     {
-                        EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[1].neighbours[0].neighbours[0].neighbours[1].neighbours[0].neighbours[0].neighbours[1].neighbours[1].neighbours[0].neighbours[0].neighbours[0], null, null, 0f, -0.5f, -0.2f);
+                        pb.divineLightFX(pTarget.a.currentTile, null);
+                        EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
+                        pSelf.a.addStatusEffect("invincible", 5f);
+                    }
+                    if (Toolbox.randomChance(GetEnhancedChance("God Of light", "beamOfLight%")))
+                    {
+                        pb.divineLightFX(pTarget.a.currentTile, null);
+                        pTarget.a.addStatusEffect("burning", 5f);
+
+                    }
+                    if (Toolbox.randomChance(GetEnhancedChance("God Of light", "speedOfLight%")))
+                    {
+                        pb.divineLightFX(pTarget.a.currentTile, null);
+                        EffectsLibrary.spawn("fx_thunder_flash", pSelf.a.currentTile, null, null, 0f, -1f, -1f);
+                        pSelf.a.addStatusEffect("caffeinated", 10f);
+                        pTarget.a.addStatusEffect("slowness", 10f);
+
+
+                    }
+                    if (Toolbox.randomChance(GetEnhancedChance("God Of light", "lightBallz%")))
+                    {
+                        Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
+                        float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
+                        Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
+                        Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+                        EffectsLibrary.spawnProjectile("lightBallzProjectiles", newPoint, newPoint2, 0.0f);
+                    }
+                    //EffectsLibrary.spawnAtTile("fx_multiFlash_dej", pTile, 0.01f);
+                    //not finushed?
+                    if (Toolbox.randomChance(0 / 100))
+                    {
+                        //TO BE USED AS IMACT ACTION FOR LIGHT PROJECILES LATER
+                        int count = 0;
+                        Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
+                        float pDist = Vector2.Distance(pTarget.currentPosition, pos);
+                        Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+
+                        EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[2].neighbours[2].neighbours[1].neighbours[1].neighbours[2], null, null, 0f, -1f, -1f);
                         count++;
+                        //???????????????????????????????????????????????????????????????????????????
+                        if (count == 1)
+                        {
+                            EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[1].neighbours[0].neighbours[0].neighbours[1].neighbours[0].neighbours[0].neighbours[1].neighbours[1].neighbours[0].neighbours[0].neighbours[0], null, null, 0f, -0.5f, -0.2f);
+                            count++;
+                        }
+                        if (count == 2)
+                        {
+                            EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[1].neighbours[3].neighbours[2].neighbours[1].neighbours[2].neighbours[3].neighbours[1].neighbours[1].neighbours[0].neighbours[0], null, null, 0f, 1f, -0.2f);
+                            count++;
+                        }
+                        if (count == 3)
+                        {
+                            EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[1].neighbours[3].neighbours[2].neighbours[1].neighbours[2].neighbours[3].neighbours[1].neighbours[1].neighbours[0].neighbours[0], null, null, 0f, -0.5f, -0.2f);
+                            EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[1].neighbours[3].neighbours[0].neighbours[1].neighbours[0].neighbours[0].neighbours[0].neighbours[1].neighbours[0].neighbours[0], null, null, 0f, -0.5f, -0.2f);
+
+                        }
+
+
+
+
+                        pSelf.a.addStatusEffect("invincible", 5f);
                     }
-                    if (count == 2)
-                    {
-                        EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[1].neighbours[3].neighbours[2].neighbours[1].neighbours[2].neighbours[3].neighbours[1].neighbours[1].neighbours[0].neighbours[0], null, null, 0f, 1f, -0.2f);
-                        count++;
-                    }
-                    if (count == 3)
-                    {
-                        EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[1].neighbours[3].neighbours[2].neighbours[1].neighbours[2].neighbours[3].neighbours[1].neighbours[1].neighbours[0].neighbours[0], null, null, 0f, -0.5f, -0.2f);
-                        EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[1].neighbours[3].neighbours[0].neighbours[1].neighbours[0].neighbours[0].neighbours[0].neighbours[1].neighbours[0].neighbours[0], null, null, 0f, -0.5f, -0.2f);
-
-                    }
-
-
-
-
-                    pSelf.a.addStatusEffect("invincible", 5f);
                 }
 
 

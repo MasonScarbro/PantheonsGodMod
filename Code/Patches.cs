@@ -149,7 +149,7 @@ namespace GodsAndPantheons
     {
         static void Prefix(AttackData pData, ref BaseSimObject pTargetToCheck)
         {
-            if (pTargetToCheck.isActor())
+            if (pTargetToCheck.isActor() && pData.initiator != null)
             {
                 if (pTargetToCheck.a.hasTrait("God Of Knowledge"))
                 {
@@ -157,11 +157,10 @@ namespace GodsAndPantheons
                     {
                         WorldTile tile = pTargetToCheck.currentTile;
                         ListPool<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(tile, pTargetToCheck.kingdom, -1).list;
-                        enemies.Remove(pData.initiator);
                         List<Actor> actorenemies = new List<Actor>();
                         foreach (BaseSimObject enemy in enemies)
                         {
-                            if (enemy.isActor())
+                            if (enemy.isActor() && enemy != pData.initiator && enemy != pTargetToCheck)
                             {
                                actorenemies.Add(enemy.a);
                             }

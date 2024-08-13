@@ -63,7 +63,7 @@ namespace GodsAndPantheons
                   {"darkDaggers%", new InputOption{active = true, value = "10" }},
                   {"smokeFlash%", new InputOption{active = true, value = "15" }},
                   {"summonDarkOne%", new InputOption{active = true, value = "15" }},
-                  {"God Of the Nightinherit%", new InputOption{active = true, value = "40" }}
+                  {"God Of the Nightinherit%", new InputOption{active = true, value = "45" }}
               }
             },
             {"SunGodWindow",
@@ -73,7 +73,7 @@ namespace GodsAndPantheons
                   {"beamOfLight%", new InputOption{active = true, value = "8" }},
                   {"speedOfLight%", new InputOption{active = true, value = "7" }},
                   {"lightBallz%", new InputOption{active = true, value = "5" }},
-                  {"God Of lightinherit%", new InputOption{active = true, value = "45" }}
+                  {"God Of lightinherit%", new InputOption{active = true, value = "40" }}
               }
             },
             {"WarGodWindow",
