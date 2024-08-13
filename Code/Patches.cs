@@ -3,8 +3,11 @@ using ai.behaviours;
 using HarmonyLib;
 using NeoModLoader.General;
 using ReflectionUtility;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 //Harmony Patches
 namespace GodsAndPantheons
 {
@@ -62,11 +65,11 @@ namespace GodsAndPantheons
                     }
                     else if (demiparents > 0 && Toolbox.randomChance(0.75f))
                     {
-                       Traits.Inheritgodtraits(godtraits, ref Child);
+                        Traits.Inheritgodtraits(godtraits, ref Child);
                     }
                     else
                     {
-                       Traits.MakeDemiGod(godtraits, ref Child);
+                        Traits.MakeDemiGod(godtraits, ref Child);
                     }
                 }
                 else if (demiparents > 0)
@@ -85,7 +88,7 @@ namespace GodsAndPantheons
                     else if (Toolbox.randomChance(0.5f))
                     {
                         Child.addTrait("Failed God");
-                        foreach(string trait in godtraits)
+                        foreach (string trait in godtraits)
                         {
                             Child.set("Demi" + trait, true);
                         }
@@ -102,7 +105,7 @@ namespace GodsAndPantheons
         public static ActorData Child;
         static void AddRange(List<string> list, List<string> range)
         {
-            foreach(string s in range)
+            foreach (string s in range)
             {
                 if (!list.Contains(s))
                 {
@@ -138,6 +141,42 @@ namespace GodsAndPantheons
             for (int i = 0; i < pStats.Count; i++)
             {
                 __instance[pStats[i].Key] += pStats[i].Value;
+            }
+        }
+    }
+    [HarmonyPatch(typeof(MapBox), "applyAttack")]
+    public class KnowledgeGodEnemySwap
+    {
+        static void Prefix(AttackData pData, ref BaseSimObject pTargetToCheck)
+        {
+            if (pTargetToCheck.isActor() && pData.initiator != null)
+            {
+                if (pTargetToCheck.a.hasTrait("God Of Knowledge"))
+                {
+                    if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Knowledge", "EnemySwap%")))
+                    {
+                        WorldTile tile = pTargetToCheck.currentTile;
+                        ListPool<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(tile, pTargetToCheck.kingdom, -1).list;
+                        Actor enemytoswap = null;
+                        foreach (BaseSimObject enemy in enemies)
+                        {
+                            if (enemy.isActor() && enemy != pData.initiator && enemy != pTargetToCheck)
+                            {
+                                enemytoswap = enemy.a;
+                                break;
+                            }
+                        }
+                        if (enemytoswap != null)
+                        {
+                            enemytoswap.cancelAllBeh();
+                            EffectsLibrary.spawnAt("fx_teleport_blue", tile.posV3, enemytoswap.stats[S.scale]);
+                            EffectsLibrary.spawnAt("fx_teleport_blue", enemytoswap.currentTile.posV3, pTargetToCheck.stats[S.scale]);
+                            pTargetToCheck.a.spawnOn(enemytoswap.currentTile, 3f);
+                            enemytoswap.spawnOn(tile, 3f);
+                            pTargetToCheck = enemytoswap;
+                        }
+                    }
+                }
             }
         }
     }

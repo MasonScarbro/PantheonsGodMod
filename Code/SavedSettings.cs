@@ -6,7 +6,7 @@ namespace GodsAndPantheons
     [Serializable]
     public class SavedSettings
     {
-        public string settingVersion = "0.1.2";
+        public string settingVersion = "0.1.3";
         //inheritance of the god traits is stored here, if the baby has two parents and both of them are god's or has one parent who is a god, it use the inherit for the chance
         //if it has a god parent and normal parent it will use the inherit for the chance of changing the stats of the demi god trait for the baby
         public Dictionary<string, Dictionary<string, InputOption>> Chances = new Dictionary<string, Dictionary<string, InputOption>>
@@ -22,7 +22,8 @@ namespace GodsAndPantheons
               {"SummonLightning%", new InputOption{active = true, value = "9" }},
               {"SummonMeteor%", new InputOption{active = true, value = "3" }},
               {"PagesOfKnowledge%", new InputOption{active = true, value = "3" }},
-              {"God Of Knowledgeinherit%", new InputOption{active = true, value = "35" }}
+              {"EnemySwap%", new InputOption{active = true, value = "20" }},
+              {"God Of Knowledgeinherit%", new InputOption{active = true, value = "30" }}
              }   
             },
             {"LichGodWindow", 
@@ -62,7 +63,7 @@ namespace GodsAndPantheons
                   {"darkDaggers%", new InputOption{active = true, value = "10" }},
                   {"smokeFlash%", new InputOption{active = true, value = "15" }},
                   {"summonDarkOne%", new InputOption{active = true, value = "15" }},
-                  {"God Of the Nightinherit%", new InputOption{active = true, value = "40" }}
+                  {"God Of the Nightinherit%", new InputOption{active = true, value = "45" }}
               }
             },
             {"SunGodWindow",
@@ -72,7 +73,7 @@ namespace GodsAndPantheons
                   {"beamOfLight%", new InputOption{active = true, value = "8" }},
                   {"speedOfLight%", new InputOption{active = true, value = "7" }},
                   {"lightBallz%", new InputOption{active = true, value = "5" }},
-                  {"God Of lightinherit%", new InputOption{active = true, value = "45" }}
+                  {"God Of lightinherit%", new InputOption{active = true, value = "40" }}
               }
             },
             {"WarGodWindow",
@@ -101,7 +102,7 @@ namespace GodsAndPantheons
                   {"Power2%", new InputOption{active = true, value = "20" }},
                   {"Power3%", new InputOption{active = true, value = "5" }},
                   {"Power4%", new InputOption{active = true, value = "15" }},
-                  {"God Of Chaosinherit%", new InputOption{active = true, value = "30" }}
+                  {"God Of Chaosinherit%", new InputOption{active = true, value = "35" }}
               }
             }
         };
