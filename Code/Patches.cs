@@ -157,17 +157,17 @@ namespace GodsAndPantheons
                     {
                         WorldTile tile = pTargetToCheck.currentTile;
                         ListPool<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(tile, pTargetToCheck.kingdom, -1).list;
-                        List<Actor> actorenemies = new List<Actor>();
+                        Actor enemytoswap = null;
                         foreach (BaseSimObject enemy in enemies)
                         {
                             if (enemy.isActor() && enemy != pData.initiator && enemy != pTargetToCheck)
                             {
-                               actorenemies.Add(enemy.a);
+                                enemytoswap = enemy.a;
+                                break;
                             }
                         }
-                        if (actorenemies.Count > 0)
+                        if (enemytoswap != null)
                         {
-                            Actor enemytoswap = actorenemies.GetRandom();
                             enemytoswap.cancelAllBeh();
                             EffectsLibrary.spawnAt("fx_teleport_blue", tile.posV3, enemytoswap.stats[S.scale]);
                             EffectsLibrary.spawnAt("fx_teleport_blue", enemytoswap.currentTile.posV3, pTargetToCheck.stats[S.scale]);
