@@ -208,7 +208,6 @@ namespace GodsAndPantheons
             staffOfKnowledge.base_stats[S.max_children] = 0f;
             staffOfKnowledge.base_stats[S.max_age] += 100f;
             staffOfKnowledge.base_stats[S.attack_speed] = 1f;
-            staffOfKnowledge.base_stats[S.damage] += 8;
             staffOfKnowledge.base_stats[S.speed] += 1f;
             staffOfKnowledge.base_stats[S.health] = 1;
             staffOfKnowledge.base_stats[S.accuracy] = 1f;
