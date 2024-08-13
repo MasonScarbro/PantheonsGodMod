@@ -514,7 +514,6 @@ namespace GodsAndPantheons
                 a.removeTrait("Summoned One");
                 return false;
             }
-            ;
             a.data.get("lifespan", out int lifespan);
             a.data.get("life", out int life);
             a.data.set("life", life + 1);
