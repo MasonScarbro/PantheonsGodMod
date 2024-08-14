@@ -21,7 +21,7 @@ namespace GodsAndPantheons
         {
             {"God Of Chaos", new Dictionary<string, float>(){
                 {S.damage, 30f},
-                {S.health, 800},
+                {S.health, 500},
                 {S.attack_speed, 15f},
                 {S.critical_chance, 0.05f},
                 {S.range, 8f},
@@ -57,7 +57,7 @@ namespace GodsAndPantheons
             },
             {"God Of Knowledge", new Dictionary<string, float>(){
                 {S.damage, 20f},
-                {S.health, 500f},
+                {S.health, 300},
                 {S.attack_speed, 1f},
                 {S.critical_chance, 0.25f},
                 {S.range, 15f},
@@ -82,7 +82,7 @@ namespace GodsAndPantheons
             },
             {"God Of the Earth", new Dictionary<string, float>(){
                 {S.damage, 40f},
-                {S.health, 1000f},
+                {S.health, 800f},
                 {S.attack_speed, 1f},
                 {S.armor, 35f},
                 {S.scale, 0.1f},
@@ -107,7 +107,7 @@ namespace GodsAndPantheons
                 {S.damage, 100f},
                 {S.health, 700f},
                 {S.attack_speed, 35f},
-                {S.armor, 20f},
+                {S.armor, 40f},
                 {S.knockback_reduction, 0.05f},
                 {S.scale, 0.03f},
                 {S.range, 8f},
@@ -145,12 +145,12 @@ namespace GodsAndPantheons
              }
             },
             {"God Of gods", new Dictionary<string, float>(){
-                {S.damage, 200f},
-                {S.health, 1000f},
-                {S.attack_speed, 60f},
+                {S.damage, 120f},
+                {S.health, 825f},
+                {S.attack_speed, 12f},
                 {S.critical_chance, 0.5f},
                 {S.intelligence, 30f},
-                {S.armor, 50f},
+                {S.armor, 46f},
                 {S.scale, 0.075f},
                 {S.range, 20f},
                 {S.dodge, 35f},
@@ -190,7 +190,6 @@ namespace GodsAndPantheons
                 "acid_Proof",
                 "freeze_proof",
                 "shiny",
-                "energized",
                 "immortal",
                 "nightchild",
                 "moonchild",
@@ -271,6 +270,7 @@ namespace GodsAndPantheons
                 "giant",
                 "strong",
                 "fat",
+                "fire_proof",
                 "freeze_proof",
                 "tough",
                 "immortal",
@@ -282,6 +282,7 @@ namespace GodsAndPantheons
                 "strong",
                 "ambitious",
                 "freeze_proof",
+                "fire_proof",
                 "pyromaniac",
                 "veteran",
                 "immortal",
@@ -534,12 +535,12 @@ namespace GodsAndPantheons
                 {
                     if (IsGod(a.a))
                     {
-                        if (TeleportNearActor(pTarget.a, a, 30, false, true)) SuperRegeneration(pTarget, pTile);
+                        if (TeleportNearActor(pTarget.a, a, 27, false, true)) SuperRegeneration(pTarget, pTile);
                     }
                 }
                 else if (Toolbox.randomChance(0.5f))
                 {
-                    if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(true, pTarget.a), pTarget.currentTile), 60, false, true)) SuperRegeneration(pTarget, pTile);
+                    if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 54, false, true)) SuperRegeneration(pTarget, pTile);
                 }
 
             }
@@ -612,7 +613,7 @@ namespace GodsAndPantheons
                                 Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x + 35f, pSelf.currentPosition.y + 95f, (float)pos.x + 1f, (float)pos.y + 1f, pDist, true); // the Point of the projectile launcher 
                                 Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
                                 EffectsLibrary.spawnProjectile("moonFall", newPoint, newPoint2, 0.0f);
-                                pSelf.a.addStatusEffect("invincible", 2f); break;
+                                pSelf.a.addStatusEffect("invincible", 1f); break;
                             }
                     }
                 }
@@ -752,7 +753,7 @@ namespace GodsAndPantheons
                 if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "SummonMeteor%")))
                 {
                     EffectsLibrary.spawn("fx_meteorite", pTarget.currentTile, "meteorite_disaster", null, 0f, -1f, -1f);    //spawn 1 meteorite
-                    pSelf.a.addStatusEffect("invincible", 5f);
+                    pSelf.a.addStatusEffect("invincible", 1f);
                 }
                 if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "PagesOfKnowledge%")))
                 {
@@ -778,7 +779,7 @@ namespace GodsAndPantheons
                 if (Toolbox.randomChance(GetEnhancedChance("God Of the Night", "cloudOfDarkness%")))
                 {
                     EffectsLibrary.spawn("fx_antimatter_effect", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
-                    pSelf.a.addStatusEffect("invincible", 5f);
+                    pSelf.a.addStatusEffect("invincible", 1f);
                 }
                 if (Toolbox.randomChance(GetEnhancedChance("God Of the Night", "blackHole%")))
                 {
@@ -831,13 +832,13 @@ namespace GodsAndPantheons
                     MapAction.damageWorld(pTarget.currentTile.neighbours[2], 8, AssetManager.terraform.get("cometAzureDownDamage"), null);
                     MapAction.damageWorld(pTarget.currentTile.neighbours[1], 8, AssetManager.terraform.get("cometAzureDownDamage"), null);
                     World.world.applyForce(pTarget.currentTile.neighbours[0], 4, 0.4f, false, true, 200, null, pTarget, null);
-                    pSelf.a.addStatusEffect("invincible", 5f);
+                    pSelf.a.addStatusEffect("invincible", 1f);
                 }
                 if (Toolbox.randomChance(GetEnhancedChance("God Of the Stars", "cometShower%")))
                 {
                     EffectsLibrary.spawnAtTile("fx_cometShower_dej", pTarget.a.currentTile, 0.09f);
                     MapAction.applyTileDamage(pTarget.currentTile, 2f, AssetManager.terraform.get("cometRain"));
-                    pSelf.a.addStatusEffect("invincible", 5f);
+                    pSelf.a.addStatusEffect("invincible", 1f);
                     // The Rain Damage effect 
                     MapAction.applyTileDamage(pTarget.currentTile.neighbours[2].neighbours[2].neighbours[1].neighbours[1], 2f, AssetManager.terraform.get("cometRain"));
                     MapAction.applyTileDamage(pTarget.currentTile.neighbours[3].neighbours[3].neighbours[2].neighbours[2], 1f, AssetManager.terraform.get("cometRain"));
@@ -881,12 +882,12 @@ namespace GodsAndPantheons
                     {
                         pb.divineLightFX(pTarget.a.currentTile, null);
                         EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
-                        pSelf.a.addStatusEffect("invincible", 5f);
+                        pSelf.a.addStatusEffect("invincible", 1f);
                     }
                     if (Toolbox.randomChance(GetEnhancedChance("God Of light", "beamOfLight%")))
                     {
                         pb.divineLightFX(pTarget.a.currentTile, null);
-                        pTarget.a.addStatusEffect("burning", 5f);
+                        pTarget.a.addStatusEffect("burning", 1f);
 
                     }
                     if (Toolbox.randomChance(GetEnhancedChance("God Of light", "speedOfLight%")))
@@ -939,7 +940,7 @@ namespace GodsAndPantheons
 
 
 
-                        pSelf.a.addStatusEffect("invincible", 5f);
+                        pSelf.a.addStatusEffect("invincible", 1f);
                     }
                 }
 

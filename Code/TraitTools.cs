@@ -36,6 +36,7 @@ namespace GodsAndPantheons
                 }
             }
         }
+        //returns true if a trait is added
         public static bool AddAutoTraits(Actor a, string trait, bool mustbeinherited = false)
         {
             bool returned = false;
@@ -84,8 +85,7 @@ namespace GodsAndPantheons
         public static List<Actor> GetMinions(Actor a)
         {
             List<Actor> MyMinions = new List<Actor>();
-            List<Actor> simpleList = World.world.units.getSimpleList();
-            foreach (Actor actor in simpleList)
+            foreach (Actor actor in World.world.units)
             {
                actor.data.get("Master", out string master, "");
                if (a.data.id.Equals(master))
@@ -144,15 +144,20 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        public static List<Actor> FindGods(bool CanAttack, Actor a)
+        public static List<Actor> FindGods(Actor a, bool CanAttack = false, bool includeself = false)
         {
             List<Actor> Gods = new List<Actor>();
-            List<Actor> simpleList = World.world.units.getSimpleList();
-            foreach (Actor actor in simpleList)
+            foreach (BaseSimObject actor in World.world.units)
             {
-                if (IsGod(actor) && (!CanAttack || a.canAttackTarget(actor)))
+                if (a.isActor())
                 {
-                    Gods.Add(actor);
+                    if (actor.a != a || includeself)
+                    {
+                        if (IsGod(actor.a) && (!CanAttack || a.canAttackTarget(actor)))
+                        {
+                            Gods.Add(actor.a);
+                        }
+                    }
                 }
             }
             return Gods;

@@ -102,7 +102,7 @@ namespace GodsAndPantheons
             }
             if (loadedData.settingVersion != correctSettingsVersion)
             {
-                saveSettings(loadedData);
+                saveSettings();
                 return false;
             }
             savedSettings = loadedData;
