@@ -1,13 +1,7 @@
-﻿using ai;
-using ai.behaviours;
+﻿using ai.behaviours;
 using HarmonyLib;
-using NeoModLoader.General;
 using ReflectionUtility;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 //Harmony Patches
 namespace GodsAndPantheons
 {
@@ -21,7 +15,10 @@ namespace GodsAndPantheons
                 BaseSimObject? a = Reflection.GetField(typeof(ActorBase), __instance, "attackTarget") as BaseSimObject;
                 if (a != null)
                 {
-                    if (Traits.IsGod(a.a) && a.isAlive()) { return false; }
+                    if (a.isActor())
+                    {
+                        if (Traits.IsGod(a.a) && a.isAlive()) { return false; }
+                    }
                 }
             }
             return true;

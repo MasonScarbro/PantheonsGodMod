@@ -1,4 +1,4 @@
-using System.Globalization;
+awwusing System.Globalization;
 using NCMS.Utils;
 using UnityEngine;
 using UnityEngine.Events;
@@ -90,40 +90,18 @@ namespace GodsAndPantheons
             {
                 text = pInput.inputField.text;
             }
-            int num = -1;
-            if (!int.TryParse(text, out num))
+            float num;
+            if (!float.TryParse(text, out num))
             {
                 return "0";
             }
-            if (num > 999999999)
+            if (num > 1000)
             {
-                return "999999999";
+                return "1000";
             }
-            if (num < -999999999)
+            if (num < -100)
             {
-                return "-999999999";
-            }
-            return text;
-        }
-        public static string checkStatFloatInput(NameInput pInput = null, string pText = null)
-        {
-            string text = pText;
-            if (pInput != null)
-            {
-                text = pInput.inputField.text;
-            }
-            float num = -1f;
-            if (!float.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out num))
-            {
-                return "0";
-            }
-            if (num > 999999999f)
-            {
-                return "999999999";
-            }
-            if (num < -999999999f)
-            {
-                return "-999999999";
+                return "-100";
             }
             return text;
         }

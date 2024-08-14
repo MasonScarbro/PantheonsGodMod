@@ -15,15 +15,15 @@ namespace GodsAndPantheons
               new Dictionary<string, InputOption>
              {
               {"KnowledgeGodPwr1%", new InputOption{active = true, value = "20" }},
-              {"KnowledgeGodPwr2%", new InputOption{active = true, value = "15" }},
+              {"KnowledgeGodPwr2%", new InputOption{active = true, value = "5" }},
               {"KnowledgeGodPwr3%", new InputOption{active = true, value = "20" }},
-              {"KnowledgeGodPwr4%", new InputOption{active = true, value = "10" }},
+              {"KnowledgeGodPwr4%", new InputOption{active = true, value = "1" }},
               {"KnowledgeGodPwr5%", new InputOption{active = true, value = "5" }},
               {"SummonLightning%", new InputOption{active = true, value = "9" }},
               {"SummonMeteor%", new InputOption{active = true, value = "3" }},
               {"PagesOfKnowledge%", new InputOption{active = true, value = "3" }},
               {"EnemySwap%", new InputOption{active = true, value = "20" }},
-              {"God Of Knowledgeinherit%", new InputOption{active = true, value = "30" }}
+              {"God Of Knowledgeinherit%", new InputOption{active = true, value = "35" }}
              }   
             },
             {"LichGodWindow", 
@@ -102,7 +102,7 @@ namespace GodsAndPantheons
                   {"Power2%", new InputOption{active = true, value = "20" }},
                   {"Power3%", new InputOption{active = true, value = "5" }},
                   {"Power4%", new InputOption{active = true, value = "15" }},
-                  {"God Of Chaosinherit%", new InputOption{active = true, value = "35" }}
+                  {"God Of Chaosinherit%", new InputOption{active = true, value = "30" }}
               }
             }
         };
