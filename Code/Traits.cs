@@ -1179,8 +1179,6 @@ namespace GodsAndPantheons
                 {
 
                     buildMountain(pTile);
-                    Debug.Log("IGNORE THIS ERROR AND KEEP PLAYING!");
-
                 }
 
                 return true;
