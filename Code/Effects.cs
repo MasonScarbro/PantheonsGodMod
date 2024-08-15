@@ -4,11 +4,12 @@ VERSION: 1.0.0
 */
 using System.Collections.Generic;
 using ReflectionUtility;
+using UnityEngine;
 
 namespace GodsAndPantheons
 {
     class Effects
-    { 
+    {
         public static void init()
         {
 
@@ -48,18 +49,18 @@ namespace GodsAndPantheons
             localizeStatus(darkGodEra.id, "Nights_Prevail", darkGodEra.description); // Localizes the status effect
             AssetManager.status.add(darkGodEra);
 
-	        StatusEffect GodOfGodsEra = new StatusEffect();
+            StatusEffect GodOfGodsEra = new StatusEffect();
             GodOfGodsEra.id = "God_Of_All";
             GodOfGodsEra.duration = 7000f;
             GodOfGodsEra.base_stats[S.mod_armor] = 0.5f;
-	        GodOfGodsEra.base_stats[S.mod_damage] = 0.5f;
-	        GodOfGodsEra.base_stats[S.range] += 10;
+            GodOfGodsEra.base_stats[S.mod_damage] = 0.5f;
+            GodOfGodsEra.base_stats[S.range] += 10;
             GodOfGodsEra.base_stats[S.mod_health] = 0.5f;
             GodOfGodsEra.base_stats[S.speed] += 70;
             GodOfGodsEra.base_stats[S.knockback_reduction] += 0.5f;
             GodOfGodsEra.base_stats[S.mod_crit] = 0.5f;
             GodOfGodsEra.base_stats[S.attack_speed] += 40f;
-	        GodOfGodsEra.base_stats[S.scale] += 0.075f;
+            GodOfGodsEra.base_stats[S.scale] += 0.075f;
             GodOfGodsEra.base_stats[S.dodge] += 40f;
             GodOfGodsEra.path_icon = "ui/icons/GodofGods";
             GodOfGodsEra.description = "Now i have become death, destroyer of worlds";
@@ -163,6 +164,19 @@ namespace GodsAndPantheons
             localizeStatus(lichgodera.id, "Sorrow Prevails", lichgodera.description); // Localizes the status effect
             AssetManager.status.add(lichgodera);
 
+            StatusEffect Invisible = new StatusEffect();
+            Invisible.duration = 7000f;
+            Invisible.id = "Invisible";
+            Invisible.path_icon = "Actors/Godhunter/walk_0";
+            Invisible.name = "Invisible";
+            Invisible.description = "you cant see me";
+            Invisible.base_stats[S.speed] += 60;
+            Invisible.base_stats[S.knockback_reduction] += 2f;
+            Invisible.action_interval = 0.5f;
+            Invisible.action = new WorldAction(InvisibleEffect);
+            localizeStatus(Invisible.id, "Invisible", Invisible.description); // Localizes the status effect
+            AssetManager.status.add(Invisible);
+
             StatusEffect chaosgodsera = new StatusEffect();
             chaosgodsera.duration = 7000f;
             chaosgodsera.id = "Chaos Prevails";
@@ -193,7 +207,7 @@ namespace GodsAndPantheons
             warGodsCry.path_icon = "ui/icons/warGod";
             warGodsCry.description = "A Cry Of Anger and Rage";
             warGodsCry.name = "WarGodsCry";
-            
+
             localizeStatus(warGodsCry.id, "WarGodsCry", warGodsCry.description); // Localizes the status effect
             AssetManager.status.add(warGodsCry);
 
@@ -220,10 +234,19 @@ namespace GodsAndPantheons
         }
 
         public static void localizeStatus(string id, string name, string description)
-      	{
-      		Dictionary<string, string> localizedText = Reflection.GetField(LocalizedTextManager.instance.GetType(), LocalizedTextManager.instance, "localizedText") as Dictionary<string, string>;
+        {
+            Dictionary<string, string> localizedText = Reflection.GetField(LocalizedTextManager.instance.GetType(), LocalizedTextManager.instance, "localizedText") as Dictionary<string, string>;
             localizedText.Add(name, id);
             localizedText.Add(description, description);
+        }
+        public static bool InvisibleEffect(BaseSimObject pTarget, WorldTile pTile)
+        {
+            Color mycolor = pTarget.GetComponent<SpriteRenderer>().color;
+            if(mycolor.a != 0.4)
+            {
+                pTarget.GetComponent<SpriteRenderer>().color = new Color(mycolor.r, mycolor.g, mycolor.b, 0.4f);
+            }
+            return true;
         }
     }
 

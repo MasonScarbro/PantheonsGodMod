@@ -16,7 +16,6 @@ namespace GodsAndPantheons
     //Contains the traits and their abilities & Stats
     partial class Traits
     {
-
         public static Dictionary<string, Dictionary<string, float>> TraitStats = new Dictionary<string, Dictionary<string, float>>()
         {
             {"God Of Chaos", new Dictionary<string, float>(){
@@ -465,7 +464,9 @@ namespace GodsAndPantheons
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(AutoTrait));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(ChaseGod));
-            godHunter.group_id = "GodTraits";
+            godHunter.action_attack_target = new AttackAction(GodHunterAttack);
+            godHunter.group_id = TraitGroup.special;
+            godHunter.can_be_given = false;
             AddTrait(godHunter, "He will stop at NOTHING to kill a god");
 
             //my traits
@@ -505,6 +506,16 @@ namespace GodsAndPantheons
             AddTrait(FailedGod, "his Genes were recessive");
             pb = new PowerLibrary();
         }
+
+        private static bool GodHunterAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (pSelf.isActor())
+            {
+                pSelf.a.data.set("invisiblecooldown", 5);
+            }
+            return true;
+        }
+
         //to make summoned ones only live for like 30 secounds
         public static bool SummonedBeing(BaseSimObject pTarget, WorldTile pTile)
         {
@@ -533,28 +544,37 @@ namespace GodsAndPantheons
                 BaseSimObject? a = Reflection.GetField(typeof(ActorBase), pTarget, "attackTarget") as BaseSimObject;
                 if (a != null)
                 {
+                    if (pTarget.hasStatus("Invisible"))
+                    {
+                        pTarget.finishStatusEffect("Invisible");
+                        pTarget.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                    }
                     if (IsGod(a.a))
                     {
-                        if (TeleportNearActor(pTarget.a, a, 27, false, true)) SuperRegeneration(pTarget, pTile);
+                        if (TeleportNearActor(pTarget.a, a, 27, false, true)) SuperRegeneration(pTarget, 25, 5);
                     }
                 }
-                else if (Toolbox.randomChance(0.5f))
+                else
                 {
-                    if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 54, false, true)) SuperRegeneration(pTarget, pTile);
+                  pTarget.a.data.get("invisiblecooldown", out int invisiblecooldown);
+                  if (invisiblecooldown == 0)
+                  {
+                      pTarget.addStatusEffect("Invisible");
+                  }
+                  else
+                  {
+                      pTarget.a.data.set("invisiblecooldown", invisiblecooldown - 1);
+                  }
+                  if (Toolbox.randomChance(0.5f))
+                  {
+                      if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 54, false, true)) SuperRegeneration(pTarget, 50, 25);
+                  }
                 }
-
             }
             return true;
         }
         
-        public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile)
-        {
-            if (Toolbox.randomChance(0.1f))
-            {
-                pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * 0.05f));
-            }
-           return true;
-        }
+        public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile) => SuperRegeneration(pTarget, 10, 5);
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {

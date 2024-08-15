@@ -5,6 +5,28 @@ using System.Collections.Generic;
 //Harmony Patches
 namespace GodsAndPantheons
 {
+    [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
+    public class DontAttack
+    {
+        static bool Prefix(BaseSimObject __instance, BaseSimObject pTarget)
+        {
+            if (pTarget.hasStatus("Invisible"))
+            {
+                return false;
+            }
+            if (__instance.hasStatus("Invisible")){
+                if (pTarget.isActor())
+                {
+                    if (Traits.IsGod(pTarget.a))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+    }
     [HarmonyPatch(typeof(ActorBase), "clearAttackTarget")]
     public class KEEPATTACKING
     {
@@ -32,6 +54,10 @@ namespace GodsAndPantheons
             if (Traits.IsGod(pDeadUnit))
             {
                 __instance.addTrait("God Killer");
+            }
+            if (__instance.hasTrait("God Hunter"))
+            {
+                Traits.SuperRegeneration(__instance, 90, 50);
             }
         }
     }
