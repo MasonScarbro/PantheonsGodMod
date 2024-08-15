@@ -464,6 +464,7 @@ namespace GodsAndPantheons
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(AutoTrait));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(ChaseGod));
+            godHunter.action_attack_target = new AttackAction(GodHunterAttack);
             godHunter.group_id = TraitGroup.special;
             godHunter.can_be_given = false;
             AddTrait(godHunter, "He will stop at NOTHING to kill a god");
@@ -505,6 +506,16 @@ namespace GodsAndPantheons
             AddTrait(FailedGod, "his Genes were recessive");
             pb = new PowerLibrary();
         }
+
+        private static bool GodHunterAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (pSelf.isActor())
+            {
+                pSelf.a.data.set("invisiblecooldown", 5);
+            }
+            return true;
+        }
+
         //to make summoned ones only live for like 30 secounds
         public static bool SummonedBeing(BaseSimObject pTarget, WorldTile pTile)
         {

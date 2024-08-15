@@ -58,7 +58,6 @@ namespace GodsAndPantheons
             if (__instance.hasTrait("God Hunter"))
             {
                 Traits.SuperRegeneration(__instance, 90, 50);
-                __instance.data.set("invisiblecooldown", 5);
             }
         }
     }
