@@ -464,7 +464,8 @@ namespace GodsAndPantheons
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(AutoTrait));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(ChaseGod));
-            godHunter.group_id = "GodTraits";
+            godHunter.group_id = TraitGroup.special;
+            godHunter.can_be_given = false;
             AddTrait(godHunter, "He will stop at NOTHING to kill a god");
 
             //my traits
@@ -532,6 +533,11 @@ namespace GodsAndPantheons
                 BaseSimObject? a = Reflection.GetField(typeof(ActorBase), pTarget, "attackTarget") as BaseSimObject;
                 if (a != null)
                 {
+                    if (pTarget.hasStatus("Invisible"))
+                    {
+                        pTarget.finishStatusEffect("Invisible");
+                        pTarget.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                    }
                     if (IsGod(a.a))
                     {
                         if (TeleportNearActor(pTarget.a, a, 27, false, true)) SuperRegeneration(pTarget, 25, 5);
@@ -539,29 +545,19 @@ namespace GodsAndPantheons
                 }
                 else
                 {
-                    Actor godtohunt = Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile);
-                    float distancetogod = Vector2.Distance(godtohunt.currentPosition, pTarget.currentPosition);
-                    if (pTarget.hasStatus("Invisible"))
-                    {
-                        if (distancetogod < 5f)
-                        {
-                            pTarget.GetComponent<SpriteRenderer>().sharedMaterial = LibraryMaterials.instance.mat_world_object;
-                            pTarget.finishStatusEffect("Invisible");
-                            pTarget.a.setAttackTarget(godtohunt);
-                        }
-                        else
-                        {
-                            pTarget.a.setTileTarget(godtohunt.currentTile);
-                        }
-                    }
-                    else if(distancetogod > 5f)
-                    {
-                        pTarget.addStatusEffect("Invisible");
-                    }
-                    if (Toolbox.randomChance(0.5f))
-                    {
-                        if (TeleportNearActor(pTarget.a, godtohunt, 54, false, true)) SuperRegeneration(pTarget, 50, 25);
-                    }
+                  pTarget.a.data.get("invisiblecooldown", out int invisiblecooldown);
+                  if (invisiblecooldown == 0)
+                  {
+                      pTarget.addStatusEffect("Invisible");
+                  }
+                  else
+                  {
+                      pTarget.a.data.set("invisiblecooldown", invisiblecooldown - 1);
+                  }
+                  if (Toolbox.randomChance(0.5f))
+                  {
+                      if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 54, false, true)) SuperRegeneration(pTarget, 50, 25);
+                  }
                 }
             }
             return true;

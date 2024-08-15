@@ -10,8 +10,18 @@ namespace GodsAndPantheons
     {
         static bool Prefix(BaseSimObject __instance, BaseSimObject pTarget)
         {
-            if (pTarget.hasStatus("Invisible") || __instance.hasStatus("Invisible"))
+            if (pTarget.hasStatus("Invisible"))
             {
+                return false;
+            }
+            if (__instance.hasStatus("Invisible")){
+                if (pTarget.isActor())
+                {
+                    if (Traits.IsGod(pTarget.a))
+                    {
+                        return true;
+                    }
+                }
                 return false;
             }
             return true;
@@ -44,6 +54,11 @@ namespace GodsAndPantheons
             if (Traits.IsGod(pDeadUnit))
             {
                 __instance.addTrait("God Killer");
+            }
+            if (__instance.hasTrait("God Hunter"))
+            {
+                Traits.SuperRegeneration(__instance, 90, 50);
+                __instance.data.set("invisiblecooldown", 5);
             }
         }
     }
