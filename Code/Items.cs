@@ -582,8 +582,6 @@ namespace GodsAndPantheons
                 {
 
                     buildMountainPath(pTile, pSelf, pTarget);
-                    //Debug.Log("IGNORE THIS ERROR AND KEEP PLAYING!");
-
                 }
 
                 return true;
@@ -598,8 +596,6 @@ namespace GodsAndPantheons
             
             List<WorldTile> selfTiles = pSelf.a.current_path;
             List<WorldTile> targetTiles = pTarget.a.current_path;
-
-            //Debug.Log(selfTiles);
             if (selfTiles != null)
             {
                 int length = selfTiles.Count;

@@ -111,6 +111,7 @@ namespace GodsAndPantheons
 
             StatusEffect EarthGodEra = new StatusEffect();
             EarthGodEra.id = "Earth Prevails";
+            EarthGodEra.opposite_status = new List<string>() { "cough", "ash_fever" };
             EarthGodEra.duration = 7000f;
             EarthGodEra.base_stats[S.health] += 500;
             EarthGodEra.base_stats[S.mod_speed] += 0.25f;
@@ -188,6 +189,7 @@ namespace GodsAndPantheons
             chaosgodsera.base_stats[S.speed] += 30;
             chaosgodsera.base_stats[S.knockback_reduction] += 2f;
             chaosgodsera.base_stats[S.knockback] += 2f;
+            chaosgodsera.opposite_status = new List<string>() { "rage" };
             chaosgodsera.base_stats[S.attack_speed] += 8f;
             chaosgodsera.base_stats[S.damage] += 30f;
             chaosgodsera.action_interval = 2;
