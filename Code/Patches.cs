@@ -5,6 +5,18 @@ using System.Collections.Generic;
 //Harmony Patches
 namespace GodsAndPantheons
 {
+    [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
+    public class DontAttack
+    {
+        static bool Prefix(BaseSimObject __instance, BaseSimObject pTarget)
+        {
+            if (pTarget.hasStatus("Invisible") || __instance.hasStatus("Invisible"))
+            {
+                return false;
+            }
+            return true;
+        }
+    }
     [HarmonyPatch(typeof(ActorBase), "clearAttackTarget")]
     public class KEEPATTACKING
     {

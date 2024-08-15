@@ -186,6 +186,14 @@ namespace GodsAndPantheons
             }
             return false;
         }
+        public static bool SuperRegeneration(BaseSimObject pTarget, float chance, float percent)
+        {
+            if (Toolbox.randomChance(chance / 100))
+            {
+                pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * (percent / 100)));
+            }
+            return true;
+        }
         //returns the raw chance
         public static float GetChance(string ID, string Chance, float Default = 0) => Main.savedSettings.Chances.ContainsKey(ID) ? Main.savedSettings.Chances[ID].ContainsKey(Chance) ? Main.savedSettings.Chances[ID][Chance].active ? float.Parse(Main.savedSettings.Chances[ID][Chance].value) : 0 : Default : Default;
         //returns 2 if the trait's era is one, 1 if it is not, Default if the trait is not found

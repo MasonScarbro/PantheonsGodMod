@@ -16,7 +16,6 @@ namespace GodsAndPantheons
     //Contains the traits and their abilities & Stats
     partial class Traits
     {
-
         public static Dictionary<string, Dictionary<string, float>> TraitStats = new Dictionary<string, Dictionary<string, float>>()
         {
             {"God Of Chaos", new Dictionary<string, float>(){
@@ -535,26 +534,40 @@ namespace GodsAndPantheons
                 {
                     if (IsGod(a.a))
                     {
-                        if (TeleportNearActor(pTarget.a, a, 27, false, true)) SuperRegeneration(pTarget, pTile);
+                        if (TeleportNearActor(pTarget.a, a, 27, false, true)) SuperRegeneration(pTarget, 25, 5);
                     }
                 }
-                else if (Toolbox.randomChance(0.5f))
+                else
                 {
-                    if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 54, false, true)) SuperRegeneration(pTarget, pTile);
+                    Actor godtohunt = Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile);
+                    float distancetogod = Vector2.Distance(godtohunt.currentPosition, pTarget.currentPosition);
+                    if (pTarget.hasStatus("Invisible"))
+                    {
+                        if (distancetogod < 5f)
+                        {
+                            pTarget.GetComponent<SpriteRenderer>().sharedMaterial = LibraryMaterials.instance.mat_world_object;
+                            pTarget.finishStatusEffect("Invisible");
+                            pTarget.a.setAttackTarget(godtohunt);
+                        }
+                        else
+                        {
+                            pTarget.a.setTileTarget(godtohunt.currentTile);
+                        }
+                    }
+                    else if(distancetogod > 5f)
+                    {
+                        pTarget.addStatusEffect("Invisible");
+                    }
+                    if (Toolbox.randomChance(0.5f))
+                    {
+                        if (TeleportNearActor(pTarget.a, godtohunt, 54, false, true)) SuperRegeneration(pTarget, 50, 25);
+                    }
                 }
-
             }
             return true;
         }
         
-        public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile)
-        {
-            if (Toolbox.randomChance(0.1f))
-            {
-                pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * 0.05f));
-            }
-           return true;
-        }
+        public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile) => SuperRegeneration(pTarget, 10, 5);
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
