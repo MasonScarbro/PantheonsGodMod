@@ -547,29 +547,34 @@ namespace GodsAndPantheons
         {
             if (pTarget.isActor() && Main.savedSettings.HunterAssasins)
             {
-                BaseSimObject? a = Reflection.GetField(typeof(ActorBase), pTarget, "attackTarget") as BaseSimObject;
-                if (a != null)
-                {
-                    if (IsGod(a.a))
+                pTarget.a.data.get("invisiblecooldown", out int invisiblecooldown);
+                pTarget.a.data.set("invisiblecooldown", invisiblecooldown > 0 ? invisiblecooldown - 1 : 0);
+                if (pTarget.a.data.health >= pTarget.a.getMaxHealth() * 0.15) { 
+                    BaseSimObject? a = Reflection.GetField(typeof(ActorBase), pTarget, "attackTarget") as BaseSimObject;
+                    if (a != null)
                     {
-                        if (TeleportNearActor(pTarget.a, a, 27, false, true)) SuperRegeneration(pTarget, 25, 5);
+                        if (IsGod(a.a))
+                        {
+                            if (TeleportNearActor(pTarget.a, a, 27, false, true)) SuperRegeneration(pTarget, 25, 5);
+                        }
+                    }
+                    else
+                    {
+                        if (invisiblecooldown == 0)
+                        {
+                            pTarget.addStatusEffect("Invisible");
+                        }
+                        if (Toolbox.randomChance(0.5f))
+                        {
+                            if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 47, false, true)) SuperRegeneration(pTarget, 50, 25);
+                        }
                     }
                 }
-                else
+                else if (!pTarget.hasStatus("Invisible") /* && invisiblecooldown <= 18*/)
                 {
-                  pTarget.a.data.get("invisiblecooldown", out int invisiblecooldown);
-                  if (invisiblecooldown == 0)
-                  {
-                      pTarget.addStatusEffect("Invisible");
-                  }
-                  else
-                  {
-                      pTarget.a.data.set("invisiblecooldown", invisiblecooldown - 1);
-                  }
-                  if (Toolbox.randomChance(0.5f))
-                  {
-                      if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 47, false, true)) SuperRegeneration(pTarget, 50, 25);
-                  }
+                    ActionLibrary.teleportRandom(null, pTarget, null);
+                    pTarget.addStatusEffect("Invisible");
+                    pTarget.a.data.set("invisiblecooldown", 24);
                 }
             }
             return true;

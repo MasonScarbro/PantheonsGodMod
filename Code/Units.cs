@@ -84,11 +84,11 @@ namespace GodsAndPantheons
             godHunter.actorSize = ActorSize.S13_Human;
             godHunter.action_liquid = new WorldAction(ActionLibrary.swimToIsland);
             godHunter.base_stats[S.max_age] = 10000f;
-            godHunter.base_stats[S.health] = 275;
+            godHunter.base_stats[S.health] = 300;
             godHunter.base_stats[S.damage] = 30f;
             godHunter.base_stats[S.speed] = 75f;
-            godHunter.base_stats[S.armor] = 1f;
-            godHunter.base_stats[S.attack_speed] = 90f;
+            godHunter.base_stats[S.armor] = 2f;
+            godHunter.base_stats[S.attack_speed] = 100f;
             godHunter.base_stats[S.critical_chance] = 0.1f;
             godHunter.base_stats[S.knockback] = 0.1f;
             godHunter.base_stats[S.knockback_reduction] = 0.1f;
