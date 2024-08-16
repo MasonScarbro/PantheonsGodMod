@@ -511,6 +511,11 @@ namespace GodsAndPantheons
         {
             if (pSelf.isActor())
             {
+                if (pSelf.hasStatus("Invisible"))
+                {
+                    pSelf.finishStatusEffect("Invisible");
+                    pSelf.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                }
                 pSelf.a.data.set("invisiblecooldown", 5);
             }
             return true;
@@ -544,11 +549,6 @@ namespace GodsAndPantheons
                 BaseSimObject? a = Reflection.GetField(typeof(ActorBase), pTarget, "attackTarget") as BaseSimObject;
                 if (a != null)
                 {
-                    if (pTarget.hasStatus("Invisible"))
-                    {
-                        pTarget.finishStatusEffect("Invisible");
-                        pTarget.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
-                    }
                     if (IsGod(a.a))
                     {
                         if (TeleportNearActor(pTarget.a, a, 27, false, true)) SuperRegeneration(pTarget, 25, 5);
@@ -567,7 +567,7 @@ namespace GodsAndPantheons
                   }
                   if (Toolbox.randomChance(0.5f))
                   {
-                      if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 54, false, true)) SuperRegeneration(pTarget, 50, 25);
+                      if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 47, false, true)) SuperRegeneration(pTarget, 50, 25);
                   }
                 }
             }

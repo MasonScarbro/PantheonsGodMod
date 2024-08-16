@@ -75,7 +75,7 @@ namespace GodsAndPantheons
                 actor.data.set("lifespan", lifespan);
             }
         }
-        public static List<Actor> temp_minion_list = new List<Actor>();
+        static List<Actor> temp_minion_list = new List<Actor>();
         public static List<Actor> GetMinions(Actor a)
         {
             temp_minion_list.Clear();
@@ -119,14 +119,12 @@ namespace GodsAndPantheons
             }
             return list;
         }
-        public static List<Actor> temp_gods_list = new List<Actor>();
+        static List<Actor> temp_gods_list = new List<Actor>();
         public static List<Actor> FindGods(Actor a, bool CanAttack = false, bool includeself = false)
         {
             temp_gods_list.Clear();
             foreach (BaseSimObject actor in World.world.units)
             {
-                if (a.isActor())
-                {
                     if (actor.a != a || includeself)
                     {
                         if (IsGod(actor.a) && (!CanAttack || a.canAttackTarget(actor)))
@@ -134,7 +132,6 @@ namespace GodsAndPantheons
                             temp_gods_list.Add(actor.a);
                         }
                     }
-                }
             }
             return temp_gods_list;
         }

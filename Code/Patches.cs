@@ -14,29 +14,33 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            if (__instance.hasStatus("Invisible")){
+            if (__instance.isActor() && __instance.a.hasTrait("God Hunter"))
+            {
                 if (pTarget.isBuilding())
                 {
-                    foreach(Actor god in Traits.FindGods(__instance.a))
+                    foreach (Actor god in Traits.FindGods(__instance.a))
                     {
-                        Building? building = Reflection.GetField(typeof(Actor), god, "insideBuilding") as Building;
-                        if(building != null)
+                       Building? building = Reflection.GetField(typeof(Actor), god, "insideBuilding") as Building;
+                       if (building != null)
+                       {
+                          if (building == pTarget.b)
+                          {
+                             return true;
+                          }
+                       }
+                    }
+                }
+                if (__instance.hasStatus("Invisible"))
+                {
+                    if (pTarget.isActor())
+                    {
+                        if (Traits.IsGod(pTarget.a))
                         {
-                            if(building == pTarget.b)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
+                    return false;
                 }
-                if (pTarget.isActor())
-                {
-                    if (Traits.IsGod(pTarget.a))
-                    {
-                        return true;
-                    }
-                }
-                return false;
             }
             return true;
         }
