@@ -51,13 +51,13 @@ namespace GodsAndPantheons
                         "Modify The Value Of This Setting",
                         0,
                         contents,
-                        kv.Value.value
+                        $"{kv.Value.value}"
                     );
                     input.inputField.characterValidation = InputField.CharacterValidation.Decimal;
                     input.inputField.onValueChanged.AddListener(delegate {
-                        string pValue = NewUI.checkStatInput(input);
+                        float pValue = NewUI.checkStatInput(input);
                         Main.modifyGodOption(ID, kv.Key, PowerButtons.GetToggleValue($"{kv.Key}Button"), pValue);
-                        input.setText(pValue);
+                        input.setText($"{pValue}");
                     });
 
                     PowerButton activeButton = PowerButtons.CreateButton(

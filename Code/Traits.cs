@@ -511,6 +511,11 @@ namespace GodsAndPantheons
         {
             if (pSelf.isActor())
             {
+                if (pSelf.hasStatus("Invisible"))
+                {
+                    pSelf.finishStatusEffect("Invisible");
+                    pSelf.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                }
                 pSelf.a.data.set("invisiblecooldown", 5);
             }
             return true;
@@ -544,11 +549,6 @@ namespace GodsAndPantheons
                 BaseSimObject? a = Reflection.GetField(typeof(ActorBase), pTarget, "attackTarget") as BaseSimObject;
                 if (a != null)
                 {
-                    if (pTarget.hasStatus("Invisible"))
-                    {
-                        pTarget.finishStatusEffect("Invisible");
-                        pTarget.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
-                    }
                     if (IsGod(a.a))
                     {
                         if (TeleportNearActor(pTarget.a, a, 27, false, true)) SuperRegeneration(pTarget, 25, 5);
@@ -567,18 +567,16 @@ namespace GodsAndPantheons
                   }
                   if (Toolbox.randomChance(0.5f))
                   {
-                      if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 54, false, true)) SuperRegeneration(pTarget, 50, 25);
+                      if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 47, false, true)) SuperRegeneration(pTarget, 50, 25);
                   }
                 }
             }
             return true;
         }
-        
         public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile) => SuperRegeneration(pTarget, 10, 5);
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            Actor self = (Actor)pSelf;
             if (pTarget != null)
             {
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
@@ -637,7 +635,6 @@ namespace GodsAndPantheons
                             }
                     }
                 }
-
                 return true;
             }
             return false;
@@ -880,14 +877,29 @@ namespace GodsAndPantheons
                 {
                     Summon(SA.wolf, 3, pSelf, pTile);
                 }
-
-
-
                 return true;
             }
             return false;
         }
-
+        public static bool BringMinions(BaseSimObject pTarget, WorldTile pTile)
+        {
+            List<Actor> Minions = GetMinions(pTarget.a);
+            foreach (Actor a in Minions)
+            {
+                if (a.kingdom != pTarget.kingdom)
+                {
+                    a.setKingdom(pTarget.kingdom);
+                }
+                float pDist = Vector2.Distance(pTarget.currentPosition, a.currentPosition);
+                if (pDist > 50)
+                {
+                    EffectsLibrary.spawnAt("fx_teleport_blue", pTarget.currentPosition, a.stats[S.scale]);
+                    a.cancelAllBeh();
+                    a.spawnOn(pTarget.currentTile, 0f);
+                }
+            }
+            return true;
+        }
         public static bool sunGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
 
@@ -1100,24 +1112,6 @@ namespace GodsAndPantheons
                     }
                 }
             }
-            return true;
-        }
-        public static bool EraStatus(Actor Master, Actor Me)
-        {
-                foreach (string era in TraitEras.Keys)
-                {
-                    if (Master.a.hasTrait(era))
-                    {
-                        if (World.world_era.id == TraitEras[era].Key)
-                        {
-                        Me.addStatusEffect(TraitEras[era].Value);
-                        }
-                        else if (Me.hasStatus(TraitEras[era].Value))
-                        {
-                        Me.finishStatusEffect(TraitEras[era].Value);
-                        }
-                    }
-                }
             return true;
         }
         private static bool SummonedOneEraStatus(BaseSimObject pSelf, WorldTile pTile)
