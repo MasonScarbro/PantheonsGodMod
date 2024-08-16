@@ -74,10 +74,6 @@ namespace GodsAndPantheons
             {
                 __instance.addTrait("God Killer");
             }
-            if (__instance.hasTrait("God Hunter"))
-            {
-                Traits.SuperRegeneration(__instance, 90, 50);
-            }
         }
     }
     [HarmonyPatch(typeof(CityBehProduceUnit), "checkGreatClan")]

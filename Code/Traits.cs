@@ -514,9 +514,10 @@ namespace GodsAndPantheons
                 if (pSelf.hasStatus("Invisible"))
                 {
                     pSelf.finishStatusEffect("Invisible");
+                    pSelf.addStatusEffect("powerup", 15);
                     pSelf.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
                 }
-                pSelf.a.data.set("invisiblecooldown", 5);
+                pSelf.a.data.set("invisiblecooldown", 20);
             }
             return true;
         }
@@ -573,7 +574,7 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile) => SuperRegeneration(pTarget, 10, 5);
+        public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile) => SuperRegeneration(pTarget, 15, 5);
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
