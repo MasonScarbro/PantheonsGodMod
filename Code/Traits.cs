@@ -573,7 +573,6 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        
         public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile) => SuperRegeneration(pTarget, 10, 5);
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -1113,24 +1112,6 @@ namespace GodsAndPantheons
                     }
                 }
             }
-            return true;
-        }
-        public static bool EraStatus(Actor Master, Actor Me)
-        {
-                foreach (string era in TraitEras.Keys)
-                {
-                    if (Master.a.hasTrait(era))
-                    {
-                        if (World.world_era.id == TraitEras[era].Key)
-                        {
-                        Me.addStatusEffect(TraitEras[era].Value);
-                        }
-                        else if (Me.hasStatus(TraitEras[era].Value))
-                        {
-                        Me.finishStatusEffect(TraitEras[era].Value);
-                        }
-                    }
-                }
             return true;
         }
         private static bool SummonedOneEraStatus(BaseSimObject pSelf, WorldTile pTile)

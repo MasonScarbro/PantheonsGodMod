@@ -49,7 +49,7 @@ namespace GodsAndPantheons
             godHunter.run_to_water_when_on_fire = true;
             godHunter.canBeKilledByStuff = true;
             godHunter.canBeKilledByLifeEraser = true;
-            godHunter.canAttackBuildings = false;
+            godHunter.canAttackBuildings = true;
             godHunter.canBeMovedByPowers = true;
             godHunter.canBeHurtByPowers = true;
             godHunter.canTurnIntoZombie = false;

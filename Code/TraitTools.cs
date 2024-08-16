@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
+using static UnityEngine.ParticleSystem;
 
 namespace GodsAndPantheons
 {
@@ -26,32 +28,21 @@ namespace GodsAndPantheons
             PlayerConfig.unlockTrait(Trait.id);
             addTraitToLocalizedLibrary(Trait.id, disc);
         }
-        public static void AddAutoTraits(ActorData a, string trait, bool mustbeinherited = false)
+        //returns true if a trait is added
+        public static bool AddAutoTraits(ActorData a, string trait, bool mustbeinherited = false)
         {
+            bool addednew = false;
             foreach (string autotrait in AutoTraits[trait])
             {
-                if (Toolbox.randomChance(GetEnhancedChance(trait, trait+"inherit%")) || !mustbeinherited)
+                if (!mustbeinherited || Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%")))
                 {
+                    if (!a.traits.Contains(autotrait)) addednew = true;
                     a.addTrait(autotrait);
                 }
             }
+            return addednew;
         }
-        //returns true if a trait is added
-        public static bool AddAutoTraits(Actor a, string trait, bool mustbeinherited = false)
-        {
-            bool returned = false;
-            foreach (string autotrait in AutoTraits[trait])
-            {
-                if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%")) || !mustbeinherited)
-                {
-                    if (a.addTrait(autotrait))
-                    {
-                        returned = true;
-                    }
-                }
-            }
-            return returned;
-        }
+        public static bool AddAutoTraits(Actor a, string trait) => AddAutoTraits(a.data, trait);
         public static bool AutoTrait(ActorData pTarget, List<string> traits, bool MustBeInherited = false)
         {
             foreach (string trait in AutoTraits.Keys)
@@ -63,37 +54,40 @@ namespace GodsAndPantheons
              }
             return true;
         }
+        static readonly List<string> summonedoneautotraits = new List<string>() { "regeneration", "fire_proof", "acid_proof"};
         //summon ability
-        public static void Summon(string creature, int times, BaseSimObject pSelf, WorldTile Ptile, int lifespan = 31)
+        public static void Summon(string creature, int times, BaseSimObject pSelf, WorldTile Ptile, int lifespan = 31, List<string>? autotraits = null)
         {
             Actor self = (Actor)pSelf;
             for (int i = 0; i < times; i++)
             {
                 Actor actor = World.world.units.spawnNewUnit(creature, Ptile, true, 3f);
                 actor.data.name = $"Summoned by {self.getName()}";
+                foreach (string trait in autotraits ?? summonedoneautotraits)
+                {
+                    actor.addTrait(trait);
+                }
                 actor.data.set("Master", self.data.id);
                 actor.addTrait("Summoned One");
-                actor.addTrait("regeneration");
                 actor.setKingdom(self.kingdom);
-                actor.addTrait("fire_proof");
-                actor.addTrait("acid_proof");
                 actor.removeTrait("immortal");
                 actor.data.set("life", 0);
                 actor.data.set("lifespan", lifespan);
             }
         }
+        public static List<Actor> temp_minion_list = new List<Actor>();
         public static List<Actor> GetMinions(Actor a)
         {
-            List<Actor> MyMinions = new List<Actor>();
+            temp_minion_list.Clear();
             foreach (Actor actor in World.world.units)
             {
                actor.data.get("Master", out string master, "");
                if (a.data.id.Equals(master))
                {
-                  MyMinions.Add(actor);
+                 temp_minion_list.Add(actor);
                }
             }
-            return MyMinions;
+            return temp_minion_list;
         }
         public static bool IsGod(Actor a)
             => GetGodTraits(a).Count > 0
@@ -125,9 +119,10 @@ namespace GodsAndPantheons
             }
             return list;
         }
+        public static List<Actor> temp_gods_list = new List<Actor>();
         public static List<Actor> FindGods(Actor a, bool CanAttack = false, bool includeself = false)
         {
-            List<Actor> Gods = new List<Actor>();
+            temp_gods_list.Clear();
             foreach (BaseSimObject actor in World.world.units)
             {
                 if (a.isActor())
@@ -136,25 +131,23 @@ namespace GodsAndPantheons
                     {
                         if (IsGod(actor.a) && (!CanAttack || a.canAttackTarget(actor)))
                         {
-                            Gods.Add(actor.a);
+                            temp_gods_list.Add(actor.a);
                         }
                     }
                 }
             }
-            return Gods;
+            return temp_gods_list;
         }
         //returns true if teleported
-        public static bool TeleportNearActor(Actor Actor, BaseSimObject Target, int distance, bool AllTiles = false, bool MustBeFar = false, byte Attempts = 10)
+        public static bool TeleportNearActor(Actor Actor, BaseSimObject Target, int distance, bool AllTiles = false, bool MustBeFar = false, byte Attempts = 20)
         {
             if (Target != null)
             {
-                if (!MustBeFar || (Vector2.Distance(Target.currentPosition, Actor.currentPosition) > distance))
+                if (!MustBeFar || Vector2.Distance(Target.currentPosition, Actor.currentPosition) > distance || !Actor.currentTile.isSameIsland(Target.currentTile))
                 {
-                    byte attempts = 0;
-                    while (attempts < Attempts)
+                    for(byte attempts = 0; attempts < Attempts; attempts++)
                     {
                         WorldTile _tile = Toolbox.getRandomTileWithinDistance(Target.currentTile, distance);
-                        attempts++;
                         if (AllTiles || (_tile.Type.ground && !_tile.Type.block && _tile.isSameIsland(Target.currentTile)))
                         {
                             Actor.cancelAllBeh();
@@ -176,7 +169,7 @@ namespace GodsAndPantheons
             return true;
         }
         //returns the raw chance
-        public static float GetChance(string ID, string Chance, float Default = 0) => Main.savedSettings.Chances.ContainsKey(ID) ? Main.savedSettings.Chances[ID].ContainsKey(Chance) ? Main.savedSettings.Chances[ID][Chance].active ? float.Parse(Main.savedSettings.Chances[ID][Chance].value) : 0 : Default : Default;
+        public static float GetChance(string ID, string Chance, float Default = 0) => Main.savedSettings.Chances.ContainsKey(ID) ? Main.savedSettings.Chances[ID].ContainsKey(Chance) ? Main.savedSettings.Chances[ID][Chance].active ? Main.savedSettings.Chances[ID][Chance].value : 0 : Default : Default;
         //returns 2 if the trait's era is one, 1 if it is not, Default if the trait is not found
         public static float GetEraMultiplier(string trait, float Default = 1) => TraitEras.Keys.Contains(trait) ? World.world_era.id == TraitEras[trait].Key ? 2 : 1f : Default;
         //returns the chance of the trait multiplied by its era multiplier devided by the devisor
@@ -275,6 +268,24 @@ namespace GodsAndPantheons
                 }
             }
             return traits;
+        }
+        public static bool EraStatus(Actor Master, Actor Me)
+        {
+            foreach (string era in TraitEras.Keys)
+            {
+                if (Master.a.hasTrait(era))
+                {
+                    if (World.world_era.id == TraitEras[era].Key)
+                    {
+                        Me.addStatusEffect(TraitEras[era].Value);
+                    }
+                    else if (Me.hasStatus(TraitEras[era].Value))
+                    {
+                        Me.finishStatusEffect(TraitEras[era].Value);
+                    }
+                }
+            }
+            return true;
         }
     }
 }

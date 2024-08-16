@@ -83,7 +83,7 @@ namespace GodsAndPantheons
 
             return buttonButton;
         }
-        public static string checkStatInput(NameInput pInput = null, string pText = null)
+        public static float checkStatInput(NameInput pInput = null, string pText = null)
         {
             string text = pText;
             if (pInput != null)
@@ -93,17 +93,17 @@ namespace GodsAndPantheons
             float num;
             if (!float.TryParse(text, out num))
             {
-                return "0";
+                return 0;
             }
             if (num > 1000)
             {
-                return "1000";
+                return 1000;
             }
             if (num < -100)
             {
-                return "-100";
+                return -100;
             }
-            return text;
+            return num;
         }
     }
 }

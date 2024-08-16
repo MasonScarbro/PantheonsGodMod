@@ -15,6 +15,20 @@ namespace GodsAndPantheons
                 return false;
             }
             if (__instance.hasStatus("Invisible")){
+                if (pTarget.isBuilding())
+                {
+                    foreach(Actor god in Traits.FindGods(__instance.a))
+                    {
+                        Building? building = Reflection.GetField(typeof(Actor), god, "insideBuilding") as Building;
+                        if(building != null)
+                        {
+                            if(building == pTarget.b)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
                 if (pTarget.isActor())
                 {
                     if (Traits.IsGod(pTarget.a))
