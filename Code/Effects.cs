@@ -246,6 +246,7 @@ namespace GodsAndPantheons
             Color mycolor = pTarget.GetComponent<SpriteRenderer>().color;
             if(mycolor.a != 0.4)
             {
+                pTarget.a.restoreHealth(pTarget.a.getMaxHealth());
                 pTarget.GetComponent<SpriteRenderer>().color = new Color(mycolor.r, mycolor.g, mycolor.b, 0.4f);
             }
             return true;

@@ -58,7 +58,7 @@ namespace GodsAndPantheons
                 {
                     if (a.isActor())
                     {
-                        if (Traits.IsGod(a.a) && a.isAlive()) { return false; }
+                        if (Traits.IsGod(a.a) && a.isAlive() && a.a.data.health >= a.a.getMaxHealth() * 0.15) { return false; }
                     }
                 }
             }
@@ -74,9 +74,9 @@ namespace GodsAndPantheons
             {
                 __instance.addTrait("God Killer");
             }
-            if (__instance.hasTrait("God Hunter"))
+            if(__instance.hasTrait("God Hunter"))
             {
-                Traits.SuperRegeneration(__instance, 90, 50);
+                Traits.SuperRegeneration(__instance, 100, Traits.IsGod(pDeadUnit) ? 50 : 2.5f);
             }
         }
     }
