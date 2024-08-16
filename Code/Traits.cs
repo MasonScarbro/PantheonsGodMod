@@ -578,7 +578,6 @@ namespace GodsAndPantheons
         //god of gods attack
         public static bool GodOfGodsAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            Actor self = (Actor)pSelf;
             if (pTarget != null)
             {
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
@@ -637,7 +636,6 @@ namespace GodsAndPantheons
                             }
                     }
                 }
-
                 return true;
             }
             return false;
@@ -880,14 +878,29 @@ namespace GodsAndPantheons
                 {
                     Summon(SA.wolf, 3, pSelf, pTile);
                 }
-
-
-
                 return true;
             }
             return false;
         }
-
+        public static bool BringMinions(BaseSimObject pTarget, WorldTile pTile)
+        {
+            List<Actor> Minions = GetMinions(pTarget.a);
+            foreach (Actor a in Minions)
+            {
+                if (a.kingdom != pTarget.kingdom)
+                {
+                    a.setKingdom(pTarget.kingdom);
+                }
+                float pDist = Vector2.Distance(pTarget.currentPosition, a.currentPosition);
+                if (pDist > 50)
+                {
+                    EffectsLibrary.spawnAt("fx_teleport_blue", pTarget.currentPosition, a.stats[S.scale]);
+                    a.cancelAllBeh();
+                    a.spawnOn(pTarget.currentTile, 0f);
+                }
+            }
+            return true;
+        }
         public static bool sunGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
 

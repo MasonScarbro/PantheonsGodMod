@@ -97,7 +97,8 @@ namespace GodsAndPantheons
         }
         public static bool IsGod(Actor a)
             => GetGodTraits(a).Count > 0
-            || a.asset.id == SA.crabzilla; //crabzilla is obviously a god, duhh
+            || a.asset.id == SA.crabzilla //crabzilla is obviously a god, duhh
+            || a.asset.id == SA.godFinger; //its in the name
 
         public static bool IsGodTrait(string a)
              => a.Equals("God Of The Lich")
@@ -123,26 +124,6 @@ namespace GodsAndPantheons
                 }
             }
             return list;
-        }
-        public static bool BringMinions(BaseSimObject pTarget, WorldTile pTile)
-        {
-            Actor b = (Actor)pTarget;
-            List<Actor> Minions = GetMinions(b);
-            foreach (Actor a in Minions)
-            {
-                if(a.kingdom != b.kingdom)
-                {
-                    a.setKingdom(b.kingdom);
-                }
-                float pDist = Vector2.Distance(pTarget.currentPosition, a.currentPosition);
-                if (pDist > 50)
-                {
-                    EffectsLibrary.spawnAt("fx_teleport_blue", pTarget.currentPosition, a.stats[S.scale]);
-                    a.cancelAllBeh();
-                    a.spawnOn(pTarget.currentTile, 0f);
-                }
-            }
-            return true;
         }
         public static List<Actor> FindGods(Actor a, bool CanAttack = false, bool includeself = false)
         {
@@ -254,7 +235,7 @@ namespace GodsAndPantheons
         {
             foreach (string trait in godtraits)
             {
-                if (Toolbox.randomChance(GetEnhancedChance(trait, trait+"inherit%", 50)))
+                if (Toolbox.randomChance(GetEnhancedChance(trait, trait+"inherit%", 55)))
                 {
                   God.addTrait(trait);
                 }
