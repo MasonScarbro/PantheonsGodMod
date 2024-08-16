@@ -76,7 +76,7 @@ namespace GodsAndPantheons
             }
             if(__instance.hasTrait("God Hunter"))
             {
-                Traits.SuperRegeneration(__instance, 80, 5);
+                Traits.SuperRegeneration(__instance, 100, Traits.IsGod(pDeadUnit) ? 50 : 2.5f);
             }
         }
     }
