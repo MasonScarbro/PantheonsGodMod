@@ -29,6 +29,7 @@ namespace GodsAndPantheons
                           }
                        }
                     }
+                    return false;
                 }
                 if (__instance.hasStatus("Invisible"))
                 {
