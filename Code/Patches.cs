@@ -25,7 +25,11 @@ namespace GodsAndPantheons
                        {
                           if (building == pTarget.b)
                           {
-                             return true;
+                             World.world.getObjectsInChunks(pTarget.currentTile, 4, MapObjectType.Actor);
+                             if (getalliesofactor(World.world.temp_map_objects, pTarget) < 6 || !__instance.hasStatus("Invisible"))
+                             {
+                                return true;
+                             }
                           }
                        }
                     }
@@ -39,7 +43,7 @@ namespace GodsAndPantheons
                         {
                             __instance.a.data.set("GodTarget", pTarget.a.data.id);
                             World.world.getObjectsInChunks(pTarget.currentTile, 4, MapObjectType.Actor);
-                            if (World.world.temp_map_objects.Count < 7)
+                            if (getalliesofactor(World.world.temp_map_objects, pTarget) < 7)
                             {
                                 return true;
                             }
@@ -49,6 +53,18 @@ namespace GodsAndPantheons
                 }
             }
             return true;
+        }
+        static int getalliesofactor(List<BaseSimObject> actors, BaseSimObject actor)
+        {
+            int count = 0;
+            foreach(BaseSimObject a in actors)
+            {
+                if(a.kingdom == actor.kingdom)
+                {
+                    count++;
+                }
+            }
+            return count;
         }
     }
     [HarmonyPatch(typeof(ActorBase), "clearAttackTarget")]
