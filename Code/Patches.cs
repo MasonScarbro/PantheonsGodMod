@@ -25,7 +25,11 @@ namespace GodsAndPantheons
                        {
                           if (building == pTarget.b)
                           {
-                             return true;
+                             World.world.getObjectsInChunks(pTarget.currentTile, 4, MapObjectType.Actor);
+                             if (getalliesofactor(World.world.temp_map_objects, pTarget) < 6 || !__instance.hasStatus("Invisible"))
+                             {
+                                return true;
+                             }
                           }
                        }
                     }
@@ -37,13 +41,30 @@ namespace GodsAndPantheons
                     {
                         if (Traits.IsGod(pTarget.a))
                         {
-                            return true;
+                            __instance.a.data.set("GodTarget", pTarget.a.data.id);
+                            World.world.getObjectsInChunks(pTarget.currentTile, 4, MapObjectType.Actor);
+                            if (getalliesofactor(World.world.temp_map_objects, pTarget) < 7)
+                            {
+                                return true;
+                            }
                         }
                     }
                     return false;
                 }
             }
             return true;
+        }
+        static int getalliesofactor(List<BaseSimObject> actors, BaseSimObject actor)
+        {
+            int count = 0;
+            foreach(BaseSimObject a in actors)
+            {
+                if(a.kingdom == actor.kingdom)
+                {
+                    count++;
+                }
+            }
+            return count;
         }
     }
     [HarmonyPatch(typeof(ActorBase), "clearAttackTarget")]
@@ -58,7 +79,7 @@ namespace GodsAndPantheons
                 {
                     if (a.isActor())
                     {
-                        if (Traits.IsGod(a.a) && a.isAlive() && a.a.data.health >= a.a.getMaxHealth() * 0.15) { return false; }
+                        if (Traits.IsGod(a.a) && a.isAlive() && !__instance.hasStatus("Invisible")) { return false; }
                     }
                 }
             }
@@ -70,13 +91,17 @@ namespace GodsAndPantheons
     {
         static void Prefix(Actor __instance, Actor pDeadUnit)
         {
-            if (Traits.IsGod(pDeadUnit))
+            bool isgod = Traits.IsGod(pDeadUnit);
+            if (isgod)
             {
                 __instance.addTrait("God Killer");
+                __instance.addStatusEffect("powerup", 10);
             }
             if(__instance.hasTrait("God Hunter"))
             {
-                Traits.SuperRegeneration(__instance, 100, Traits.IsGod(pDeadUnit) ? 50 : 2.5f);
+                Traits.SuperRegeneration(__instance, 100, isgod ? 30 : 5);
+                __instance.data.get("godskilled", out int godskilled);
+                __instance.data.set("godskilled", godskilled + (isgod ? 1 : 0));
             }
         }
     }

@@ -338,7 +338,6 @@ namespace GodsAndPantheons
             {"God Of War", new KeyValuePair<string, string>(S.age_despair, "Despair Prevails") },
             {"God Of the Earth", new KeyValuePair<string, string>(S.age_ash, "Earth Prevails") }
         };
-        static PowerLibrary pb;
         public static void init()
         {
 
@@ -496,7 +495,6 @@ namespace GodsAndPantheons
             DemiGod.group_id = TraitGroup.special;
             DemiGod.can_be_given = false;
             AddTrait(DemiGod, "The Demi God, offspring of Gods and Mortals, the stat's of this trait are determined by the stats of his parent's");
-            pb = new PowerLibrary();
 
             ActorTrait FailedGod = new ActorTrait();
             FailedGod.id = "Failed God";
@@ -504,7 +502,6 @@ namespace GodsAndPantheons
             FailedGod.group_id = TraitGroup.special;
             FailedGod.can_be_given = false;
             AddTrait(FailedGod, "his Genes were recessive");
-            pb = new PowerLibrary();
         }
 
         private static bool GodHunterAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -514,10 +511,9 @@ namespace GodsAndPantheons
                 if (pSelf.hasStatus("Invisible"))
                 {
                     pSelf.finishStatusEffect("Invisible");
-                    pSelf.addStatusEffect("powerup", 15);
                     pSelf.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
                 }
-                pSelf.a.data.set("invisiblecooldown", 20);
+                pSelf.a.data.set("invisiblecooldown", 10);
             }
             return true;
         }
@@ -549,32 +545,44 @@ namespace GodsAndPantheons
             {
                 pTarget.a.data.get("invisiblecooldown", out int invisiblecooldown);
                 pTarget.a.data.set("invisiblecooldown", invisiblecooldown > 0 ? invisiblecooldown - 1 : 0);
-                if (pTarget.a.data.health >= pTarget.a.getMaxHealth() * 0.15) { 
-                    BaseSimObject? a = Reflection.GetField(typeof(ActorBase), pTarget, "attackTarget") as BaseSimObject;
-                    if (a != null)
+                pTarget.a.data.get("GodTarget", out string godtarget);
+                if(invisiblecooldown == 0)
+                {
+                    pTarget.addStatusEffect("Invisible");
+                }
+                if (!pTarget.hasStatus("Invisible") && pTarget.a.data.health < pTarget.a.getMaxHealth() * (pTarget.hasStatus("powerup") ? 0.5 : 0.25))
+                {
+                    World.world.getObjectsInChunks(pTarget.currentTile, 4, MapObjectType.Actor);
+                    if (World.world.temp_map_objects.Count < 5)
                     {
-                        if (IsGod(a.a))
+                        ActionLibrary.teleportRandom(null, pTarget, null);
+                        pTarget.addStatusEffect("Invisible");
+                        pTarget.a.data.set("invisiblecooldown", 14);
+                    }
+                    return false;
+                }
+                if (godtarget != null)
+                {
+                    Actor godtohunt = World.world.units.get(godtarget);
+                    if (godtohunt != default(Actor))
+                    {
+                        if (godtohunt.currentTile.isSameIsland(pTarget.currentTile))
                         {
-                            if (TeleportNearActor(pTarget.a, a, 27, false, true)) SuperRegeneration(pTarget, 25, 5);
+                            TeleportNearActor(pTarget.a, godtohunt, 5, false, true);
+                        }
+                        else
+                        {
+                            if (TeleportNearActor(pTarget.a, godtohunt, 27, false, true)) SuperRegeneration(pTarget, 25, 5);
                         }
                     }
                     else
                     {
-                        if (invisiblecooldown == 0)
-                        {
-                            pTarget.addStatusEffect("Invisible");
-                        }
-                        if (Toolbox.randomChance(0.5f))
-                        {
-                            if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 47, false, true)) SuperRegeneration(pTarget, 50, 25);
-                        }
+                        pTarget.a.data.removeString("GodTarget");
                     }
                 }
-                else if (!pTarget.hasStatus("Invisible") /* && invisiblecooldown <= 18*/)
+                else if (Toolbox.randomChance(0.5f))
                 {
-                    ActionLibrary.teleportRandom(null, pTarget, null);
-                    pTarget.addStatusEffect("Invisible");
-                    pTarget.a.data.set("invisiblecooldown", 24);
+                    if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 40, false, true)) SuperRegeneration(pTarget, 50, 25);
                 }
             }
             return true;

@@ -136,9 +136,9 @@ public static class GodWeaponManager
                 ItemData godHuntersScythe = new ItemData();
                 godHuntersScythe.id = "GodHuntersScythe";
                 godHuntersScythe.material = "base";
+                pTarget.addStatusEffect("Invisible");
                 pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(godHuntersScythe);
                 pTarget.a.setStatsDirty();
-
             }
             pTarget.a.updateStats();
            // count++;
