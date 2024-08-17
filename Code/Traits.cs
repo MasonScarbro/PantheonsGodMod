@@ -550,11 +550,15 @@ namespace GodsAndPantheons
                 {
                     pTarget.addStatusEffect("Invisible");
                 }
-                if (!pTarget.hasStatus("Invisible") && pTarget.a.data.health < pTarget.a.getMaxHealth() * (pTarget.hasStatus("powerup") ? 0.10 : 0.5))
+                if (!pTarget.hasStatus("Invisible") && pTarget.a.data.health < pTarget.a.getMaxHealth() * (pTarget.hasStatus("powerup") ? 0.5 : 0.25))
                 {
-                    ActionLibrary.teleportRandom(null, pTarget, null);
-                    pTarget.addStatusEffect("Invisible");
-                    pTarget.a.data.set("invisiblecooldown", 14);
+                    World.world.getObjectsInChunks(pTarget.currentTile, 4, MapObjectType.Actor);
+                    if (World.world.temp_map_objects.Count < 5)
+                    {
+                        ActionLibrary.teleportRandom(null, pTarget, null);
+                        pTarget.addStatusEffect("Invisible");
+                        pTarget.a.data.set("invisiblecooldown", 14);
+                    }
                     return false;
                 }
                 if (godtarget != null)

@@ -99,7 +99,7 @@ namespace GodsAndPantheons
             }
             if(__instance.hasTrait("God Hunter"))
             {
-                Traits.SuperRegeneration(__instance, 100, isgod ? 50 : 5);
+                Traits.SuperRegeneration(__instance, 100, isgod ? 30 : 5);
                 __instance.data.get("godskilled", out int godskilled);
                 __instance.data.set("godskilled", godskilled + (isgod ? 1 : 0));
             }
