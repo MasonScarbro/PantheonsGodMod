@@ -37,7 +37,12 @@ namespace GodsAndPantheons
                     {
                         if (Traits.IsGod(pTarget.a))
                         {
-                            return true;
+                            __instance.a.data.set("GodTarget", pTarget.a.data.id);
+                            World.world.getObjectsInChunks(pTarget.currentTile, 4, MapObjectType.Actor);
+                            if (World.world.temp_map_objects.Count < 7)
+                            {
+                                return true;
+                            }
                         }
                     }
                     return false;

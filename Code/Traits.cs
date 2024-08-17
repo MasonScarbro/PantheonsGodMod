@@ -545,32 +545,40 @@ namespace GodsAndPantheons
             {
                 pTarget.a.data.get("invisiblecooldown", out int invisiblecooldown);
                 pTarget.a.data.set("invisiblecooldown", invisiblecooldown > 0 ? invisiblecooldown - 1 : 0);
-                if (pTarget.a.data.health >= pTarget.a.getMaxHealth() * (pTarget.hasStatus("powerup") ? 0.5 : 0.25)) { 
-                    BaseSimObject? a = Reflection.GetField(typeof(ActorBase), pTarget, "attackTarget") as BaseSimObject;
-                    if (a != null)
-                    {
-                        if (IsGod(a.a))
-                        {
-                            if (TeleportNearActor(pTarget.a, a, 27, false, true)) SuperRegeneration(pTarget, 25, 5);
-                        }
-                    }
-                    else
-                    {
-                        if (invisiblecooldown == 0)
-                        {
-                            pTarget.addStatusEffect("Invisible");
-                        }
-                        if (Toolbox.randomChance(0.5f))
-                        {
-                            if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 47, false, true)) SuperRegeneration(pTarget, 50, 25);
-                        }
-                    }
+                pTarget.a.data.get("GodTarget", out string godtarget);
+                if(invisiblecooldown == 0)
+                {
+                    pTarget.addStatusEffect("Invisible");
                 }
-                else if (!pTarget.hasStatus("Invisible") && invisiblecooldown <= 8)
+                if (!pTarget.hasStatus("Invisible") && invisiblecooldown <= 8 && pTarget.a.data.health < pTarget.a.getMaxHealth() * (pTarget.hasStatus("powerup") ? 0.5 : 0.25))
                 {
                     ActionLibrary.teleportRandom(null, pTarget, null);
                     pTarget.addStatusEffect("Invisible");
                     pTarget.a.data.set("invisiblecooldown", 14);
+                    return false;
+                }
+                if (godtarget != null)
+                {
+                    Actor godtohunt = World.world.units.get(godtarget);
+                    if (godtohunt != default(Actor))
+                    {
+                        if (godtohunt.currentTile.isSameIsland(pTarget.currentTile))
+                        {
+                            pTarget.a.setTileTarget(godtohunt.currentTile);
+                        }
+                        else
+                        {
+                            if (TeleportNearActor(pTarget.a, godtohunt, 27, false, true)) SuperRegeneration(pTarget, 25, 5);
+                        }
+                    }
+                    else
+                    {
+                        pTarget.a.data.removeString("GodTarget");
+                    }
+                }
+                else if (Toolbox.randomChance(0.5f))
+                {
+                    if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 40, false, true)) SuperRegeneration(pTarget, 50, 25);
                 }
             }
             return true;
