@@ -338,7 +338,6 @@ namespace GodsAndPantheons
             {"God Of War", new KeyValuePair<string, string>(S.age_despair, "Despair Prevails") },
             {"God Of the Earth", new KeyValuePair<string, string>(S.age_ash, "Earth Prevails") }
         };
-        static PowerLibrary pb;
         public static void init()
         {
 
@@ -496,7 +495,6 @@ namespace GodsAndPantheons
             DemiGod.group_id = TraitGroup.special;
             DemiGod.can_be_given = false;
             AddTrait(DemiGod, "The Demi God, offspring of Gods and Mortals, the stat's of this trait are determined by the stats of his parent's");
-            pb = new PowerLibrary();
 
             ActorTrait FailedGod = new ActorTrait();
             FailedGod.id = "Failed God";
@@ -504,7 +502,6 @@ namespace GodsAndPantheons
             FailedGod.group_id = TraitGroup.special;
             FailedGod.can_be_given = false;
             AddTrait(FailedGod, "his Genes were recessive");
-            pb = new PowerLibrary();
         }
 
         private static bool GodHunterAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -514,10 +511,9 @@ namespace GodsAndPantheons
                 if (pSelf.hasStatus("Invisible"))
                 {
                     pSelf.finishStatusEffect("Invisible");
-                    pSelf.addStatusEffect("powerup", 15);
                     pSelf.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
                 }
-                pSelf.a.data.set("invisiblecooldown", 20);
+                pSelf.a.data.set("invisiblecooldown", 10);
             }
             return true;
         }
@@ -549,7 +545,7 @@ namespace GodsAndPantheons
             {
                 pTarget.a.data.get("invisiblecooldown", out int invisiblecooldown);
                 pTarget.a.data.set("invisiblecooldown", invisiblecooldown > 0 ? invisiblecooldown - 1 : 0);
-                if (pTarget.a.data.health >= pTarget.a.getMaxHealth() * 0.15) { 
+                if (pTarget.a.data.health >= pTarget.a.getMaxHealth() * (pTarget.hasStatus("powerup") ? 0.5 : 0.25)) { 
                     BaseSimObject? a = Reflection.GetField(typeof(ActorBase), pTarget, "attackTarget") as BaseSimObject;
                     if (a != null)
                     {
@@ -570,11 +566,11 @@ namespace GodsAndPantheons
                         }
                     }
                 }
-                else if (!pTarget.hasStatus("Invisible") /* && invisiblecooldown <= 18*/)
+                else if (!pTarget.hasStatus("Invisible") && invisiblecooldown <= 8)
                 {
                     ActionLibrary.teleportRandom(null, pTarget, null);
                     pTarget.addStatusEffect("Invisible");
-                    pTarget.a.data.set("invisiblecooldown", 24);
+                    pTarget.a.data.set("invisiblecooldown", 14);
                 }
             }
             return true;

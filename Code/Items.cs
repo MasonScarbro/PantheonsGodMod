@@ -416,15 +416,9 @@ namespace GodsAndPantheons
                 if (Toolbox.randomChance(80.0f))
                 {
                     pTarget.CallMethod("addStatusEffect", "burning", 15f);
-
-
-
-
-
                 }
             }
             return false;
-
         }
 
 
@@ -539,7 +533,8 @@ namespace GodsAndPantheons
         }
         public static bool GodHunterAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile){
             if(pTarget != null && pTarget.isActor()){
-                if(Traits.IsGod(pTarget.a)){
+                pTarget.addStatusEffect("ash_fever", 5);
+                if (Traits.IsGod(pTarget.a)){
                     pTarget.getHit(pSelf.stats[S.damage] * 2f, true, AttackType.Weapon, pSelf, false, true);
                 }
             }

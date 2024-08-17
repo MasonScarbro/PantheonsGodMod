@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
-using static UnityEngine.ParticleSystem;
 
 namespace GodsAndPantheons
 {
     //contains tools for working with the traits
     partial class Traits
     {
+        static PowerLibrary pb = new PowerLibrary();
         //returns null if unable to find master
         public static Actor FindMaster(Actor summoned)
         {

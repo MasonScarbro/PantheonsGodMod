@@ -70,13 +70,17 @@ namespace GodsAndPantheons
     {
         static void Prefix(Actor __instance, Actor pDeadUnit)
         {
-            if (Traits.IsGod(pDeadUnit))
+            bool isgod = Traits.IsGod(pDeadUnit);
+            if (isgod)
             {
                 __instance.addTrait("God Killer");
+                __instance.addStatusEffect("powerup", 10);
             }
             if(__instance.hasTrait("God Hunter"))
             {
-                Traits.SuperRegeneration(__instance, 100, Traits.IsGod(pDeadUnit) ? 50 : 2.5f);
+                Traits.SuperRegeneration(__instance, 100, isgod ? 50 : 5);
+                __instance.data.get("godskilled", out int godskilled);
+                __instance.data.set("godskilled", godskilled + (isgod ? 1 : 0));
             }
         }
     }
