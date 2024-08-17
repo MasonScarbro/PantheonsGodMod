@@ -564,7 +564,7 @@ namespace GodsAndPantheons
                     {
                         if (godtohunt.currentTile.isSameIsland(pTarget.currentTile))
                         {
-                            TeleportNearActor(pTarget.a, godtohunt, 5, false, true))
+                            TeleportNearActor(pTarget.a, godtohunt, 5, false, true);
                         }
                         else
                         {
