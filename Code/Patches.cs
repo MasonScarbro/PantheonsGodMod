@@ -79,7 +79,7 @@ namespace GodsAndPantheons
                 {
                     if (a.isActor())
                     {
-                        if (Traits.IsGod(a.a) && a.isAlive() && __instance.data.health >= __instance.getMaxHealth() * 0.15) { return false; }
+                        if (Traits.IsGod(a.a) && a.isAlive() && !__instance.hasStatus("Invisible")) { return false; }
                     }
                 }
             }

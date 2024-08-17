@@ -550,7 +550,7 @@ namespace GodsAndPantheons
                 {
                     pTarget.addStatusEffect("Invisible");
                 }
-                if (!pTarget.hasStatus("Invisible") && invisiblecooldown <= 8 && pTarget.a.data.health < pTarget.a.getMaxHealth() * (pTarget.hasStatus("powerup") ? 0.5 : 0.25))
+                if (!pTarget.hasStatus("Invisible") && pTarget.a.data.health < pTarget.a.getMaxHealth() * (pTarget.hasStatus("powerup") ? 0.10 : 0.5))
                 {
                     ActionLibrary.teleportRandom(null, pTarget, null);
                     pTarget.addStatusEffect("Invisible");
