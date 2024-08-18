@@ -10,9 +10,16 @@ namespace GodsAndPantheons
     {
         static bool Prefix(BaseSimObject __instance, BaseSimObject pTarget)
         {
-            if (pTarget.hasStatus("Invisible") || __instance.hasStatus("Invisible"))
+            if (Main.savedSettings.HunterAssasins)
             {
-                return false;
+                if (pTarget.hasStatus("Invisible") || __instance.hasStatus("Invisible"))
+                {
+                    return false;
+                }
+                if (__instance.isActor() && __instance.a.hasTrait("God Hunter") && __instance.a.data.health < __instance.getMaxHealth() * (__instance.hasStatus("powerup") ? 0.5 : 0.25))
+                {
+                    return false;
+                }
             }
             return true;
         }
