@@ -135,6 +135,7 @@ namespace GodsAndPantheons
                 return BehResult.Continue;
             }
             pActor.finishStatusEffect("Invisible");
+            pActor.data.set("invisiblecooldown", 10);
             pActor.setAttackTarget(HuntGods.GodToHunt);
             return BehResult.Continue;
         }
