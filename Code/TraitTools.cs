@@ -8,7 +8,7 @@ namespace GodsAndPantheons
     //contains tools for working with the traits
     partial class Traits
     {
-        static PowerLibrary pb = new PowerLibrary();
+        public static PowerLibrary pb = new PowerLibrary();
         //returns null if unable to find master
         public static Actor FindMaster(Actor summoned)
         {
@@ -135,7 +135,7 @@ namespace GodsAndPantheons
             return temp_gods_list;
         }
         //returns true if teleported
-        public static bool TeleportNearActor(Actor Actor, BaseSimObject Target, int distance, bool AllTiles = false, bool MustBeFar = false, byte Attempts = 20)
+        public static bool TeleportNearActor(Actor Actor, BaseSimObject Target, int distance, bool AllTiles = false, bool MustBeFar = true, byte Attempts = 20)
         {
             if (Target != null)
             {

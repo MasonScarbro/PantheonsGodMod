@@ -44,6 +44,7 @@ namespace GodsAndPantheons
             NewTerraformOptions.init();
             NewEffects.init();
             Items.init();
+            GodHunterBeh.init();
             Units.init();
             Tab.init();
             Invasions.init();
