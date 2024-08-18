@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using HarmonyLib;
 using Amazon.Runtime.Internal.Transform;
 using static UnityEngine.GraphicsBuffer;
+using System.Threading;
 
 
 namespace GodsAndPantheons
@@ -462,7 +463,7 @@ namespace GodsAndPantheons
             godHunter.action_special_effect = new WorldAction(SuperRegeneration);
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(GodWeaponManager.godGiveWeapon));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(AutoTrait));
-            godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(ChaseGod));
+            godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(InvisibleCooldown));
             godHunter.action_attack_target = new AttackAction(GodHunterAttack);
             godHunter.group_id = TraitGroup.special;
             godHunter.can_be_given = false;
@@ -508,11 +509,6 @@ namespace GodsAndPantheons
         {
             if (pSelf.isActor())
             {
-                if (pSelf.hasStatus("Invisible"))
-                {
-                    pSelf.finishStatusEffect("Invisible");
-                    pSelf.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
-                }
                 pSelf.a.data.set("invisiblecooldown", 10);
             }
             return true;
@@ -539,50 +535,15 @@ namespace GodsAndPantheons
             return true;
         }
         //if god is too far away the god hunter will teleport to them
-        public static bool ChaseGod(BaseSimObject pTarget, WorldTile pTile)
+        public static bool InvisibleCooldown(BaseSimObject pTarget, WorldTile pTile)
         {
             if (pTarget.isActor() && Main.savedSettings.HunterAssasins)
             {
                 pTarget.a.data.get("invisiblecooldown", out int invisiblecooldown);
                 pTarget.a.data.set("invisiblecooldown", invisiblecooldown > 0 ? invisiblecooldown - 1 : 0);
-                pTarget.a.data.get("GodTarget", out string godtarget);
-                if(invisiblecooldown == 0)
+                if (invisiblecooldown == 0)
                 {
-                    pTarget.addStatusEffect("Invisible");
-                }
-                if (!pTarget.hasStatus("Invisible") && pTarget.a.data.health < pTarget.a.getMaxHealth() * (pTarget.hasStatus("powerup") ? 0.5 : 0.25))
-                {
-                    World.world.getObjectsInChunks(pTarget.currentTile, 4, MapObjectType.Actor);
-                    if (World.world.temp_map_objects.Count < 5)
-                    {
-                        ActionLibrary.teleportRandom(null, pTarget, null);
-                        pTarget.addStatusEffect("Invisible");
-                        pTarget.a.data.set("invisiblecooldown", 14);
-                    }
-                    return false;
-                }
-                if (godtarget != null)
-                {
-                    Actor godtohunt = World.world.units.get(godtarget);
-                    if (godtohunt != default(Actor))
-                    {
-                        if (godtohunt.currentTile.isSameIsland(pTarget.currentTile))
-                        {
-                            TeleportNearActor(pTarget.a, godtohunt, 5, false, true);
-                        }
-                        else
-                        {
-                            if (TeleportNearActor(pTarget.a, godtohunt, 27, false, true)) SuperRegeneration(pTarget, 25, 5);
-                        }
-                    }
-                    else
-                    {
-                        pTarget.a.data.removeString("GodTarget");
-                    }
-                }
-                else if (Toolbox.randomChance(0.5f))
-                {
-                    if (TeleportNearActor(pTarget.a, Toolbox.getClosestActor(FindGods(pTarget.a, true), pTarget.currentTile), 40, false, true)) SuperRegeneration(pTarget, 50, 25);
+                   pTarget.addStatusEffect("Invisible", 11);
                 }
             }
             return true;
@@ -1098,6 +1059,7 @@ namespace GodsAndPantheons
                }
                if (autoTraited)
                {
+                  pTarget.setStatsDirty();
                   pTarget.a.restoreHealth(pTarget.a.getMaxHealth());
                }
             }

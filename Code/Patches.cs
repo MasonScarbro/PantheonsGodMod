@@ -2,6 +2,7 @@
 using HarmonyLib;
 using ReflectionUtility;
 using System.Collections.Generic;
+using UnityEngine;
 //Harmony Patches
 namespace GodsAndPantheons
 {
@@ -10,61 +11,18 @@ namespace GodsAndPantheons
     {
         static bool Prefix(BaseSimObject __instance, BaseSimObject pTarget)
         {
-            if (pTarget.hasStatus("Invisible"))
+            if (Main.savedSettings.HunterAssasins)
             {
-                return false;
-            }
-            if (__instance.isActor() && __instance.a.hasTrait("God Hunter"))
-            {
-                if (pTarget.isBuilding())
+                if (pTarget.hasStatus("Invisible") || __instance.hasStatus("Invisible"))
                 {
-                    foreach (Actor god in Traits.FindGods(__instance.a))
-                    {
-                       Building? building = Reflection.GetField(typeof(Actor), god, "insideBuilding") as Building;
-                       if (building != null)
-                       {
-                          if (building == pTarget.b)
-                          {
-                             World.world.getObjectsInChunks(pTarget.currentTile, 4, MapObjectType.Actor);
-                             if (getalliesofactor(World.world.temp_map_objects, pTarget) < 6 || !__instance.hasStatus("Invisible"))
-                             {
-                                return true;
-                             }
-                          }
-                       }
-                    }
                     return false;
                 }
-                if (__instance.hasStatus("Invisible"))
+                if (__instance.isActor() && __instance.a.hasTrait("God Hunter") && __instance.a.data.health < __instance.getMaxHealth() * (__instance.hasStatus("powerup") ? 0.5 : 0.25))
                 {
-                    if (pTarget.isActor())
-                    {
-                        if (Traits.IsGod(pTarget.a))
-                        {
-                            __instance.a.data.set("GodTarget", pTarget.a.data.id);
-                            World.world.getObjectsInChunks(pTarget.currentTile, 4, MapObjectType.Actor);
-                            if (getalliesofactor(World.world.temp_map_objects, pTarget) < 7)
-                            {
-                                return true;
-                            }
-                        }
-                    }
                     return false;
                 }
             }
             return true;
-        }
-        static int getalliesofactor(List<BaseSimObject> actors, BaseSimObject actor)
-        {
-            int count = 0;
-            foreach(BaseSimObject a in actors)
-            {
-                if(a.kingdom == actor.kingdom)
-                {
-                    count++;
-                }
-            }
-            return count;
         }
     }
     [HarmonyPatch(typeof(ActorBase), "clearAttackTarget")]
@@ -79,7 +37,7 @@ namespace GodsAndPantheons
                 {
                     if (a.isActor())
                     {
-                        if (Traits.IsGod(a.a) && a.isAlive() && !__instance.hasStatus("Invisible")) { return false; }
+                        if (Traits.IsGod(a.a) && a.isAlive() && !__instance.hasStatus("Invisible") && __instance.data.health >= __instance.getMaxHealth() * (__instance.hasStatus("powerup") ? 0.5 : 0.25)) { return false; }
                     }
                 }
             }
@@ -102,6 +60,32 @@ namespace GodsAndPantheons
                 Traits.SuperRegeneration(__instance, 100, isgod ? 30 : 5);
                 __instance.data.get("godskilled", out int godskilled);
                 __instance.data.set("godskilled", godskilled + (isgod ? 1 : 0));
+            }
+        }
+    }
+    [HarmonyPatch(typeof(StatusEffectData), "update")]
+    public class finishinvisibility
+    {
+        static void Postfix(StatusEffectData __instance)
+        {
+            if (__instance.finished && __instance.asset.id == "Invisible")
+            {
+                __instance._simObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+            }
+        }
+    }
+    [HarmonyPatch(typeof(BaseSimObject), "finishStatusEffect")]
+    public class finishinvisibility2
+    {
+        static void Postfix(string pID, BaseSimObject __instance)
+        {
+            if(__instance.activeStatus_dict == null) { return; }
+            if (__instance.activeStatus_dict.ContainsKey(pID))
+            {
+                if(pID == "Invisible")
+                {
+                    __instance.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                }
             }
         }
     }

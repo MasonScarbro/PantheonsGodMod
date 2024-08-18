@@ -35,7 +35,7 @@ namespace GodsAndPantheons
             var godHunter = AssetManager.actor_library.clone("GodHunter", "_mob");
             godHunter.nameLocale = "GodHunter";
             godHunter.nameTemplate = "alien_name";
-            godHunter.job = "move_mob";
+            godHunter.job = "GodHunter";
             godHunter.race = "GodHunters";
             godHunter.defaultAttack = "GodHuntersScythe";
             godHunter.kingdom = "GodHunters";

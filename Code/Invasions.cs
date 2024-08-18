@@ -20,7 +20,6 @@ namespace GodsAndPantheons
             hunterInvasion.action = new DisasterAction(AssetManager.disasters.simpleUnitAssetSpawnUsingIslands);
             AssetManager.disasters.add(hunterInvasion);
         }
-
     }
 
 }
