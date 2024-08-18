@@ -244,10 +244,17 @@ namespace GodsAndPantheons
         public static bool InvisibleEffect(BaseSimObject pTarget, WorldTile pTile)
         {
             Color mycolor = pTarget.GetComponent<SpriteRenderer>().color;
-            if(mycolor.a != 0.4)
+            if (pTarget.activeStatus_dict["Invisible"]._end_time > World.world.getCurWorldTime())
             {
-                pTarget.a.restoreHealth(pTarget.a.getMaxHealth());
-                pTarget.GetComponent<SpriteRenderer>().color = new Color(mycolor.r, mycolor.g, mycolor.b, 0.4f);
+                if (mycolor.a != 0.4)
+                {
+                    pTarget.a.restoreHealth(pTarget.a.getMaxHealth());
+                    pTarget.GetComponent<SpriteRenderer>().color = new Color(mycolor.r, mycolor.g, mycolor.b, 0.4f);
+                }
+            }
+            else
+            {
+                pTarget.GetComponent<SpriteRenderer>().color = new Color(mycolor.r, mycolor.g, mycolor.b, 1);
             }
             return true;
         }
