@@ -543,7 +543,7 @@ namespace GodsAndPantheons
                 pTarget.a.data.set("invisiblecooldown", invisiblecooldown > 0 ? invisiblecooldown - 1 : 0);
                 if (invisiblecooldown == 0)
                 {
-                   pTarget.addStatusEffect("Invisible");
+                   pTarget.addStatusEffect("Invisible", 11);
                 }
             }
             return true;

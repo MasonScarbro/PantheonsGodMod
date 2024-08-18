@@ -56,7 +56,7 @@ namespace GodsAndPantheons
             }
             if (Vector2.Distance(tiletoecapeto.pos, pActor.currentPosition) < 5)
             {
-                pActor.addStatusEffect("Invisible");
+                pActor.data.set("invisiblecooldown", 0);
                 pActor.data.removeInt("oldx");
                 pActor.data.removeInt("oldy");
             }
@@ -96,7 +96,6 @@ namespace GodsAndPantheons
             }
             else
             {
-                WorldTile oldtile = pActor.currentTile;
                 if (Traits.TeleportNearActor(pActor, GodToHunt, 44))
                 {
                     Traits.SuperRegeneration(pActor, 50, 25);
