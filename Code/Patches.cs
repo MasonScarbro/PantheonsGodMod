@@ -79,6 +79,7 @@ namespace GodsAndPantheons
     {
         static void Postfix(string pID, BaseSimObject __instance)
         {
+            if(__instance.activeStatus_dict == null) { return; }
             if (__instance.activeStatus_dict.ContainsKey(pID))
             {
                 if(pID == "Invisible")

@@ -54,6 +54,8 @@ namespace GodsAndPantheons
             if (Vector2.Distance(tiletoecapeto.pos, pActor.currentPosition) < 5)
             {
                 pActor.data.set("invisiblecooldown", 0);
+                pActor.data.removeInt("oldx");
+                pActor.data.removeInt("oldy");
             }
             pActor.beh_tile_target = tiletoecapeto;
             return BehResult.Continue;
