@@ -140,7 +140,6 @@ namespace GodsAndPantheons
                 return BehResult.Continue;
             }
             pActor.finishStatusEffect("Invisible");
-            pActor.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
             pActor.setAttackTarget(HuntGods.GodToHunt);
             return BehResult.Continue;
         }

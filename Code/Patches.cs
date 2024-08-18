@@ -2,6 +2,7 @@
 using HarmonyLib;
 using ReflectionUtility;
 using System.Collections.Generic;
+using UnityEngine;
 //Harmony Patches
 namespace GodsAndPantheons
 {
@@ -59,6 +60,31 @@ namespace GodsAndPantheons
                 Traits.SuperRegeneration(__instance, 100, isgod ? 30 : 5);
                 __instance.data.get("godskilled", out int godskilled);
                 __instance.data.set("godskilled", godskilled + (isgod ? 1 : 0));
+            }
+        }
+    }
+    [HarmonyPatch(typeof(StatusEffectData), "update")]
+    public class finishinvisibility
+    {
+        static void Postfix(StatusEffectData __instance)
+        {
+            if (__instance.finished && __instance.asset.id == "Invisible")
+            {
+                __instance._simObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+            }
+        }
+    }
+    [HarmonyPatch(typeof(BaseSimObject), "finishStatusEffect")]
+    public class finishinvisibility2
+    {
+        static void Postfix(string pID, BaseSimObject __instance)
+        {
+            if (__instance.activeStatus_dict.ContainsKey(pID))
+            {
+                if(pID == "Invisible")
+                {
+                    __instance.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                }
             }
         }
     }
