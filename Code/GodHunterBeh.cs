@@ -81,28 +81,28 @@ namespace GodsAndPantheons
     }
     public class HuntGods : BehaviourActionActor
     {
-        public static Actor GodToHunt;
+        public static Actor? GodToHunt;
         public override BehResult execute(Actor pActor)
         {
             GodToHunt = Toolbox.getClosestActor(Traits.FindGods(pActor), pActor.currentTile);
             if (GodToHunt == null || !pActor.hasStatus("Invisible") || !Main.savedSettings.HunterAssasins)
             {
+                GodToHunt = null;
                 getrandomtile(ref pActor);
                 return BehResult.Continue;
             }
             if (GodToHunt.currentTile.isSameIsland(pActor.currentTile))
             {
                 pActor.beh_tile_target = GodToHunt.currentTile;
+                return BehResult.Continue;
             }
-            else
+            if (Traits.TeleportNearActor(pActor, GodToHunt, 44))
             {
-                if (Traits.TeleportNearActor(pActor, GodToHunt, 44))
-                {
-                    Traits.SuperRegeneration(pActor, 50, 25);
-                    pActor.beh_tile_target = GodToHunt.currentTile;
-                }
+               Traits.SuperRegeneration(pActor, 50, 25);
+               pActor.beh_tile_target = GodToHunt.currentTile;
+               return BehResult.Continue;
             }
-            return BehResult.Continue;
+            return BehResult.RestartTask;
         }
         public static void getrandomtile(ref Actor pActor)
         {
