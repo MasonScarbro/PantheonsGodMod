@@ -13,7 +13,7 @@ namespace GodsAndPantheons
             GodHunt.addBeh(new HuntGods());
             GodHunt.addBeh(new BehAttackGod());
             GodHunt.addBeh(new escape());
-            GodHunt.addBeh(new BehGoToTileTarget());
+            GodHunt.addBeh(new BehGoToTileTarget() { walkOnBlocks = true, walkOnWater = true });
             AssetManager.tasks_actor.add(GodHunt);
             ActorJob GodHunterob = new ActorJob
             {
@@ -86,18 +86,8 @@ namespace GodsAndPantheons
                 getrandomtile(ref pActor);
                 return BehResult.Continue;
             }
-            if (GodToHunt.currentTile.isSameIsland(pActor.currentTile))
-            {
-                pActor.beh_tile_target = GodToHunt.currentTile;
-                return BehResult.Continue;
-            }
-            if (Traits.TeleportNearActor(pActor, GodToHunt, 44))
-            {
-               Traits.SuperRegeneration(pActor, 50, 25);
-               pActor.beh_tile_target = GodToHunt.currentTile;
-               return BehResult.Continue;
-            }
-            return BehResult.RestartTask;
+            pActor.beh_tile_target = GodToHunt.currentTile;
+            return BehResult.Continue;
         }
         public static void getrandomtile(ref Actor pActor)
         {
@@ -150,13 +140,6 @@ namespace GodsAndPantheons
                 }
             }
             return count;
-        }
-    }
-    public class RUNWHILEYOURSTILLALIVE : BehaviourActorCondition
-    {
-        public override bool check(Actor pActor)
-        {
-            return !pActor.hasStatus("Invisible") && pActor.data.health < pActor.getMaxHealth() * (pActor.hasStatus("powerup") ? 0.5 : 0.25);
         }
     }
 }
