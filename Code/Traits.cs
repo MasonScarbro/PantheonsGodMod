@@ -465,8 +465,8 @@ namespace GodsAndPantheons
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(AutoTrait));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(InvisibleCooldown));
             godHunter.action_attack_target = new AttackAction(GodHunterAttack);
-            godHunter.group_id = TraitGroup.special;
-            godHunter.can_be_given = false;
+            godHunter.group_id = "GodTraits";
+            godHunter.can_be_given = true;
             AddTrait(godHunter, "He will stop at NOTHING to kill a god");
 
             //my traits
@@ -541,7 +541,7 @@ namespace GodsAndPantheons
             {
                 pTarget.a.data.get("invisiblecooldown", out int invisiblecooldown);
                 pTarget.a.data.set("invisiblecooldown", invisiblecooldown > 0 ? invisiblecooldown - 1 : 0);
-                if (invisiblecooldown == 0)
+                if (invisiblecooldown == 0 && pTarget.a.asset.id == "GodHunter")
                 {
                    pTarget.addStatusEffect("Invisible", 11);
                 }

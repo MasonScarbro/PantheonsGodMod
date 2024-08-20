@@ -32,7 +32,7 @@ namespace GodsAndPantheons
         {
             if (__instance.hasTrait("God Hunter") && Main.savedSettings.HunterAssasins)
             {
-                BaseSimObject? a = Reflection.GetField(typeof(ActorBase), __instance, "attackTarget") as BaseSimObject;
+                BaseSimObject? a = __instance.attackTarget;
                 if (a != null)
                 {
                     if (a.isActor())
@@ -53,13 +53,16 @@ namespace GodsAndPantheons
             if (isgod)
             {
                 __instance.addTrait("God Killer");
-                __instance.addStatusEffect("powerup", 10);
             }
             if(__instance.hasTrait("God Hunter"))
             {
                 Traits.SuperRegeneration(__instance, 100, isgod ? 30 : 5);
                 __instance.data.get("godskilled", out int godskilled);
                 __instance.data.set("godskilled", godskilled + (isgod ? 1 : 0));
+                if (isgod)
+                {
+                    __instance.addStatusEffect("powerup", 10);
+                }
             }
         }
     }

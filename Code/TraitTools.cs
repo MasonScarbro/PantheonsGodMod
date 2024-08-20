@@ -243,7 +243,7 @@ namespace GodsAndPantheons
                 DemiGod.set("Demi" + trait, true);
                 foreach (KeyValuePair<string, float> kvp in TraitStats[trait])
                 {
-                  if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%", 50, 1, 75)))
+                  if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%", 55, 1, 75)))
                   {
                     DemiGod.get("Demi" + kvp.Key, out float value);
                     DemiGod.set("Demi" + kvp.Key, (kvp.Value / 2) + Random.Range(-(kvp.Value / 2.5f), kvp.Value / 2.5f) + value);
