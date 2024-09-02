@@ -126,7 +126,14 @@ namespace GodsAndPantheons
             }
             pActor.finishStatusEffect("Invisible");
             pActor.data.set("invisiblecooldown", 10);
-            pActor.setAttackTarget(HuntGods.GodToHunt);
+            if (!HuntGods.GodToHunt.is_inside_building)
+            {
+                pActor.setAttackTarget(HuntGods.GodToHunt);
+            }
+            else
+            {
+                pActor.setAttackTarget(HuntGods.GodToHunt.insideBuilding);
+            }
             return BehResult.Continue;
         }
         static int getalliesofactor(List<BaseSimObject> actors, BaseSimObject actor)
