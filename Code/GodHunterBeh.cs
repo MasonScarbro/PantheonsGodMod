@@ -141,7 +141,7 @@ namespace GodsAndPantheons
             int count = 0;
             foreach (BaseSimObject a in actors)
             {
-                if (a.kingdom == actor.kingdom)
+                if (!a.kingdom.isEnemy(actor.kingdom))
                 {
                     count++;
                 }
