@@ -32,7 +32,7 @@ namespace GodsAndPantheons
 
         public override BehResult execute(Actor pActor)
         {
-            if(!(!pActor.hasStatus("Invisible") && pActor.data.health < pActor.getMaxHealth() * (pActor.hasStatus("powerup") ? 0.5 : 0.25)) ||  !pActor.currentTile.region.isTypeGround())
+            if(!(!pActor.hasStatus("Invisible") && pActor.data.health < pActor.getMaxHealth() * (pActor.hasStatus("powerup") ? 0.5 : 0.25)) || pActor._isInLiquid)
             {
                 return BehResult.Continue;
             }
