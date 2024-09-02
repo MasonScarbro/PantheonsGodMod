@@ -32,7 +32,7 @@ namespace GodsAndPantheons
 
         public override BehResult execute(Actor pActor)
         {
-            if(!(!pActor.hasStatus("Invisible") && pActor.data.health < pActor.getMaxHealth() * (pActor.hasStatus("powerup") ? 0.5 : 0.25)) ||  !pActor.currentTile.region.isTypeGround())
+            if(!(!pActor.hasStatus("Invisible") && pActor.data.health < pActor.getMaxHealth() * (pActor.hasStatus("powerup") ? 0.5 : 0.25)) || pActor._isInLiquid)
             {
                 return BehResult.Continue;
             }
@@ -126,7 +126,14 @@ namespace GodsAndPantheons
             }
             pActor.finishStatusEffect("Invisible");
             pActor.data.set("invisiblecooldown", 10);
-            pActor.setAttackTarget(HuntGods.GodToHunt);
+            if (!HuntGods.GodToHunt.is_inside_building)
+            {
+                pActor.setAttackTarget(HuntGods.GodToHunt);
+            }
+            else
+            {
+                pActor.setAttackTarget(HuntGods.GodToHunt.insideBuilding);
+            }
             return BehResult.Continue;
         }
         static int getalliesofactor(List<BaseSimObject> actors, BaseSimObject actor)
@@ -134,7 +141,7 @@ namespace GodsAndPantheons
             int count = 0;
             foreach (BaseSimObject a in actors)
             {
-                if (a.kingdom == actor.kingdom)
+                if (!a.kingdom.isEnemy(actor.kingdom))
                 {
                     count++;
                 }
