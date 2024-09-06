@@ -216,8 +216,8 @@ namespace GodsAndPantheons
             temp_base_stats[S.knockback_reduction] = knockback_reduction;
             temp_base_stats[S.warfare] = warfare;
             temp_base_stats[S.fertility] = fertility;
-            temp_base_stats[S.max_children] = maxchildren;
-            temp_base_stats[S.max_age] = maxage;
+            temp_base_stats[S.max_children] = (int)maxchildren;
+            temp_base_stats[S.max_age] = (int)maxage;
             return temp_base_stats;
         }
         public static void Inheritgodtraits(List<string> godtraits, ref ActorData God)
