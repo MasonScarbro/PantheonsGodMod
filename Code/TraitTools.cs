@@ -184,10 +184,9 @@ namespace GodsAndPantheons
                 _ => "",
             };
 
-        //kill me
-        public static List<KeyValuePair<string, float>> GetDemiStats(ActorData pData)
+        public static BaseStats temp_base_stats = new BaseStats();
+        public static BaseStats GetDemiStats(ActorData pData)
         {
-            List<KeyValuePair<string, float>> stats = new List<KeyValuePair<string, float>>();
             pData.get("Demi" + S.speed, out float speed);
             pData.get("Demi" + S.health, out float health);
             pData.get("Demi" + S.critical_chance, out float crit);
@@ -203,22 +202,23 @@ namespace GodsAndPantheons
             pData.get("Demi" + S.fertility, out float fertility);
             pData.get("Demi" + S.max_children, out float maxchildren);
             pData.get("Demi" + S.max_age, out float maxage);
-            stats.Add(new KeyValuePair<string, float>(S.speed, speed));
-            stats.Add(new KeyValuePair<string, float>(S.critical_chance, crit));
-            stats.Add(new KeyValuePair<string, float>(S.health, health));
-            stats.Add(new KeyValuePair<string, float>(S.damage, damage));
-            stats.Add(new KeyValuePair<string, float>(S.armor, armor));
-            stats.Add(new KeyValuePair<string, float>(S.attack_speed, attackSpeed));
-            stats.Add(new KeyValuePair<string, float>(S.accuracy, accuracy));
-            stats.Add(new KeyValuePair<string, float>(S.range, range));
-            stats.Add(new KeyValuePair<string, float>(S.scale, scale));
-            stats.Add(new KeyValuePair<string, float>(S.intelligence, intell));
-            stats.Add(new KeyValuePair<string, float>(S.knockback_reduction, knockback_reduction));
-            stats.Add(new KeyValuePair<string, float>(S.warfare, warfare));
-            stats.Add(new KeyValuePair<string, float>(S.fertility, fertility));
-            stats.Add(new KeyValuePair<string, float>(S.max_children, maxchildren));
-            stats.Add(new KeyValuePair<string, float>(S.max_age, maxage));
-            return stats;
+            temp_base_stats.clear();
+            temp_base_stats[S.speed] = speed;
+            temp_base_stats[S.critical_chance] = crit;
+            temp_base_stats[S.health] = health;
+            temp_base_stats[S.damage] = damage;      
+            temp_base_stats[S.armor] = armor;
+            temp_base_stats[S.attack_speed] = attackSpeed;
+            temp_base_stats[S.accuracy] = accuracy;
+            temp_base_stats[S.range] = range;
+            temp_base_stats[S.scale] = scale;
+            temp_base_stats[S.intelligence] = intell;
+            temp_base_stats[S.knockback_reduction] = knockback_reduction;
+            temp_base_stats[S.warfare] = warfare;
+            temp_base_stats[S.fertility] = fertility;
+            temp_base_stats[S.max_children] = maxchildren;
+            temp_base_stats[S.max_age] = maxage;
+            return temp_base_stats;
         }
         public static void Inheritgodtraits(List<string> godtraits, ref ActorData God)
         {
