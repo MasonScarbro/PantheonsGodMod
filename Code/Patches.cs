@@ -6,6 +6,21 @@ using UnityEngine;
 //Harmony Patches
 namespace GodsAndPantheons
 {
+    [HarmonyPatch(typeof(TooltipLibrary), "showTrait")]
+    public class showdemistats
+    {
+        static void Prefix(ref TooltipData pData)
+        {
+            if(Config.selectedUnit == null)
+            {
+                return;
+            }
+            if(pData.trait.id == "Demi God")
+            {
+                pData.trait.base_stats = Traits.GetDemiStats(Config.selectedUnit.data);
+            }
+        }
+    }
     [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
     public class DontAttack
     {
@@ -187,14 +202,14 @@ namespace GodsAndPantheons
         {
             if (__instance.hasTrait("Demi God"))
             {
-                mergeStats(Traits.GetDemiStats(__instance.data), ref __instance.stats);
+                mergeStats(Traits.GetDemiStats(__instance.data).stats_list, ref __instance.stats);
             }
         }
-        static void mergeStats(List<KeyValuePair<string, float>> pStats, ref BaseStats __instance)
+        static void mergeStats(ListPool<BaseStatsContainer> pStats, ref BaseStats __instance)
         {
             for (int i = 0; i < pStats.Count; i++)
             {
-                __instance[pStats[i].Key] += pStats[i].Value;
+                __instance[pStats[i].id] += pStats[i].value;
             }
         }
     }
