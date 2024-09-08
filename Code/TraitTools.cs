@@ -235,8 +235,14 @@ namespace GodsAndPantheons
             actor.setKingdom(pActor.kingdom);
             if (savedata)
             {
+                actor.data.custom_data_bool = pActor.data.custom_data_bool;
+                actor.data.custom_data_float = pActor.data.custom_data_float;
+                actor.data.custom_data_int = pActor.data.custom_data_int;
+                actor.data.custom_data_string = pActor.data.custom_data_string;
+                actor.data.custom_data_flags = pActor.data.custom_data_flags;
                 actor.data.set("morphedinto", morphid);
                 actor.data.set("oldself", pActor.asset.id);
+                
                 if (!actor.asset.use_items && pActor.asset.use_items)
                 {
                     pActor.city?.takeAllItemsFromActor(pActor);
