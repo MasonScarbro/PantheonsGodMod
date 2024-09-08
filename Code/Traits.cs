@@ -6,11 +6,6 @@ using System;
 using UnityEngine;
 using ReflectionUtility;
 using System.Collections.Generic;
-using HarmonyLib;
-using Amazon.Runtime.Internal.Transform;
-using static UnityEngine.GraphicsBuffer;
-using System.Threading;
-
 
 namespace GodsAndPantheons
 {
