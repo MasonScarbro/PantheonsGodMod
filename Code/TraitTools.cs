@@ -1,7 +1,9 @@
 ﻿
+using ai;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 namespace GodsAndPantheons
 {
@@ -219,6 +221,37 @@ namespace GodsAndPantheons
             temp_base_stats[S.max_children] = (int)maxchildren;
             temp_base_stats[S.max_age] = (int)maxage;
             return temp_base_stats;
+        }
+        public static bool Morph(Actor pActor, string morphid, bool savedata = true)
+        {
+            if (pActor == null)
+            {
+                return false;
+            }
+            if (!pActor.inMapBorder())
+            {
+                return false;
+            }
+            Actor actor = World.world.units.createNewUnit(morphid, pActor.currentTile, 0f);
+            actor.setKingdom(pActor.kingdom);
+            if (savedata)
+            {
+                actor.data.set("morphedinto", morphid);
+                actor.data.set("oldself", pActor.asset.id);
+                if (!actor.asset.use_items && pActor.asset.use_items)
+                {
+                    pActor.city?.takeAllItemsFromActor(pActor);
+                }
+                ActorTool.copyUnitToOtherUnit(pActor, actor);
+            }
+            pActor.data.traits.Clear();
+            foreach(Actor minion in GetMinions(pActor))
+            {
+                minion.data.set("Master", actor.data.id);
+            }
+            ActionLibrary.removeUnit(pActor);
+            EffectsLibrary.spawn("fx_spawn", actor.currentTile, null, null, 0f, -1f, -1f);
+            return true;
         }
         public static void Inheritgodtraits(List<string> godtraits, ref ActorData God)
         {
