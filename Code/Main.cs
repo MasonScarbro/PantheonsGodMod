@@ -45,6 +45,7 @@ namespace GodsAndPantheons
             NewEffects.init();
             Items.init();
             GodHunterBeh.init();
+            SummonedOneBeh.init();
             Units.init();
             Tab.init();
             Invasions.init();

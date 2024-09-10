@@ -1,5 +1,7 @@
 ﻿
+using ai;
 using System.Collections.Generic;
+using System.EnterpriseServices;
 using System.Linq;
 using UnityEngine;
 
@@ -28,12 +30,12 @@ namespace GodsAndPantheons
             addTraitToLocalizedLibrary(Trait.id, disc);
         }
         //returns true if a trait is added
-        public static bool AddAutoTraits(ActorData a, string trait, bool mustbeinherited = false)
+        public static bool AddAutoTraits(ActorData a, string trait, bool mustbeinherited = false, float chancemult = 1)
         {
             bool addednew = false;
             foreach (string autotrait in AutoTraits[trait])
             {
-                if (!mustbeinherited || Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%")))
+                if (!mustbeinherited || Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
                 {
                     if (!a.traits.Contains(autotrait)) addednew = true;
                     a.addTrait(autotrait);
@@ -42,20 +44,20 @@ namespace GodsAndPantheons
             return addednew;
         }
         public static bool AddAutoTraits(Actor a, string trait) => AddAutoTraits(a.data, trait);
-        public static bool AutoTrait(ActorData pTarget, List<string> traits, bool MustBeInherited = false)
+        public static bool AutoTrait(ActorData pTarget, List<string> traits, bool MustBeInherited = false, float chancemult = 1)
         {
             foreach (string trait in AutoTraits.Keys)
              {
                if (traits.Contains(trait))
                {
-                  AddAutoTraits(pTarget, trait, MustBeInherited);
+                  AddAutoTraits(pTarget, trait, MustBeInherited, chancemult);
                }
              }
             return true;
         }
         static readonly List<string> summonedoneautotraits = new List<string>() { "regeneration", "fire_proof", "acid_proof"};
         //summon ability
-        public static void Summon(string creature, int times, BaseSimObject pSelf, WorldTile Ptile, int lifespan = 31, List<string>? autotraits = null)
+        public static void Summon(string creature, int times, BaseSimObject pSelf, WorldTile Ptile, int lifespan = 61, List<string>? autotraits = null)
         {
             Actor self = (Actor)pSelf;
             for (int i = 0; i < times; i++)
@@ -102,16 +104,15 @@ namespace GodsAndPantheons
             || a.Equals("God Of War")
             || a.Equals("God Of the Earth")
             || a.Equals("God Of light")
-            || a.Equals("God Of gods")
-            || a.Equals("LesserGod");
+            || a.Equals("God Of gods");
 
         public static List<string> GetGodTraits(Actor a) => GetGodTraits(a.data.traits);
-        public static List<string> GetGodTraits(List<string> pTraits, bool includedemigods = false)
+        public static List<string> GetGodTraits(List<string> pTraits, bool includedemigods = false, bool includesubgods = false)
         {
             List<string> list = new List<string>();
             foreach (string trait in pTraits)
             {
-                if (IsGodTrait(trait) || (trait.Equals("Demi God") && includedemigods))
+                if (IsGodTrait(trait) || (trait.Equals("Demi God") && includedemigods) || (trait.Equals("Lesser God") && includesubgods))
                 {
                     list.Add(trait);
                 }
@@ -220,6 +221,43 @@ namespace GodsAndPantheons
             temp_base_stats[S.max_age] = (int)maxage;
             return temp_base_stats;
         }
+        public static bool Morph(Actor pActor, string morphid, bool savedata = true)
+        {
+            if (pActor == null)
+            {
+                return false;
+            }
+            if (!pActor.inMapBorder())
+            {
+                return false;
+            }
+            Actor actor = World.world.units.createNewUnit(morphid, pActor.currentTile, 0f);
+            actor.setKingdom(pActor.kingdom);
+            if (savedata)
+            {
+                actor.data.custom_data_bool = pActor.data.custom_data_bool;
+                actor.data.custom_data_float = pActor.data.custom_data_float;
+                actor.data.custom_data_int = pActor.data.custom_data_int;
+                actor.data.custom_data_string = pActor.data.custom_data_string;
+                actor.data.custom_data_flags = pActor.data.custom_data_flags;
+                actor.data.set("morphedinto", morphid);
+                actor.data.set("oldself", pActor.asset.id);
+                
+                if (!actor.asset.use_items && pActor.asset.use_items)
+                {
+                    pActor.city?.takeAllItemsFromActor(pActor);
+                }
+                ActorTool.copyUnitToOtherUnit(pActor, actor);
+            }
+            pActor.data.traits.Clear();
+            foreach(Actor minion in GetMinions(pActor))
+            {
+                minion.data.set("Master", actor.data.id);
+            }
+            ActionLibrary.removeUnit(pActor);
+            EffectsLibrary.spawn("fx_spawn", actor.currentTile, null, null, 0f, -1f, -1f);
+            return true;
+        }
         public static void Inheritgodtraits(List<string> godtraits, ref ActorData God)
         {
             foreach (string trait in godtraits)
@@ -235,7 +273,7 @@ namespace GodsAndPantheons
                 }
             }
         }
-        public static void MakeDemiGod(List<string> godtraits, ref ActorData DemiGod)
+        public static void MakeDemiGod(List<string> godtraits, ref ActorData DemiGod, float chancemmult = 1)
         {
             DemiGod.addTrait("Demi God");
             foreach (string trait in godtraits)
@@ -243,11 +281,27 @@ namespace GodsAndPantheons
                 DemiGod.set("Demi" + trait, true);
                 foreach (KeyValuePair<string, float> kvp in TraitStats[trait])
                 {
-                  if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%", 55, 1, 75)))
+                  if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%", 55, 1)))
                   {
                     DemiGod.get("Demi" + kvp.Key, out float value);
-                    DemiGod.set("Demi" + kvp.Key, (kvp.Value / 2) + Random.Range(-(kvp.Value / 2.5f), kvp.Value / 2.5f) + value);
+                    DemiGod.set("Demi" + kvp.Key, (kvp.Value / 2) + Random.Range(-(kvp.Value / 4), kvp.Value / 4) + value);
                   }
+                }
+            }
+        }
+        public static void MakeLesserGod(List<string> godtraits, ref ActorData DemiGod, float chancemult = 1)
+        {
+            DemiGod.addTrait("Lesser God");
+            foreach (string trait in godtraits)
+            {
+                DemiGod.set("Demi" + trait, true);
+                foreach (KeyValuePair<string, float> kvp in TraitStats[trait])
+                {
+                    if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
+                    {
+                        DemiGod.get("Demi" + kvp.Key, out float value);
+                        DemiGod.set("Demi" + kvp.Key, (kvp.Value / (4/3)) + Random.Range(-(kvp.Value / 4), kvp.Value / 4) + value);
+                    }
                 }
             }
         }
@@ -267,6 +321,7 @@ namespace GodsAndPantheons
         }
         public static bool EraStatus(Actor Master, Actor Me)
         {
+            bool added = false;
             foreach (string era in TraitEras.Keys)
             {
                 if (Master.a.hasTrait(era))
@@ -274,6 +329,7 @@ namespace GodsAndPantheons
                     if (World.world_era.id == TraitEras[era].Key)
                     {
                         Me.addStatusEffect(TraitEras[era].Value);
+                        added = true;
                     }
                     else if (Me.hasStatus(TraitEras[era].Value))
                     {
@@ -281,7 +337,7 @@ namespace GodsAndPantheons
                     }
                 }
             }
-            return true;
+            return added;
         }
     }
 }
