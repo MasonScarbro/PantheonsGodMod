@@ -87,15 +87,7 @@ namespace GodsAndPantheons
                 {S.fertility, 0.8f},
              }
             },
-            {"LesserGod", new Dictionary<string, float>(){
-                {S.damage, 5f},
-                {S.health, 400f},
-                {S.attack_speed, 1f},
-                {S.critical_chance, 0.05f},
-                {S.scale, 0.02f},
-                {S.max_children, 4},
-                {S.fertility, 0.5f},
-                {S.max_age, 30}
+            {"Lesser God", new Dictionary<string, float>(){
              }
             },
             {"God Of War", new Dictionary<string, float>(){
@@ -166,14 +158,6 @@ namespace GodsAndPantheons
             {"Demi God", new Dictionary<string, float>(){
              }
             },
-            {"Failed God", new Dictionary<string, float>(){
-                {S.damage, 3f},
-                {S.health, 6f},
-                {S.armor, 4f},
-                {S.knockback_reduction, 0.5f},
-                {S.fertility, 0.3f}
-             }
-            }
         };
         public static Dictionary<string, List<string>> AutoTraits = new Dictionary<string, List<string>>()
         {
@@ -297,7 +281,7 @@ namespace GodsAndPantheons
                 "tough",
              }
             },
-            {"LesserGod", new List<string>()
+            {"Lesser God", new List<string>()
              {
                 "blessed",
                 "fire_proof",
@@ -371,7 +355,6 @@ namespace GodsAndPantheons
             darkGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             darkGod.action_attack_target = new AttackAction(darkGodAttack);
             darkGod.action_death = (WorldAction)Delegate.Combine(darkGod.action_death, new WorldAction(darkGodsDeath));
-            darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(BringMinions));
             darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(EraStatus));
             darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(AutoTrait));
             darkGod.group_id = "GodTraits";
@@ -396,7 +379,6 @@ namespace GodsAndPantheons
             starsGod.action_attack_target = new AttackAction(ActionLibrary.addFrozenEffectOnTarget);
             starsGod.action_attack_target += new AttackAction(starsGodAttack);
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(EraStatus));
-            starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(BringMinions));
             starsGod.group_id = "GodTraits";
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(AutoTrait));
             AddTrait(starsGod, "Now Cometh the Age of stars, A Thousand Year Voyage under the wisdom of the moon");
@@ -405,8 +387,6 @@ namespace GodsAndPantheons
             earthGod.id = "God Of the Earth";
             earthGod.path_icon = "ui/icons/earthGod";
             earthGod.action_attack_target = new AttackAction(earthGodAttack);
-            earthGod.group_id = "GodTraits";
-            earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(BringMinions));
             earthGod.action_special_effect = new WorldAction(earthGodBuildWorld);
             earthGod.action_special_effect += new WorldAction(GodWeaponManager.godGiveWeapon);
             earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(AutoTrait));
@@ -414,11 +394,11 @@ namespace GodsAndPantheons
             AddTrait(earthGod, "God of the Natural Enviornment, The titan of creation");
 
             ActorTrait subGod = new ActorTrait();
-            subGod.id = "LesserGod";
+            subGod.id = "Lesser God";
             subGod.path_icon = "ui/icons/subGod";
             subGod.group_id = "GodTraits";
             subGod.action_special_effect = (WorldAction)Delegate.Combine(subGod.action_special_effect, new WorldAction(AutoTrait));
-            AddTrait(subGod, "These Are the gods that have smaller importance");
+            AddTrait(subGod, "like the demigod, but can also inherit abilities!");
 
             ActorTrait warGod = new ActorTrait();
             warGod.id = "God Of War";
@@ -438,7 +418,6 @@ namespace GodsAndPantheons
             lichGod.action_death = (WorldAction)Delegate.Combine(lichGod.action_death, new WorldAction(genericGodsDeath));
             lichGod.action_attack_target = new AttackAction(lichGodAttack);
             lichGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
-            lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(BringMinions));
             lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(AutoTrait));
             lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(EraStatus));
             lichGod.group_id = "GodTraits";
@@ -470,7 +449,6 @@ namespace GodsAndPantheons
             godofgods.path_icon = "ui/icons/GodofGods";
             godofgods.action_death = new WorldAction(ActionLibrary.deathNuke);
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(AutoTrait));
-            godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(BringMinions));
             godofgods.action_special_effect = (WorldAction)Delegate.Combine(godofgods.action_special_effect, new WorldAction(EraStatus));
             godofgods.action_attack_target += new AttackAction(GodOfGodsAttack);
             godofgods.group_id = "GodTraits";
@@ -491,13 +469,6 @@ namespace GodsAndPantheons
             DemiGod.group_id = TraitGroup.special;
             DemiGod.can_be_given = false;
             AddTrait(DemiGod, "The Demi God, offspring of Gods and Mortals, the stat's of this trait are determined by the stats of his parent's");
-
-            ActorTrait FailedGod = new ActorTrait();
-            FailedGod.id = "Failed God";
-            FailedGod.path_icon = "ui/icons/iconCurse";
-            FailedGod.group_id = TraitGroup.special;
-            FailedGod.can_be_given = false;
-            AddTrait(FailedGod, "his Genes were recessive");
         }
 
         private static bool GodHunterAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -520,10 +491,11 @@ namespace GodsAndPantheons
                 a.removeTrait("Summoned One");
                 return false;
             }
+            a.data.get("lifespanincreased", out bool increased);
             a.data.get("lifespan", out int lifespan);
             a.data.get("life", out int life);
             a.data.set("life", life + 1);
-            if (life + 1 > lifespan)
+            if (life + 1 > (increased ? lifespan * 2 : lifespan))
             {
                 a.killHimself(false, AttackType.Age, false, true, true);
             }
@@ -851,25 +823,6 @@ namespace GodsAndPantheons
             }
             return false;
         }
-        public static bool BringMinions(BaseSimObject pTarget, WorldTile pTile)
-        {
-            List<Actor> Minions = GetMinions(pTarget.a);
-            foreach (Actor a in Minions)
-            {
-                if (a.kingdom != pTarget.kingdom)
-                {
-                    a.setKingdom(pTarget.kingdom);
-                }
-                float pDist = Vector2.Distance(pTarget.currentPosition, a.currentPosition);
-                if (pDist > 50)
-                {
-                    EffectsLibrary.spawnAt("fx_teleport_blue", pTarget.currentPosition, a.stats[S.scale]);
-                    a.cancelAllBeh();
-                    a.spawnOn(pTarget.currentTile, 0f);
-                }
-            }
-            return true;
-        }
         public static bool sunGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
 
@@ -1092,7 +1045,14 @@ namespace GodsAndPantheons
                 Actor master = FindMaster(pSelf.a);
                 if(master != null)
                 {
-                    EraStatus(master, pSelf.a);
+                    if(EraStatus(master, pSelf.a))
+                    {
+                        pSelf.a.data.set("lifespanincreased", true);
+                    }
+                    else
+                    {
+                        pSelf.a.data.set("lifespanincreased", false);
+                    }
                 }
             }
             return true;
