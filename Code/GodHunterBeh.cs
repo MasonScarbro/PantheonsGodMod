@@ -10,7 +10,7 @@ namespace GodsAndPantheons
         {
             BehaviourTaskActor GodHunt = new BehaviourTaskActor();
             GodHunt.id = "GodHunt";
-            GodHunt.addBeh(new GodHunt());
+            GodHunt.addBeh(new HuntGods());
             GodHunt.addBeh(new BehAttackGod());
             GodHunt.addBeh(new escape());
             GodHunt.addBeh(new BehGoToTileTarget() { walkOnBlocks = true, walkOnWater = true });
@@ -74,7 +74,7 @@ namespace GodsAndPantheons
             return tiletoescapeto;
         }
     }
-    public class GodHunt : BehaviourActionActor
+    public class HuntGods : BehaviourActionActor
     {
         public static Actor? GodToHunt;
         public override BehResult execute(Actor pActor)
@@ -111,28 +111,28 @@ namespace GodsAndPantheons
     {
         public override BehResult execute(Actor pActor)
         {
-            if(GodHunt.GodToHunt == null)
+            if(HuntGods.GodToHunt == null)
             {
                 return BehResult.Continue;
             }
-            if(Vector2.Distance(GodHunt.GodToHunt.currentPosition, pActor.currentPosition) > 8)
+            if(Vector2.Distance(HuntGods.GodToHunt.currentPosition, pActor.currentPosition) > 8)
             {
                 return BehResult.Continue;
             }
             World.world.getObjectsInChunks(pActor.currentTile, 4, MapObjectType.Actor);
-            if (getalliesofactor(World.world.temp_map_objects, GodHunt.GodToHunt) > 7)
+            if (getalliesofactor(World.world.temp_map_objects, HuntGods.GodToHunt) > 7)
             {
                 return BehResult.Continue;
             }
             pActor.finishStatusEffect("Invisible");
             pActor.data.set("invisiblecooldown", 10);
-            if (!GodHunt.GodToHunt.is_inside_building)
+            if (!HuntGods.GodToHunt.is_inside_building)
             {
-                pActor.setAttackTarget(GodHunt.GodToHunt);
+                pActor.setAttackTarget(HuntGods.GodToHunt);
             }
             else
             {
-                pActor.setAttackTarget(GodHunt.GodToHunt.insideBuilding);
+                pActor.setAttackTarget(HuntGods.GodToHunt.insideBuilding);
             }
             return BehResult.Continue;
         }
