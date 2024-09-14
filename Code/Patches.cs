@@ -227,8 +227,8 @@ namespace GodsAndPantheons
                 demiparents += pParent2.data.hasTrait("Demi God") ? 1 : 0;
                 lesserparents += pParent2.hasTrait("Lesser God") ? 1 : 0;
             }
-            float chancemult = .75f;
-            chancemult += godparents / 2;
+            float chancemult = godparents > 0 ? 1 : 0.75f;
+            chancemult += (godparents-1) / 2;
             chancemult += lesserparents / 4;
             chancemult += demiparents / 8;
             int importantgenes = godparents + lesserparents;
