@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
-using static Mono.Security.X509.X520;
+using static GodsAndPantheons.Traits;
 //Harmony Patches
 namespace GodsAndPantheons
 {
@@ -26,10 +26,9 @@ namespace GodsAndPantheons
         static Actor GetKing(Kingdom pKingdom)
         {
             List<Actor> list = new List<Actor>();
-            Debug.Log("what");
             foreach(Actor a in pKingdom.units)
             {
-                if (Traits.IsGod(a))
+                if (IsGod(a))
                 {
                     list.Add(a);
                 }
@@ -49,7 +48,7 @@ namespace GodsAndPantheons
                 if (instruction.opcode == OpCodes.Ldnull && !found)
                 {
                     yield return new CodeInstruction(OpCodes.Ldarg_1);
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(findking), "GetKing"));
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(findking), nameof(GetKing)));
                     found = true;
                 }
                 else
@@ -62,15 +61,27 @@ namespace GodsAndPantheons
     [HarmonyPatch(typeof(TooltipLibrary), "showTrait")]
     public class showdemistats
     {
-        static void Prefix(ref TooltipData pData)
+        static BaseStats getdemistats(ActorTrait trait)
         {
-            if(Config.selectedUnit == null)
+            if(trait.id == "Demi God" || trait.id == "Lesser God")
             {
-                return;
+                return GetDemiStats(Config.selectedUnit.data);
             }
-            if(pData.trait.id == "Demi God" || pData.trait.id == "Lesser God")
+            return trait.base_stats;
+        }
+        
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            foreach (CodeInstruction code in instructions)
             {
-                pData.trait.base_stats = Traits.GetDemiStats(Config.selectedUnit.data);
+                if (code.opcode == OpCodes.Ldfld && code.operand is FieldInfo && ((FieldInfo)code.operand).Name == "base_stats")
+                {
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(showdemistats), nameof(getdemistats)));
+                }
+                else
+                {
+                    yield return code;
+                }
             }
         }
     }
@@ -105,7 +116,7 @@ namespace GodsAndPantheons
                 {
                     if (a.isActor())
                     {
-                        if (Traits.IsGod(a.a) && a.isAlive() && !__instance.hasStatus("Invisible") && __instance.data.health >= __instance.getMaxHealth() * (__instance.hasStatus("powerup") ? 0.5 : 0.25)) { return false; }
+                        if (IsGod(a.a) && a.isAlive() && !__instance.hasStatus("Invisible") && __instance.data.health >= __instance.getMaxHealth() * (__instance.hasStatus("powerup") ? 0.5 : 0.25)) { return false; }
                     }
                 }
             }
@@ -117,7 +128,7 @@ namespace GodsAndPantheons
     {
         static void Prefix(Actor __instance, Actor pDeadUnit)
         {
-            bool isgod = Traits.IsGod(pDeadUnit);
+            bool isgod = IsGod(pDeadUnit);
             if (isgod)
             {
                 __instance.addTrait("God Killer");
@@ -126,7 +137,7 @@ namespace GodsAndPantheons
             }
             if(__instance.hasTrait("God Hunter"))
             {
-                Traits.SuperRegeneration(__instance, 100, isgod ? 30 : 5);
+                SuperRegeneration(__instance, 100, isgod ? 30 : 5);
                 if (isgod)
                 {
                     __instance.addStatusEffect("powerup", 10);
@@ -160,56 +171,88 @@ namespace GodsAndPantheons
             }
         }
     }
-    [HarmonyPatch(typeof(CityBehProduceUnit), "checkGreatClan")]
-    public class InheritGodTraits
+    [HarmonyPatch(typeof(BehMakeBaby), "makeBaby")]
+    public class InheritGodTraitsFromNonCitizens
     {
-        static void Postfix(Actor pParent1, Actor pParent2, Clan __result)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            if (Child != null)
+            foreach (CodeInstruction code in instructions)
             {
-                int parents = pParent2 != null ? 2 : 1;
-                int godparents = Traits.IsGod(pParent1) ? 1 : 0;
-                int demiparents = pParent1.data.hasTrait("Demi God") ? 1 : 0;
-                int lesserparents = pParent1.hasTrait("Lesser God") ? 1 : 0;
-                List<string> godtraits = new List<string>(Traits.GetGodTraits(pParent1));
-                AddRange(godtraits, Traits.Getinheritedgodtraits(pParent1.data));
-                if (parents == 2)
+                yield return code;
+                if (code.opcode == OpCodes.Stloc_2)
                 {
-                    AddRange(godtraits, Traits.GetGodTraits(pParent2));
-                    AddRange(godtraits, Traits.Getinheritedgodtraits(pParent2.data));
-                    godparents += Traits.IsGod(pParent2) ? 1 : 0;
-                    demiparents += pParent2.data.hasTrait("Demi God") ? 1 : 0;
-                    lesserparents += pParent2.hasTrait("Lesser God") ? 1 : 0;
+                    yield return new CodeInstruction(OpCodes.Ldloc_2);
+                    yield return new CodeInstruction(OpCodes.Ldarg_1);
+                    yield return new CodeInstruction(OpCodes.Ldarg_2);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(InheritGodTraitsFromNonCitizens), nameof(MakeBaby)));
                 }
-                float chancemult = .75f;
-                chancemult += godparents / 2;
-                chancemult += lesserparents / 4;
-                chancemult += demiparents / 8;
-                int importantgenes = godparents + lesserparents;
-                Actor? chief = __result?.getChief();
-                if (chief != null)
-                {
-                    if (Traits.IsGod(chief))
-                    {
-                        Traits.MakeLesserGod(godtraits, ref Child, chancemult);
-                        return;
-                    }
-                }
-                if (parents == importantgenes)
-                {
-                   Traits.MakeLesserGod(godtraits, ref Child, chancemult);
-                    return;
-                }
-                else if(importantgenes == 1 || demiparents+importantgenes == parents)
-                {
-                  Traits.MakeDemiGod(godtraits, ref Child, chancemult);
-                  return;
-                }
-                Traits.AutoTrait(Child, godtraits, true, chancemult);
-                Child = null;
             }
         }
-        public static ActorData Child;
+        public static void MakeBaby(Actor child, Actor pParent1, Actor pParent2)
+        {
+            InheritGodTraits.inheritgodtraits(child.data, pParent1, pParent2, null);
+        }
+    }
+    [HarmonyPatch(typeof(CityBehProduceUnit), "produceNewCitizen")]
+    public class InheritGodTraits
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            foreach (CodeInstruction code in instructions)
+            {
+                yield return code;
+                if (code.opcode == OpCodes.Stloc_S && code.operand is LocalBuilder builder && builder.LocalIndex == 5)
+                {
+                    yield return new CodeInstruction(OpCodes.Ldloc_S, 4);
+                    yield return new CodeInstruction(OpCodes.Ldloc_0);
+                    yield return new CodeInstruction(OpCodes.Ldloc_1);
+                    yield return new CodeInstruction(OpCodes.Ldloc_S, 5);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(InheritGodTraits), nameof(inheritgodtraits)));
+                }
+            }
+        }
+        public static void inheritgodtraits(ActorData child, Actor pParent1, Actor pParent2, Clan GreatClan)
+        {
+            int parents = pParent2 != null ? 2 : 1;
+            int godparents = IsGod(pParent1) ? 1 : 0;
+            int demiparents = pParent1.data.hasTrait("Demi God") ? 1 : 0;
+            int lesserparents = pParent1.hasTrait("Lesser God") ? 1 : 0;
+            List<string> godtraits = new List<string>(GetGodTraits(pParent1));
+            AddRange(godtraits, Getinheritedgodtraits(pParent1.data));
+            if (parents == 2)
+            {
+                AddRange(godtraits, GetGodTraits(pParent2));
+                AddRange(godtraits, Getinheritedgodtraits(pParent2.data));
+                godparents += IsGod(pParent2) ? 1 : 0;
+                demiparents += pParent2.data.hasTrait("Demi God") ? 1 : 0;
+                lesserparents += pParent2.hasTrait("Lesser God") ? 1 : 0;
+            }
+            float chancemult = .75f;
+            chancemult += godparents / 2;
+            chancemult += lesserparents / 4;
+            chancemult += demiparents / 8;
+            int importantgenes = godparents + lesserparents;
+            Actor? chief = GreatClan?.getChief();
+            if (chief != null)
+            {
+                if (IsGod(chief))
+                {
+                    MakeLesserGod(godtraits, ref child, chancemult);
+                    return;
+                }
+            }
+            if (parents == importantgenes)
+            {
+                MakeLesserGod(godtraits, ref child, chancemult);
+                return;
+            }
+            else if (importantgenes == 1 || demiparents + importantgenes == parents)
+            {
+                MakeDemiGod(godtraits, ref child, chancemult);
+                return;
+            }
+            AutoTrait(child, godtraits, true, chancemult);
+        }
         static void AddRange(List<string> list, List<string> range)
         {
             foreach (string s in range)
@@ -221,25 +264,29 @@ namespace GodsAndPantheons
             }
         }
     }
-    [HarmonyPatch(typeof(ActorData), "inheritTraits")]
-    public class ChildData
-    {
-        static void Postfix(ActorData __instance, List<string> pTraits)
-        {
-            if (InheritGodTraits.Child == null && (Traits.GetGodTraits(pTraits, true, true).Count > 0))
-            {
-                InheritGodTraits.Child = __instance;
-            }
-        }
-    }
-    [HarmonyPatch(typeof(ActorBase), "calculateFertility")]
+    [HarmonyPatch(typeof(ActorBase), "updateStats")]
     public class UseDemiStats
     {
-        static void Postfix(ActorBase __instance)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            bool found = false;
+            var codes = new List<CodeInstruction>(instructions);
+            for (int i = 0; i < codes.Count; i++)
+            {
+                if (codes[i].opcode == OpCodes.Ldsfld && codes[i + 1].opcode == OpCodes.Stloc_S && !found)
+                {
+                    found = true;
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UseDemiStats), nameof(mergedemistats)));
+                }
+                yield return codes[i];
+            }
+        }
+        static void mergedemistats(ActorBase __instance)
         {
             if (__instance.hasTrait("Demi God") || __instance.hasTrait("Lesser God"))
             {
-                mergeStats(Traits.GetDemiStats(__instance.data).stats_list, ref __instance.stats);
+                mergeStats(GetDemiStats(__instance.data).stats_list, ref __instance.stats);
             }
         }
         static void mergeStats(ListPool<BaseStatsContainer> pStats, ref BaseStats __instance)
@@ -259,7 +306,7 @@ namespace GodsAndPantheons
             {
                 if (pTargetToCheck.a.hasTrait("God Of Knowledge"))
                 {
-                    if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Knowledge", "EnemySwap%")))
+                    if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "EnemySwap%")))
                     {
                         WorldTile tile = pTargetToCheck.currentTile;
                         ListPool<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(tile, pTargetToCheck.kingdom, -1).list;

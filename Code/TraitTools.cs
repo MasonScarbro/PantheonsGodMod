@@ -1,7 +1,6 @@
 ﻿
 using ai;
 using System.Collections.Generic;
-using System.EnterpriseServices;
 using System.Linq;
 using UnityEngine;
 
@@ -202,7 +201,7 @@ namespace GodsAndPantheons
             pData.get("Demi" + S.warfare, out float warfare);
             pData.get("Demi" + S.fertility, out float fertility);
             pData.get("Demi" + S.max_children, out float maxchildren);
-            pData.get("Demi" + S.max_age, out float maxage);
+            pData.get("Demi" + S.max_age, out int maxage);
             temp_base_stats.clear();
             temp_base_stats[S.speed] = speed;
             temp_base_stats[S.critical_chance] = crit;
@@ -218,7 +217,8 @@ namespace GodsAndPantheons
             temp_base_stats[S.warfare] = warfare;
             temp_base_stats[S.fertility] = fertility;
             temp_base_stats[S.max_children] = (int)maxchildren;
-            temp_base_stats[S.max_age] = (int)maxage;
+            //special
+            temp_base_stats[S.max_age] = maxage;
             return temp_base_stats;
         }
         public static bool Morph(Actor pActor, string morphid, bool savedata = true)
@@ -232,6 +232,7 @@ namespace GodsAndPantheons
                 return false;
             }
             Actor actor = World.world.units.createNewUnit(morphid, pActor.currentTile, 0f);
+            actor.data.traits.Clear();
             actor.setKingdom(pActor.kingdom);
             if (savedata)
             {
@@ -258,21 +259,6 @@ namespace GodsAndPantheons
             EffectsLibrary.spawn("fx_spawn", actor.currentTile, null, null, 0f, -1f, -1f);
             return true;
         }
-        public static void Inheritgodtraits(List<string> godtraits, ref ActorData God)
-        {
-            foreach (string trait in godtraits)
-            {
-                if (Toolbox.randomChance(GetEnhancedChance(trait, trait+"inherit%", 55)))
-                {
-                  God.addTrait(trait);
-                }
-                else
-                {
-                    God.addTrait("Failed God");
-                    God.set("Demi" + trait, true);
-                }
-            }
-        }
         public static void MakeDemiGod(List<string> godtraits, ref ActorData DemiGod, float chancemmult = 1)
         {
             DemiGod.addTrait("Demi God");
@@ -288,22 +274,31 @@ namespace GodsAndPantheons
                   }
                 }
             }
+            DemiGod.set("Demi"+S.max_age, Random.Range(10, 30));
         }
-        public static void MakeLesserGod(List<string> godtraits, ref ActorData DemiGod, float chancemult = 1)
+        public static void MakeLesserGod(List<string> godtraits, ref ActorData LesserGod, float chancemult = 1)
         {
-            DemiGod.addTrait("Lesser God");
+            LesserGod.addTrait("Lesser God");
             foreach (string trait in godtraits)
             {
-                DemiGod.set("Demi" + trait, true);
+                LesserGod.set("Demi" + trait, true);
                 foreach (KeyValuePair<string, float> kvp in TraitStats[trait])
                 {
                     if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
                     {
-                        DemiGod.get("Demi" + kvp.Key, out float value);
-                        DemiGod.set("Demi" + kvp.Key, (kvp.Value / (4/3)) + Random.Range(-(kvp.Value / 4), kvp.Value / 4) + value);
+                        LesserGod.get("Demi" + kvp.Key, out float value);
+                        LesserGod.set("Demi" + kvp.Key, (kvp.Value / (4/3)) + Random.Range(-(kvp.Value / 4), kvp.Value / 4) + value);
+                    }
+                }
+                foreach (AttackAction ability in GodAbilities[trait])
+                {
+                    if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
+                    {
+                        LesserGod.set("Demi" + nameof(ability), true);
                     }
                 }
             }
+            LesserGod.set("Demi" + S.max_age, Random.Range(30, 50));
         }
         //gets god traits which are stored in the data of failed gods / demigods
         public static List<string> Getinheritedgodtraits(ActorData pData)
