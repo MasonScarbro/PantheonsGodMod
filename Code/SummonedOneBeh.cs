@@ -35,11 +35,16 @@ namespace GodsAndPantheons
             if (Master == null)
             {
                 pActor.removeTrait("Summoned One");
+                pActor.data.removeString("Master");
                 return BehResult.Stop;
             }
             if(Master.kingdom.id != pActor.kingdom.id)
             {
                 pActor.setKingdom(Master.kingdom);
+            }
+            if (pActor.has_attack_target || Master.has_attack_target)
+            {
+                return BehResult.Continue;
             }
             if (Master.currentTile.Type.liquid)
             {
@@ -50,12 +55,6 @@ namespace GodsAndPantheons
             {
                 pActor.data.set("patrolling", false);
                 pActor.beh_tile_target = Master.currentTile;
-                return BehResult.Continue;
-            }
-            if (pActor.has_attack_target && !Master.has_attack_target)
-            {
-                Master.setAttackTarget(pActor.attackTarget);
-                pActor.data.set("patrolling", false);
                 return BehResult.Continue;
             }
             pActor.data.get("patrolling", out bool patrolling);
@@ -91,7 +90,7 @@ namespace GodsAndPantheons
             }
             return BehResult.Continue;
         }
-        WorldTile getrilewithindistance(WorldTile tile, float mindistance = 10, float maxdistance = 30, int attempts = 20)
+        WorldTile getrilewithindistance(WorldTile tile, float mindistance = 10, int maxdistance = 20, int attempts = 20, bool ignoreMountains = false)
         {
             if (tile.Type.liquid)
             {
@@ -100,8 +99,8 @@ namespace GodsAndPantheons
             WorldTile _tile = null;
             for (int i = 0; i < attempts; i++)
             {
-                _tile = tile.region.island.getRandomTile();
-                if (Vector2.Distance(tile.pos, _tile.pos) > mindistance && Vector2.Distance(tile.pos, _tile.pos) < maxdistance)
+                _tile = Toolbox.getRandomTileWithinDistance(tile, maxdistance);
+                if (Vector2.Distance(tile.pos, _tile.pos) > mindistance && tile.isSameIsland(_tile) && (!_tile.Type.mountains || ignoreMountains))
                 {
                     return _tile;
                 }
@@ -120,7 +119,7 @@ namespace GodsAndPantheons
             }
             if(Patrol.Master.attackTarget != null)
             {
-                pActor.setAttackTarget(Patrol.Master.attackTarget);
+                pActor.beh_tile_target = Patrol.Master.attackTarget.currentTile;
                 pActor.data.set("patrolling", false);
             }
             return BehResult.Continue;
