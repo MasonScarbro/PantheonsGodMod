@@ -155,7 +155,7 @@ namespace GodsAndPantheons
     {
         static BaseStats getdemistats(ActorTrait trait)
         {
-            if(trait.id == "Demi God" || trait.id == "Lesser God" && Config.selectedUnit != null)
+            if((trait.id == "Demi God" || trait.id == "Lesser God") && Config.selectedUnit != null)
             {
                 return GetDemiStats(Config.selectedUnit.data);
             }
