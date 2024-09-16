@@ -9,6 +9,98 @@ using static GodsAndPantheons.Traits;
 //Harmony Patches
 namespace GodsAndPantheons
 {
+    [HarmonyPatch(typeof(MapBox), "Update")]
+    public class DevineMiracles
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
+            for (int i = 0; i < codes.Count; i++)
+            {
+                yield return codes[i];
+                if (codes[i].opcode == OpCodes.Brtrue && codes[i-1].opcode == OpCodes.Call && (codes[i-1].operand as MethodInfo).Name == "isPaused")
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(DevineMiracles), nameof(TryDivineMiracles)));
+                }
+            }
+        }
+        public static float Timer = 30;
+        public static void TryDivineMiracles(MapBox instance)
+        {
+            if(blessingtime > 0)
+            {
+                blessingtime -= instance.elapsed;
+                pb.flashPixel(LuckyOnee.currentTile);
+                pb.divineLightFX(LuckyOnee.currentTile, null);
+                pb.drawDivineLight(LuckyOnee.currentTile, null);
+                SuperRegeneration(LuckyOnee, 100, 25);
+            }
+            else if(LuckyOnee != null)
+            {
+                blessingtime = 0;
+                ActionLibrary.castShieldOnHimself(null, LuckyOnee, null);
+                LuckyOnee = null;
+            }
+            if (!Main.savedSettings.DevineMiracles)
+            {
+                return;
+            }
+            Timer -= instance.elapsed;
+            if(Timer > 0)
+            {
+                return;
+            }
+            Timer = 30;
+            if (!Toolbox.randomChance(0.0005f))
+            {
+                return;
+            }
+            List<Kingdom> list = World.world.kingdoms.list_civs;
+            List<string> availabletraits = getavailblegodtraits(instance);
+            if(availabletraits.Count == 0)
+            {
+                return;
+            }
+            availabletraits.Shuffle();
+            list.Shuffle();
+            foreach (Kingdom k in list)
+            {
+                if (!DoesKingdomHaveGod(k))
+                {
+                    List<Actor> units = k.units.getSimpleList();
+                    units.Shuffle();
+                    foreach(Actor a in units)
+                    {
+                        if(!a.hasTrait("infertile") && !a.hasTrait("Demi God") && !a.hasTrait("Lesser God") )
+                        {
+                            DivineMiracle(a, availabletraits[0]);
+                            Timer = 300;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        static Actor LuckyOnee;
+        static float blessingtime = 0;
+        public static void DivineMiracle(Actor LuckyOne, string godtrait)
+        {
+            World.world.startShake(1f, 0.01f, 2f, true, true);
+            LuckyOne.addTrait(godtrait);
+            LuckyOnee = LuckyOne;
+            blessingtime = 10;
+            WorldLogMessage worldLogMessage = new WorldLogMessage($"A Divine Miracle Has Occurred in {LuckyOne.kingdom.name}!")
+            {
+                unit = LuckyOne,
+                icon = "iconNightchild",
+                location = LuckyOne.currentPosition,
+                color_special1 = LuckyOne.kingdom.kingdomColor.getColorText(),
+                color_special2 = LuckyOne.kingdom.kingdomColor.getColorText()
+            };
+            worldLogMessage.add();
+        }
+    }
     [HarmonyPatch(typeof(ActorBase), "nextJobActor")]
     public class summonedonejobapply
     {
@@ -63,7 +155,7 @@ namespace GodsAndPantheons
     {
         static BaseStats getdemistats(ActorTrait trait)
         {
-            if(trait.id == "Demi God" || trait.id == "Lesser God")
+            if((trait.id == "Demi God" || trait.id == "Lesser God") && Config.selectedUnit != null)
             {
                 return GetDemiStats(Config.selectedUnit.data);
             }
@@ -246,7 +338,7 @@ namespace GodsAndPantheons
                 MakeLesserGod(godtraits, ref child, chancemult);
                 return;
             }
-            else if (importantgenes == 1 || demiparents + importantgenes == parents)
+            else if (importantgenes == 1)
             {
                 MakeDemiGod(godtraits, ref child, chancemult);
                 return;

@@ -334,5 +334,29 @@ namespace GodsAndPantheons
             }
             return added;
         }
+        public static bool DoesKingdomHaveGod(Kingdom pKingdom)
+        {
+            foreach (Actor a in pKingdom.units)
+            {
+                if (IsGod(a))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        //returns god traits which no one in the word have
+        public static List<string> getavailblegodtraits(MapBox instance)
+        {
+            List<string> list = new List<string>(GodAbilities.Keys);
+            foreach (Actor a in instance.units)
+            {
+                foreach (string godtrait in GetGodTraits(a))
+                {
+                    list.Remove(godtrait);
+                }
+            }
+            return list;
+        }
     }
 }
