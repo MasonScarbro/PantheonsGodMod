@@ -90,12 +90,14 @@ namespace GodsAndPantheons
             LuckyOne.addTrait(godtrait);
             LuckyOnee = LuckyOne;
             blessingtime = 10;
-            WorldLogMessage worldLogMessage = new WorldLogMessage("A Divine Miracle Has Occurred!", LuckyOne.kingdom.name, LuckyOne.getName());
-            worldLogMessage.unit = LuckyOne;
-            worldLogMessage.icon = "iconNightchild";
-            worldLogMessage.location = LuckyOne.currentPosition;
-            worldLogMessage.color_special1 = LuckyOne.kingdom.kingdomColor.getColorText();
-            worldLogMessage.color_special2 = LuckyOne.kingdom.kingdomColor.getColorText();
+            WorldLogMessage worldLogMessage = new WorldLogMessage($"A Divine Miracle Has Occurred in {LuckyOne.kingdom.name}!")
+            {
+                unit = LuckyOne,
+                icon = "iconNightchild",
+                location = LuckyOne.currentPosition,
+                color_special1 = LuckyOne.kingdom.kingdomColor.getColorText(),
+                color_special2 = LuckyOne.kingdom.kingdomColor.getColorText()
+            };
             worldLogMessage.add();
         }
     }
