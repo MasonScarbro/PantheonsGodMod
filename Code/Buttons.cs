@@ -90,13 +90,25 @@ namespace GodsAndPantheons
                     Resources.Load<Sprite>("ui/Icons/godKiller"),
                     "option modifier",
                     "if enabled, god hunters will become assassins and will hunt down gods",
-                    new Vector2(424, 18),
+                    new Vector2(530, 18),
                     ButtonType.Toggle,
                     tab.transform,
                     ToggleAssassins
               );
             if (Main.savedSettings.HunterAssasins)
                 PowerButtons.ToggleButton(button2.name);
+            PowerButton button3 = PowerButtons.CreateButton(
+                    "DevineMiracles",
+                    Resources.Load<Sprite>("ui/Icons/iconNightchild"),
+                    "option modifier",
+                    "allows for a very, very rare chance that a mortal in a kingdom will become a god",
+                    new Vector2(424, 18),
+                    ButtonType.Toggle,
+                    tab.transform,
+                    ToggleDevineMiracles
+              );
+            if (Main.savedSettings.DevineMiracles)
+                PowerButtons.ToggleButton(button3.name);
             PowerButtons.CreateButton(
                     "GodOfGodsWindow",
                     Resources.Load<Sprite>("ui/Icons/GodofGods"),
@@ -197,6 +209,11 @@ namespace GodsAndPantheons
         public static void ToggleAssassins()
         {
             Main.savedSettings.HunterAssasins = !Main.savedSettings.HunterAssasins;
+            Main.saveSettings();
+        }
+        public static void ToggleDevineMiracles()
+        {
+            Main.savedSettings.DevineMiracles = !Main.savedSettings.DevineMiracles;
             Main.saveSettings();
         }
     }
