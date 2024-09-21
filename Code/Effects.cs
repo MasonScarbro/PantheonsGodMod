@@ -125,9 +125,6 @@ namespace GodsAndPantheons
             localizeStatus(EarthGodEra.id, "Earth Prevails", EarthGodEra.description); // Localizes the status effect
             AssetManager.status.add(EarthGodEra);
 
-            AssetManager.status.get("ash_fever").opposite_status = new List<string>() { "Earth Prevails"};
-            AssetManager.status.get("cough").opposite_status = new List<string>() { "Earth Prevails"};
-
             StatusEffect warGodEra = new StatusEffect();
             warGodEra.id = "Despair Prevails";
             warGodEra.duration = 7000f;
@@ -187,7 +184,7 @@ namespace GodsAndPantheons
             Lassering.name = "Lassering";
             Lassering.description = "Unlimited power!!!!";
             Lassering.base_stats[S.mod_speed] = -0.75f;
-            Lassering.action_interval = 0.001f;
+            Lassering.action_interval = 0.01f;
             Lassering.action = new WorldAction(LaserEffect);
             localizeStatus(Lassering.id, "Lassering", Lassering.description); // Localizes the status effect
             AssetManager.status.add(Lassering);
@@ -215,7 +212,6 @@ namespace GodsAndPantheons
             chaosgodsera.base_stats[S.speed] += 30;
             chaosgodsera.base_stats[S.knockback_reduction] += 2f;
             chaosgodsera.base_stats[S.knockback] += 2f;
-            chaosgodsera.opposite_status = new List<string>() { "rage" };
             chaosgodsera.base_stats[S.attack_speed] += 8f;
             chaosgodsera.base_stats[S.damage] += 30f;
             chaosgodsera.action_interval = 2;
@@ -238,6 +234,10 @@ namespace GodsAndPantheons
 
             localizeStatus(warGodsCry.id, "WarGodsCry", warGodsCry.description); // Localizes the status effect
             AssetManager.status.add(warGodsCry);
+
+            AssetManager.status.get("ash_fever").opposite_status = new List<string>() { "Earth Prevails" };
+            AssetManager.status.get("cough").opposite_status = new List<string>() { "Earth Prevails" };
+            AssetManager.status.get("rage").opposite_status = new List<string>() { "Chaos Prevails" };
 
 
             /*
@@ -303,6 +303,7 @@ namespace GodsAndPantheons
             else
             {
                 a.finishStatusEffect("Lassering");
+                return false;
             }
             return true;
         }

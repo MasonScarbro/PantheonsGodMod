@@ -168,12 +168,9 @@ namespace GodsAndPantheons
                 "evil",
                 "poison_immune",
                 "fire_proof",
-                "acid_Proof",
-                "freeze_proof",
+                "acid_proof",
                 "shiny",
                 "immortal",
-                "nightchild",
-                "moonchild",
                 "regeneration"
              }
             },
@@ -276,7 +273,6 @@ namespace GodsAndPantheons
                 "strong",
                 "acid_touch",
                 "acid_blood",
-                "freeze_proof",
                 "acid_proof",
                 "regeneration",
                 "immortal",
@@ -287,7 +283,6 @@ namespace GodsAndPantheons
              {
                 "blessed",
                 "fire_proof",
-                "freeze_proof",
                 "tough",
              }
             }
