@@ -4,6 +4,7 @@ VERSION: 1.0.0
 */
 using System.Collections.Generic;
 using ReflectionUtility;
+using SleekRender;
 using UnityEngine;
 
 namespace GodsAndPantheons
@@ -49,26 +50,24 @@ namespace GodsAndPantheons
             localizeStatus(darkGodEra.id, "Nights_Prevail", darkGodEra.description); // Localizes the status effect
             AssetManager.status.add(darkGodEra);
 
-            StatusEffect GodOfGodsEra = new StatusEffect();
-            GodOfGodsEra.id = "God_Of_All";
-            GodOfGodsEra.duration = 7000f;
-            GodOfGodsEra.base_stats[S.mod_armor] = 0.5f;
-            GodOfGodsEra.base_stats[S.mod_damage] = 0.5f;
-            GodOfGodsEra.base_stats[S.range] += 10;
-            GodOfGodsEra.base_stats[S.mod_health] = 0.5f;
-            GodOfGodsEra.base_stats[S.speed] += 70;
-            GodOfGodsEra.base_stats[S.knockback_reduction] += 0.5f;
-            GodOfGodsEra.base_stats[S.mod_crit] = 0.5f;
-            GodOfGodsEra.base_stats[S.attack_speed] += 40f;
-            GodOfGodsEra.base_stats[S.scale] += 0.075f;
-            GodOfGodsEra.base_stats[S.dodge] += 40f;
-            GodOfGodsEra.path_icon = "ui/icons/GodofGods";
-            GodOfGodsEra.description = "Now i have become death, destroyer of worlds";
-            GodOfGodsEra.name = "God Of All";
-            GodOfGodsEra.action_interval = 2;
-            GodOfGodsEra.action = new WorldAction(Traits.SuperRegeneration);
-            localizeStatus(GodOfGodsEra.id, "God_Of_All", GodOfGodsEra.description); // Localizes the status effect
-            AssetManager.status.add(GodOfGodsEra);
+            StatusEffect FireGodEra = new StatusEffect();
+            FireGodEra.id = "God_Of_All";
+            FireGodEra.duration = 7000f;
+            FireGodEra.base_stats[S.mod_armor] += 0.15f;
+            FireGodEra.base_stats[S.mod_health] = 0.5f;
+            FireGodEra.base_stats[S.speed] += 70;
+            FireGodEra.base_stats[S.knockback_reduction] += 0.5f;
+            FireGodEra.base_stats[S.mod_crit] = 0.5f;
+            FireGodEra.base_stats[S.attack_speed] += 40f;
+            FireGodEra.base_stats[S.scale] += 0.075f;
+            FireGodEra.base_stats[S.dodge] += 40f;
+            FireGodEra.path_icon = "ui/icons/GodOfFire";
+            FireGodEra.description = "Now i have become death, destroyer of worlds";
+            FireGodEra.name = "God Of All";
+            FireGodEra.action_interval = 2;
+            FireGodEra.action = new WorldAction(Traits.SuperRegeneration);
+            localizeStatus(FireGodEra.id, "God_Of_All", FireGodEra.description); // Localizes the status effect
+            AssetManager.status.add(FireGodEra);
 
             StatusEffect knowledgeGodEra = new StatusEffect();
             knowledgeGodEra.id = "Knowledge_Prevail";
@@ -111,13 +110,12 @@ namespace GodsAndPantheons
 
             StatusEffect EarthGodEra = new StatusEffect();
             EarthGodEra.id = "Earth Prevails";
-            EarthGodEra.opposite_status = new List<string>() { "cough", "ash_fever" };
             EarthGodEra.duration = 7000f;
-            EarthGodEra.base_stats[S.health] += 500;
+            EarthGodEra.base_stats[S.mod_health] += 0.75f;
             EarthGodEra.base_stats[S.mod_speed] += 0.25f;
             EarthGodEra.base_stats[S.knockback_reduction] += 0.8f;
-            EarthGodEra.base_stats[S.knockback] += 1f;
-            EarthGodEra.base_stats[S.mod_armor] += 0.4f;
+            EarthGodEra.base_stats[S.mod_damage] += 0.3f;
+            EarthGodEra.base_stats[S.mod_armor] += 0.6f;
             EarthGodEra.base_stats[S.attack_speed] += 80f;
             EarthGodEra.path_icon = "ui/icons/earthGod";
             EarthGodEra.description = "The World, shrowded in my home";
@@ -178,6 +176,31 @@ namespace GodsAndPantheons
             localizeStatus(Invisible.id, "Invisible", Invisible.description); // Localizes the status effect
             AssetManager.status.add(Invisible);
 
+            //you must use CreateLaserForActor() to add this effect, dont use addstatuseffect directly!!!!
+            StatusEffect Lassering = new StatusEffect();
+            Lassering.duration = 10;
+            Lassering.id = "Lassering";
+            Lassering.path_icon = "ui/icons/GodOfFire";
+            Lassering.name = "Lassering";
+            Lassering.description = "Unlimited power!!!!";
+            Lassering.base_stats[S.mod_speed] = -0.75f;
+            Lassering.action_interval = 0.01f;
+            Lassering.action = new WorldAction(LaserEffect);
+            localizeStatus(Lassering.id, "Lassering", Lassering.description); // Localizes the status effect
+            AssetManager.status.add(Lassering);
+            //only meant for tornados
+            StatusEffect FireStorm = new StatusEffect();
+            FireStorm.duration = 9999;
+            FireStorm.id = "FireStorm";
+            FireStorm.path_icon = "ui/icons/GodOfFire";
+            FireStorm.name = "Lasering";
+            FireStorm.description = "It burns!!!!!";
+            FireStorm.base_stats[S.mod_speed] = 0.75f;
+            FireStorm.action_interval = 0.8f;
+            FireStorm.action = new WorldAction(FireStormEefect);
+            localizeStatus(FireStorm.id, "FireStorm", FireStorm.description); // Localizes the status effect
+            AssetManager.status.add(FireStorm);
+
             StatusEffect chaosgodsera = new StatusEffect();
             chaosgodsera.duration = 7000f;
             chaosgodsera.id = "Chaos Prevails";
@@ -189,7 +212,6 @@ namespace GodsAndPantheons
             chaosgodsera.base_stats[S.speed] += 30;
             chaosgodsera.base_stats[S.knockback_reduction] += 2f;
             chaosgodsera.base_stats[S.knockback] += 2f;
-            chaosgodsera.opposite_status = new List<string>() { "rage" };
             chaosgodsera.base_stats[S.attack_speed] += 8f;
             chaosgodsera.base_stats[S.damage] += 30f;
             chaosgodsera.action_interval = 2;
@@ -212,6 +234,10 @@ namespace GodsAndPantheons
 
             localizeStatus(warGodsCry.id, "WarGodsCry", warGodsCry.description); // Localizes the status effect
             AssetManager.status.add(warGodsCry);
+
+            AssetManager.status.get("ash_fever").opposite_status = new List<string>() { "Earth Prevails" };
+            AssetManager.status.get("cough").opposite_status = new List<string>() { "Earth Prevails" };
+            AssetManager.status.get("rage").opposite_status = new List<string>() { "Chaos Prevails" };
 
 
             /*
@@ -250,6 +276,85 @@ namespace GodsAndPantheons
                     pTarget.GetComponent<SpriteRenderer>().color = new Color(mycolor.r, mycolor.g, mycolor.b, 0.4f);
                 }
             return true;
+        }
+        public static bool FireStormEefect(BaseSimObject pTarget, WorldTile pTile)
+        {
+            Color mycolor = pTarget.GetComponent<SpriteRenderer>().color;
+            if (mycolor.b != 0.2)
+            {
+                pTarget.GetComponent<SpriteRenderer>().color = new Color(mycolor.r, 0.15f, 0.2f, mycolor.a);
+            }
+            ActionLibrary.burningFeetEffect(pTarget, pTile);
+            World.world.dropManager.spawnParabolicDrop(pTile, "lava", 0f, 0.15f, 33f + 40 * 2, 1f, 40f + 40, 0.7f);
+            return true;
+        }
+        public static bool LaserEffect(BaseSimObject pTarget, WorldTile pTile)
+        {
+            Actor a = pTarget.a;
+            if(a == null)
+            {
+                pTarget.finishStatusEffect("Lassering");
+                return false;
+            }
+            if (a.transform.childCount > 0 && a.transform.GetChild(0).GetComponent<CrabArm>() != null && a.has_attack_target)
+            {
+                UpdateCrabArnLaser(a.transform.GetChild(0).GetComponent<CrabArm>(), a);
+            }
+            else
+            {
+                a.finishStatusEffect("Lassering");
+                return false;
+            }
+            return true;
+        }
+        public static void UpdateCrabArnLaser(CrabArm arm, Actor pSelf)
+        {
+            arm.angle = Mathf.Atan2(pSelf.attackTarget.currentPosition.y - arm.transform.position.y, pSelf.attackTarget.currentPosition.x - arm.transform.position.x) * Mathf.Rad2Deg;
+            arm.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, arm.angle));
+            updatelasersprite(arm, Time.deltaTime);
+            float x = arm.laserPoint.transform.position.x;
+            float y = arm.laserPoint.transform.position.y;
+            MusicBox.inst.playDrawingSound("event:/SFX/UNIQUE/Crabzilla/CrabzillaLazer", x, y);
+            World.world.stackEffects.light_blobs.Add(new LightBlobData
+            {
+                position = new Vector2(arm.laser.transform.position.x, arm.laser.transform.position.y),
+                radius = 1.5f
+            });
+            if (arm.laserFrameIndex > 6 && arm.laserFrameIndex < 10)
+            {
+                DamageWorld(arm, pSelf);
+            }
+        }
+        public static void DamageWorld(CrabArm arm, Actor pSelf)
+        {
+            float x = arm.laserPoint.transform.position.x;
+            float y = arm.laserPoint.transform.position.y;
+            WorldTile tile = World.world.GetTile((int)x, (int)y);
+            if (tile != null)
+            {
+                MapAction.damageWorld(tile, 3, AssetManager.terraform.get("LesserCrabLaser"), pSelf);
+            }
+        }
+        public static void updatelasersprite(CrabArm arm, float pTime)
+        {
+            arm.laserTimer -= pTime;
+            if (arm.laserTimer <= 0f)
+            {
+                arm.laserFrameIndex++;
+                if (arm.laserFrameIndex >= 10)
+                {
+                    arm.laserFrameIndex = 6;
+                }
+            }
+            if (arm.laserTimer <= 0f)
+            {
+                arm.laserTimer = 0.07f;
+            }
+            if (arm.laser.sprite.name != arm.laserSprites[arm.laserFrameIndex].name)
+            {
+                arm.laser.sprite = arm.laserSprites[arm.laserFrameIndex];
+            }
+            arm.laser.enabled = true;
         }
     }
 

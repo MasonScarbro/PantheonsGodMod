@@ -29,9 +29,6 @@ namespace GodsAndPantheons
 
         public static void loadAssets()
         {
-            
-
-
             var godHunter = AssetManager.actor_library.clone("GodHunter", "_mob");
             godHunter.nameLocale = "GodHunter";
             godHunter.nameTemplate = "alien_name";

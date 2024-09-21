@@ -30,7 +30,7 @@ public static class GodWeaponManager
 
         if (pTarget.a != null)
         {
-            if (pTarget.a.asset.use_items && pTarget.a.equipment.weapon.isEmpty())
+            if (pTarget.a.asset.use_items && !pTarget.a.hasWeapon())
             {
             if (pTarget.a.hasTrait("God Of War"))
             {
@@ -117,6 +117,17 @@ public static class GodWeaponManager
 
             }
 
+            if (pTarget.a.hasTrait("God Of Fire"))
+            {
+                //Debug.Log("Why No Activate!?!?!?");
+                ItemData FireStaff = new ItemData();
+                FireStaff.id = "HellStaff";
+                FireStaff.material = "base";
+                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(FireStaff);
+                pTarget.a.setStatsDirty();
+
+            }
+
 
             if (pTarget.a.hasTrait("God Of the Earth"))
             {
@@ -139,7 +150,7 @@ public static class GodWeaponManager
                 pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(godHuntersScythe);
                 pTarget.a.setStatsDirty();
             }
-            pTarget.a.updateStats();
+            
            // count++;
             return true;
             }

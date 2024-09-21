@@ -18,7 +18,7 @@ namespace GodsAndPantheons
     class Main : MonoBehaviour
     {
         
-        private const string correctSettingsVersion = "0.1.4";
+        private const string correctSettingsVersion = "0.1.6";
         public static SavedSettings savedSettings = new SavedSettings();
         internal static Dictionary<string, UnityEngine.Object> modsResources;
         public static Main instance;
@@ -70,6 +70,8 @@ namespace GodsAndPantheons
             WindowManager.init();
             Buttons.init();
         }
+
+        //??
         public static Dictionary<Actor, Actor> listOfTamedBeasts = new Dictionary<Actor, Actor>();
         public static void saveSettings(SavedSettings previousSettings = null)
         {

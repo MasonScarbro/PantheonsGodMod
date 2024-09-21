@@ -1,5 +1,6 @@
 ﻿
 using ai;
+using SleekRender;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,6 +17,32 @@ namespace GodsAndPantheons
             summoned.data.get("Master", out string master, "");
             Actor Mymaster = World.world.units.get(master);
             return Mymaster != default(Actor) ? Mymaster : null;
+        }
+
+        public static GameObject LoadCrabZillaLaser()
+        {
+            GameObject crablaser = Resources.Load<Actor>("actors/p_crabzilla").transform.GetChild(0).GetChild(2).gameObject;
+            crablaser.GetComponent<CrabArm>().giantzilla = null;
+            crablaser.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(0).parent = crablaser.transform;
+            crablaser.transform.GetChild(0).gameObject.DestroyImmediateIfNotNull();
+            crablaser.transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
+            crablaser.transform.GetChild(0).localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+            crablaser.transform.GetChild(0).localScale = new Vector3(1, 1, 1);
+            crablaser.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1);
+            crablaser.transform.GetChild(0).GetChild(0).localPosition = new Vector3(150, 0, 0);
+            return crablaser;
+        }
+
+        public static GameObject Laserr = LoadCrabZillaLaser();
+
+        public static void CreateLaserForActor(Actor pSelf, float time = 10)
+        {
+            GameObject Laser = Object.Instantiate(Laserr);
+            Laser.transform.position = pSelf.currentPosition;
+            Laser.transform.parent = pSelf.transform;
+            Laser.transform.localPosition = new Vector3(-3, 12, 0);
+            Laser.transform.localScale = new Vector3(0.3f, 0.25f, 1);
+            pSelf.addStatusEffect("Lassering", time);
         }
         public static void AddTrait(ActorTrait Trait, string disc)
         {
@@ -103,7 +130,7 @@ namespace GodsAndPantheons
             || a.Equals("God Of War")
             || a.Equals("God Of the Earth")
             || a.Equals("God Of light")
-            || a.Equals("God Of gods");
+            || a.Equals("God Of Fire");
 
         public static List<string> GetGodTraits(Actor a) => GetGodTraits(a.data.traits);
         public static List<string> GetGodTraits(List<string> pTraits, bool includedemigods = false, bool includesubgods = false)
@@ -180,7 +207,7 @@ namespace GodsAndPantheons
                 "God Of the Earth" => "EarthGodWindow",
                 "God Of War" => "WarGodWindow",
                 "God Of The Lich" => "LichGodWindow",
-                "God Of gods" => "GodOfGodsWindow",
+                "God Of Fire" => "GodOfFireWindow",
                 _ => "",
             };
 
@@ -231,6 +258,10 @@ namespace GodsAndPantheons
             {
                 return false;
             }
+            if(pActor.asset.id == morphid)
+            {
+                return false;
+            }
             Actor actor = World.world.units.createNewUnit(morphid, pActor.currentTile, 0f);
             actor.data.traits.Clear();
             actor.setKingdom(pActor.kingdom);
@@ -254,6 +285,10 @@ namespace GodsAndPantheons
             foreach(Actor minion in GetMinions(pActor))
             {
                 minion.data.set("Master", actor.data.id);
+            }
+            if(Config.selectedUnit == pActor)
+            {
+                Config.selectedUnit = actor;
             }
             ActionLibrary.removeUnit(pActor);
             EffectsLibrary.spawn("fx_spawn", actor.currentTile, null, null, 0f, -1f, -1f);
