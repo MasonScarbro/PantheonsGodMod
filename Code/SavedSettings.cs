@@ -39,12 +39,11 @@ namespace GodsAndPantheons
             {"GodOfFireWindow",
                 new Dictionary<string, InputOption>
               {
-                 {"FireStorm%", new InputOption{active = true, value = 10 }},
-                 {"MorphIntoDragon%", new InputOption{active = true, value = 10 }},
+                 {"FireStorm%", new InputOption{active = true, value = 0.5f }},
+                 {"MorphIntoDragon%", new InputOption{active = true, value = 15 }},
                  {"Summoning%", new InputOption{active = true, value = 15 }},
-                 {"Magic%", new InputOption{active = true, value = 20 }},
-                 {"ChaosLaser%", new InputOption{active = true, value = 10 }},
-                 {"ThunderStorm%", new InputOption{active = true, value = 50 }},
+                 {"Magic%", new InputOption{active = true, value = 2 }},
+                 {"ChaosLaser%", new InputOption{active = true, value = 1 }},
                  {"God Of Fireinherit%", new InputOption{active = true, value = 10 }}
               }
             },
