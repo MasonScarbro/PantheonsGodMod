@@ -10,7 +10,6 @@ namespace GodsAndPantheons
             BehaviourTaskActor SummonedOne = new BehaviourTaskActor();
             SummonedOne.id = "SummonedOneTask";
             SummonedOne.addBeh(new Patrol());
-            SummonedOne.addBeh(new BehDefendMaster());
             SummonedOne.addBeh(new BehGoToTileTarget() { walkOnBlocks = true, walkOnWater = true });
             AssetManager.tasks_actor.add(SummonedOne);
             ActorJob SummonedOneJob = new ActorJob
@@ -37,53 +36,16 @@ namespace GodsAndPantheons
             {
                 pActor.setKingdom(Master.kingdom);
             }
-            if (pActor.has_attack_target || Master.has_attack_target)
+            if (pActor.has_attack_target)
             {
                 return BehResult.Continue;
             }
-            if (Master.currentTile.Type.liquid)
+            if (Master.has_attack_target)
             {
-                GodHunt.getrandomtile(ref pActor);
-                return BehResult.Continue;
-            }
-            if(Vector2.Distance(Master.currentPosition, pActor.currentPosition) > 50)
-            {
-                pActor.data.set("patrolling", false);
                 pActor.beh_tile_target = Master.currentTile;
                 return BehResult.Continue;
             }
-            pActor.data.get("patrolling", out bool patrolling);
-            if (!patrolling)
-            {
-                WorldTile tiletopatrol = getrilewithindistance(Master.currentTile);
-                if (tiletopatrol == null)
-                {
-                    GodHunt.getrandomtile(ref pActor);
-                }
-                else
-                {
-                    pActor.data.set("oldx", tiletopatrol.x);
-                    pActor.data.set("oldy", tiletopatrol.y);
-                    pActor.beh_tile_target = tiletopatrol;
-                    pActor.data.set("patrolling", true);
-                }
-            }
-            else
-            {
-                pActor.data.get("oldx", out int oldx);
-                pActor.data.get("oldy", out int oldy);
-                WorldTile tiletopatrol = World.world.GetTileSimple(oldx, oldy);
-                if(tiletopatrol == null)
-                {
-                    pActor.data.set("patrolling", false);
-                    return BehResult.Continue;
-                }
-                pActor.beh_tile_target = tiletopatrol;
-                if (Vector2.Distance(tiletopatrol.pos, pActor.currentPosition) < 5)
-                {
-                    pActor.data.set("patrolling", false);
-                }
-            }
+            pActor.beh_tile_target = getrilewithindistance(Master.currentTile);
             return BehResult.Continue;
         }
         WorldTile getrilewithindistance(WorldTile tile, float mindistance = 5, int maxdistance = 10, int attempts = 20, bool ignoreMountains = false)
@@ -102,23 +64,6 @@ namespace GodsAndPantheons
                 }
             }
             return _tile;
-        }
-    }
-
-    public class BehDefendMaster : BehaviourActionActor
-    {
-        public override BehResult execute(Actor pActor)
-        {
-            if (pActor.has_attack_target)
-            {
-                return BehResult.Continue;
-            }
-            if(Patrol.Master.attackTarget != null)
-            {
-                pActor.beh_tile_target = Patrol.Master.attackTarget.currentTile;
-                pActor.data.set("patrolling", false);
-            }
-            return BehResult.Continue;
         }
     }
 }
