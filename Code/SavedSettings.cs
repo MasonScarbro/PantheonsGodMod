@@ -97,6 +97,7 @@ namespace GodsAndPantheons
                   {"God Of the Earthinherit%", new InputOption{active = true, value = 20 }}
               }
             },
+            //NEW_SAVED_SETTING
             {"ChaosGodWindow",
                 new Dictionary<string, InputOption>
               {
