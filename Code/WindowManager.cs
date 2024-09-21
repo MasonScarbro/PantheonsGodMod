@@ -16,7 +16,7 @@ namespace GodsAndPantheons
             newWindow("WarGodWindow", "War Chance Modifier");
             newWindow("EarthGodWindow", "Earth Chance Modifier");
             newWindow("LichGodWindow", "Lich Chance Modifier");
-            newWindow("GodOfGodsWindow", "Godly Chance Modifier");
+            newWindow("GodOfFireWindow", "Furious Chance Modifier");
             newWindow("ChaosGodWindow", "Chaotic Chance Modifier");
         }
 

@@ -16,8 +16,6 @@ namespace GodsAndPantheons
         {
             PowersTab tab = getPowersTab("GodsAndPantheons");
 
-            
-
             var godHunterSpawn = new GodPower();
             godHunterSpawn.id = "GodHunter";
             godHunterSpawn.showSpawnEffect = true;
@@ -54,14 +52,13 @@ namespace GodsAndPantheons
           );
             PowerButtons.CreateButton(
               "DarkOne",
-              Resources.Load<Sprite>("ui/Icons/godKiller"),
+              Resources.Load<Sprite>("Actors/DarkOne/walk_0"),
               "DarkOne Spawn",
               "Spawn a GodHunter",
               new Vector2(100, -18),
               ButtonType.GodPower,
               tab.transform,
               null
-
           );
             PowerButtons.CreateButton(
                     "KnowledgeGodWindow",
@@ -109,15 +106,27 @@ namespace GodsAndPantheons
               );
             if (Main.savedSettings.DevineMiracles)
                 PowerButtons.ToggleButton(button3.name);
+            PowerButton button4 = PowerButtons.CreateButton(
+                    "GodKings",
+                    Resources.Load<Sprite>("ui/Icons/iconKings"),
+                    "option modifier",
+                    "if enabled, gods will always take higher priority when electing a new king",
+                    new Vector2(424, -18),
+                    ButtonType.Toggle,
+                    tab.transform,
+                    ToggleGodKings
+              );
+            if (Main.savedSettings.GodKings)
+                PowerButtons.ToggleButton(button4.name);
             PowerButtons.CreateButton(
-                    "GodOfGodsWindow",
-                    Resources.Load<Sprite>("ui/Icons/GodofGods"),
+                    "GodOfFireWindow",
+                    Resources.Load<Sprite>("ui/Icons/GodOfFire"),
                     "Chance Modfier",
                     "Manage The Gods Powers",
                     new Vector2(352, 18),
                     ButtonType.Click,
                     tab.transform,
-                    WindowManager.windows["GodOfGodsWindow"].openWindow
+                    WindowManager.windows["GodOfFireWindow"].openWindow
               );
             PowerButtons.CreateButton(
                     "MoonGodWindow",
@@ -214,6 +223,11 @@ namespace GodsAndPantheons
         public static void ToggleDevineMiracles()
         {
             Main.savedSettings.DevineMiracles = !Main.savedSettings.DevineMiracles;
+            Main.saveSettings();
+        }
+        public static void ToggleGodKings()
+        {
+            Main.savedSettings.GodKings = !Main.savedSettings.GodKings;
             Main.saveSettings();
         }
     }

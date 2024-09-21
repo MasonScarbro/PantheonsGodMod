@@ -1,5 +1,6 @@
 ﻿using ai.behaviours;
 using HarmonyLib;
+using SleekRender;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -10,7 +11,7 @@ using static GodsAndPantheons.Traits;
 namespace GodsAndPantheons
 {
     [HarmonyPatch(typeof(MapBox), "Update")]
-    public class DevineMiracles
+    public class UpdateWorldStuff
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
@@ -21,14 +22,14 @@ namespace GodsAndPantheons
                 if (codes[i].opcode == OpCodes.Brtrue && codes[i-1].opcode == OpCodes.Call && (codes[i-1].operand as MethodInfo).Name == "isPaused")
                 {
                     yield return new CodeInstruction(OpCodes.Ldarg_0);
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(DevineMiracles), nameof(TryDivineMiracles)));
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UpdateWorldStuff), nameof(TryDivineMiracles)));
                 }
             }
         }
         public static float Timer = 30;
         public static void TryDivineMiracles(MapBox instance)
         {
-            if(blessingtime > 0)
+            if (blessingtime > 0)
             {
                 blessingtime -= instance.elapsed;
                 pb.flashPixel(LuckyOnee.currentTile);
@@ -36,7 +37,7 @@ namespace GodsAndPantheons
                 pb.drawDivineLight(LuckyOnee.currentTile, null);
                 SuperRegeneration(LuckyOnee, 100, 25);
             }
-            else if(LuckyOnee != null)
+            else if (LuckyOnee != null)
             {
                 blessingtime = 0;
                 ActionLibrary.castShieldOnHimself(null, LuckyOnee, null);
@@ -47,18 +48,18 @@ namespace GodsAndPantheons
                 return;
             }
             Timer -= instance.elapsed;
-            if(Timer > 0)
+            if (Timer > 0)
             {
                 return;
             }
             Timer = 30;
-            if (!Toolbox.randomChance(0.0005f))
+            if (!Toolbox.randomChance(0.003f))
             {
                 return;
             }
             List<Kingdom> list = World.world.kingdoms.list_civs;
             List<string> availabletraits = getavailblegodtraits(instance);
-            if(availabletraits.Count == 0)
+            if (availabletraits.Count == 0)
             {
                 return;
             }
@@ -70,9 +71,9 @@ namespace GodsAndPantheons
                 {
                     List<Actor> units = k.units.getSimpleList();
                     units.Shuffle();
-                    foreach(Actor a in units)
+                    foreach (Actor a in units)
                     {
-                        if(!a.hasTrait("infertile") && !a.hasTrait("Demi God") && !a.hasTrait("Lesser God") )
+                        if (!a.hasTrait("infertile") && !a.hasTrait("Demi God") && !a.hasTrait("Lesser God"))
                         {
                             DivineMiracle(a, availabletraits[0]);
                             Timer = 300;
@@ -117,6 +118,10 @@ namespace GodsAndPantheons
     {
         static Actor GetKing(Kingdom pKingdom)
         {
+            if (!Main.savedSettings.GodKings)
+            {
+                return null;
+            }
             List<Actor> list = new List<Actor>();
             foreach(Actor a in pKingdom.units)
             {
@@ -242,9 +247,16 @@ namespace GodsAndPantheons
     {
         static void Postfix(StatusEffectData __instance)
         {
-            if (__instance.finished && __instance.asset.id == "Invisible")
+            if (__instance.finished)
             {
-                __instance._simObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                if (__instance.asset.id == "Invisible" || __instance.asset.id == "FireStorm")
+                {
+                    __instance._simObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                }
+                if(__instance.asset.id == "Lassering" && __instance._simObject.transform.childCount > 0)
+                {
+                    __instance._simObject.transform.GetChild(0)?.gameObject.DestroyImmediateIfNotNull();
+                }
             }
         }
     }
@@ -256,9 +268,13 @@ namespace GodsAndPantheons
             if(__instance.activeStatus_dict == null) { return; }
             if (__instance.activeStatus_dict.ContainsKey(pID))
             {
-                if(pID == "Invisible")
+                if(pID == "Invisible" || pID == "FireStorm")
                 {
                     __instance.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                }
+                if(pID == "Lassering" && __instance.transform.childCount > 0)
+                {
+                    __instance.transform.GetChild(0)?.gameObject.DestroyImmediateIfNotNull();
                 }
             }
         }

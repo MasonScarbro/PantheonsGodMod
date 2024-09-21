@@ -8,6 +8,7 @@ using ReflectionUtility;
 using System.Collections.Generic;
 using HarmonyLib;
 using NCMS.Utils;
+using SleekRender;
 
 namespace GodsAndPantheons
 {
@@ -188,7 +189,7 @@ namespace GodsAndPantheons
             maceOfDestruction.tech_needed = String.Empty;
             maceOfDestruction.quality = ItemQuality.Legendary;
             maceOfDestruction.equipmentType = EquipmentType.Weapon;
-            maceOfDestruction.action_attack_target = new AttackAction(UnleashHell);
+            maceOfDestruction.action_attack_target = new AttackAction(UnleashFire);
             maceOfDestruction.name_class = "item_class_weapon";
             maceOfDestruction.path_icon = "ui/weapon_icons/icon_MaceOfDestruction_adamantine";
             // For Ranged Weapons use "_range"
@@ -245,6 +246,45 @@ namespace GodsAndPantheons
             Localization.Add("item_StaffOfKnowledge", "Staff Of Knowledge");
             addWeaponsSprite(staffOfKnowledge.id, staffOfKnowledge.materials[0]);
 
+            ItemAsset FireGodStaff = AssetManager.items.clone("HellStaff", "evil_staff");
+            FireGodStaff.id = "HellStaff";
+            FireGodStaff.name_templates = List.Of<string>(new string[] { "The Staff of fire" });
+            FireGodStaff.materials = List.Of<string>(new string[] { "base" });
+            FireGodStaff.base_stats[S.fertility] = 0.0f;
+            FireGodStaff.base_stats[S.max_children] = 0f;
+            FireGodStaff.base_stats[S.max_age] += 100f;
+            FireGodStaff.base_stats[S.attack_speed] = 1f;
+            FireGodStaff.base_stats[S.speed] += 1f;
+            FireGodStaff.base_stats[S.health] = 1;
+            FireGodStaff.base_stats[S.damage] = 25f;
+            FireGodStaff.base_stats[S.range] = 1;
+            FireGodStaff.base_stats[S.armor] = 1;
+            FireGodStaff.base_stats[S.scale] = 0.0f;
+            FireGodStaff.base_stats[S.dodge] += 3f;
+            FireGodStaff.base_stats[S.targets] = 3f;
+            FireGodStaff.base_stats[S.critical_chance] += 0.1f;
+            FireGodStaff.base_stats[S.knockback] = 0.0f;
+            FireGodStaff.base_stats[S.knockback_reduction] = 0.1f;
+            FireGodStaff.base_stats[S.intelligence] += 15f;
+            FireGodStaff.base_stats[S.warfare] = 0;
+            FireGodStaff.base_stats[S.diplomacy] = 0;
+            FireGodStaff.base_stats[S.stewardship] = 0;
+            FireGodStaff.base_stats[S.opinion] = 0f;
+            FireGodStaff.base_stats[S.loyalty_traits] = 0f;
+            FireGodStaff.base_stats[S.cities] = 0;
+            FireGodStaff.base_stats[S.zone_range] = 0.1f;
+            FireGodStaff.base_stats[S.projectiles] = 10;
+            FireGodStaff.equipment_value = 3300;
+            FireGodStaff.tech_needed = String.Empty;
+            FireGodStaff.quality = ItemQuality.Legendary;
+            FireGodStaff.name_class = "item_class_weapon";
+            FireGodStaff.path_icon = "ui/weapon_icons/icon_HellStaf";
+            FireGodStaff.action_attack_target = new AttackAction(UnleashHell);
+
+            AssetManager.items.list.AddItem(FireGodStaff);
+            Localization.Add("item_HellStaff", "the Staff of fire");
+            addWeaponsSprite(FireGodStaff.id, FireGodStaff.materials[0]);
+
             ItemAsset cometScepter = AssetManager.items.clone("CometScepter", "_range");
             cometScepter.id = "CometScepter";
             cometScepter.name_templates = List.Of<string>(new string[] { "Scepter Of The Stars" });
@@ -290,7 +330,6 @@ namespace GodsAndPantheons
             AssetManager.items.list.AddItem(cometScepter);
             Localization.Add("item_CometScepter", "Scepter Of The Stars");
             addWeaponsSprite(cometScepter.id, cometScepter.materials[0]);
-
 
             ItemAsset hammerOfCreation = AssetManager.items.clone("HammerOfCreation", "_melee");
             hammerOfCreation.id = "HammerOfCreation";
@@ -449,7 +488,7 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        static bool UnleashHell(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        static bool UnleashFire(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Chaos", "Power4%")))
             {
@@ -458,11 +497,8 @@ namespace GodsAndPantheons
                 Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
                 Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
                 EffectsLibrary.spawnProjectile("boneFire", newPoint, newPoint2, 0.0f);
-
-
             }
             return true;
-            
         }
         static bool WarGodThrow(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -541,6 +577,19 @@ namespace GodsAndPantheons
             return true;
                 
         }
+
+        public static bool UnleashHell(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (!pSelf.hasStatus("Lassering") && Toolbox.randomChance(Traits.GetEnhancedChance("God Of Fire", "ChaosLaser%")))
+            {
+                Traits.CreateLaserForActor(pSelf.a);
+                return true;
+            }
+            return true;
+        }
+
+        
+
         public static bool LichGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (pTarget != null)

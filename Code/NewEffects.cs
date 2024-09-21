@@ -135,6 +135,12 @@ namespace GodsAndPantheons
             });
             World.world.stackEffects.CallMethod("add", effect7);
             //World.world.stackEffects.checkInit();
+
+            TerraformOptions lessercrablaser = AssetManager.terraform.clone("LesserCrabLaser", "crab_laser");
+            lessercrablaser.damage = 160;
+            lessercrablaser.shake_intensity = 0.3f;
+            lessercrablaser.force_power = 0.7f;
+            AssetManager.terraform.add(lessercrablaser);
         }
     }
 }

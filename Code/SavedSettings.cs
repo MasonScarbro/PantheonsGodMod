@@ -6,7 +6,7 @@ namespace GodsAndPantheons
     [Serializable]
     public class SavedSettings
     {
-        public string settingVersion = "0.1.4";
+        public string settingVersion = "0.1.6";
         //inheritance of the god traits is stored here, if the baby has two parents and both of them are god's or has one parent who is a god, it use the inherit for the chance
         //if it has a god parent and normal parent it will use the inherit for the chance of changing the stats of the demi god trait for the baby
         public Dictionary<string, Dictionary<string, InputOption>> Chances = new Dictionary<string, Dictionary<string, InputOption>>
@@ -36,13 +36,16 @@ namespace GodsAndPantheons
                 {"God Of The Lichinherit%", new InputOption{active = true, value = 25 }}
               } 
             },
-            {"GodOfGodsWindow",
+            {"GodOfFireWindow",
                 new Dictionary<string, InputOption>
               {
-                 {"Terrain bending%", new InputOption{active = true, value = 10 }},
+                 {"FireStorm%", new InputOption{active = true, value = 10 }},
+                 {"MorphIntoDragon%", new InputOption{active = true, value = 10 }},
                  {"Summoning%", new InputOption{active = true, value = 15 }},
                  {"Magic%", new InputOption{active = true, value = 20 }},
-                 {"God Of godsinherit%", new InputOption{active = true, value = 10 }}
+                 {"ChaosLaser%", new InputOption{active = true, value = 10 }},
+                 {"ThunderStorm%", new InputOption{active = true, value = 50 }},
+                 {"God Of Fireinherit%", new InputOption{active = true, value = 10 }}
               }
             },
             {"MoonGodWindow",
@@ -109,6 +112,7 @@ namespace GodsAndPantheons
         public bool deathera = true;
         public bool HunterAssasins = true;
         public bool DevineMiracles = false;
+        public bool GodKings = true;
     }
     [Serializable]
     public struct InputOption

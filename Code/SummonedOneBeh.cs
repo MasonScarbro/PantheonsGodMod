@@ -1,10 +1,5 @@
 ﻿using ai.behaviours;
-using GodsAndPantheons;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 namespace GodsAndPantheons
 {
@@ -83,6 +78,7 @@ namespace GodsAndPantheons
                     pActor.data.set("patrolling", false);
                     return BehResult.Continue;
                 }
+                pActor.beh_tile_target = tiletopatrol;
                 if (Vector2.Distance(tiletopatrol.pos, pActor.currentPosition) < 5)
                 {
                     pActor.data.set("patrolling", false);
@@ -90,7 +86,7 @@ namespace GodsAndPantheons
             }
             return BehResult.Continue;
         }
-        WorldTile getrilewithindistance(WorldTile tile, float mindistance = 10, int maxdistance = 20, int attempts = 20, bool ignoreMountains = false)
+        WorldTile getrilewithindistance(WorldTile tile, float mindistance = 5, int maxdistance = 10, int attempts = 20, bool ignoreMountains = false)
         {
             if (tile.Type.liquid)
             {
