@@ -1,5 +1,6 @@
 ﻿using ai.behaviours;
 using HarmonyLib;
+using SimpleJSON;
 using SleekRender;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,58 @@ using static GodsAndPantheons.Traits;
 //Harmony Patches
 namespace GodsAndPantheons
 {
+    [HarmonyPatch(typeof(PowerLibrary), "spawnUnit")]
+    public class MakeSummoned
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            foreach(CodeInstruction code in instructions)
+            {
+                yield return code;
+                if (code.opcode == OpCodes.Callvirt && (code.operand as MethodInfo).Name == "spawnNewUnit")
+                {
+                    yield return new CodeInstruction(OpCodes.Dup);
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(MakeSummoned), nameof(MakeSummonedone)));
+                }
+            }
+        }
+        public static void MakeSummonedone(Actor a)
+        {
+            if (!Main.savedSettings.MakeSummoned)
+            {
+                return;
+            }
+            Actor Master = GetActorFromTile(a.currentTile, a);
+            if(Master != null)
+            {
+                TurnActorIntoSummonedOne(a, Master);
+            }
+        }
+        public static Actor GetActorFromTile(WorldTile pTile, Actor actortoexclude)
+        {
+            if (pTile == null)
+            {
+                return null;
+            }
+            Actor actor = null;
+            float num = 0f;
+            List<Actor> simpleList = World.world.units.getSimpleList();
+            for (int i = 0; i < simpleList.Count; i++)
+            {
+                Actor actor2 = simpleList[i];
+                if (actor2.isAlive() && actor2 != actortoexclude && !actor2.isInsideSomething() && !actor2.hasTrait("Summoned One"))
+                {
+                    float num2 = Toolbox.DistTile(actor2.currentTile, pTile);
+                    if (num2 <= 3f && (actor == null || num2 < num))
+                    {
+                        actor = actor2;
+                        num = num2;
+                    }
+                }
+            }
+            return actor;
+        }
+    }
     [HarmonyPatch(typeof(MapBox), "Update")]
     public class UpdateWorldStuff
     {
@@ -185,39 +238,19 @@ namespace GodsAndPantheons
     [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
     public class DontAttack
     {
-        static bool Prefix(BaseSimObject __instance, BaseSimObject pTarget)
+        static void Postfix(BaseSimObject __instance, BaseSimObject pTarget, ref bool __result)
         {
             if (Main.savedSettings.HunterAssasins)
             {
                 if (pTarget.hasStatus("Invisible") || __instance.hasStatus("Invisible"))
                 {
-                    return false;
+                    __result = false;
                 }
-                if (__instance.isActor() && __instance.a.hasTrait("God Hunter") && __instance.a.data.health < __instance.getMaxHealth() * (__instance.hasStatus("powerup") ? 0.5 : 0.25))
+                if (__instance.isActor() && __instance.a.hasTrait("God Hunter") && __instance.a.data.health < __instance.getMaxHealth() * (__instance.hasStatus("powerup") ? 0.7 : 0.35))
                 {
-                    return false;
+                    __result = false;
                 }
             }
-            return true;
-        }
-    }
-    [HarmonyPatch(typeof(ActorBase), "clearAttackTarget")]
-    public class KEEPATTACKING
-    {
-        static bool Prefix(ActorBase __instance)
-        {
-            if (__instance.hasTrait("God Hunter") && Main.savedSettings.HunterAssasins)
-            {
-                BaseSimObject? a = __instance.attackTarget;
-                if (a != null)
-                {
-                    if (a.isActor())
-                    {
-                        if (IsGod(a.a) && a.isAlive() && !__instance.hasStatus("Invisible") && __instance.data.health >= __instance.getMaxHealth() * (__instance.hasStatus("powerup") ? 0.5 : 0.25)) { return false; }
-                    }
-                }
-            }
-            return true;
         }
     }
     [HarmonyPatch(typeof(Actor), "newKillAction")]

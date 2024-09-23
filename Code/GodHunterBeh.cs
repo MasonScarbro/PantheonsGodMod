@@ -1,7 +1,7 @@
 ﻿using ai.behaviours;
 using System.Collections.Generic;
 using UnityEngine;
-
+using static GodsAndPantheons.BehFunctions;
 namespace GodsAndPantheons
 {
     internal class GodHunterBeh
@@ -32,46 +32,57 @@ namespace GodsAndPantheons
 
         public override BehResult execute(Actor pActor)
         {
-            if(!(!pActor.hasStatus("Invisible") && pActor.data.health < pActor.getMaxHealth() * (pActor.hasStatus("powerup") ? 0.5 : 0.25)) || pActor._isInLiquid)
+            if(!(!pActor.hasStatus("Invisible") && pActor.data.health < pActor.getMaxHealth() * (pActor.hasStatus("powerup") ? 0.7 : 0.35)) || pActor._isInLiquid)
             {
                 return BehResult.Continue;
             }
+            pActor.addStatusEffect("caffeinated", 3);
             pActor.clearAttackTarget();
-            pActor.data.get("oldx", out int oldx, -1);
-            pActor.data.get("oldy", out int oldy);
-            WorldTile tiletoecapeto;
-            if (oldx == -1)
+            WorldTile tile = GetTileToEscapeToo(pActor);
+            if(tile != null)
             {
-                GetTileToEscapeToo(ref pActor);
-                pActor.data.get("oldx", out oldx);
-                pActor.data.get("oldy", out oldy);
+                pActor.beh_tile_target = tile;
+                return BehResult.Continue;
             }
-            tiletoecapeto = World.world.GetTileSimple(oldx, oldy);
-            if (!tiletoecapeto.isSameIsland(pActor.currentTile))
-            {
-                tiletoecapeto = GetTileToEscapeToo(ref pActor);
-            }
-            if (Vector2.Distance(tiletoecapeto.pos, pActor.currentPosition) < 5)
-            {
-                pActor.data.set("invisiblecooldown", 0);
-            }
-            pActor.beh_tile_target = tiletoecapeto;
+            getrandomtile(ref pActor);
             return BehResult.Continue;
         }
-        WorldTile GetTileToEscapeToo(ref Actor pActor)
+        WorldTile GetTileToEscapeToo(Actor pActor)
         {
             WorldTile tiletoescapeto = null;
+            int countofenemies = 9999;
+            World.world.getObjectsInChunks(pActor.currentTile, 30, MapObjectType.Actor);
             for (int i = 0; i < 15; i++)
             {
-                tiletoescapeto = pActor.currentTile.region.island.getRandomTile();
-                if (Vector2.Distance(tiletoescapeto.pos, pActor.currentPosition) > 20)
+                WorldTile tile = gettilewithindistance(pActor.currentTile, 5, 20);
+                if(tile == null)
                 {
-                    break;
+                    continue;
+                }
+                int count = getnearbyoppsofactor(World.world.temp_map_objects, pActor, tile);
+                if(count == 0)
+                {
+                    return tile;
+                }
+                if(count < countofenemies)
+                {
+                    tiletoescapeto = tile;
+                    countofenemies = count;
                 }
             }
-            pActor.data.set("oldx", tiletoescapeto.x);
-            pActor.data.set("oldy", tiletoescapeto.y);
             return tiletoescapeto;
+        }
+        static int getnearbyoppsofactor(List<BaseSimObject> actors, Actor actor, WorldTile currentile, int distance = 10)
+        {
+            int count = 0;
+            foreach(BaseSimObject a in actors)
+            {
+                if (a.canAttackTarget(actor) && Toolbox.DistTile(a.currentTile, currentile) < distance)
+                {
+                    count++;
+                }
+            }
+            return count;
         }
     }
     public class GodHunt : BehaviourActionActor
@@ -79,31 +90,24 @@ namespace GodsAndPantheons
         public static Actor? GodToHunt;
         public override BehResult execute(Actor pActor)
         {
-            GodToHunt = Toolbox.getClosestActor(Traits.FindGods(pActor), pActor.currentTile);
-            if (GodToHunt == null || !pActor.hasStatus("Invisible") || !Main.savedSettings.HunterAssasins)
+            GodToHunt = null;
+            if (pActor.has_attack_target)
             {
-                GodToHunt = null;
+                return BehResult.Continue;
+            }
+            if(!Main.savedSettings.HunterAssasins)
+            {
+                getrandomtile(ref pActor);
+                return BehResult.Continue;
+            }
+            GodToHunt = Toolbox.getClosestActor(Traits.FindGods(pActor), pActor.currentTile);
+            if (GodToHunt == null)
+            {
                 getrandomtile(ref pActor);
                 return BehResult.Continue;
             }
             pActor.beh_tile_target = GodToHunt.currentTile;
             return BehResult.Continue;
-        }
-        public static void getrandomtile(ref Actor pActor)
-        {
-            MapRegion mapRegion = pActor.currentTile.region;
-            if (Toolbox.randomChance(0.65f) && mapRegion.tiles.Count > 0)
-            {
-               pActor.beh_tile_target  = mapRegion.tiles.GetRandom();
-            }
-            if (mapRegion.neighbours.Count > 0 && Toolbox.randomBool())
-            {
-                mapRegion = mapRegion.neighbours.GetRandom();
-            }
-            if (mapRegion.tiles.Count > 0)
-            {
-                pActor.beh_tile_target = mapRegion.tiles.GetRandom();
-            }
         }
     }
 
@@ -111,7 +115,7 @@ namespace GodsAndPantheons
     {
         public override BehResult execute(Actor pActor)
         {
-            if(GodHunt.GodToHunt == null)
+            if(GodHunt.GodToHunt == null || !pActor.hasStatus("Invisible"))
             {
                 return BehResult.Continue;
             }

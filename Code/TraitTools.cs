@@ -21,7 +21,7 @@ namespace GodsAndPantheons
 
         public static GameObject LoadCrabZillaLaser()
         {
-            GameObject crablaser = Resources.Load<Actor>("actors/p_crabzilla").transform.GetChild(0).GetChild(2).gameObject;
+            GameObject crablaser = Object.Instantiate(Resources.Load<Actor>("actors/p_crabzilla").transform.GetChild(0).GetChild(2).gameObject);
             crablaser.GetComponent<CrabArm>().giantzilla = null;
             crablaser.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(0).parent = crablaser.transform;
             crablaser.transform.GetChild(0).gameObject.DestroyImmediateIfNotNull();
@@ -392,6 +392,15 @@ namespace GodsAndPantheons
                 }
             }
             return list;
+        }
+        public static void TurnActorIntoSummonedOne(Actor minion, Actor Master, int lifespan = 61)
+        {
+            minion.data.set("Master", Master.data.id);
+            minion.addTrait("Summoned One");
+            minion.setKingdom(Master.kingdom);
+            minion.removeTrait("immortal");
+            minion.data.set("life", 0);
+            minion.data.set("lifespan", lifespan);
         }
     }
 }

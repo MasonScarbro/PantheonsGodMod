@@ -45,10 +45,13 @@ namespace GodsAndPantheons
                 pActor.beh_tile_target = Master.currentTile;
                 return BehResult.Continue;
             }
-            pActor.beh_tile_target = getrilewithindistance(Master.currentTile);
+            pActor.beh_tile_target = BehFunctions.gettilewithindistance(Master.currentTile);
             return BehResult.Continue;
         }
-        WorldTile getrilewithindistance(WorldTile tile, float mindistance = 5, int maxdistance = 10, int attempts = 20, bool ignoreMountains = false)
+    }
+    public class BehFunctions
+    {
+        public static WorldTile gettilewithindistance(WorldTile tile, float mindistance = 5, int maxdistance = 10, int attempts = 20, bool ignoreMountains = false)
         {
             if (tile.Type.liquid)
             {
@@ -64,6 +67,22 @@ namespace GodsAndPantheons
                 }
             }
             return _tile;
+        }
+        public static void getrandomtile(ref Actor pActor)
+        {
+            MapRegion mapRegion = pActor.currentTile.region;
+            if (Toolbox.randomChance(0.65f) && mapRegion.tiles.Count > 0)
+            {
+                pActor.beh_tile_target = mapRegion.tiles.GetRandom();
+            }
+            if (mapRegion.neighbours.Count > 0 && Toolbox.randomBool())
+            {
+                mapRegion = mapRegion.neighbours.GetRandom();
+            }
+            if (mapRegion.tiles.Count > 0)
+            {
+                pActor.beh_tile_target = mapRegion.tiles.GetRandom();
+            }
         }
     }
 }

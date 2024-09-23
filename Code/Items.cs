@@ -583,7 +583,6 @@ namespace GodsAndPantheons
             if (!pSelf.hasStatus("Lassering") && Toolbox.randomChance(Traits.GetEnhancedChance("God Of Fire", "ChaosLaser%")))
             {
                 Traits.CreateLaserForActor(pSelf.a);
-                return true;
             }
             return true;
         }

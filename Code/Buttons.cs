@@ -118,6 +118,18 @@ namespace GodsAndPantheons
               );
             if (Main.savedSettings.GodKings)
                 PowerButtons.ToggleButton(button4.name);
+            PowerButton Button5 = PowerButtons.CreateButton(
+                    "MakeSummonedOne",
+                    Resources.Load<Sprite>("ui/Icons/iconBlessing"),
+                    "option modifier",
+                    "if enabled, if you were to spawn a creature on a tile that already has a creature on it, the new creature will be a summoned one of that creature, note that summoned ones have their own AI and only live for 60 or 120s",
+                    new Vector2(530, -18),
+                    ButtonType.Toggle,
+                    tab.transform,
+                    ToggleSummmoned
+              );
+            if (Main.savedSettings.MakeSummoned)
+                PowerButtons.ToggleButton(Button5.name);
             PowerButtons.CreateButton(
                     "GodOfFireWindow",
                     Resources.Load<Sprite>("ui/Icons/GodOfFire"),
@@ -208,7 +220,7 @@ namespace GodsAndPantheons
         }
         public static bool callSpawnUnit(WorldTile pTile, string pPowerID)
         {
-            AssetManager.powers.CallMethod("spawnUnit", pTile, pPowerID);
+            AssetManager.powers.spawnUnit(pTile, pPowerID);
             return true;
         }
         public static void ToggleEra(){
@@ -228,6 +240,11 @@ namespace GodsAndPantheons
         public static void ToggleGodKings()
         {
             Main.savedSettings.GodKings = !Main.savedSettings.GodKings;
+            Main.saveSettings();
+        }
+        public static void ToggleSummmoned()
+        {
+            Main.savedSettings.MakeSummoned = !Main.savedSettings.MakeSummoned;
             Main.saveSettings();
         }
     }
