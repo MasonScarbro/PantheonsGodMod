@@ -18,7 +18,7 @@ namespace GodsAndPantheons
     class Main : MonoBehaviour
     {
         
-        private const string correctSettingsVersion = "0.1.6";
+        private const string correctSettingsVersion = "0.1.7";
         public static SavedSettings savedSettings = new SavedSettings();
         internal static Dictionary<string, UnityEngine.Object> modsResources;
         public static Main instance;
@@ -44,8 +44,11 @@ namespace GodsAndPantheons
             NewTerraformOptions.init();
             NewEffects.init();
             Items.init();
+
+            //ai
             GodHunterBeh.init();
             SummonedOneBeh.init();
+
             Units.init();
             Tab.init();
             Invasions.init();

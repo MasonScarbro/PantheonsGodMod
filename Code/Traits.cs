@@ -569,13 +569,13 @@ namespace GodsAndPantheons
         //if god is too far away the god hunter will teleport to them
         public static bool InvisibleCooldown(BaseSimObject pTarget, WorldTile pTile)
         {
-            if (pTarget.isActor() && Main.savedSettings.HunterAssasins)
+            if (pTarget.isActor() && Main.savedSettings.HunterAssasins && pTarget.a.asset.id == "GodHunter")
             {
                 pTarget.a.data.get("invisiblecooldown", out int invisiblecooldown);
                 pTarget.a.data.set("invisiblecooldown", invisiblecooldown > 0 ? invisiblecooldown - 1 : 0);
-                if (invisiblecooldown == 0 && pTarget.a.asset.id == "GodHunter")
+                if (invisiblecooldown == 0)
                 {
-                    pTarget.addStatusEffect("Invisible", 11);
+                    pTarget.addStatusEffect("Invisible", 12);
                 }
             }
             return true;
