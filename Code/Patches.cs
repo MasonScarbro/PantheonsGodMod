@@ -368,8 +368,8 @@ namespace GodsAndPantheons
                 demiparents += pParent2.data.hasTrait("Demi God") ? 1 : 0;
                 lesserparents += pParent2.hasTrait("Lesser God") ? 1 : 0;
             }
-            float chancemult = 0.75f;
-            chancemult += (0.125f * (godparents * godparents)) + (0.125f * godparents);
+            float chancemult = 0.5f;
+            chancemult += godparents / 2;
             chancemult += lesserparents / 4;
             chancemult += demiparents / 8;
             int importantgenes = godparents + lesserparents;
@@ -387,7 +387,7 @@ namespace GodsAndPantheons
                 MakeLesserGod(godtraits, ref child, chancemult);
                 return;
             }
-            else if (importantgenes == 1)
+            else if (importantgenes == 1 || demiparents == parents)
             {
                 MakeDemiGod(godtraits, ref child, chancemult);
                 return;

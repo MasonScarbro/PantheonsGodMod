@@ -18,8 +18,8 @@ namespace GodsAndPantheons
             Actor Mymaster = World.world.units.get(master);
             return Mymaster != default(Actor) ? Mymaster : null;
         }
-
-        public static GameObject LoadCrabZillaLaser()
+        public static List<Sprite> LaserSprites;
+        public static GameObject LoadCrabZillaLaser(out List<Sprite> sprites)
         {
             GameObject crablaser = Object.Instantiate(Resources.Load<Actor>("actors/p_crabzilla").transform.GetChild(0).GetChild(2).gameObject);
             crablaser.GetComponent<CrabArm>().giantzilla = null;
@@ -28,12 +28,13 @@ namespace GodsAndPantheons
             crablaser.transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
             crablaser.transform.GetChild(0).localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
             crablaser.transform.GetChild(0).localScale = new Vector3(1, 1, 1);
-            crablaser.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1);
-            crablaser.transform.GetChild(0).GetChild(0).localPosition = new Vector3(150, 0, 0);
+            crablaser.transform.GetComponent<CrabArm>().laser.color = new Color(1, 0, 0, 1);
+            crablaser.transform.GetChild(0).GetChild(0).localPosition = new Vector3(140, 0, 0);
+            sprites = new List<Sprite>(crablaser.GetComponent<CrabArm>().laserSprites);
+            crablaser.GetComponent<CrabArm>().laserSprites = null;
             return crablaser;
         }
-
-        public static GameObject Laserr = LoadCrabZillaLaser();
+        public static GameObject Laserr = LoadCrabZillaLaser(out LaserSprites);
 
         public static void CreateLaserForActor(Actor pSelf, float time = 10)
         {
@@ -89,17 +90,11 @@ namespace GodsAndPantheons
             for (int i = 0; i < times; i++)
             {
                 Actor actor = World.world.units.spawnNewUnit(creature, Ptile, true, 3f);
-                actor.data.name = $"Summoned by {self.getName()}";
+                TurnActorIntoSummonedOne(actor, self, lifespan);
                 foreach (string trait in autotraits ?? summonedoneautotraits)
                 {
                     actor.addTrait(trait);
                 }
-                actor.data.set("Master", self.data.id);
-                actor.addTrait("Summoned One");
-                actor.setKingdom(self.kingdom);
-                actor.removeTrait("immortal");
-                actor.data.set("life", 0);
-                actor.data.set("lifespan", lifespan);
             }
         }
         static List<Actor> temp_minion_list = new List<Actor>();
@@ -395,12 +390,21 @@ namespace GodsAndPantheons
         }
         public static void TurnActorIntoSummonedOne(Actor minion, Actor Master, int lifespan = 61)
         {
+            minion.data.name = $"Summoned by {Master.getName()}";
             minion.data.set("Master", Master.data.id);
             minion.addTrait("Summoned One");
             minion.setKingdom(Master.kingdom);
             minion.removeTrait("immortal");
             minion.data.set("life", 0);
             minion.data.set("lifespan", lifespan);
+        }
+        public static void PullActorTowardsPoint(Actor pActor, Vector2Int point, float strength = 1, float Zstrength = 0.1f)
+        {
+            float angle = Toolbox.getAngle(pActor.currentTile.x, pActor.currentTile.y, point.x, point.y);
+            float TrueStrength = strength - strength * pActor.stats[S.knockback_reduction];
+            float num4 = Mathf.Cos(angle) * TrueStrength;
+            float num5 = Mathf.Sin(angle) * TrueStrength;
+            pActor.addForce(num4, num5, Zstrength);
         }
     }
 }

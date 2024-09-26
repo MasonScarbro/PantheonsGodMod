@@ -25,6 +25,11 @@ namespace GodsAndPantheons
         public static Actor? Master;
         public override BehResult execute(Actor pActor)
         {
+            if (pActor.asset.die_if_has_madness)
+            {
+                pActor.getHit(100000000f, true, AttackType.Other, null, false, false);
+                return BehResult.Stop;
+            }
             Master = Traits.FindMaster(pActor);
             if (Master == null)
             {
@@ -42,7 +47,7 @@ namespace GodsAndPantheons
             }
             if (Master.has_attack_target)
             {
-                pActor.beh_tile_target = Master.currentTile;
+                pActor.beh_tile_target = Master.attackTarget.currentTile;
                 return BehResult.Continue;
             }
             pActor.beh_tile_target = BehFunctions.gettilewithindistance(Master.currentTile);

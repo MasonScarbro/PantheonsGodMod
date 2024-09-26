@@ -44,7 +44,7 @@ namespace GodsAndPantheons
                  {"Summoning%", new InputOption{active = true, value = 1.2f }},
                  {"Magic%", new InputOption{active = true, value = 2 }},
                  {"ChaosLaser%", new InputOption{active = true, value = 1 }},
-                 {"God Of Fireinherit%", new InputOption{active = true, value = 10 }}
+                 {"God Of Fireinherit%", new InputOption{active = true, value = 25 }}
               }
             },
             {"MoonGodWindow",
