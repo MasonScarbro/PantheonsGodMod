@@ -54,7 +54,7 @@ namespace GodsAndPantheons
             FireGodEra.id = "God_Of_All";
             FireGodEra.duration = 7000f;
             FireGodEra.base_stats[S.mod_armor] += 0.15f;
-            FireGodEra.base_stats[S.mod_health] = 0.5f;
+            FireGodEra.base_stats[S.mod_health] = 0.55f;
             FireGodEra.base_stats[S.speed] += 70;
             FireGodEra.base_stats[S.knockback_reduction] += 0.5f;
             FireGodEra.base_stats[S.mod_crit] = 0.5f;
@@ -318,7 +318,7 @@ namespace GodsAndPantheons
             World.world.stackEffects.light_blobs.Add(new LightBlobData
             {
                 position = new Vector2(arm.laser.transform.position.x, arm.laser.transform.position.y),
-                radius = 1.5f
+                radius = 1.3f
             });
             if (arm.laserFrameIndex > 6 && arm.laserFrameIndex < 10)
             {
@@ -329,15 +329,20 @@ namespace GodsAndPantheons
         {
             float x = arm.laserPoint.transform.position.x;
             float y = arm.laserPoint.transform.position.y;
-            WorldTile tile = World.world.GetTile((int)x, (int)y);
+            WorldTile tile = World.world.GetTile(Mathf.RoundToInt(x), Mathf.RoundToInt(y));
             if (tile != null)
             {
-                MapAction.damageWorld(tile, 3, AssetManager.terraform.get("LesserCrabLaser"), pSelf);
+                MapAction.damageWorld(tile, 4, AssetManager.terraform.get("LesserCrabLaser"), pSelf);
+                if (pSelf.attackTarget.isActor())
+                {
+                    Traits.PullActorTowardsPoint(pSelf.attackTarget.a, tile.pos, 0.5f);
+                }
             }
         }
         public static void updatelasersprite(CrabArm arm, float pTime)
         {
             arm.laserTimer -= pTime;
+            arm.laser.enabled = true;
             if (arm.laserTimer <= 0f)
             {
                 arm.laserFrameIndex++;
@@ -345,16 +350,12 @@ namespace GodsAndPantheons
                 {
                     arm.laserFrameIndex = 6;
                 }
-            }
-            if (arm.laserTimer <= 0f)
-            {
                 arm.laserTimer = 0.07f;
             }
-            if (arm.laser.sprite.name != arm.laserSprites[arm.laserFrameIndex].name)
+            if (arm.laser.sprite.name != Traits.LaserSprites[arm.laserFrameIndex].name)
             {
-                arm.laser.sprite = arm.laserSprites[arm.laserFrameIndex];
+                arm.laser.sprite = Traits.LaserSprites[arm.laserFrameIndex];
             }
-            arm.laser.enabled = true;
         }
     }
 

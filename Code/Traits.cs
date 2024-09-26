@@ -139,7 +139,7 @@ namespace GodsAndPantheons
             },
             {"God Of Fire", new Dictionary<string, float>(){
                 {S.damage, 25},
-                {S.health, 825f},
+                {S.health, 700f},
                 {S.attack_speed, 12f},
                 {S.critical_chance, 0.5f},
                 {S.intelligence, 30f},
@@ -556,6 +556,10 @@ namespace GodsAndPantheons
                 a.removeTrait("Summoned One");
                 return false;
             }
+            if (a.hasTrait("immortal"))
+            {
+                return false;
+            }
             a.data.get("lifespanincreased", out bool increased);
             a.data.get("lifespan", out int lifespan);
             a.data.get("life", out int life);
@@ -951,12 +955,12 @@ namespace GodsAndPantheons
             }
             return true;
         }
-
+        public static readonly List<string> earthgodminionautotraits = new List<string>() { "fire_proof", "freeze_proof", "regeneration"};
         public static bool SummonDruids(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of the Earth", "SummonDruid%")))
             {
-                Summon(SA.druid, 2, pSelf, pTile);
+                Summon(SA.druid, 2, pSelf, pTile, 61, earthgodminionautotraits);
             }
             return true;
         }
