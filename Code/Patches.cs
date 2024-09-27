@@ -111,7 +111,7 @@ namespace GodsAndPantheons
                 return;
             }
             Timer = 30;
-            if (!Toolbox.randomChance(0.003f))
+            if (!Toolbox.randomChance(0.002f))
             {
                 return;
             }
