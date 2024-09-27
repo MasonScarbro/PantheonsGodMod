@@ -5,7 +5,7 @@ namespace GodsAndPantheons
         public static void init()
         {
             DisasterAsset hunterInvasion = new DisasterAsset();
-            hunterInvasion.id = "trollsv1";
+            hunterInvasion.id = "GodHunters";
             hunterInvasion.rate = 7;
             hunterInvasion.chance = 0.9f;
             hunterInvasion.min_world_cities = 9;
