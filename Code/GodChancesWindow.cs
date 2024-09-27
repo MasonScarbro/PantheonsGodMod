@@ -68,7 +68,7 @@ namespace GodsAndPantheons
                         new Vector2(200, 0),
                         ButtonType.Toggle,
                         input.transform.parent.transform,
-                        delegate { Main.modifyGodOption(ID, kv.Key, PowerButtons.GetToggleValue($"{kv.Key}Button")); }
+                        delegate { Main.modifyGodOption(ID, kv.Key, !PowerButtons.GetToggleValue($"{kv.Key}Button")); }
                     );
                     if (kv.Value.active)
                     {

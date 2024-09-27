@@ -16,15 +16,18 @@ namespace GodsAndPantheons
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            foreach(CodeInstruction code in instructions)
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[]
+			{
+				new CodeMatch(new OpCode?(OpCodes.Callvirt), AccessTools.Method(typeof(ActorManager), nameof(ActorManager.spawnNewUnit)))
+			});
+            Matcher.Advance(1);
+            Matcher.Insert(new CodeInstruction[]
             {
-                yield return code;
-                if (code.opcode == OpCodes.Callvirt && (code.operand as MethodInfo).Name == "spawnNewUnit")
-                {
-                    yield return new CodeInstruction(OpCodes.Dup);
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(MakeSummoned), nameof(MakeSummonedone)));
-                }
-            }
+              new CodeInstruction(OpCodes.Dup),
+              new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(MakeSummoned), nameof(MakeSummonedone)))
+            });
+            return Matcher.Instructions();
         }
         public static void MakeSummonedone(Actor a)
         {
@@ -68,16 +71,18 @@ namespace GodsAndPantheons
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
-            for (int i = 0; i < codes.Count; i++)
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[]
             {
-                yield return codes[i];
-                if (codes[i].opcode == OpCodes.Brtrue && codes[i-1].opcode == OpCodes.Call && (codes[i-1].operand as MethodInfo).Name == "isPaused")
-                {
-                    yield return new CodeInstruction(OpCodes.Ldarg_0);
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UpdateWorldStuff), nameof(TryDivineMiracles)));
-                }
-            }
+                new CodeMatch(new OpCode?(OpCodes.Call), AccessTools.Method(typeof(MapBox), nameof(MapBox.isPaused)))
+            });
+            Matcher.Advance(2);
+            Matcher.Insert(new CodeInstruction[]
+            {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UpdateWorldStuff), nameof(TryDivineMiracles)))
+            });
+            return Matcher.Instructions();
         }
         public static float Timer = 30;
         public static void TryDivineMiracles(MapBox instance)
@@ -192,20 +197,16 @@ namespace GodsAndPantheons
         }
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            var found = false;
-            foreach (var instruction in instructions)
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[]
             {
-                if (instruction.opcode == OpCodes.Ldnull && !found)
-                {
-                    yield return new CodeInstruction(OpCodes.Ldarg_1);
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(findking), nameof(GetKing)));
-                    found = true;
-                }
-                else
-                {
-                    yield return instruction;
-                }
-            }
+                new CodeMatch(OpCodes.Ldnull)
+            });
+            Matcher.RemoveInstruction();
+            Matcher.Insert(new CodeInstruction[] {
+                new CodeInstruction(OpCodes.Ldarg_1),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(findking), nameof(GetKing))) });
+            return Matcher.Instructions();
         }
     }
     [HarmonyPatch(typeof(TooltipLibrary), "showTrait")]
@@ -222,17 +223,15 @@ namespace GodsAndPantheons
         
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            foreach (CodeInstruction code in instructions)
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[]
             {
-                if (code.opcode == OpCodes.Ldfld && code.operand is FieldInfo && ((FieldInfo)code.operand).Name == "base_stats")
-                {
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(showdemistats), nameof(getdemistats)));
-                }
-                else
-                {
-                    yield return code;
-                }
-            }
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ActorTrait), "base_stats"))
+            });
+            Matcher.RemoveInstruction();
+            Matcher.Insert(new CodeInstruction[] {
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(showdemistats), nameof(getdemistats))) });
+            return Matcher.Instructions();
         }
     }
     [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
@@ -317,17 +316,20 @@ namespace GodsAndPantheons
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            foreach (CodeInstruction code in instructions)
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[]
             {
-                yield return code;
-                if (code.opcode == OpCodes.Stloc_2)
-                {
-                    yield return new CodeInstruction(OpCodes.Ldloc_2);
-                    yield return new CodeInstruction(OpCodes.Ldarg_1);
-                    yield return new CodeInstruction(OpCodes.Ldarg_2);
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(InheritGodTraitsFromNonCitizens), nameof(MakeBaby)));
-                }
-            }
+                new CodeMatch(OpCodes.Stloc_2)
+            });
+            Matcher.Advance(1);
+            Matcher.Insert(new CodeInstruction[]
+            {
+                new CodeInstruction(OpCodes.Ldloc_2),
+                new CodeInstruction(OpCodes.Ldarg_1),
+                new CodeInstruction(OpCodes.Ldarg_2),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(InheritGodTraitsFromNonCitizens), nameof(MakeBaby)))
+            });
+            return Matcher.Instructions();
         }
         public static void MakeBaby(Actor child, Actor pParent1, Actor pParent2)
         {
@@ -339,25 +341,28 @@ namespace GodsAndPantheons
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            foreach (CodeInstruction code in instructions)
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[]
             {
-                yield return code;
-                if (code.opcode == OpCodes.Stloc_S && code.operand is LocalBuilder builder && builder.LocalIndex == 5)
-                {
-                    yield return new CodeInstruction(OpCodes.Ldloc_S, 4);
-                    yield return new CodeInstruction(OpCodes.Ldloc_0);
-                    yield return new CodeInstruction(OpCodes.Ldloc_1);
-                    yield return new CodeInstruction(OpCodes.Ldloc_S, 5);
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(InheritGodTraits), nameof(inheritgodtraits)));
-                }
-            }
+                new CodeMatch((ci) => ci.opcode == OpCodes.Stloc_S && ci.operand is LocalBuilder localBuilder && localBuilder.LocalIndex == 5)
+            });
+            Matcher.Advance(1);
+            Matcher.Insert(new CodeInstruction[]
+            {
+                new CodeInstruction(OpCodes.Ldloc_S, 4),
+                new CodeInstruction(OpCodes.Ldloc_0),
+                new CodeInstruction(OpCodes.Ldloc_1),
+                new CodeInstruction(OpCodes.Ldloc_S, 5),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(InheritGodTraits), nameof(inheritgodtraits)))
+            });
+            return Matcher.Instructions();
         }
         public static void inheritgodtraits(ActorData child, Actor pParent1, Actor pParent2, Clan GreatClan)
         {
             int parents = pParent2 != null ? 2 : 1;
-            int godparents = IsGod(pParent1) ? 1 : 0;
-            int demiparents = pParent1.data.hasTrait("Demi God") ? 1 : 0;
-            int lesserparents = pParent1.hasTrait("Lesser God") ? 1 : 0;
+            float godparents = IsGod(pParent1) ? 1 : 0;
+            float demiparents = pParent1.data.hasTrait("Demi God") ? 1 : 0;
+            float lesserparents = pParent1.hasTrait("Lesser God") ? 1 : 0;
             List<string> godtraits = new List<string>(GetGodTraits(pParent1));
             AddRange(godtraits, Getinheritedgodtraits(pParent1.data));
             if (parents == 2)
@@ -368,11 +373,14 @@ namespace GodsAndPantheons
                 demiparents += pParent2.data.hasTrait("Demi God") ? 1 : 0;
                 lesserparents += pParent2.hasTrait("Lesser God") ? 1 : 0;
             }
+            if(godparents == 0 && demiparents == 0 && lesserparents == 0) {
+                return; 
+            }
             float chancemult = 0.5f;
             chancemult += godparents / 2;
             chancemult += lesserparents / 4;
             chancemult += demiparents / 8;
-            int importantgenes = godparents + lesserparents;
+            float importantgenes = godparents + lesserparents;
             Actor? chief = GreatClan?.getChief();
             if (chief != null)
             {
@@ -410,18 +418,19 @@ namespace GodsAndPantheons
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            bool found = false;
-            var codes = new List<CodeInstruction>(instructions);
-            for (int i = 0; i < codes.Count; i++)
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[]
             {
-                if (codes[i].opcode == OpCodes.Ldsfld && codes[i + 1].opcode == OpCodes.Stloc_S && !found)
-                {
-                    found = true;
-                    yield return new CodeInstruction(OpCodes.Ldarg_0);
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UseDemiStats), nameof(mergedemistats)));
-                }
-                yield return codes[i];
-            }
+                new CodeMatch(OpCodes.Ldsfld),
+                new CodeMatch(OpCodes.Stloc_S),
+            });
+            Matcher.Advance(2);
+            Matcher.Insert(new CodeInstruction[]
+            {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UseDemiStats), nameof(mergedemistats)))
+            });
+            return Matcher.Instructions();
         }
         static void mergedemistats(ActorBase __instance)
         {
