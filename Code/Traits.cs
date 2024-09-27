@@ -1064,12 +1064,12 @@ namespace GodsAndPantheons
                 ListPool<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(pTile, pSelf.kingdom, -1).list;
                 if (pSelf.a.asset.id != SA.dragon)
                 {
-                    if (enemies != null && enemies.Count > 5)
+                    if (enemies?.Count > 5)
                     {
                         Morph(pSelf.a, SA.dragon);
                     }
                 }
-                else if (enemies == null || enemies.Count == 0)
+                else if (enemies?.Count == 0 || pSelf.a.data.health < pSelf.getMaxHealth() * 0.1f)
                 {
                     pSelf.a.data.get("oldself", out string oldself, SA.dragon);
                     Morph(pSelf.a, oldself);
@@ -1084,7 +1084,7 @@ namespace GodsAndPantheons
                 int decider = Toolbox.randomInt(1, 3);
                 switch (decider)
                 {
-                    case 1: EffectsLibrary.spawn("fx_explosion_middle", pTarget.a.currentTile, null, null, 0f, -1f, -1f); break;
+                    case 1: EffectsLibrary.spawn("fx_explosion_middle", pTarget.currentTile, null, null, 0f, -1f, -1f); break;
 
                     // randomly spawns a flash of fire or acid on the tile 
                     case 2:
