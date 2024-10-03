@@ -11,6 +11,29 @@ using static GodsAndPantheons.Traits;
 //Harmony Patches
 namespace GodsAndPantheons
 {
+    [HarmonyPatch(typeof(BaseAnimatedObject), nameof(BaseAnimatedObject.update))]
+    public class StormFinish
+    {
+        static void Prefix(BaseAnimatedObject __instance, float pElapsed)
+        {
+            if(__instance.GetComponent<Storm>() != null)
+            {
+                __instance.GetComponent<Storm>().UpdateStorm(pElapsed);
+            }
+        }
+    }
+    [HarmonyPatch(typeof(AntimatterBombEffect), nameof(AntimatterBombEffect.Update))]
+    public class StormPatch
+    {
+        static bool Prefix(AntimatterBombEffect __instance)
+        {
+            if(__instance.GetComponent<Storm>() != null)
+            {
+                return false;
+            }
+            return true;
+        }
+    }
     [HarmonyPatch(typeof(PowerLibrary), "spawnUnit")]
     public class MakeSummoned
     {
@@ -363,7 +386,7 @@ namespace GodsAndPantheons
             float godparents = IsGod(pParent1) ? 1 : 0;
             float demiparents = pParent1.data.hasTrait("Demi God") ? 1 : 0;
             float lesserparents = pParent1.hasTrait("Lesser God") ? 1 : 0;
-            List<string> godtraits = new List<string>(GetGodTraits(pParent1));
+            using ListPool<string> godtraits = new ListPool<string>(GetGodTraits(pParent1));
             AddRange(godtraits, Getinheritedgodtraits(pParent1.data));
             if (parents == 2)
             {
@@ -402,7 +425,7 @@ namespace GodsAndPantheons
             }
             AutoTrait(child, godtraits, true, chancemult);
         }
-        static void AddRange(List<string> list, List<string> range)
+        static void AddRange(ListPool<string> list, List<string> range)
         {
             foreach (string s in range)
             {

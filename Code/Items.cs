@@ -8,7 +8,7 @@ using ReflectionUtility;
 using System.Collections.Generic;
 using HarmonyLib;
 using NCMS.Utils;
-using SleekRender;
+using static GodsAndPantheons.Traits;
 
 namespace GodsAndPantheons
 {
@@ -249,7 +249,7 @@ namespace GodsAndPantheons
             ItemAsset FireGodStaff = AssetManager.items.clone("HellStaff", "evil_staff");
             FireGodStaff.id = "HellStaff";
             FireGodStaff.name_templates = List.Of<string>(new string[] { "The Staff of fire" });
-            FireGodStaff.materials = List.Of<string>(new string[] { "base" });
+            FireGodStaff.materials = List.Of(new string[] { "base" });
             FireGodStaff.base_stats[S.fertility] = 0.0f;
             FireGodStaff.base_stats[S.max_children] = 0f;
             FireGodStaff.base_stats[S.max_age] += 100f;
@@ -468,7 +468,7 @@ namespace GodsAndPantheons
         }
         static bool UnleashLightning(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Knowledge", "SummonLightning%")))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "SummonLightning%")))
             {
                 ActionLibrary.castLightning(null, pTarget, null); // Casts Lightning on the target
             }
@@ -477,7 +477,7 @@ namespace GodsAndPantheons
         }
         static bool UnleashMoonFall(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of the Stars", "summonMoonChunk%")))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of the Stars", "summonMoonChunk%")))
             {
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -490,7 +490,7 @@ namespace GodsAndPantheons
         }
         static bool UnleashFire(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Chaos", "Power4%")))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "Power4%")))
             {
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -502,7 +502,7 @@ namespace GodsAndPantheons
         }
         static bool WarGodThrow(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of War", "axeThrow%")))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of War", "axeThrow%")))
             {
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -551,7 +551,7 @@ namespace GodsAndPantheons
             if (pTarget != null)
             {
                 
-                if (Toolbox.randomChance(0.6f))
+                if (Toolbox.randomChance(GetEnhancedChance("God Of the Night", "DarkDash%")))
                 {
                     EffectsLibrary.spawnAt("fx_teleportStart_dej", pSelf.currentPosition, pSelf.a.stats[S.scale]);
                     BaseEffect baseEffect = EffectsLibrary.spawnAt("fx_teleportEnd_dej", pTarget.a.currentTile.posV3, pSelf.a.stats[S.scale]);
@@ -570,7 +570,7 @@ namespace GodsAndPantheons
         public static bool GodHunterAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile){
             if(pTarget != null && pTarget.isActor()){
                 pTarget.addStatusEffect("ash_fever", 5);
-                if (Traits.IsGod(pTarget.a)){
+                if (IsGod(pTarget.a)){
                     pTarget.getHit(pSelf.stats[S.damage] * 2f, true, AttackType.Weapon, pSelf, false, true);
                 }
             }
@@ -580,9 +580,9 @@ namespace GodsAndPantheons
 
         public static bool UnleashHell(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (!pSelf.hasStatus("Lassering") && Toolbox.randomChance(Traits.GetEnhancedChance("God Of Fire", "ChaosLaser%")))
+            if (!pSelf.hasStatus("Lassering") && Toolbox.randomChance(GetEnhancedChance("God Of Fire", "ChaosLaser%")))
             {
-                Traits.CreateLaserForActor(pSelf.a);
+                CreateLaserForActor(pSelf.a);
             }
             return true;
         }
@@ -594,7 +594,7 @@ namespace GodsAndPantheons
             if (pTarget != null)
             {
 
-                if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of The Lich", "waveOfMutilation%")))
+                if (Toolbox.randomChance(GetEnhancedChance("God Of The Lich", "waveOfMutilation%")))
                 {
                     Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                     float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -613,7 +613,7 @@ namespace GodsAndPantheons
             if (pSelf.a != null)
             {
                 
-                if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of the Earth", "buildWorld%")))
+                if (Toolbox.randomChance(GetEnhancedChance("God Of the Earth", "buildWorld%")))
                 {
 
                     buildMountainPath(pTile, pSelf, pTarget);

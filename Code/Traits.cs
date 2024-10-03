@@ -719,12 +719,27 @@ namespace GodsAndPantheons
         #endregion
 
         #region DarkGodsAttack
+
+        public static void CloudOfDark(Storm s)
+        {
+            if (Toolbox.randomChance(0.1f))
+            {
+                pb.spawnLightning(Toolbox.getRandomTileWithinDistance(s.pTile, 60), null);
+            }
+            if (Toolbox.randomChance(0.8f))
+            {
+                ActionLibrary.castCurses(null, null, Toolbox.getRandomTileWithinDistance(s.pTile, 60));
+            }
+            if (Toolbox.randomChance(0.5f))
+            {
+                pb.spawnForce(Toolbox.getRandomTileWithinDistance(s.pTile, 60), null);
+            }
+        }
         public static bool CloudOfDarkness(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of the Night", "cloudOfDarkness%")))
             {
-                EffectsLibrary.spawn("fx_antimatter_effect", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
-                pSelf.a.addStatusEffect("invincible", 1f);
+                CreateStorm(pTile, 30f, 0.5f, CloudOfDark, new Color(1, 1, 1, 0.7f), 4f);
             }
             if (Toolbox.randomChance(GetEnhancedChance("God Of the Night", "blackHole%")))
             {
@@ -1007,15 +1022,34 @@ namespace GodsAndPantheons
 
         #region GodOfFireStuff
         public static bool GodOfFireAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile) => GodAttack(pSelf, pTarget, pTile, "God Of Fire");
+
+        public static void FireStorm(Storm s)
+        {
+            if (Toolbox.randomChance(0.4f))
+            {
+                s.TileToGo = Toolbox.getRandomTileWithinDistance(s.pTile, 120);
+            }
+            if (Toolbox.randomChance(0.1f))
+            {
+                s.UsingLaser = !s.UsingLaser;
+            }
+            if (Toolbox.randomChance(0.6f))
+            {
+                ActionLibrary.castFire(null, null, Toolbox.getRandomTileWithinDistance(s.pTile, 30));
+            }
+            if (Toolbox.randomChance(0.4f))
+            {
+                World.world.dropManager.spawnParabolicDrop(s.pTile, "lava", 0f, 0.15f, 33f + 40 * 2, 1f, 40f + 40, 1f);
+            }
+        }
         public static bool Terrainbending(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Fire", "FireStorm%")))
             {
-                int decider = Toolbox.randomInt(1, 3);
-                switch (decider)
+                switch (Toolbox.randomInt(1, 4))
                 {
                     case 1: pb.spawnCloudAsh(pTile, null); break;
-                    //FIRESTORM
+                    //FIRE TORNADOS
                     case 2:
                         {
                             for (int i = 0; i < Toolbox.randomInt(3, 6); i++)
@@ -1028,13 +1062,10 @@ namespace GodsAndPantheons
                             }
                             break;
                         }
-                    //FIREWAVE
+                    //FIRESTORM
                     case 3:
                         {
-                            for (int i = 0; i < Toolbox.randomInt(30, 40); i++)
-                            {
-                                ActionLibrary.castFire(null, null, Toolbox.getRandomTileWithinDistance(pSelf.currentTile, 15));
-                            }
+                            CreateStorm(pTile, 30f, 0.8f, FireStorm, Color.red, 0.8f).GetComponent<Storm>().TileToGo = Toolbox.getRandomTileWithinDistance(pTile, 100);
                             World.world.startShake(0.3f, 0.1f, 1);
                             break;
                         }
@@ -1046,8 +1077,7 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Fire", "Summoning%")))
             {
-                int decider = Toolbox.randomInt(1, 3);
-                switch (decider)
+                switch (Toolbox.randomInt(1, 4))
                 {
                     case 1: Summon(SA.demon, 2, pSelf, pTile); break;
                     case 2: Summon(SA.evilMage, 1, pSelf, pTile); break;
@@ -1081,8 +1111,7 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Fire", "Magic%")))
             {
-                int decider = Toolbox.randomInt(1, 3);
-                switch (decider)
+                switch (Toolbox.randomInt(1, 4))
                 {
                     case 1: EffectsLibrary.spawn("fx_explosion_middle", pTarget.currentTile, null, null, 0f, -1f, -1f); break;
 
