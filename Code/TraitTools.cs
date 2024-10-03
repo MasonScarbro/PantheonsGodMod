@@ -10,13 +10,12 @@ namespace GodsAndPantheons
     //contains tools for working with the traits
     partial class Traits
     {
-        public static PowerLibrary pb = new PowerLibrary();
+        public static PowerLibrary pb = AssetManager.powers;
         //returns null if unable to find master
         public static Actor FindMaster(Actor summoned)
         {
             summoned.data.get("Master", out string master, "");
-            Actor Mymaster = World.world.units.get(master);
-            return Mymaster != default(Actor) ? Mymaster : null;
+            return World.world.units.get(master);
         }
         public static List<Sprite> LaserSprites;
         public static GameObject LoadCrabZillaLaser(out List<Sprite> sprites)
@@ -34,8 +33,19 @@ namespace GodsAndPantheons
             crablaser.GetComponent<CrabArm>().laserSprites = null;
             return crablaser;
         }
+        public static GameObject CreateStorm(WorldTile pTile, float time, float TimeCooldown, StormAction? Action, Color? StormColor, float Size)
+        {
+            World.world.startShake(0.3f, 0.01f, 0.03f, false, true);
+            GameObject Storm = EffectsLibrary.spawn("fx_antimatter_effect", pTile, null, null, 0f, -1f, -1f).gameObject;
+            Storm.GetComponent<SpriteAnimation>().returnToPool = false;
+            Storm.GetComponent<SpriteRenderer>().color = StormColor ?? Color.white;
+            Storm.transform.localScale = new Vector3(Size, Size, 1);
+            //incase he already created a storm
+            Storm.GetComponent<Storm>().DestroyImmediateIfNotNull();
+            Storm.AddComponent<Storm>().Init(time,TimeCooldown, Action);
+            return Storm;
+        }
         public static GameObject Laserr = LoadCrabZillaLaser(out LaserSprites);
-
         public static void CreateLaserForActor(Actor pSelf, float time = 10)
         {
             GameObject Laser = Object.Instantiate(Laserr);
@@ -71,7 +81,7 @@ namespace GodsAndPantheons
             return addednew;
         }
         public static bool AddAutoTraits(Actor a, string trait) => AddAutoTraits(a.data, trait);
-        public static bool AutoTrait(ActorData pTarget, List<string> traits, bool MustBeInherited = false, float chancemult = 1)
+        public static bool AutoTrait(ActorData pTarget, ListPool<string> traits, bool MustBeInherited = false, float chancemult = 1)
         {
             foreach (string trait in AutoTraits.Keys)
              {
@@ -289,7 +299,7 @@ namespace GodsAndPantheons
             EffectsLibrary.spawn("fx_spawn", actor.currentTile, null, null, 0f, -1f, -1f);
             return true;
         }
-        public static void MakeDemiGod(List<string> godtraits, ref ActorData DemiGod, float chancemmult = 1)
+        public static void MakeDemiGod(ListPool<string> godtraits, ref ActorData DemiGod, float chancemmult = 1)
         {
             DemiGod.addTrait("Demi God");
             foreach (string trait in godtraits)
@@ -306,7 +316,7 @@ namespace GodsAndPantheons
             }
             DemiGod.set("Demi"+S.max_age, Random.Range(10, 30));
         }
-        public static void MakeLesserGod(List<string> godtraits, ref ActorData LesserGod, float chancemult = 1)
+        public static void MakeLesserGod(ListPool<string> godtraits, ref ActorData LesserGod, float chancemult = 1)
         {
             LesserGod.addTrait("Lesser God");
             foreach (string trait in godtraits)
