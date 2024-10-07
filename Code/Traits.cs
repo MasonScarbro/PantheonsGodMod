@@ -794,7 +794,7 @@ namespace GodsAndPantheons
                 pb.divineLightFX(pTarget.a.currentTile, null);
                 var t = EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f) as NapalmFlash;
                 t.bombSpawned = true;
-                pTarget.addStatusEffect("Blinded", 8f);
+                CreateBlindess(pTile, 10, 5f);
             }
             if (Toolbox.randomChance(0 / 100))
             {
@@ -828,6 +828,14 @@ namespace GodsAndPantheons
                 pSelf.a.addStatusEffect("invincible", 1f);
             }
             return true;
+        }
+        public static void CreateBlindess(WorldTile pTile, int radius, float length)
+        {
+            World.world.getObjectsInChunks(pTile, radius, MapObjectType.Actor);
+            foreach (Actor victim in World.world.temp_map_objects)
+            {
+                victim.addStatusEffect("Blinded", length);
+            }
         }
         public static bool BeamOfLight(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {

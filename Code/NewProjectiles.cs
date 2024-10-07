@@ -60,11 +60,7 @@ namespace GodsAndPantheons
                 targetScale = 0.2f,
                 impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
                 {
-                    World.world.getObjectsInChunks(pTile, 3, MapObjectType.Actor);
-                    foreach(Actor victim in World.world.temp_map_objects)
-                    {
-                        victim.addStatusEffect("Blinded", 15f);
-                    }
+                    Traits.CreateBlindess(pTile, 3, 15);
                     return true;
                 })
             });
