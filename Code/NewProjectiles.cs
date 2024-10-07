@@ -58,11 +58,11 @@ namespace GodsAndPantheons
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
                 startScale = 0.2f,
                 targetScale = 0.2f,
-                /*
                 impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
                 {
-                    return Impact(pSelf, pTarget, pTile);
-                })*/
+                    Traits.CreateBlindess(pTile, 3, 15);
+                    return true;
+                })
             });
 
             AssetManager.projectiles.add(new ProjectileAsset

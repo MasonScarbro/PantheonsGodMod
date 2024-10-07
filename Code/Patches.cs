@@ -27,11 +27,19 @@ namespace GodsAndPantheons
     {
         static bool Prefix(AntimatterBombEffect __instance)
         {
-            if(__instance.GetComponent<Storm>() != null)
+            if(__instance.GetComponent<EffectModifier>() != null)
             {
                 return false;
             }
             return true;
+        }
+    }
+    [HarmonyPatch(typeof(BaseEffect), nameof(BaseEffect.deactivate))]
+    public class RemoveModifiers
+    {
+        static void Postfix(BaseEffect __instance)
+        {
+           __instance.GetComponent<EffectModifier>()?.RemoveModifier();
         }
     }
     [HarmonyPatch(typeof(PowerLibrary), "spawnUnit")]
@@ -482,7 +490,7 @@ namespace GodsAndPantheons
                     if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "EnemySwap%")))
                     {
                         WorldTile tile = pTargetToCheck.currentTile;
-                        ListPool<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(tile, pTargetToCheck.kingdom, -1).list;
+                        using ListPool<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(tile, pTargetToCheck.kingdom, -1).list;
                         Actor enemytoswap = null;
                         foreach (BaseSimObject enemy in enemies)
                         {
@@ -497,8 +505,8 @@ namespace GodsAndPantheons
                             enemytoswap.cancelAllBeh();
                             EffectsLibrary.spawnAt("fx_teleport_blue", tile.posV3, enemytoswap.stats[S.scale]);
                             EffectsLibrary.spawnAt("fx_teleport_blue", enemytoswap.currentTile.posV3, pTargetToCheck.stats[S.scale]);
-                            pTargetToCheck.a.spawnOn(enemytoswap.currentTile, 3f);
-                            enemytoswap.spawnOn(tile, 3f);
+                            pTargetToCheck.a.spawnOn(enemytoswap.currentTile);
+                            enemytoswap.spawnOn(tile);
                             pTargetToCheck = enemytoswap;
                         }
                     }

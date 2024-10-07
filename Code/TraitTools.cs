@@ -11,6 +11,7 @@ namespace GodsAndPantheons
     partial class Traits
     {
         public static PowerLibrary pb = AssetManager.powers;
+
         //returns null if unable to find master
         public static Actor FindMaster(Actor summoned)
         {
@@ -40,8 +41,6 @@ namespace GodsAndPantheons
             Storm.GetComponent<SpriteAnimation>().returnToPool = false;
             Storm.GetComponent<SpriteRenderer>().color = StormColor ?? Color.white;
             Storm.transform.localScale = new Vector3(Size, Size, 1);
-            //incase he already created a storm
-            Storm.GetComponent<Storm>().DestroyImmediateIfNotNull();
             Storm.AddComponent<Storm>().Init(time,TimeCooldown, Action);
             return Storm;
         }
