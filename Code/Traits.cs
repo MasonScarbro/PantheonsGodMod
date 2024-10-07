@@ -319,7 +319,7 @@ namespace GodsAndPantheons
         public static Dictionary<string, List<AttackAction>> GodAbilities = new Dictionary<string, List<AttackAction>>()
         {
             {"God Of Fire", new List<AttackAction>(){
-                new AttackAction(Terrainbending),
+                new AttackAction(FireStorm),
                 new AttackAction(Summoning),
                 new AttackAction(Magic)
              }
@@ -722,7 +722,7 @@ namespace GodsAndPantheons
 
         public static void CloudOfDark(Storm s)
         {
-            if (Toolbox.randomChance(0.1f))
+            if (Toolbox.randomChance(0.2f))
             {
                 pb.spawnLightning(Toolbox.getRandomTileWithinDistance(s.pTile, 60), null);
             }
@@ -739,7 +739,7 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of the Night", "cloudOfDarkness%")))
             {
-                CreateStorm(pTile, 30f, 0.5f, CloudOfDark, new Color(1, 1, 1, 0.7f), 4f);
+                CreateStorm(pTile, 30f, 0.4f, CloudOfDark, new Color(1, 1, 1, 0.75f), 4f);
             }
             if (Toolbox.randomChance(GetEnhancedChance("God Of the Night", "blackHole%")))
             {
@@ -792,8 +792,9 @@ namespace GodsAndPantheons
             if (Toolbox.randomChance(GetEnhancedChance("God Of light", "flashOfLight%")))
             {
                 pb.divineLightFX(pTarget.a.currentTile, null);
-                EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f);
-                pSelf.a.addStatusEffect("invincible", 1f);
+                var t = EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f) as NapalmFlash;
+                t.bombSpawned = true;
+                pTarget.addStatusEffect("Blinded", 8f);
             }
             if (Toolbox.randomChance(0 / 100))
             {
@@ -1025,7 +1026,7 @@ namespace GodsAndPantheons
 
         public static void FireStorm(Storm s)
         {
-            if (Toolbox.randomChance(0.4f))
+            if (Vector3.Distance(s.transform.position, s.TileToGo.posV) < 10)
             {
                 s.TileToGo = Toolbox.getRandomTileWithinDistance(s.pTile, 120);
             }
@@ -1039,10 +1040,11 @@ namespace GodsAndPantheons
             }
             if (Toolbox.randomChance(0.4f))
             {
-                World.world.dropManager.spawnParabolicDrop(s.pTile, "lava", 0f, 0.15f, 33f + 40 * 2, 1f, 40f + 40, 1f);
+                for(int i = 0; i < Toolbox.randomInt(5, 10); i++)
+                    World.world.dropManager.spawnParabolicDrop(s.pTile, "lava", 0, 2, 200, 20, 110, 1.5f);
             }
         }
-        public static bool Terrainbending(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        public static bool FireStorm(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Fire", "FireStorm%")))
             {
@@ -1115,11 +1117,8 @@ namespace GodsAndPantheons
                 {
                     case 1: EffectsLibrary.spawn("fx_explosion_middle", pTarget.currentTile, null, null, 0f, -1f, -1f); break;
 
-                    // randomly spawns a flash of fire or acid on the tile 
                     case 2:
-                        MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f);
-                        MapBox.instance.dropManager.spawn(pTile, "acid", 5f, -1f);
-                        MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f); break;
+                        EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f); break;
 
                     case 3: World.world.dropManager.spawnParabolicDrop(pTile, "lava", 0f, 0.15f, 33f + 40 * 2, 1f, 40f + 40, -1f); break;
                 }

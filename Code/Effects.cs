@@ -131,7 +131,7 @@ namespace GodsAndPantheons
             warGodEra.base_stats[S.mod_armor] += .5f;
             warGodEra.base_stats[S.health] += 500;
             warGodEra.base_stats[S.speed] += 30;
-            warGodEra.base_stats[S.knockback_reduction] += 2f;
+            warGodEra.base_stats[S.knockback_reduction] += 0.2f;
             warGodEra.base_stats[S.knockback] += 2f;
             warGodEra.base_stats[S.attack_speed] += 8f;
             warGodEra.base_stats[S.damage] += 30f;
@@ -151,7 +151,7 @@ namespace GodsAndPantheons
             lichgodera.base_stats[S.mod_armor] += 0.5f;
             lichgodera.base_stats[S.health] += 500;
             lichgodera.base_stats[S.speed] += 30;
-            lichgodera.base_stats[S.knockback_reduction] += 2f;
+            lichgodera.base_stats[S.knockback_reduction] += 0.2f;
             lichgodera.base_stats[S.knockback] += 2f;
             lichgodera.base_stats[S.attack_speed] += 8f;
             lichgodera.base_stats[S.mod_damage] += 0.3f;
@@ -170,7 +170,7 @@ namespace GodsAndPantheons
             Invisible.name = "Invisible";
             Invisible.description = "you cant see me";
             Invisible.base_stats[S.speed] += 60;
-            Invisible.base_stats[S.knockback_reduction] += 2f;
+            Invisible.base_stats[S.knockback_reduction] += 0.2f;
             Invisible.action_interval = 0.5f;
             Invisible.action = new WorldAction(InvisibleEffect);
             localizeStatus(Invisible.id, "Invisible", Invisible.description); // Localizes the status effect
@@ -210,13 +210,15 @@ namespace GodsAndPantheons
             chaosgodsera.base_stats[S.mod_armor] += 0.5f;
             chaosgodsera.base_stats[S.health] += 500;
             chaosgodsera.base_stats[S.speed] += 30;
-            chaosgodsera.base_stats[S.knockback_reduction] += 2f;
+            chaosgodsera.base_stats[S.knockback_reduction] += 0.2f;
             chaosgodsera.base_stats[S.knockback] += 2f;
             chaosgodsera.base_stats[S.attack_speed] += 8f;
             chaosgodsera.base_stats[S.damage] += 30f;
             chaosgodsera.action_interval = 2;
             chaosgodsera.action = new WorldAction(Traits.SuperRegeneration);
+            AssetManager.status.add(chaosgodsera);
             localizeStatus(chaosgodsera.id, "Chaos Prevails", chaosgodsera.description); // Localizes the status effect
+
             AssetManager.status.add(chaosgodsera);
             StatusEffect warGodsCry = new StatusEffect();
             warGodsCry.id = "WarGodsCry";
@@ -224,16 +226,28 @@ namespace GodsAndPantheons
             warGodsCry.base_stats[S.mod_armor] += 0.40f;
             warGodsCry.base_stats[S.health] += 60;
             warGodsCry.base_stats[S.speed] += 10;
-            warGodsCry.base_stats[S.knockback_reduction] += 3f;
+            warGodsCry.base_stats[S.knockback_reduction] += 0.8f;
             warGodsCry.base_stats[S.knockback] += 2f;
             warGodsCry.base_stats[S.attack_speed] += 8f;
             warGodsCry.base_stats[S.damage] += 15f;
             warGodsCry.path_icon = "ui/icons/warGod";
             warGodsCry.description = "A Cry Of Anger and Rage";
             warGodsCry.name = "WarGodsCry";
-
             localizeStatus(warGodsCry.id, "WarGodsCry", warGodsCry.description); // Localizes the status effect
             AssetManager.status.add(warGodsCry);
+
+            StatusEffect ICANTSEE = new StatusEffect();
+            ICANTSEE.id = "Blinded";
+            ICANTSEE.duration = 7000f;
+            ICANTSEE.base_stats[S.range] -= 10000;
+            ICANTSEE.base_stats[S.speed] -= 15;
+            ICANTSEE.base_stats[S.knockback_reduction] -= 3f;
+            ICANTSEE.base_stats[S.damage] -= 10f;
+            ICANTSEE.path_icon = "ui/icons/iconMadness";
+            ICANTSEE.description = "I CANNOT SEE AHHHHHHH!";
+            ICANTSEE.name = "Blinded";
+            localizeStatus(ICANTSEE.id, "Blinded", ICANTSEE.description); // Localizes the status effect
+            AssetManager.status.add(ICANTSEE);
 
             AssetManager.status.get("ash_fever").opposite_status = new List<string>() { "Earth Prevails" };
             AssetManager.status.get("cough").opposite_status = new List<string>() { "Earth Prevails" };

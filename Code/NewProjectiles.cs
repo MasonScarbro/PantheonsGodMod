@@ -58,11 +58,15 @@ namespace GodsAndPantheons
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
                 startScale = 0.2f,
                 targetScale = 0.2f,
-                /*
                 impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
                 {
-                    return Impact(pSelf, pTarget, pTile);
-                })*/
+                    World.world.getObjectsInChunks(pTile, 3, MapObjectType.Actor);
+                    foreach(Actor victim in World.world.temp_map_objects)
+                    {
+                        victim.addStatusEffect("Blinded", 15f);
+                    }
+                    return true;
+                })
             });
 
             AssetManager.projectiles.add(new ProjectileAsset
