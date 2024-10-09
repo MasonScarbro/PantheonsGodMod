@@ -26,6 +26,7 @@ namespace GodsAndPantheons
             pTile = GetComponent<AntimatterBombEffect>().tile;
             StormAnimation = GetComponent<SpriteAnimation>();
             Speed = Toolbox.randomFloat(4f, 10f);
+            GetComponent<AntimatterBombEffect>().used = true;
         }
         public SpriteAnimation StormAnimation;
         public override void update(float Elapsed)

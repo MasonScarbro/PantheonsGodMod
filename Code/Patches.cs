@@ -22,14 +22,6 @@ namespace GodsAndPantheons
             }
         }
     }
-    [HarmonyPatch(typeof(AntimatterBombEffect), nameof(AntimatterBombEffect.Update))]
-    public class StormPatch
-    {
-        static bool Prefix(AntimatterBombEffect __instance)
-        {
-            return !(__instance.GetComponent<EffectModifier>() != null);
-        }
-    }
     [HarmonyPatch(typeof(BaseEffect), nameof(BaseEffect.deactivate))]
     public class RemoveModifiers
     {
