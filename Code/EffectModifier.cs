@@ -13,5 +13,9 @@ namespace GodsAndPantheons
             transform.GetComponent<SpriteRenderer>().color = Color.white;
             DestroyImmediate(this);
         }
+        public virtual void update(float Elapsed)
+        {
+
+        }
     }
 }

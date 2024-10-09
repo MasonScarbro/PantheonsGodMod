@@ -240,13 +240,14 @@ namespace GodsAndPantheons
             ICANTSEE.id = "Blinded";
             ICANTSEE.duration = 7000f;
             ICANTSEE.base_stats[S.range] -= 10000;
+            ICANTSEE.base_stats[S.critical_chance] = -1;
             ICANTSEE.base_stats[S.speed] -= 15;
-            ICANTSEE.base_stats[S.knockback_reduction] -= 3f;
-            ICANTSEE.base_stats[S.damage] -= 10f;
+            ICANTSEE.base_stats[S.knockback_reduction] -= 0.6f;
+            ICANTSEE.base_stats[S.damage] -= 30f;
             ICANTSEE.path_icon = "ui/icons/iconMadness";
             ICANTSEE.description = "I CANNOT SEE AHHHHHHH!";
             ICANTSEE.name = "Blinded";
-            ICANTSEE.opposite_traits = new List<string>() { "God Of light" };
+            ICANTSEE.opposite_traits = new List<string>() { "God Of light", "God Of the Night" };
             localizeStatus(ICANTSEE.id, "Blinded", ICANTSEE.description); // Localizes the status effect
             AssetManager.status.add(ICANTSEE);
 

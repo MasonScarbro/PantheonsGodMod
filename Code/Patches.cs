@@ -16,9 +16,9 @@ namespace GodsAndPantheons
     {
         static void Prefix(BaseAnimatedObject __instance, float pElapsed)
         {
-            if(__instance.GetComponent<Storm>() != null)
+            if(__instance.GetComponent<EffectModifier>() != null)
             {
-                __instance.GetComponent<Storm>().UpdateStorm(pElapsed);
+                __instance.GetComponent<EffectModifier>().update(pElapsed);
             }
         }
     }
@@ -27,11 +27,7 @@ namespace GodsAndPantheons
     {
         static bool Prefix(AntimatterBombEffect __instance)
         {
-            if(__instance.GetComponent<EffectModifier>() != null)
-            {
-                return false;
-            }
-            return true;
+            return !(__instance.GetComponent<EffectModifier>() != null);
         }
     }
     [HarmonyPatch(typeof(BaseEffect), nameof(BaseEffect.deactivate))]
@@ -365,6 +361,7 @@ namespace GodsAndPantheons
         public static void MakeBaby(Actor child, Actor pParent1, Actor pParent2)
         {
             InheritGodTraits.inheritgodtraits(child.data, pParent1, pParent2, null);
+            child.setStatsDirty();
         }
     }
     [HarmonyPatch(typeof(CityBehProduceUnit), "produceNewCitizen")]
