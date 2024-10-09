@@ -549,13 +549,6 @@ namespace GodsAndPantheons
         public static bool SummonedBeing(BaseSimObject pTarget, WorldTile pTile)
         {
             Actor a = (Actor)pTarget;
-            if (a.hasTrait("madness"))
-            {
-                a.data.setName("Corrupted One");
-                a.data.removeString("Master");
-                a.removeTrait("Summoned One");
-                return false;
-            }
             if (a.hasTrait("immortal"))
             {
                 return false;

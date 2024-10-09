@@ -180,11 +180,16 @@ namespace GodsAndPantheons
         }
     }
     [HarmonyPatch(typeof(ActorBase), "nextJobActor")]
-    public class summonedonejobapply
+    public class jobapply
     {
         static void Postfix(ref string __result, ActorBase pActor)
         {
-            if(pActor.hasTrait("Summoned One"))
+            if (pActor.hasStatus("Blinded"))
+            {
+                __result = "random_move";
+                return;
+            }
+            if (pActor.hasTrait("Summoned One"))
             {
                 __result = "SummonedJob";
             }
@@ -258,11 +263,17 @@ namespace GodsAndPantheons
     {
         static void Postfix(BaseSimObject __instance, BaseSimObject pTarget, ref bool __result)
         {
+            if (__instance.hasStatus("Blinded"))
+            {
+                __result = false;
+                return;
+            }
             if (Main.savedSettings.HunterAssasins)
             {
                 if (pTarget.hasStatus("Invisible") || __instance.hasStatus("Invisible"))
                 {
                     __result = false;
+                    return;
                 }
                 if (__instance.isActor() && __instance.a.hasTrait("God Hunter") && __instance.a.data.health < __instance.getMaxHealth() * (__instance.hasStatus("powerup") ? 0.7 : 0.35))
                 {
