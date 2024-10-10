@@ -303,7 +303,7 @@ namespace GodsAndPantheons
             ActionLibrary.burningFeetEffect(pTarget, pTile);
             for (int i = 0; i < 5; i++)
             {
-                World.world.dropManager.spawnParabolicDrop(pTarget.a.currentTile, "fire", 0f, 0.1f, 5f, 0.5f, 4f, 0.7f);
+                World.world.dropManager.spawnParabolicDrop(pTarget.a.currentTile, "fire", 0, 0.15f, 113, 1, 80, 0.7f);
             }
             return true;
         }
