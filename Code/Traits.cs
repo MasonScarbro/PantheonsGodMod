@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using static UnityEngine.GraphicsBuffer;
 using Amazon.Runtime.Internal.Transform;
 using UnityEngine.Tilemaps;
+using System.Linq;
 
 namespace GodsAndPantheons
 {
@@ -1336,17 +1337,15 @@ namespace GodsAndPantheons
 
         public static void buildMountain(WorldTile pTile)
         {
-            WorldTile tile1 = Toolbox.getRandomTileWithinDistance(pTile, 50);
-            WorldTile tile2 = Toolbox.getRandomTileWithinDistance(pTile, 25);
-            List<WorldTile> randTile = List.Of<WorldTile>(new WorldTile[] { tile1, tile2 });
-            WorldTile _tile = Toolbox.getRandomTileWithinDistance(randTile, pTile, 30, 120);
+            WorldTile _tile = Toolbox.getRandomTileWithinDistance(pTile, 80);
             if (_tile != null)
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    for (int i = 0; i < 4; i++)
+                    for (int i = 0; i < _tile.neighbours.Length; i++)
                     {
-                        WorldTile tile = _tile.neighbours[i];
+                        //errror here!!!
+                        WorldTile tile = _tile.neighbours[i];   
                         MapAction.terraformMain(tile, AssetManager.tiles.get("mountains"), TerraformLibrary.destroy);
                         MapAction.terraformMain(tile.neighbours[i], AssetManager.tiles.get("mountains"), TerraformLibrary.destroy);
                         MapAction.terraformMain(tile.neighbours[j], AssetManager.tiles.get("soil_high"), TerraformLibrary.destroy);

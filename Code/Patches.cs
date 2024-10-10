@@ -491,6 +491,10 @@ namespace GodsAndPantheons
                     {
                         WorldTile tile = pTargetToCheck.currentTile;
                         using ListPool<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(tile, pTargetToCheck.kingdom, -1).list;
+                        if(enemies == null)
+                        {
+                            return;
+                        }
                         Actor enemytoswap = null;
                         foreach (BaseSimObject enemy in enemies)
                         {
