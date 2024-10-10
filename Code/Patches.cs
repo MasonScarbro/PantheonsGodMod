@@ -16,22 +16,10 @@ namespace GodsAndPantheons
     {
         static void Prefix(BaseAnimatedObject __instance, float pElapsed)
         {
-            if(__instance.GetComponent<Storm>() != null)
-            {
-                __instance.GetComponent<Storm>().UpdateStorm(pElapsed);
-            }
-        }
-    }
-    [HarmonyPatch(typeof(AntimatterBombEffect), nameof(AntimatterBombEffect.Update))]
-    public class StormPatch
-    {
-        static bool Prefix(AntimatterBombEffect __instance)
-        {
             if(__instance.GetComponent<EffectModifier>() != null)
             {
-                return false;
+                __instance.GetComponent<EffectModifier>().update(pElapsed);
             }
-            return true;
         }
     }
     [HarmonyPatch(typeof(BaseEffect), nameof(BaseEffect.deactivate))]
@@ -192,11 +180,16 @@ namespace GodsAndPantheons
         }
     }
     [HarmonyPatch(typeof(ActorBase), "nextJobActor")]
-    public class summonedonejobapply
+    public class jobapply
     {
         static void Postfix(ref string __result, ActorBase pActor)
         {
-            if(pActor.hasTrait("Summoned One"))
+            if (pActor.hasStatus("Blinded"))
+            {
+                __result = "random_move";
+                return;
+            }
+            if (pActor.hasTrait("Summoned One"))
             {
                 __result = "SummonedJob";
             }
@@ -270,11 +263,17 @@ namespace GodsAndPantheons
     {
         static void Postfix(BaseSimObject __instance, BaseSimObject pTarget, ref bool __result)
         {
+            if (__instance.hasStatus("Blinded"))
+            {
+                __result = false;
+                return;
+            }
             if (Main.savedSettings.HunterAssasins)
             {
                 if (pTarget.hasStatus("Invisible") || __instance.hasStatus("Invisible"))
                 {
                     __result = false;
+                    return;
                 }
                 if (__instance.isActor() && __instance.a.hasTrait("God Hunter") && __instance.a.data.health < __instance.getMaxHealth() * (__instance.hasStatus("powerup") ? 0.7 : 0.35))
                 {
@@ -365,6 +364,7 @@ namespace GodsAndPantheons
         public static void MakeBaby(Actor child, Actor pParent1, Actor pParent2)
         {
             InheritGodTraits.inheritgodtraits(child.data, pParent1, pParent2, null);
+            child.setStatsDirty();
         }
     }
     [HarmonyPatch(typeof(CityBehProduceUnit), "produceNewCitizen")]
@@ -491,6 +491,10 @@ namespace GodsAndPantheons
                     {
                         WorldTile tile = pTargetToCheck.currentTile;
                         using ListPool<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(tile, pTargetToCheck.kingdom, -1).list;
+                        if(enemies == null)
+                        {
+                            return;
+                        }
                         Actor enemytoswap = null;
                         foreach (BaseSimObject enemy in enemies)
                         {

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using static UnityEngine.GraphicsBuffer;
 using Amazon.Runtime.Internal.Transform;
 using UnityEngine.Tilemaps;
+using System.Linq;
 
 namespace GodsAndPantheons
 {
@@ -549,13 +550,6 @@ namespace GodsAndPantheons
         public static bool SummonedBeing(BaseSimObject pTarget, WorldTile pTile)
         {
             Actor a = (Actor)pTarget;
-            if (a.hasTrait("madness"))
-            {
-                a.data.setName("Corrupted One");
-                a.data.removeString("Master");
-                a.removeTrait("Summoned One");
-                return false;
-            }
             if (a.hasTrait("immortal"))
             {
                 return false;
@@ -635,7 +629,11 @@ namespace GodsAndPantheons
             if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "Power2%")))
             {
                 bool hasmadness = pSelf.a.hasTrait("madness");
-                DropsLibrary.action_madness(pTile);
+                World.world.getObjectsInChunks(pTile, 8, MapObjectType.Actor);
+                foreach(Actor a in World.world.temp_map_objects)
+                {
+                    a.addTrait("madness");
+                }
                 if (!hasmadness) pSelf.a.removeTrait("madness");
             }
             return true;
@@ -747,7 +745,7 @@ namespace GodsAndPantheons
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
                 Vector3 newPoint = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
                 Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
-                EffectsLibrary.spawnProjectile("BlackHoleProjectile1", newPoint, newPoint2, 0.0f);
+                EffectsLibrary.spawnProjectile("BlackHoleProjectile1", newPoint, newPoint2, 0.0f).byWho = pSelf;
             }
             return true;
         }
@@ -785,15 +783,13 @@ namespace GodsAndPantheons
         }
         public static bool darkGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile) => GodAttack(pSelf, pTarget, pTile, "God Of the Night");
         #endregion
-
         #region LightGodsAttack
         public static bool FlashOfLight(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of light", "flashOfLight%")))
             {
                 pb.divineLightFX(pTarget.a.currentTile, null);
-                var t = EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f) as NapalmFlash;
-                t.bombSpawned = true;
+                (EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f) as NapalmFlash).bombSpawned = true;
                 CreateBlindess(pTile, 10, 5f);
             }
             if (Toolbox.randomChance(0 / 100))
@@ -943,17 +939,14 @@ namespace GodsAndPantheons
                 pb.spawnCloudRage(pTarget.a.currentTile, null);
 
                 //Gods arent effected by this and dispel his attack
+                bool hasmadness = pSelf.a.hasTrait("madness");
                 if (!IsGod(pTarget.a))
                 {
                     MapBox.instance.dropManager.spawn(pTarget.a.currentTile, SD.madness, 5f, -1f);
                     MapBox.instance.dropManager.spawn(_tile, SD.madness, 5f, -1f);
                     MapBox.instance.dropManager.spawn(_tile.neighbours[0], SD.madness, 5f, -1f);
                 }
-                // randomly drops madness around enemies
-
-
-                //if he accidentally gives it to himself
-                if (pSelf.a.hasTrait("madness")) pSelf.a.removeTrait("madness");
+                if (!hasmadness) pSelf.a.removeTrait("madness");
             }
             return true;
         }
@@ -1128,7 +1121,7 @@ namespace GodsAndPantheons
                     case 2:
                         EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f); break;
 
-                    case 3: World.world.dropManager.spawnParabolicDrop(pTile, "lava", 0f, 0.15f, 33f + 40 * 2, 1f, 40f + 40, -1f); break;
+                    case 3: World.world.dropManager.spawnParabolicDrop(pTile, "lava", 0, 0.15f, 113, 1, 80, -1); break;
                 }
             }
             return true;
@@ -1344,17 +1337,15 @@ namespace GodsAndPantheons
 
         public static void buildMountain(WorldTile pTile)
         {
-            WorldTile tile1 = Toolbox.getRandomTileWithinDistance(pTile, 50);
-            WorldTile tile2 = Toolbox.getRandomTileWithinDistance(pTile, 25);
-            List<WorldTile> randTile = List.Of<WorldTile>(new WorldTile[] { tile1, tile2 });
-            WorldTile _tile = Toolbox.getRandomTileWithinDistance(randTile, pTile, 30, 120);
+            WorldTile _tile = Toolbox.getRandomTileWithinDistance(pTile, 80);
             if (_tile != null)
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    for (int i = 0; i < 4; i++)
+                    for (int i = 0; i < _tile.neighbours.Length; i++)
                     {
-                        WorldTile tile = _tile.neighbours[i];
+                        //errror here!!!
+                        WorldTile tile = _tile.neighbours[i];   
                         MapAction.terraformMain(tile, AssetManager.tiles.get("mountains"), TerraformLibrary.destroy);
                         MapAction.terraformMain(tile.neighbours[i], AssetManager.tiles.get("mountains"), TerraformLibrary.destroy);
                         MapAction.terraformMain(tile.neighbours[j], AssetManager.tiles.get("soil_high"), TerraformLibrary.destroy);

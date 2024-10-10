@@ -60,7 +60,9 @@ namespace GodsAndPantheons
                 targetScale = 0.2f,
                 impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
                 {
+                    string[]? kingdoms = pSelf != null && !pSelf.a.has_trait_madness && pSelf.kingdom != null ? new string[1] { pSelf.kingdom.id } : null;
                     Traits.CreateBlindess(pTile, 3, 15);
+                    World.world.applyForce(pTile, 15, 1.5f, false, true, 12, kingdoms, pSelf, null);
                     return true;
                 })
             });

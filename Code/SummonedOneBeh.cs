@@ -22,19 +22,28 @@ namespace GodsAndPantheons
     }
     public class Patrol : BehaviourActionActor
     {
-        public static Actor? Master;
-        public override BehResult execute(Actor pActor)
+        public bool CheckStatus(Actor pActor, out Actor Master)
         {
-            if (pActor.asset.die_if_has_madness)
-            {
-                pActor.getHit(100000000f, true, AttackType.Other, null, false, false);
-                return BehResult.Stop;
-            }
             Master = Traits.FindMaster(pActor);
-            if (Master == null)
+            if (pActor.hasTrait("madness"))
+            {
+                pActor.data.setName("Corrupted One");
+                pActor.data.removeString("Master");
+                pActor.removeTrait("Summoned One");
+                return false;
+            }
+            if (pActor.asset.die_if_has_madness || Master == null)
             {
                 pActor.removeTrait("Summoned One");
                 pActor.data.removeString("Master");
+                return false;
+            }
+            return true;
+        }
+        public override BehResult execute(Actor pActor)
+        {
+            if(!CheckStatus(pActor, out Actor Master))
+            {
                 return BehResult.Stop;
             }
             if(Master.kingdom.id != pActor.kingdom.id)
