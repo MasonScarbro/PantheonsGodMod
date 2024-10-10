@@ -618,7 +618,7 @@ namespace GodsAndPantheons
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
                 Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.stats[S.size], true);
                 EffectsLibrary.spawnProjectile("fireBallX", newPoint, newPoint2, 0.0f);
             }
             return true;
@@ -643,7 +643,7 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "Power3%")))
             {
-                pb.spawnBoulder(pTarget.a.currentTile, null);
+                pb.spawnBoulder(pTarget.currentTile, null);
             }
             return true;
         }
@@ -680,6 +680,10 @@ namespace GodsAndPantheons
             {
                 ActionLibrary.castShieldOnHimself(null, pSelf, null); // Casts a shield for himself !! hint: pSelf !!
             }
+            if (!pTarget.isActor())
+            {
+                return false;
+            }
             if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "KnowledgeGodPwr5%")))
             {
                 ActionLibrary.teleportRandom(null, pTarget, null); // flee
@@ -708,7 +712,7 @@ namespace GodsAndPantheons
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
                 Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.stats[S.size], true);
                 EffectsLibrary.spawnProjectile("PagesOfKnowledge", newPoint, newPoint2, 0.0f);
             }
             return true;
@@ -744,7 +748,7 @@ namespace GodsAndPantheons
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
                 Vector3 newPoint = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.stats[S.size], true);
                 EffectsLibrary.spawnProjectile("BlackHoleProjectile1", newPoint, newPoint2, 0.0f).byWho = pSelf;
             }
             return true;
@@ -756,7 +760,7 @@ namespace GodsAndPantheons
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
                 Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.stats[S.size], true);
                 EffectsLibrary.spawnProjectile("DarkDaggersProjectiles", newPoint, newPoint2, 0.0f);
             }
             return true;
@@ -788,8 +792,8 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of light", "flashOfLight%")))
             {
-                pb.divineLightFX(pTarget.a.currentTile, null);
-                (EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f) as NapalmFlash).bombSpawned = true;
+                pb.divineLightFX(pTarget.currentTile, null);
+                (EffectsLibrary.spawn("fx_napalm_flash", pTarget.currentTile, null, null, 0f, -1f, -1f) as NapalmFlash).bombSpawned = true;
                 CreateBlindess(pTile, 10, 5f);
             }
             if (Toolbox.randomChance(0 / 100))
@@ -800,25 +804,25 @@ namespace GodsAndPantheons
                 int count = 0;
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos);
-                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.stats[S.size], true);
 
-                EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[2].neighbours[2].neighbours[1].neighbours[1].neighbours[2], null, null, 0f, -1f, -1f);
+                EffectsLibrary.spawn("fx_napalm_flash", pTarget.currentTile.neighbours[2].neighbours[2].neighbours[1].neighbours[1].neighbours[2], null, null, 0f, -1f, -1f);
                 count++;
                 //???????????????????????????????????????????????????????????????????????????
                 if (count == 1)
                 {
-                    EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[1].neighbours[0].neighbours[0].neighbours[1].neighbours[0].neighbours[0].neighbours[1].neighbours[1].neighbours[0].neighbours[0].neighbours[0], null, null, 0f, -0.5f, -0.2f);
+                    EffectsLibrary.spawn("fx_napalm_flash", pTarget.currentTile.neighbours[1].neighbours[0].neighbours[0].neighbours[1].neighbours[0].neighbours[0].neighbours[1].neighbours[1].neighbours[0].neighbours[0].neighbours[0], null, null, 0f, -0.5f, -0.2f);
                     count++;
                 }
                 if (count == 2)
                 {
-                    EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[1].neighbours[3].neighbours[2].neighbours[1].neighbours[2].neighbours[3].neighbours[1].neighbours[1].neighbours[0].neighbours[0], null, null, 0f, 1f, -0.2f);
+                    EffectsLibrary.spawn("fx_napalm_flash", pTarget.currentTile.neighbours[1].neighbours[3].neighbours[2].neighbours[1].neighbours[2].neighbours[3].neighbours[1].neighbours[1].neighbours[0].neighbours[0], null, null, 0f, 1f, -0.2f);
                     count++;
                 }
                 if (count == 3)
                 {
-                    EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[1].neighbours[3].neighbours[2].neighbours[1].neighbours[2].neighbours[3].neighbours[1].neighbours[1].neighbours[0].neighbours[0], null, null, 0f, -0.5f, -0.2f);
-                    EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[1].neighbours[3].neighbours[0].neighbours[1].neighbours[0].neighbours[0].neighbours[0].neighbours[1].neighbours[0].neighbours[0], null, null, 0f, -0.5f, -0.2f);
+                    EffectsLibrary.spawn("fx_napalm_flash", pTarget.currentTile.neighbours[1].neighbours[3].neighbours[2].neighbours[1].neighbours[2].neighbours[3].neighbours[1].neighbours[1].neighbours[0].neighbours[0], null, null, 0f, -0.5f, -0.2f);
+                    EffectsLibrary.spawn("fx_napalm_flash", pTarget.currentTile.neighbours[1].neighbours[3].neighbours[0].neighbours[1].neighbours[0].neighbours[0].neighbours[0].neighbours[1].neighbours[0].neighbours[0], null, null, 0f, -0.5f, -0.2f);
 
                 }
                 pSelf.a.addStatusEffect("invincible", 1f);
@@ -837,8 +841,8 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of light", "beamOfLight%")))
             {
-                pb.divineLightFX(pTarget.a.currentTile, null);
-                pTarget.a.addStatusEffect("burning", 1f);
+                pb.divineLightFX(pTarget.currentTile, null);
+                pTarget.addStatusEffect("burning", 1f);
             }
             return true;
         }
@@ -849,7 +853,7 @@ namespace GodsAndPantheons
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
                 Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.stats[S.size], true);
                 EffectsLibrary.spawnProjectile("lightBallzProjectiles", newPoint, newPoint2, 0.0f);
             }
             return true;
@@ -858,10 +862,10 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of light", "speedOfLight%")))
             {
-                pb.divineLightFX(pTarget.a.currentTile, null);
-                EffectsLibrary.spawn("fx_thunder_flash", pSelf.a.currentTile, null, null, 0f, -1f, -1f);
+                pb.divineLightFX(pTarget.currentTile, null);
+                EffectsLibrary.spawn("fx_thunder_flash", pSelf.currentTile, null, null, 0f, -1f, -1f);
                 pSelf.a.addStatusEffect("caffeinated", 10f);
-                pTarget.a.addStatusEffect("slowness", 10f);
+                pTarget.addStatusEffect("slowness", 10f);
             }
             return true;
         }
@@ -873,7 +877,7 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of the Stars", "cometAzure%")))
             {
-                EffectsLibrary.spawnAtTile("fx_cometAzureDown_dej", pTarget.a.currentTile, 0.1f);
+                EffectsLibrary.spawnAtTile("fx_cometAzureDown_dej", pTarget.currentTile, 0.1f);
                 MapAction.applyTileDamage(pTarget.currentTile, 8, AssetManager.terraform.get("cometAzureDownDamage"));
                 MapAction.damageWorld(pTarget.currentTile.neighbours[2], 8, AssetManager.terraform.get("cometAzureDownDamage"), null);
                 MapAction.damageWorld(pTarget.currentTile.neighbours[1], 8, AssetManager.terraform.get("cometAzureDownDamage"), null);
@@ -886,9 +890,9 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of the Stars", "cometShower%")))
             {
-                EffectsLibrary.spawnAtTile("fx_cometShower_dej", pTarget.a.currentTile, 0.09f);
+                EffectsLibrary.spawnAtTile("fx_cometShower_dej", pTarget.currentTile, 0.09f);
                 MapAction.applyTileDamage(pTarget.currentTile, 2f, AssetManager.terraform.get("cometRain"));
-                pSelf.a.addStatusEffect("invincible", 1f);
+                pSelf.addStatusEffect("invincible", 1f);
                 // The Rain Damage effect 
                 MapAction.applyTileDamage(pTarget.currentTile.neighbours[2].neighbours[2].neighbours[1].neighbours[1], 2f, AssetManager.terraform.get("cometRain"));
                 MapAction.applyTileDamage(pTarget.currentTile.neighbours[3].neighbours[3].neighbours[2].neighbours[2], 1f, AssetManager.terraform.get("cometRain"));
@@ -923,10 +927,10 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of light", "speedOfLight%")))
             {
-                pb.divineLightFX(pTarget.a.currentTile, null);
+                pb.divineLightFX(pTarget.currentTile, null);
                 EffectsLibrary.spawn("fx_thunder_flash", pSelf.a.currentTile, null, null, 0f, -1f, -1f);
                 pSelf.a.addStatusEffect("caffeinated", 10f);
-                pTarget.a.addStatusEffect("slowness", 10f);
+                pTarget.addStatusEffect("slowness", 10f);
             }
             return true;
         }
@@ -934,11 +938,15 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of War", "seedsOfWar%")))
             {
-                WorldTile _tile = Toolbox.getRandomTileWithinDistance(pTarget.a.currentTile, 5);
+                WorldTile _tile = Toolbox.getRandomTileWithinDistance(pTarget.currentTile, 5);
                 // Spawns Rage Cloud above enemy
-                pb.spawnCloudRage(pTarget.a.currentTile, null);
+                pb.spawnCloudRage(pTarget.currentTile, null);
 
                 //Gods arent effected by this and dispel his attack
+                if (!pTarget.isActor())
+                {
+                    return true;
+                }
                 bool hasmadness = pSelf.a.hasTrait("madness");
                 if (!IsGod(pTarget.a))
                 {
@@ -958,7 +966,7 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of the Earth", "earthquake%")))
             {
-                pb.spawnEarthquake(pTarget.a.currentTile, null);
+                pb.spawnEarthquake(pTarget.currentTile, null);
             }
             return true;
         }
@@ -967,8 +975,8 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of the Earth", "makeItRain%")))
             {
-                pb.spawnCloudRain(pTarget.a.currentTile, null);
-                pb.spawnCloudSnow(pTarget.a.currentTile, null);
+                pb.spawnCloudRain(pTarget.currentTile, null);
+                pb.spawnCloudSnow(pTarget.currentTile, null);
             }
             return true;
         }
@@ -1011,9 +1019,9 @@ namespace GodsAndPantheons
             if (Toolbox.randomChance(GetEnhancedChance("God Of The Lich", "rigorMortisHand%")))
             {
                 //Lich God Summons RigorMortis Hand
-                EffectsLibrary.spawnAtTile("fx_handgrab_dej", pTarget.a.currentTile, 0.1f);
-                pTarget.a.addStatusEffect("slowness");
-                pTarget.a.addStatusEffect("poisoned");
+                EffectsLibrary.spawnAtTile("fx_handgrab_dej", pTarget.currentTile, 0.1f);
+                pTarget.addStatusEffect("slowness");
+                pTarget.addStatusEffect("poisoned");
             }
             return true;
         }
@@ -1119,7 +1127,7 @@ namespace GodsAndPantheons
                     case 1: EffectsLibrary.spawn("fx_explosion_middle", pTarget.currentTile, null, null, 0f, -1f, -1f); break;
 
                     case 2:
-                        EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile, null, null, 0f, -1f, -1f); break;
+                        EffectsLibrary.spawn("fx_napalm_flash", pTarget.currentTile, null, null, 0f, -1f, -1f); break;
 
                     case 3: World.world.dropManager.spawnParabolicDrop(pTile, "lava", 0, 0.15f, 113, 1, 80, -1); break;
                 }
@@ -1157,12 +1165,6 @@ namespace GodsAndPantheons
 
         public static bool starsGodsDeath(BaseSimObject pTarget, WorldTile pTile = null)
         {
-
-            BaseSimObject attackedBy = pTarget.a.attackedBy;
-            if (!((BaseSimObject)attackedBy != null) || !attackedBy.isActor() || !attackedBy.isAlive())
-            {
-                return false;
-            }
             if (Main.savedSettings.deathera)
                 World.world.eraManager.setEra(S.age_moon, true);
             return true;
@@ -1171,26 +1173,13 @@ namespace GodsAndPantheons
 
         public static bool darkGodsDeath(BaseSimObject pTarget, WorldTile pTile = null)
         {
-            BaseSimObject attackedBy = pTarget.a.attackedBy;
-            if (!((BaseSimObject)attackedBy != null) || !attackedBy.isActor() || !attackedBy.isAlive())
-            {
-                return false;
-            }
             if (Main.savedSettings.deathera)
                 World.world.eraManager.setEra(S.age_sun, true);
-
-
             return true;
-
         }
 
         public static bool genericGodsDeath(BaseSimObject pTarget, WorldTile pTile = null)
         {
-            BaseSimObject attackedBy = pTarget.a.attackedBy;
-            if (!(attackedBy != null) || !attackedBy.isActor() || !attackedBy.isAlive())
-            {
-                return false;
-            }
             return true;
 
         }
