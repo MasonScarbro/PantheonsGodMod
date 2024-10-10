@@ -301,7 +301,10 @@ namespace GodsAndPantheons
                 pTarget.GetComponent<SpriteRenderer>().color = new Color(mycolor.r, 0.15f, 0.2f, mycolor.a);
             }
             ActionLibrary.burningFeetEffect(pTarget, pTile);
-            World.world.dropManager.spawnParabolicDrop(pTile, "lava", 0f, 0.15f, 33f + 40 * 2, 1f, 40f + 40, 0.7f);
+            for (int i = 0; i < 5; i++)
+            {
+                World.world.dropManager.spawnParabolicDrop(pTarget.a.currentTile, "fire", 0f, 0.1f, 5f, 0.5f, 4f, 0.7f);
+            }
             return true;
         }
         public static bool LaserEffect(BaseSimObject pTarget, WorldTile pTile)
