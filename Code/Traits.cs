@@ -938,12 +938,16 @@ namespace GodsAndPantheons
         #region GodOfWarsAttack
         public static bool wargodscry(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(GetEnhancedChance("God Of light", "speedOfLight%")))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of War", "warGodsCry%")))
             {
-                pb.divineLightFX(pTarget.currentTile, null);
-                EffectsLibrary.spawn("fx_thunder_flash", pSelf.a.currentTile, null, null, 0f, -1f, -1f);
-                pSelf.a.addStatusEffect("caffeinated", 10f);
-                pTarget.addStatusEffect("slowness", 10f);
+                EffectsLibrary.spawnExplosionWave(pSelf.currentTile.posV3, 1f, 1f);
+                pSelf.a.addStatusEffect("WarGodsCry", 30f);
+                World.world.startShake(0.3f, 0.01f, 2f, true, true);
+                pSelf.a.addStatusEffect("invincible", 1f);
+                MapAction.damageWorld(pSelf.currentTile, 2, AssetManager.terraform.get("crab_step"), null);
+                pSelf.a.addStatusEffect("invincible", 1f);
+                World.world.applyForce(pSelf.currentTile, 4, 0.4f, false, true, 20, null, pTarget, null);
+
             }
             return true;
         }
