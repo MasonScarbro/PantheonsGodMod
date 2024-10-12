@@ -44,6 +44,7 @@ namespace GodsAndPantheons
         {
             if(!CheckStatus(pActor, out Actor Master))
             {
+                pActor.finishAllStatusEffects();
                 return BehResult.Stop;
             }
             if(Master.kingdom.id != pActor.kingdom.id)

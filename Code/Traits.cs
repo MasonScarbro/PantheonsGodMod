@@ -25,6 +25,7 @@ namespace GodsAndPantheons
                 {S.damage, 30f},
                 {S.health, 500},
                 {S.attack_speed, 15f},
+                {S.armor, 10f },
                 {S.critical_chance, 0.05f},
                 {S.range, 8f},
                 {S.scale, 0.08f},
@@ -58,12 +59,12 @@ namespace GodsAndPantheons
              }
             },
             {"God Of Knowledge", new Dictionary<string, float>(){
-                {S.damage, 20f},
+                {S.damage, 5f},
                 {S.health, 300},
                 {S.attack_speed, 1f},
                 {S.critical_chance, 0.25f},
                 {S.range, 15f},
-                {S.scale, 0.04f},
+                {S.scale, 0.01f},
                 {S.intelligence, 35f},
                 {S.accuracy, 10f},
                 {S.max_children, 2},
@@ -72,7 +73,7 @@ namespace GodsAndPantheons
             },
             {"God Of the Stars", new Dictionary<string, float>(){
                 {S.damage, 25f},
-                {S.health, 600f},
+                {S.health, 500f},
                 {S.attack_speed, 1f},
                 {S.critical_chance, 0.05f},
                 {S.range, 15f},
@@ -83,10 +84,10 @@ namespace GodsAndPantheons
              }
             },
             {"God Of the Earth", new Dictionary<string, float>(){
-                {S.damage, 40f},
+                {S.damage, 60f},
                 {S.health, 800f},
                 {S.attack_speed, 1f},
-                {S.armor, 35f},
+                {S.armor, 50f},
                 {S.scale, 0.1f},
                 {S.range, 10f},
                 {S.intelligence, 3f},
@@ -101,7 +102,7 @@ namespace GodsAndPantheons
                 {S.damage, 100f},
                 {S.health, 700f},
                 {S.attack_speed, 35f},
-                {S.armor, 40f},
+                {S.armor, 35f},
                 {S.knockback_reduction, 0.05f},
                 {S.scale, 0.03f},
                 {S.range, 8f},
@@ -179,6 +180,7 @@ namespace GodsAndPantheons
                 "poison_immune",
                 "fire_proof",
                 "acid_proof",
+                "burning_feet",
                 "shiny",
                 "fire_blood",
                 "immortal",
@@ -204,7 +206,6 @@ namespace GodsAndPantheons
                 "blessed",
                 "genius",
                 "fire_proof",
-                "fire_blood",
                 "freeze_proof",
                 "tough",
                 "energized",
@@ -244,6 +245,7 @@ namespace GodsAndPantheons
             {"God Of the Earth", new List<string>()
              {
                 "blessed",
+                "poison_immune",
                 "giant",
                 "strong",
                 "fat",
@@ -328,6 +330,7 @@ namespace GodsAndPantheons
             {"God Of Chaos", new List<AttackAction>(){
                 new AttackAction(ChaosBall),
                 new AttackAction(UnleachChaos),
+                new AttackAction(ChaosHell),
                 new AttackAction(ChaosBoulder)
              }
             },
@@ -437,7 +440,6 @@ namespace GodsAndPantheons
             starsGod.path_icon = "ui/icons/starsGod";
             starsGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             starsGod.action_death = (WorldAction)Delegate.Combine(starsGod.action_death, new WorldAction(starsGodsDeath));
-            starsGod.action_attack_target = new AttackAction(ActionLibrary.addFrozenEffectOnTarget);
             starsGod.action_attack_target += new AttackAction(starsGodAttack);
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(stargoderastatus));
             starsGod.group_id = "GodTraits";
@@ -611,6 +613,16 @@ namespace GodsAndPantheons
         #endregion
 
         #region ChaosGodsAttack
+        public static bool ChaosHell(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if(!Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "WorldOfChaos%")))
+            {
+                return false;
+            }
+            RandomForce.CreateRandomForce(World.world, pTile, 64, 3);
+            World.world.startShake(1, 0.02f, 1.5f);
+            return true;
+        }
         public static bool ChaosBall(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "Power1%")))
@@ -634,7 +646,8 @@ namespace GodsAndPantheons
                 {
                     a.addTrait("madness");
                 }
-                if (!hasmadness) pSelf.a.removeTrait("madness");
+                pb.spawnCloudRage(pTile, null);
+                if (!hasmadness) { pSelf.a.removeTrait("madness"); }
             }
             return true;
         }
@@ -678,7 +691,7 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "KnowledgeGodPwr4%")))
             {
-                ActionLibrary.castShieldOnHimself(null, pSelf, null); // Casts a shield for himself !! hint: pSelf !!
+                pSelf.addStatusEffect("shield", 10);
             }
             if (!pTarget.isActor())
             {
@@ -881,7 +894,7 @@ namespace GodsAndPantheons
                 MapAction.applyTileDamage(pTarget.currentTile, 8, AssetManager.terraform.get("cometAzureDownDamage"));
                 MapAction.damageWorld(pTarget.currentTile.neighbours[2], 8, AssetManager.terraform.get("cometAzureDownDamage"), null);
                 MapAction.damageWorld(pTarget.currentTile.neighbours[1], 8, AssetManager.terraform.get("cometAzureDownDamage"), null);
-                World.world.applyForce(pTarget.currentTile.neighbours[0], 4, 0.4f, false, true, 200, null, pTarget, null);
+                World.world.applyForce(pTarget.currentTile.neighbours[0], 4, 0.4f, false, true, 200, null, pSelf, null);
                 pSelf.a.addStatusEffect("invincible", 1f);
             }
             return true;
@@ -904,8 +917,8 @@ namespace GodsAndPantheons
                 MapAction.applyTileDamage(pTarget.currentTile.neighbours[0].neighbours[1], 2f, AssetManager.terraform.get("cometRain"));
                 MapAction.applyTileDamage(pTarget.currentTile.neighbours[2].neighbours[3], 2f, AssetManager.terraform.get("cometRain"));
                 MapAction.applyTileDamage(pTarget.currentTile.neighbours[0].neighbours[0].neighbours[0], 2f, AssetManager.terraform.get("cometRain"));
-                World.world.applyForce(pTarget.currentTile.neighbours[3].neighbours[3].neighbours[2].neighbours[2], 2, 0.4f, false, true, 20, null, pTarget, null);
-                World.world.applyForce(pTarget.currentTile.neighbours[3].neighbours[3].neighbours[3].neighbours[3], 2, 0.4f, false, true, 20, null, pTarget, null);
+                World.world.applyForce(pTarget.currentTile.neighbours[3].neighbours[3].neighbours[2].neighbours[2], 2, 0.4f, false, true, 20, null, pSelf, null);
+                World.world.applyForce(pTarget.currentTile.neighbours[3].neighbours[3].neighbours[3].neighbours[3], 2, 0.4f, false, true, 20, null, pSelf, null);
             }
             return true;
         }
@@ -939,8 +952,6 @@ namespace GodsAndPantheons
             if (Toolbox.randomChance(GetEnhancedChance("God Of War", "seedsOfWar%")))
             {
                 WorldTile _tile = Toolbox.getRandomTileWithinDistance(pTarget.currentTile, 5);
-                // Spawns Rage Cloud above enemy
-                pb.spawnCloudRage(pTarget.currentTile, null);
 
                 //Gods arent effected by this and dispel his attack
                 if (!pTarget.isActor())
@@ -1210,7 +1221,7 @@ namespace GodsAndPantheons
             if(AddAutoTraits(target, trait))
             {
                 target.setStatsDirty();
-                target.restoreHealth(target.getMaxHealth());
+                target.event_full_heal = true;
             }
             return true;
         }
@@ -1237,7 +1248,7 @@ namespace GodsAndPantheons
                 if (!pSelf.hasStatus(TraitEras[era].Value))
                 {
                     pSelf.addStatusEffect(TraitEras[era].Value);
-                    pSelf.a.restoreHealth(pSelf.a.getMaxHealth());
+                    pSelf.a.event_full_heal = true;
                 }
             }
             else if (pSelf.hasStatus(TraitEras[era].Value))

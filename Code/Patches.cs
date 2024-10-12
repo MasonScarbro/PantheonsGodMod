@@ -4,6 +4,7 @@ using SimpleJSON;
 using SleekRender;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
@@ -11,6 +12,29 @@ using static GodsAndPantheons.Traits;
 //Harmony Patches
 namespace GodsAndPantheons
 {
+    [HarmonyPatch(typeof(MapBox), nameof(MapBox.applyForce))]
+    public class RandomForce
+    {
+        [HarmonyReversePatch]
+        //pforce out here is useless!
+        public static void CreateRandomForce(object instance, WorldTile pTile, int pRad = 10, float pSpeedForce = 1.5f, bool pForceOut = true, bool useOnNature = false, int pDamage = 0, string[] pIgnoreKingdoms = null, BaseSimObject pByWho = null, TerraformOptions pOptions = null)
+        {
+            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                foreach (CodeInstruction instr in instructions)
+                {
+                    if (instr.opcode == OpCodes.Ldarg_S && instr.operand is byte i && i == 4)
+                    {
+                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Toolbox), nameof(Toolbox.randomBool)));
+                    }
+                    else
+                    {
+                        yield return instr;
+                    }
+                }
+            }
+        }
+    }
     [HarmonyPatch(typeof(BaseAnimatedObject), nameof(BaseAnimatedObject.update))]
     public class StormFinish
     {

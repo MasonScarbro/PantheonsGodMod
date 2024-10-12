@@ -37,7 +37,7 @@ namespace GodsAndPantheons
                 StormAnimation.returnToPool = true;
                 return;
             }
-            if(StormAnimation.currentFrameIndex > 7)
+            if(StormAnimation.currentFrameIndex > 6)
             {
                 StormAnimation.setFrameIndex(0);
             }
