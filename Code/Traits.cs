@@ -1056,7 +1056,7 @@ namespace GodsAndPantheons
             }
             if (Toolbox.randomChance(0.6f))
             {
-                ActionLibrary.castFire(null, null, Toolbox.getRandomTileWithinDistance(s.pTile, 30));
+                LavaHelper.addLava(s.pTile, "lava3");
             }
             if (Toolbox.randomChance(0.3f))
             {
