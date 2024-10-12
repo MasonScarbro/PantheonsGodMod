@@ -255,8 +255,7 @@ namespace GodsAndPantheons
             FireGodStaff.base_stats[S.max_age] += 100f;
             FireGodStaff.base_stats[S.attack_speed] = 1f;
             FireGodStaff.base_stats[S.speed] += 1f;
-            FireGodStaff.base_stats[S.health] = 1;
-            FireGodStaff.base_stats[S.damage] = 25f;
+            FireGodStaff.base_stats[S.damage] = 15;
             FireGodStaff.base_stats[S.range] = 1;
             FireGodStaff.base_stats[S.armor] = 1;
             FireGodStaff.base_stats[S.scale] = 0.0f;

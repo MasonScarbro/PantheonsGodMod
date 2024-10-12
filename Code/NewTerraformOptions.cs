@@ -34,8 +34,13 @@ namespace GodsAndPantheons
 
 
                 });
+            TerraformOptions lessercrablaser = AssetManager.terraform.clone("LesserCrabLaser", "crab_laser");
+            lessercrablaser.damage = 160;
+            lessercrablaser.shake_intensity = 0.2f;
+            lessercrablaser.applyForce = false;
+            AssetManager.terraform.add(lessercrablaser);
 
-                 AssetManager.terraform.add(new TerraformOptions
+            AssetManager.terraform.add(new TerraformOptions
                 {
                     id = "darkDaggers",
 
@@ -153,6 +158,7 @@ namespace GodsAndPantheons
                     attackType = AttackType.Poison,
                     damage = 50,
                 });
+
         }
 
     }

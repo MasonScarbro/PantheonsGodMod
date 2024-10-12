@@ -115,7 +115,7 @@ namespace GodsAndPantheons
             EarthGodEra.base_stats[S.mod_speed] += 0.25f;
             EarthGodEra.base_stats[S.knockback_reduction] += 0.8f;
             EarthGodEra.base_stats[S.mod_damage] += 0.3f;
-            EarthGodEra.base_stats[S.mod_armor] += 0.6f;
+            EarthGodEra.base_stats[S.mod_armor] += 0.3f;
             EarthGodEra.base_stats[S.attack_speed] += 80f;
             EarthGodEra.path_icon = "ui/icons/earthGod";
             EarthGodEra.description = "The World, shrowded in my home";

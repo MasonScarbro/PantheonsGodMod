@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using ReflectionUtility;
- 
+using UnityEngine;
+
 namespace GodsAndPantheons
 {
     class Group
@@ -11,7 +12,7 @@ namespace GodsAndPantheons
             ActorTraitGroupAsset MTtraits = new ActorTraitGroupAsset();
             MTtraits.id = "GodTraits";
             MTtraits.name = "The Traits Of Gods";
-            MTtraits.color = Toolbox.makeColor("#000000", -1f);
+            MTtraits.color = Color.black;
             AssetManager.trait_groups.add(MTtraits);
             addTraitGroupToLocalizedLibrary(MTtraits.id, "Godly Traits");
  
@@ -19,8 +20,7 @@ namespace GodsAndPantheons
         }
         private static void addTraitGroupToLocalizedLibrary(string id, string name)
         {
-            string language = Reflection.GetField(LocalizedTextManager.instance.GetType(), LocalizedTextManager.instance, "language") as string;
-            Dictionary<string, string> localizedText = Reflection.GetField(LocalizedTextManager.instance.GetType(), LocalizedTextManager.instance, "localizedText") as Dictionary<string, string>;
+            Dictionary<string, string> localizedText = LocalizedTextManager.instance.localizedText;
             localizedText.Add("trait_group_" + id, name);
         }
     }
