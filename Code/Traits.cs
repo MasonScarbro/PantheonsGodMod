@@ -1058,6 +1058,15 @@ namespace GodsAndPantheons
             {
                 ActionLibrary.castFire(null, null, Toolbox.getRandomTileWithinDistance(s.pTile, 30));
             }
+            if (Toolbox.randomChance(0.3f))
+            {
+                EffectsLibrary.spawn("fx_napalm_flash", s.pTile, null, null, 0f, -1f, -1f);
+                EffectsLibrary.spawnAtTileRandomScale("fx_explosion_tiny", s.pTile, 0.15f, 0.3f);
+            }
+            if (Toolbox.randomChance(0.8f))
+            {
+                World.world.applyForce(s.pTile, 40, 1.5f, false, true, 5);
+            }
             if (Toolbox.randomChance(0.4f))
             {
                 for(int i = 0; i < Toolbox.randomInt(5, 10); i++)
