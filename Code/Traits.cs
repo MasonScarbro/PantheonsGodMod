@@ -625,7 +625,7 @@ namespace GodsAndPantheons
         }
         public static bool ChaosBall(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "Power1%")))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "FireBall%")))
             {
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
@@ -638,7 +638,7 @@ namespace GodsAndPantheons
 
         public static bool UnleachChaos(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "Power2%")))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "UnleashChaos%")))
             {
                 bool hasmadness = pSelf.a.hasTrait("madness");
                 World.world.getObjectsInChunks(pTile, 8, MapObjectType.Actor);
@@ -654,7 +654,7 @@ namespace GodsAndPantheons
 
         public static bool ChaosBoulder(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "Power3%")))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "ChaosBoulder%")))
             {
                 pb.spawnBoulder(pTarget.currentTile, null);
             }
@@ -669,27 +669,23 @@ namespace GodsAndPantheons
         #region KnowledgeGodsAttack
         public static bool CreateElements(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "KnowledgeGodPwr1%") / 100))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "UnleashFireAndAcid%") / 100))
             {
                 // randomly spawns a flash of fire or acid on the tile 
                 MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f);
                 MapBox.instance.dropManager.spawn(pTile, "acid", 5f, -1f);
                 MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f); // Drops fire from distance 5 with scale of one at current tile
             }
-            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "KnowledgeGodPwr3%")))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "Freeze%")))
             {
                 ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null); // freezezz the target
-            }
-            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "SummonLightning%")))
-            {
-                ActionLibrary.castLightning(null, pTarget, null); // Casts Lightning on the target
             }
             return true;
         }
 
         public static bool trydefendself(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "KnowledgeGodPwr4%")))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "CreateShield%")))
             {
                 pSelf.addStatusEffect("shield", 10);
             }
@@ -697,11 +693,11 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "KnowledgeGodPwr5%")))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "TeleprtTarget%")))
             {
                 ActionLibrary.teleportRandom(null, pTarget, null); // flee
             }
-            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "KnowledgeGodPwr2%")))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "CastCurses%")))
             {
                 ActionLibrary.castCurses(null, pTarget, null); // casts curses
                 ((Actor)pSelf).removeTrait("cursed");
@@ -1335,7 +1331,6 @@ namespace GodsAndPantheons
                 }
                 if (Toolbox.randomChance(GetEnhancedChance("God Of the Earth", "buildWorld%")))
                 {
-
                     buildMountain(pTile);
                 }
 

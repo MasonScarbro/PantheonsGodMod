@@ -18,7 +18,7 @@ namespace GodsAndPantheons
     class Main : MonoBehaviour
     {
         
-        private const string correctSettingsVersion = "0.1.8";
+        private const string correctSettingsVersion = "0.1.9";
         public static SavedSettings savedSettings = new SavedSettings();
         internal static Dictionary<string, UnityEngine.Object> modsResources;
         public static Main instance;

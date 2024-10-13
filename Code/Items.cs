@@ -489,7 +489,7 @@ namespace GodsAndPantheons
         }
         static bool UnleashFire(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "Power4%")))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "BoneFire%")))
             {
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile

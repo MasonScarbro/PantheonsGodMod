@@ -315,8 +315,6 @@ namespace GodsAndPantheons
             if (isgod)
             {
                 __instance.addTrait("God Killer");
-                __instance.data.get("godskilled", out int godskilled);
-                __instance.data.set("godskilled", godskilled + (isgod ? 1 : 0));
             }
             if(__instance.hasTrait("God Hunter"))
             {

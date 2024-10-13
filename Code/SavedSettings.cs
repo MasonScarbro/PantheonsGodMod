@@ -6,7 +6,7 @@ namespace GodsAndPantheons
     [Serializable]
     public class SavedSettings
     {
-        public string settingVersion = "0.1.8";
+        public string settingVersion = "0.1.9";
         //inheritance of the god traits is stored here
         //if it has a god parent and normal parent it will use the inherit for the chance of changing the stats of the demi god trait for the baby
         public Dictionary<string, Dictionary<string, InputOption>> Chances = new Dictionary<string, Dictionary<string, InputOption>>
@@ -14,11 +14,11 @@ namespace GodsAndPantheons
             {"KnowledgeGodWindow",
               new Dictionary<string, InputOption>
              {
-              {"KnowledgeGodPwr1%", new InputOption{active = true, value = 20 }},
-              {"KnowledgeGodPwr2%", new InputOption{active = true, value = 5 }},
-              {"KnowledgeGodPwr3%", new InputOption{active = true, value = 20 }},
-              {"KnowledgeGodPwr4%", new InputOption{active = true, value = 1 }},
-              {"KnowledgeGodPwr5%", new InputOption{active = true, value = 1.8f }},
+              {"UnleashFireAndAcid%", new InputOption{active = true, value = 20 }},
+              {"CastCurses%", new InputOption{active = true, value = 5 }},
+              {"Freeze%", new InputOption{active = true, value = 20 }},
+              {"CreateShield%", new InputOption{active = true, value = 1 }},
+              {"TeleprtTarget%", new InputOption{active = true, value = 1.8f }},
               {"SummonLightning%", new InputOption{active = true, value = 9 }},
               {"SummonMeteor%", new InputOption{active = true, value = 3 }},
               {"PagesOfKnowledge%", new InputOption{active = true, value = 3 }},
@@ -100,10 +100,10 @@ namespace GodsAndPantheons
             {"ChaosGodWindow",
                 new Dictionary<string, InputOption>
               {
-                  {"Power1%", new InputOption{active = true, value = 28 }},
-                  {"Power2%", new InputOption{active = true, value = 40 }},
-                  {"Power3%", new InputOption{active = true, value = 15 }},
-                  {"Power4%", new InputOption{active = true, value = 30 }},
+                  {"FireBall%", new InputOption{active = true, value = 28 }},
+                  {"UnleashChaos%", new InputOption{active = true, value = 40 }},
+                  {"ChaosBoulder%", new InputOption{active = true, value = 15 }},
+                  {"BoneFire%", new InputOption{active = true, value = 30 }},
                   {"WorldOfChaos%", new InputOption{active = true, value = 5 }},
                   {"God Of Chaosinherit%", new InputOption{active = true, value = 28 }}
               }
