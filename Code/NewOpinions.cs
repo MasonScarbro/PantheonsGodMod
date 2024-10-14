@@ -4,7 +4,7 @@ using System.Text;
 using static GodsAndPantheons.Traits;
 namespace GodsAndPantheons
 {
-    internal class NewOpinions
+    public class NewOpinions
     {
         public static void init()
         {
