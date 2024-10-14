@@ -1299,7 +1299,10 @@ namespace GodsAndPantheons
 
         public static bool warGodSeeds(BaseSimObject pTarget, WorldTile pTile)
         {
-
+            if (!World.world.worldLaws.world_law_diplomacy.boolVal)
+            {
+                return false;
+            }
             if (pTarget.a != null)
             {
 
