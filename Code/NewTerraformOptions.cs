@@ -35,7 +35,7 @@ namespace GodsAndPantheons
 
                 });
             TerraformOptions lessercrablaser = AssetManager.terraform.clone("LesserCrabLaser", "crab_laser");
-            lessercrablaser.damage = 160;
+            lessercrablaser.damage = 80;
             lessercrablaser.shake_intensity = 0.2f;
             lessercrablaser.applyForce = false;
             AssetManager.terraform.add(lessercrablaser);

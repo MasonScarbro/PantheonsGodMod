@@ -15,8 +15,6 @@ namespace GodsAndPantheons
             MTtraits.color = Color.black;
             AssetManager.trait_groups.add(MTtraits);
             addTraitGroupToLocalizedLibrary(MTtraits.id, "Godly Traits");
- 
- 
         }
         private static void addTraitGroupToLocalizedLibrary(string id, string name)
         {

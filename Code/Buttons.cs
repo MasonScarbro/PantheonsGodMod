@@ -70,10 +70,22 @@ namespace GodsAndPantheons
                     tab.transform,
                     WindowManager.windows["KnowledgeGodWindow"].openWindow
               );
+            PowerButton butto = PowerButtons.CreateButton(
+                    "ToggleDiplomacyModifiers",
+                    Resources.Load<Sprite>("ui/Icons/iconDiplomacy"),
+                    "Diplomacy Modifiers",
+                    "if enabled, kingdoms will change their opinions on other kingdoms based on if their king's are gods",
+                    new Vector2(388, -18),
+                    ButtonType.Toggle,
+                    tab.transform,
+                    ToggleDiplomacy
+              );
+            if (Main.savedSettings.DiplomacyChanges)
+                PowerButtons.ToggleButton(butto.name);
             PowerButton button = PowerButtons.CreateButton(
                     "ToggleDeathEras",
                     Resources.Load<Sprite>("ui/Icons/ages/iconAgeHope"),
-                    "Option modifier",
+                    "Death Eras",
                     "should deaths change the era?",
                     new Vector2(388, 18),
                     ButtonType.Toggle,
@@ -85,7 +97,7 @@ namespace GodsAndPantheons
             PowerButton button2 = PowerButtons.CreateButton(
                     "HunterAssassins",
                     Resources.Load<Sprite>("ui/Icons/godKiller"),
-                    "option modifier",
+                    "Hunter Assassins",
                     "if enabled, god hunters will become assassins and will hunt down gods",
                     new Vector2(530, 18),
                     ButtonType.Toggle,
@@ -97,7 +109,7 @@ namespace GodsAndPantheons
             PowerButton button3 = PowerButtons.CreateButton(
                     "DevineMiracles",
                     Resources.Load<Sprite>("ui/Icons/iconNightchild"),
-                    "option modifier",
+                    "Devine Miracles",
                     "allows for a very, very rare chance that a mortal in a kingdom will become a god",
                     new Vector2(424, 18),
                     ButtonType.Toggle,
@@ -109,7 +121,7 @@ namespace GodsAndPantheons
             PowerButton button4 = PowerButtons.CreateButton(
                     "GodKings",
                     Resources.Load<Sprite>("ui/Icons/iconKings"),
-                    "option modifier",
+                    "God Kings",
                     "if enabled, gods will always take higher priority when electing a new king",
                     new Vector2(424, -18),
                     ButtonType.Toggle,
@@ -121,7 +133,7 @@ namespace GodsAndPantheons
             PowerButton Button5 = PowerButtons.CreateButton(
                     "MakeSummonedOne",
                     Resources.Load<Sprite>("ui/Icons/iconBlessing"),
-                    "option modifier",
+                    "Spawn Summoned Ones",
                     "if enabled, if you were to spawn a creature on a tile that already has a creature on it, the new creature will be a summoned one of that creature, note that summoned ones have their own AI and only live for 60 or 120s (unless they are immortal)",
                     new Vector2(530, -18),
                     ButtonType.Toggle,
@@ -245,6 +257,11 @@ namespace GodsAndPantheons
         public static void ToggleSummmoned()
         {
             Main.savedSettings.MakeSummoned = !Main.savedSettings.MakeSummoned;
+            Main.saveSettings();
+        }
+        public static void ToggleDiplomacy()
+        {
+            Main.savedSettings.DiplomacyChanges = !Main.savedSettings.DiplomacyChanges;
             Main.saveSettings();
         }
     }
