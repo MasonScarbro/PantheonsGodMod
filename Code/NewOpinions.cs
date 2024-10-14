@@ -51,7 +51,7 @@ namespace GodsAndPantheons
             {
                 if (World.world_era.id == TraitEras[trait].Key)
                 {
-                    return -20;
+                    return -80;
                 }
             }
             return 0;
@@ -76,7 +76,7 @@ namespace GodsAndPantheons
             {
                 if (enemyking.hasTrait(trait))
                 {
-                    return -30;
+                    return -120;
                 }
             }
             return 0;
@@ -105,7 +105,7 @@ namespace GodsAndPantheons
                     {
                         if (enemyking.hasTrait(enemytrait))
                         {
-                            return -15;
+                            return -60;
                         }
                     }
                 }
@@ -124,7 +124,7 @@ namespace GodsAndPantheons
             }
             if(IsGod(Self.king) && !IsGod(Target.king))
             {
-                return -5;
+                return -20;
             }
             return 0;
         }
