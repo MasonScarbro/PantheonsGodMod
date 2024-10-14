@@ -44,6 +44,7 @@ namespace GodsAndPantheons
             NewTerraformOptions.init();
             NewEffects.init();
             Items.init();
+            NewOpinions.init();
 
             //ai
             GodHunterBeh.init();

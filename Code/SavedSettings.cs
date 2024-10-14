@@ -114,6 +114,7 @@ namespace GodsAndPantheons
         public bool DevineMiracles = false;
         public bool GodKings = true;
         public bool MakeSummoned = false;
+        public bool DiplomacyChanges = true;
     }
     [Serializable]
     public struct InputOption

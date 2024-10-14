@@ -382,6 +382,17 @@ namespace GodsAndPantheons
         };
         #endregion
 
+        #region God Relations
+        public static Dictionary<string, List<string>> GodEnemies = new Dictionary<string, List<string>>()
+        {
+            {"God Of light", new List<string>(){ "God Of the Stars", "God Of the Night" } },
+            { "God Of the Stars", new List<string>(){ "God Of light" } },
+            { "God Of the Night", new List<string>(){ "God Of light" } },
+            { "God Of Chaos", new List<string>(){ "God Of Knowledge" } },
+            { "God Of War", new List<string>(){ "God Of Knowledge" } },
+            { "God Of Knowledge", new List<string>(){ "God Of Chaos", "God Of War" } }
+        };
+        #endregion
         public static void init()
         {
 

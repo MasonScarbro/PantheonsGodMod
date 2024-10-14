@@ -26,7 +26,7 @@ namespace GodsAndPantheons
             sunGodEra.base_stats[S.dodge] += 80f;
             sunGodEra.path_icon = "ui/icons/lightGod";
             sunGodEra.description = "The World, Light up";
-            sunGodEra.name = "status_title_Lights_Prevail";
+            sunGodEra.name = "Lights Prevail";
             sunGodEra.action_interval = 2;
             sunGodEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(sunGodEra.id, "Lights_Prevail", sunGodEra.description); // Localizes the status effect
@@ -44,7 +44,7 @@ namespace GodsAndPantheons
             darkGodEra.base_stats[S.attack_speed] += 8f;
             darkGodEra.path_icon = "ui/icons/godDark";
             darkGodEra.description = "The world, shrouded in my domain";
-            darkGodEra.name = "status_title_Nights_Prevail";
+            darkGodEra.name = "Nights Prevail";
             darkGodEra.action_interval = 2;
             darkGodEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(darkGodEra.id, "Nights_Prevail", darkGodEra.description); // Localizes the status effect
@@ -85,7 +85,7 @@ namespace GodsAndPantheons
             knowledgeGodEra.base_stats[S.accuracy] += 20f;
             knowledgeGodEra.path_icon = "ui/icons/knowledgeGod";
             knowledgeGodEra.description = "The era of Knowledge has come to pass";
-            knowledgeGodEra.name = "status_title_Knowledge_Prevail";
+            knowledgeGodEra.name = "Knowledge Prevails";
             knowledgeGodEra.action_interval = 2;
             knowledgeGodEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(knowledgeGodEra.id, "Knowledge_Prevail", knowledgeGodEra.description); // Localizes the status effect
@@ -95,14 +95,15 @@ namespace GodsAndPantheons
             starsGodEra.id = "Stars_Prevail";
             starsGodEra.duration = 7000f;
             starsGodEra.base_stats[S.health] += 500;
+            starsGodEra.base_stats[S.mod_health] = 0.5f;
             starsGodEra.base_stats[S.speed] += 30;
             starsGodEra.base_stats[S.knockback_reduction] += 0.8f;
-            starsGodEra.base_stats[S.knockback] += 1f;
+            starsGodEra.base_stats[S.armor] += 8f;
             starsGodEra.base_stats[S.mod_armor] += 0.2f;
             starsGodEra.base_stats[S.attack_speed] += 80f;
             starsGodEra.path_icon = "ui/icons/starsGod";
             starsGodEra.description = "The Age Of Stars is Apon Us";
-            starsGodEra.name = "status_title_Stars_Prevail";
+            starsGodEra.name = "Stars Prevail";
             starsGodEra.action_interval = 20;
             starsGodEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(starsGodEra.id, "Stars_Prevail", starsGodEra.description); // Localizes the status effect
@@ -111,7 +112,7 @@ namespace GodsAndPantheons
             StatusEffect EarthGodEra = new StatusEffect();
             EarthGodEra.id = "Earth Prevails";
             EarthGodEra.duration = 7000f;
-            EarthGodEra.base_stats[S.mod_health] += 0.75f;
+            EarthGodEra.base_stats[S.mod_health] += 0.8f;
             EarthGodEra.base_stats[S.mod_speed] += 0.25f;
             EarthGodEra.base_stats[S.knockback_reduction] += 0.8f;
             EarthGodEra.base_stats[S.mod_damage] += 0.3f;
@@ -214,6 +215,8 @@ namespace GodsAndPantheons
             chaosgodsera.base_stats[S.knockback] += 2f;
             chaosgodsera.base_stats[S.attack_speed] += 8f;
             chaosgodsera.base_stats[S.damage] += 30f;
+            chaosgodsera.base_stats[S.armor] = 10f;
+            chaosgodsera.base_stats[S.mod_health] = 0.3f;
             chaosgodsera.action_interval = 2;
             chaosgodsera.action = new WorldAction(Traits.SuperRegeneration);
             AssetManager.status.add(chaosgodsera);
@@ -352,6 +355,9 @@ namespace GodsAndPantheons
             if (tile != null)
             {
                 MapAction.damageWorld(tile, 4, AssetManager.terraform.get("LesserCrabLaser"), pSelf);
+                ///ARMOR PENETRATING
+                pSelf.attackTarget.getHit(40, true, AttackType.Acid, pSelf, false, false);
+
                 if (pSelf.attackTarget.isActor())
                 {
                     Traits.PullActorTowardsPoint(pSelf.attackTarget.a, tile.pos, 0.5f);
