@@ -651,14 +651,15 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "UnleashChaos%")))
             {
-                bool hasmadness = pSelf.a.hasTrait("madness");
                 World.world.getObjectsInChunks(pTile, 8, MapObjectType.Actor);
                 foreach(Actor a in World.world.temp_map_objects)
                 {
-                    a.addTrait("madness");
+                    if (a != pSelf.a)
+                    {
+                        a.addTrait("madness");
+                    }
                 }
                 pb.spawnCloudRage(pTile, null);
-                if (!hasmadness) { pSelf.a.removeTrait("madness"); }
             }
             return true;
         }
