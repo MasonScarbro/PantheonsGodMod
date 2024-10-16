@@ -77,7 +77,7 @@ namespace GodsAndPantheons
             godHunter.hideFavoriteIcon = false;
             godHunter.can_edit_traits = true;
             godHunter.canBeKilledByDivineLight = true;
-            godHunter.ignoredByInfinityCoin = true;
+            godHunter.ignoredByInfinityCoin = false;
             godHunter.actorSize = ActorSize.S13_Human;
             godHunter.action_liquid = new WorldAction(ActionLibrary.swimToIsland);
             godHunter.base_stats[S.max_age] = 10000f;
@@ -103,7 +103,7 @@ namespace GodsAndPantheons
             var darkOne = AssetManager.actor_library.clone("DarkOne", "_mob");
             darkOne.nameLocale = "DarkOne";
             darkOne.nameTemplate = "alien_name";
-            darkOne.job = "move_mob";
+            darkOne.job = "random_move";
             darkOne.race = SK.undead;
             darkOne.defaultAttack = "base";
             darkOne.kingdom = SK.undead;
@@ -146,8 +146,8 @@ namespace GodsAndPantheons
             darkOne.very_high_flyer = false;
             darkOne.hideFavoriteIcon = false;
             darkOne.can_edit_traits = true;
-            darkOne.canBeKilledByDivineLight = true;
-            darkOne.ignoredByInfinityCoin = true;
+            darkOne.canBeKilledByDivineLight = false;
+            darkOne.ignoredByInfinityCoin = false;
             darkOne.actorSize = ActorSize.S13_Human;
             darkOne.action_liquid = new WorldAction(ActionLibrary.swimToIsland);
             darkOne.base_stats[S.max_age] = 1f;

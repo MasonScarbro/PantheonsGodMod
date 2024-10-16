@@ -54,7 +54,7 @@ namespace GodsAndPantheons
               "DarkOne",
               Resources.Load<Sprite>("Actors/DarkOne/walk_0"),
               "DarkOne Spawn",
-              "Spawn a GodHunter",
+              "Spawn a Dark One",
               new Vector2(100, -18),
               ButtonType.GodPower,
               tab.transform,
@@ -99,7 +99,7 @@ namespace GodsAndPantheons
                     Resources.Load<Sprite>("ui/Icons/godKiller"),
                     "Hunter Assassins",
                     "if enabled, god hunters will become assassins and will hunt down gods",
-                    new Vector2(530, 18),
+                    new Vector2(460, 18),
                     ButtonType.Toggle,
                     tab.transform,
                     ToggleAssassins
@@ -135,7 +135,7 @@ namespace GodsAndPantheons
                     Resources.Load<Sprite>("ui/Icons/iconBlessing"),
                     "Spawn Summoned Ones",
                     "if enabled, if you were to spawn a creature on a tile that already has a creature on it, the new creature will be a summoned one of that creature, note that summoned ones have their own AI and only live for 60 or 120s (unless they are immortal)",
-                    new Vector2(530, -18),
+                    new Vector2(460, -18),
                     ButtonType.Toggle,
                     tab.transform,
                     ToggleSummmoned
@@ -207,7 +207,7 @@ namespace GodsAndPantheons
                     Resources.Load<Sprite>("ui/Icons/lichGod"),
                     "Chance Modfier",
                     "Manage The Gods Powers",
-                    new Vector2(460, 18),
+                    new Vector2(172, -18),
                     ButtonType.Click,
                     tab.transform,
                     WindowManager.windows["LichGodWindow"].openWindow
@@ -217,7 +217,7 @@ namespace GodsAndPantheons
                     Resources.Load<Sprite>("ui/Icons/chaosGod"),
                     "Chance Modfier",
                     "Manage The Gods Powers",
-                    new Vector2(498, 18),
+                    new Vector2(136, -18),
                     ButtonType.Click,
                     tab.transform,
                     WindowManager.windows["ChaosGodWindow"].openWindow

@@ -815,7 +815,7 @@ namespace GodsAndPantheons
             {
                 pb.divineLightFX(pTarget.currentTile, null);
                 (EffectsLibrary.spawn("fx_napalm_flash", pTarget.currentTile, null, null, 0f, -1f, -1f) as NapalmFlash).bombSpawned = true;
-                CreateBlindess(pTile, 10, 5f);
+                CreateBlindess(pTile, 10, 5f, pSelf);
             }
             if (Toolbox.randomChance(0 / 100))
             {
@@ -850,11 +850,12 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        public static void CreateBlindess(WorldTile pTile, int radius, float length)
+        public static void CreateBlindess(WorldTile pTile, int radius, float length, BaseSimObject ByWho)
         {
             World.world.getObjectsInChunks(pTile, radius, MapObjectType.Actor);
             foreach (Actor victim in World.world.temp_map_objects)
             {
+                if(victim == ByWho) continue;
                 victim.addStatusEffect("Blinded", length);
             }
         }

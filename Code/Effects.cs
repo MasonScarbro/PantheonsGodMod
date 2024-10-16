@@ -250,7 +250,6 @@ namespace GodsAndPantheons
             ICANTSEE.path_icon = "ui/icons/iconMadness";
             ICANTSEE.description = "I CANNOT SEE AHHHHHHH!";
             ICANTSEE.name = "Blinded";
-            ICANTSEE.opposite_traits = new List<string>() { "God Of light", "God Of the Night" };
             localizeStatus(ICANTSEE.id, "Blinded", ICANTSEE.description); // Localizes the status effect
             AssetManager.status.add(ICANTSEE);
 

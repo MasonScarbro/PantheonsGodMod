@@ -38,7 +38,6 @@ namespace GodsAndPantheons
         {
             World.world.startShake(0.3f, 0.01f, 0.03f, false, true);
             GameObject Storm = EffectsLibrary.spawn("fx_antimatter_effect", pTile, null, null, 0f, -1f, -1f).gameObject;
-            Storm.GetComponent<SpriteAnimation>().returnToPool = false;
             Storm.GetComponent<SpriteRenderer>().color = StormColor ?? Color.white;
             Storm.transform.localScale = new Vector3(Size, Size, 1);
             Storm.AddComponent<Storm>().Init(time,TimeCooldown, Action);
