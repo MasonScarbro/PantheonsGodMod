@@ -36,9 +36,9 @@ namespace GodsAndPantheons
             {
                 return;
             }
-            if(StormAnimation.currentFrameIndex > 5)
+            if(StormAnimation.currentFrameIndex > 6)
             {
-                StormAnimation.setFrameIndex(0);
+                StormAnimation.setFrameIndex(2);
             }
             timeleft -= Elapsed;
             //fire god stuff
