@@ -66,15 +66,9 @@ namespace GodsAndPantheons
             {
                 return 0;
             }
-            Actor myking = Self.king;
-            Actor enemyking = Target.king;
-            if (!IsGod(myking) || !IsGod(enemyking))
+            foreach(string trait in GetGodTraits(Self.king))
             {
-                return 0;
-            }
-            foreach(string trait in GetGodTraits(myking))
-            {
-                if (enemyking.hasTrait(trait))
+                if (Target.king.hasTrait(trait))
                 {
                     return -120;
                 }
