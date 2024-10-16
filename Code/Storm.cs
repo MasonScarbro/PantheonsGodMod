@@ -34,10 +34,9 @@ namespace GodsAndPantheons
             Time -= Elapsed;
             if(Time <= 0)
             {
-                StormAnimation.returnToPool = true;
                 return;
             }
-            if(StormAnimation.currentFrameIndex > 6)
+            if(StormAnimation.currentFrameIndex > 5)
             {
                 StormAnimation.setFrameIndex(0);
             }
