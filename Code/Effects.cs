@@ -359,7 +359,7 @@ namespace GodsAndPantheons
 
                 if (pSelf.attackTarget.isActor())
                 {
-                    Traits.PullActorTowardsPoint(pSelf.attackTarget.a, tile.pos, 0.5f);
+                    Traits.PushActor(pSelf.attackTarget.a, tile.pos, 0.5f);
                 }
             }
         }
