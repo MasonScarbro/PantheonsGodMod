@@ -494,7 +494,7 @@ namespace GodsAndPantheons
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
                 Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
+                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.stats[S.size], true);
                 EffectsLibrary.spawnProjectile("boneFire", newPoint, newPoint2, 0.0f);
             }
             return true;

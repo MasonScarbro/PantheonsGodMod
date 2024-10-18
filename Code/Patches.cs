@@ -25,7 +25,7 @@ namespace GodsAndPantheons
                 {
                     if (instr.opcode == OpCodes.Ldarg_S && instr.operand is byte i && i == 4)
                     {
-                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Toolbox), nameof(Toolbox.randomBool)));
+                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Toolbox), nameof(Toolbox.randomBool))) { labels = instr.labels };
                     }
                     else
                     {

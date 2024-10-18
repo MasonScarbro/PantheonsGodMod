@@ -630,7 +630,7 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            RandomForce.CreateRandomForce(World.world, pTile, 64, 3);
+            RandomForce.CreateRandomForce(World.world, pTile, 32, 3);
             World.world.startShake(1, 0.02f, 1.5f);
             return true;
         }

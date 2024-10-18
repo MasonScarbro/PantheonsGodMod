@@ -406,12 +406,12 @@ namespace GodsAndPantheons
             minion.data.set("life", 0);
             minion.data.set("lifespan", lifespan);
         }
-        public static void PullActorTowardsPoint(Actor pActor, Vector2Int point, float strength = 1, float Zstrength = 0.1f)
+        public static void PushActor(Actor pActor, Vector2Int point, float strength = 1, float Zstrength = 0.1f, bool Outward = false)
         {
             float angle = Toolbox.getAngle(pActor.currentTile.x, pActor.currentTile.y, point.x, point.y);
             float TrueStrength = strength - strength * pActor.stats[S.knockback_reduction];
-            float num4 = Mathf.Cos(angle) * TrueStrength;
-            float num5 = Mathf.Sin(angle) * TrueStrength;
+            float num4 = Mathf.Cos(angle) * TrueStrength * (Outward ? -1 : 1);
+            float num5 = Mathf.Sin(angle) * TrueStrength * (Outward ? -1 : 1);
             pActor.addForce(num4, num5, Zstrength);
         }
     }
