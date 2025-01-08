@@ -1143,7 +1143,7 @@ namespace GodsAndPantheons
                         Morph(pSelf.a, SA.dragon);
                     }
                 }
-                else if (enemies?.Count == 0 || pSelf.a.data.health < pSelf.getMaxHealth() * 0.1f)
+                else if (enemies == null || pSelf.a.data.health < pSelf.getMaxHealth() * 0.1f)
                 {
                     pSelf.a.data.get("oldself", out string oldself, SA.dragon);
                     Morph(pSelf.a, oldself);

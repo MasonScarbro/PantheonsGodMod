@@ -35,6 +35,21 @@ namespace GodsAndPantheons
             }
         }
     }
+    [HarmonyPatch(typeof(KingdomBehCheckKing), nameof(KingdomBehCheckKing.checkClan))]
+    public class DontCreateClanIfDragon
+    {
+        static bool Prefix (Actor pActor)
+        {
+            if(pActor != null)
+            {
+                if(pActor.asset.id == SA.dragon)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
     [HarmonyPatch(typeof(BaseAnimatedObject), nameof(BaseAnimatedObject.update))]
     public class StormFinish
     {
