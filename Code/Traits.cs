@@ -10,6 +10,7 @@ using static UnityEngine.GraphicsBuffer;
 using Amazon.Runtime.Internal.Transform;
 using UnityEngine.Tilemaps;
 using System.Linq;
+using NeoModLoader.General.UI.Tab;
 
 namespace GodsAndPantheons
 {
@@ -651,10 +652,10 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "UnleashChaos%")))
             {
-                World.world.getObjectsInChunks(pTile, 8, MapObjectType.Actor);
+                World.world.getObjectsInChunks(pTile, 16, MapObjectType.Actor);
                 foreach(Actor a in World.world.temp_map_objects)
                 {
-                    if (a != pSelf.a)
+                    if (a != pSelf.a && !a.asset.die_if_has_madness && !IsGod(a))
                     {
                         a.addTrait("madness");
                     }
@@ -1157,7 +1158,17 @@ namespace GodsAndPantheons
                             ShootCustomProjectile(pSelf.a, enemy, "red_orb", 5);
                         }
                     }
-                    if (!AnyEnemies || pSelf.a.data.health < pSelf.getMaxHealth() * 0.1f)
+                    pSelf.a.data.get("cityToAttack", out string cityid, null);
+                    if (cityid == null)
+                    {
+                        City citytoattack = getCitytoattack(pSelf.a);
+                        if(citytoattack != null)
+                        {
+                            pSelf.a.data.set("cityToAttack", citytoattack.data.id);
+                            pSelf.a.data.set("attacksForCity", Toolbox.randomInt(1, 3));
+                        }
+                    }
+                    if (!AnyEnemies && pSelf.kingdom.getWars().Count == 0)
                     {
                         pSelf.a.data.get("oldself", out string oldself, SA.dragon);
                         Morph(pSelf.a, oldself);
@@ -1165,6 +1176,32 @@ namespace GodsAndPantheons
                 }
             }
             return true;
+        }
+        public static City getCitytoattack(Actor pSelf)
+        {
+            if (pSelf.kingdom.isCiv())
+            {
+                List<Kingdom> enemiesKingdoms = pSelf.kingdom.getEnemiesKingdoms();
+                City citytoattack = null;
+                float distancetocity = 999999999;
+                foreach (Kingdom enemiesKingdom in enemiesKingdoms)
+                {
+                    if (enemiesKingdom.isCiv())
+                    {
+                        foreach (City city in enemiesKingdom.cities)
+                        {
+                            float distance = Toolbox.Dist(pSelf.currentPosition.x, pSelf.currentPosition.y, city.cityCenter.x, city.cityCenter.y);
+                            if (distance < distancetocity)
+                            {
+                                distancetocity = distance;
+                                citytoattack = city;
+                            }
+                        }
+                    }
+                }
+                return citytoattack;
+            }
+            return null;
         }
         public static Vector2 getAttackPosition(BaseSimObject target)
         {

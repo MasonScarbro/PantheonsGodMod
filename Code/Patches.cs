@@ -36,19 +36,31 @@ namespace GodsAndPantheons
             }
         }
     }
-    [HarmonyPatch(typeof(KingdomBehCheckKing), nameof(KingdomBehCheckKing.checkClan))]
-    public class DontCreateClanIfDragon
+    [HarmonyPatch(typeof(Clan), nameof(Clan.createClan))]
+    public class FixClanRaceError
     {
-        static bool Prefix (Actor pActor)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            if(pActor != null)
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[]
             {
-                if(pActor.asset.id == SA.dragon)
-                {
-                    return false;
-                }
+                new CodeMatch(new OpCode?(OpCodes.Ldfld), AccessTools.Field(typeof(ActorBase), nameof(ActorBase.race)))
+            });
+            Matcher.RemoveInstruction();
+            Matcher.Insert(new CodeInstruction[]
+            {
+              new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FixClanRaceError), nameof(GetTrueRace)))
+            });
+            return Matcher.Instructions();
+        }
+        public static Race GetTrueRace(Actor actor)
+        {
+            if(actor.asset.race != SK.dragons)
+            {
+                return actor.race;
             }
-            return true;
+            actor.data.get("oldself", out string oldself, SA.unit_human);
+            return AssetManager.raceLibrary.get(AssetManager.actor_library.get(oldself).race);
         }
     }
     [HarmonyPatch(typeof(BaseAnimatedObject), nameof(BaseAnimatedObject.update))]
