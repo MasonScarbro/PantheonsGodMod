@@ -236,7 +236,7 @@ namespace GodsAndPantheons
             staffOfKnowledge.attackType = WeaponType.Range;
             staffOfKnowledge.name_class = "item_class_weapon";
             staffOfKnowledge.path_icon = "ui/weapon_icons/icon_StaffOfKnowledge_base";
-            staffOfKnowledge.action_attack_target = new AttackAction(UnleashLightning);
+            staffOfKnowledge.action_attack_target = new AttackAction(CorruptEnemy);
             // For Ranged Weapons use "_range"
             staffOfKnowledge.base_stats[S.projectiles] = 12f;
             staffOfKnowledge.base_stats[S.damage_range] = 0.9f;
@@ -465,14 +465,16 @@ namespace GodsAndPantheons
             return false;
             
         }
-        static bool UnleashLightning(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        //doesnt work on gods, that would be too overpowered
+        public static bool CorruptEnemy(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "SummonLightning%")))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "CorruptEnemy%")) && pTarget.isActor() && !IsGod(pTarget.a))
             {
-                ActionLibrary.castLightning(null, pTarget, null); // Casts Lightning on the target
+                CorruptActor(pTarget.a, pSelf.a);
+                MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionForce", pTile, false, false);
+                EffectsLibrary.spawnExplosionWave(pTile.posV3, 5f,0.5f);
             }
             return true;
-
         }
         static bool UnleashMoonFall(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {

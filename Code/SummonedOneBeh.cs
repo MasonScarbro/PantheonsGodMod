@@ -28,17 +28,23 @@ namespace GodsAndPantheons
             if (pActor.hasTrait("madness"))
             {
                 pActor.data.setName("Corrupted One");
-                pActor.data.removeString("Master");
+                ClearData(pActor);
                 pActor.removeTrait("Summoned One");
                 return false;
             }
             if (pActor.asset.die_if_has_madness || Master == null)
             {
                 pActor.removeTrait("Summoned One");
-                pActor.data.removeString("Master");
+                ClearData(pActor);
                 return false;
             }
             return true;
+        }
+        public void ClearData(Actor pActor)
+        {
+            pActor.data.removeString("Master");
+            pActor.data.removeInt("life");
+            pActor.data.removeInt("lifespan");
         }
         public override BehResult execute(Actor pActor)
         {
@@ -47,21 +53,50 @@ namespace GodsAndPantheons
                 pActor.finishAllStatusEffects();
                 return BehResult.Stop;
             }
-            if(Master.kingdom.id != pActor.kingdom.id)
+            return BehFunctions.Minion(pActor, Master);
+        }
+    }
+    //basically the same as summoned one but patrol is different
+    public class CorruptedOneBeh
+    {
+        public static void init()
+        {
+            BehaviourTaskActor BrainWashed = new BehaviourTaskActor();
+            BrainWashed.id = "BrainWashedTask";
+            BrainWashed.addBeh(new BrainWashed());
+            BrainWashed.addBeh(new BehGoToTileTarget() { walkOnBlocks = true, walkOnWater = true });
+            AssetManager.tasks_actor.add(BrainWashed);
+            ActorJob BrainWashedJob = new ActorJob
             {
-                pActor.setKingdom(Master.kingdom);
-            }
-            if (pActor.has_attack_target)
+                id = "BrainWashedJob",
+            };
+            BrainWashedJob.addTask("BrainWashedTask");
+            AssetManager.job_actor.add(BrainWashedJob);
+        }
+    }
+    public class BrainWashed : BehaviourActionActor
+    {
+        public bool CheckStatus(Actor pActor, out Actor Master)
+        {
+            Master = Traits.FindBrainWasher(pActor);
+            if (pActor.hasTrait("madness"))
             {
-                return BehResult.Continue;
+                return false;
             }
-            if (Master.has_attack_target)
+            if (pActor.asset.die_if_has_madness || Master == null)
             {
-                pActor.beh_tile_target = Master.attackTarget.currentTile;
-                return BehResult.Continue;
+                return false;
             }
-            pActor.beh_tile_target = BehFunctions.gettilewithindistance(Master.currentTile);
-            return BehResult.Continue;
+            return true;
+        }
+        public override BehResult execute(Actor pActor)
+        {
+            if (!CheckStatus(pActor, out Actor Master))
+            {
+                pActor.finishStatusEffect("BrainWashed");
+                return BehResult.Stop;
+            }
+            return BehFunctions.Minion(pActor, Master);
         }
     }
     public class BehFunctions
@@ -98,6 +133,24 @@ namespace GodsAndPantheons
             {
                 pActor.beh_tile_target = mapRegion.tiles.GetRandom();
             }
+        }
+        public static BehResult Minion(Actor pActor, Actor Master)
+        {
+            if (Master.kingdom.id != pActor.kingdom.id)
+            {
+                pActor.setKingdom(Master.kingdom);
+            }
+            if (pActor.has_attack_target)
+            {
+                return BehResult.Continue;
+            }
+            if (Master.has_attack_target)
+            {
+                pActor.beh_tile_target = Master.attackTarget.currentTile;
+                return BehResult.Continue;
+            }
+            pActor.beh_tile_target = gettilewithindistance(Master.currentTile);
+            return BehResult.Continue;
         }
     }
 }

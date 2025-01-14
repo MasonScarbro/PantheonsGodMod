@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 using static GodsAndPantheons.Traits;
+using static UnityEngine.GraphicsBuffer;
 //Harmony Patches
 namespace GodsAndPantheons
 {
@@ -33,6 +34,21 @@ namespace GodsAndPantheons
                     }
                 }
             }
+        }
+    }
+    [HarmonyPatch(typeof(KingdomBehCheckKing), nameof(KingdomBehCheckKing.checkClan))]
+    public class DontCreateClanIfDragon
+    {
+        static bool Prefix (Actor pActor)
+        {
+            if(pActor != null)
+            {
+                if(pActor.asset.id == SA.dragon)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
     [HarmonyPatch(typeof(BaseAnimatedObject), nameof(BaseAnimatedObject.update))]
@@ -217,6 +233,10 @@ namespace GodsAndPantheons
             {
                 __result = "SummonedJob";
             }
+            if (pActor.hasStatus("BrainWashed"))
+            {
+                __result = "BrainWashedJob";
+            }
         }
     }
     [HarmonyPatch(typeof(KingdomBehCheckKing), "findKing")]
@@ -285,6 +305,29 @@ namespace GodsAndPantheons
     [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
     public class DontAttack
     {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[]
+            {
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ActorAsset), "skipFightLogic"))
+            });
+            Matcher.Advance(1);
+            Label CodeLabel = (Label)Matcher.Operand;
+            Matcher.Advance(1);
+            Matcher.Insert(new CodeInstruction[] {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(BaseSimObject), "a")),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(DontAttack), nameof(CanUseFightLogic))),
+                new CodeInstruction(OpCodes.Brtrue_S, CodeLabel)
+            });
+            return Matcher.Instructions();
+        }
+        //add anything you want here
+        static bool CanUseFightLogic(Actor Actor)
+        {
+            return Actor.asset.id == SA.dragon && Actor.hasTrait("God Of Fire");
+        }
         static void Postfix(BaseSimObject __instance, BaseSimObject pTarget, ref bool __result)
         {
             if (__instance.hasStatus("Blinded"))
@@ -341,6 +384,10 @@ namespace GodsAndPantheons
                 {
                     __instance._simObject.transform.GetChild(0)?.gameObject.DestroyImmediateIfNotNull();
                 }
+                if(__instance.asset.id == "BrainWashed")
+                {
+                    FinishBrainWashing(__instance._simObject.a);
+                }
             }
         }
     }
@@ -359,6 +406,10 @@ namespace GodsAndPantheons
                 if(pID == "Lassering" && __instance.transform.childCount > 0)
                 {
                     __instance.transform.GetChild(0)?.gameObject.DestroyImmediateIfNotNull();
+                }
+                if (pID == "BrainWashed")
+                {
+                    FinishBrainWashing(__instance.a);
                 }
             }
         }
