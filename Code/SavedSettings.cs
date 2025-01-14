@@ -6,7 +6,7 @@ namespace GodsAndPantheons
     [Serializable]
     public class SavedSettings
     {
-        public string settingVersion = "0.1.9";
+        public string settingVersion = "0.2.0";
         //inheritance of the god traits is stored here
         //if it has a god parent and normal parent it will use the inherit for the chance of changing the stats of the demi god trait for the baby
         public Dictionary<string, Dictionary<string, InputOption>> Chances = new Dictionary<string, Dictionary<string, InputOption>>
@@ -23,6 +23,7 @@ namespace GodsAndPantheons
               {"SummonMeteor%", new InputOption{active = true, value = 3 }},
               {"PagesOfKnowledge%", new InputOption{active = true, value = 3 }},
               {"EnemySwap%", new InputOption{active = true, value = 20 }},
+              {"CorruptEnemy%", new InputOption{active = true, value = 15 }},
               {"God Of Knowledgeinherit%", new InputOption{active = true, value = 31 }}
              }   
             },

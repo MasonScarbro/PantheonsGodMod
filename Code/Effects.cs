@@ -3,6 +3,7 @@ AUTHOR: MASON SCARBRO
 VERSION: 1.0.0
 */
 using System.Collections.Generic;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ReflectionUtility;
 using SleekRender;
 using UnityEngine;
@@ -252,6 +253,24 @@ namespace GodsAndPantheons
             ICANTSEE.name = "Blinded";
             localizeStatus(ICANTSEE.id, "Blinded", ICANTSEE.description); // Localizes the status effect
             AssetManager.status.add(ICANTSEE);
+            
+            StatusEffect BrainWashed = new StatusEffect();
+            BrainWashed.id = "BrainWashed";
+            BrainWashed.duration = 20f;
+            BrainWashed.base_stats[S.range] -= 2;
+            BrainWashed.base_stats[S.speed] += 3;
+            BrainWashed.base_stats[S.knockback_reduction] -= 0.6f;
+            BrainWashed.base_stats[S.attack_speed] += 3;
+            BrainWashed.base_stats[S.damage] += 5f;
+            BrainWashed.path_icon = "ui/icons/iconMadness";
+            BrainWashed.description = "Must.... Obey!";
+            BrainWashed.name = "BrainWashed";
+            BrainWashed.animated = true;
+            BrainWashed.texture = "projectiles/wordsOfKnowledgeProjectile";
+            BrainWashed.random_frame = true;
+
+            localizeStatus(BrainWashed.id, "BrainWashed", BrainWashed.description); // Localizes the status effect
+            AssetManager.status.add(BrainWashed);
 
             AssetManager.status.get("ash_fever").opposite_status = new List<string>() { "Earth Prevails" };
             AssetManager.status.get("cough").opposite_status = new List<string>() { "Earth Prevails" };

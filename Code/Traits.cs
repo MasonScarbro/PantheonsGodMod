@@ -692,6 +692,10 @@ namespace GodsAndPantheons
             {
                 ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null); // freezezz the target
             }
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "SummonLightning%")))
+            {
+                ActionLibrary.castLightning(null, pTarget, null); // Casts Lightning on the target
+            }
             return true;
         }
 
@@ -1133,23 +1137,71 @@ namespace GodsAndPantheons
 
         public static bool MorphIntoDragon(BaseSimObject pSelf, WorldTile pTile)
         {
-            if (Toolbox.randomChance(GetEnhancedChance("God Of Fire", "MorphIntoDragon%")))
+            bool IsDragon = pSelf.a.asset.id == SA.dragon;
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Fire", "MorphIntoDragon%")) || IsDragon)
             {
-                ListPool<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(pTile, pSelf.kingdom, -1).list;
-                if (pSelf.a.asset.id != SA.dragon)
+                ListPool<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(pTile, pSelf.kingdom, 2).list;
+                if (!IsDragon)
                 {
-                    if (enemies?.Count > 5)
+                    if (enemies?.Count > 10)
                     {
                         Morph(pSelf.a, SA.dragon);
                     }
                 }
-                else if (enemies == null || pSelf.a.data.health < pSelf.getMaxHealth() * 0.1f)
-                {
-                    pSelf.a.data.get("oldself", out string oldself, SA.dragon);
-                    Morph(pSelf.a, oldself);
+                else {
+                    bool AnyEnemies = enemies != null;
+                    if (AnyEnemies)
+                    {
+                        foreach (BaseSimObject enemy in enemies)
+                        {
+                            ShootCustomProjectile(pSelf.a, enemy, "red_orb", 5);
+                        }
+                    }
+                    if (!AnyEnemies || pSelf.a.data.health < pSelf.getMaxHealth() * 0.1f)
+                    {
+                        pSelf.a.data.get("oldself", out string oldself, SA.dragon);
+                        Morph(pSelf.a, oldself);
+                    }
                 }
             }
             return true;
+        }
+        public static Vector2 getAttackPosition(BaseSimObject target)
+        {
+            float num = target.stats[S.size];
+            Vector2 vector = new Vector2(target.currentPosition.x, target.currentPosition.y);
+            if (target.isActor() && target.a.is_moving && target.isFlying())
+            {
+                vector = Vector2.MoveTowards(vector, target.a.nextStepPosition, num * 3f);
+            }
+            return vector;
+        }
+        public static void ShootCustomProjectile(Actor Self, BaseSimObject Target, string projectile, int amount)
+        {
+            Vector2 attackPosition = getAttackPosition(Target);
+            attackPosition.y += 0.1f;
+            float TargetSize = Target.stats[S.size];
+            float Size = Self.stats[S.size];
+            Vector2 vector = new Vector2(attackPosition.x, attackPosition.y);
+            vector.x += Toolbox.randomFloat(-(TargetSize + 1f), TargetSize + 1f);
+            vector.y += Toolbox.randomFloat(-TargetSize, TargetSize);
+            Vector3 newPoint = Toolbox.getNewPoint(Self.currentPosition.x, Self.currentPosition.y, vector.x, vector.y, Size, true);
+            newPoint.y += 0.5f;
+            float num5 = 0f;
+            if (Target.isInAir())
+            {
+                num5 = Target.getZ();
+            }
+            for (int i = 0; i < amount; i++)
+            {
+                Projectile Projectile = EffectsLibrary.spawnProjectile(projectile, newPoint, vector, num5);
+                if (Projectile != null)
+                {
+                    Projectile.byWho = Self;
+                    Projectile.setStats(Self.stats);
+                    Projectile.targetObject = Target;
+                }
+            }
         }
         public static bool Magic(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {

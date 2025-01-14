@@ -18,6 +18,11 @@ namespace GodsAndPantheons
             summoned.data.get("Master", out string master, "");
             return World.world.units.get(master);
         }
+        public static Actor FindBrainWasher(Actor brainwashed)
+        {
+            brainwashed.data.get("BrainWasher", out string master, "");
+            return World.world.units.get(master);
+        }
         public static List<Sprite> LaserSprites;
         public static GameObject LoadCrabZillaLaser(out List<Sprite> sprites)
         {
@@ -91,6 +96,8 @@ namespace GodsAndPantheons
             return true;
         }
         static readonly List<string> summonedoneautotraits = new List<string>() { "regeneration", "fire_proof", "acid_proof"};
+        private static readonly object a;
+
         //summon ability
         public static void Summon(string creature, int times, BaseSimObject pSelf, WorldTile Ptile, int lifespan = 61, List<string>? autotraits = null)
         {
@@ -383,7 +390,7 @@ namespace GodsAndPantheons
             }
             return false;
         }
-        //returns god traits which no one in the word have
+        //returns god traits which no one in the world have
         public static List<string> getavailblegodtraits(MapBox instance)
         {
             List<string> list = new List<string>(GodAbilities.Keys);
@@ -406,6 +413,13 @@ namespace GodsAndPantheons
             minion.data.set("life", 0);
             minion.data.set("lifespan", lifespan);
         }
+        public static void CorruptActor(Actor minion, Actor Master, int duration = 31)
+        {
+            minion.data.set("BrainWasher", Master.data.id);
+            minion.addStatusEffect("BrainWashed", duration);
+            minion.data.set("PreviousKingdom", minion.kingdom.id);
+            minion.setKingdom(Master.kingdom);
+        }
         public static void PushActor(Actor pActor, Vector2Int point, float strength = 1, float Zstrength = 0.1f, bool Outward = false)
         {
             float angle = Toolbox.getAngle(pActor.currentTile.x, pActor.currentTile.y, point.x, point.y);
@@ -413,6 +427,22 @@ namespace GodsAndPantheons
             float num4 = Mathf.Cos(angle) * TrueStrength * (Outward ? -1 : 1);
             float num5 = Mathf.Sin(angle) * TrueStrength * (Outward ? -1 : 1);
             pActor.addForce(num4, num5, Zstrength);
+        }
+        //call this by using finishStatusEffect("BrainWashed")
+        public static void FinishBrainWashing(Actor pActor)
+        {
+            pActor.data.get("PreviousKingdom", out string PreviousKingdom);
+            Kingdom kingdom = World.world.kingdoms.get(PreviousKingdom);
+            if (kingdom != null)
+            {
+                pActor.setKingdom(kingdom);
+            }
+            else
+            {
+                pActor.setDefaultKingdom();
+            }
+            pActor.data.removeString("PreviousKingdom");
+            pActor.data.removeString("BrainWasher");
         }
     }
 }
