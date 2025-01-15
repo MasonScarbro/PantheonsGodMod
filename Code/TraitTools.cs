@@ -258,7 +258,7 @@ namespace GodsAndPantheons
             temp_base_stats[S.max_age] = maxage;
             return temp_base_stats;
         }
-        public static bool Morph(Actor pActor, string morphid, bool savedata = true)
+        public static bool Morph(Actor pActor, string morphid, bool savedata = true, bool destroyWeapon = true)
         {
             if (pActor == null)
             {
@@ -271,6 +271,10 @@ namespace GodsAndPantheons
             if(pActor.asset.id == morphid)
             {
                 return false;
+            }
+            if (destroyWeapon)
+            {
+                pActor.equipment?.weapon?.emptySlot();
             }
             Actor actor = World.world.units.createNewUnit(morphid, pActor.currentTile, 0f);
             actor.data.traits.Clear();
