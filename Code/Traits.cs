@@ -1194,11 +1194,6 @@ namespace GodsAndPantheons
             attackPosition.y += 0.1f;
             float TargetSize = Target.stats[S.size];
             float Size = Self.stats[S.size];
-            Vector2 vector = new Vector2(attackPosition.x, attackPosition.y);
-            vector.x += Toolbox.randomFloat(-(TargetSize + 1f), TargetSize + 1f);
-            vector.y += Toolbox.randomFloat(-TargetSize, TargetSize);
-            Vector3 newPoint = Toolbox.getNewPoint(Self.currentPosition.x, Self.currentPosition.y, vector.x, vector.y, Size, true);
-            newPoint.y += 0.5f;
             float num5 = 0f;
             if (Target.isInAir())
             {
@@ -1206,6 +1201,11 @@ namespace GodsAndPantheons
             }
             for (int i = 0; i < amount; i++)
             {
+                Vector2 vector = new Vector2(attackPosition.x, attackPosition.y);
+                vector.x += Toolbox.randomFloat(-(TargetSize + 1f), TargetSize + 1f);
+                vector.y += Toolbox.randomFloat(-TargetSize, TargetSize);
+                Vector3 newPoint = Toolbox.getNewPoint(Self.currentPosition.x, Self.currentPosition.y, vector.x, vector.y, Size, true);
+                newPoint.y += 0.5f;
                 Projectile Projectile = EffectsLibrary.spawnProjectile(projectile, newPoint, vector, num5);
                 if (Projectile != null)
                 {
