@@ -275,6 +275,7 @@ namespace GodsAndPantheons
             Actor actor = World.world.units.createNewUnit(morphid, pActor.currentTile, 0f);
             actor.data.traits.Clear();
             actor.setKingdom(pActor.kingdom);
+            actor.setCity(pActor.city);
             if (savedata)
             {
                 actor.data.custom_data_bool = pActor.data.custom_data_bool;

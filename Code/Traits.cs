@@ -531,6 +531,7 @@ namespace GodsAndPantheons
             godoffire.action_special_effect = (WorldAction)Delegate.Combine(godoffire.action_special_effect, new WorldAction(MorphIntoDragon));
             godoffire.action_death = new WorldAction(GodOfFireDeath);
             godoffire.action_attack_target += new AttackAction(GodOfFireAttack);
+            godoffire.action_get_hit = new GetHitAction(GodOfFireGetHit);
             godoffire.group_id = "GodTraits";
             AddTrait(godoffire, "The Most Powerfull of the gods, the god of fire, many spheres of domain lie with him");
 
@@ -631,7 +632,7 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            RandomForce.CreateRandomForce(World.world, pTile, 32, 3);
+            RandomForce.CreateRandomForce(World.world, pTile, 256, 3);
             World.world.startShake(1, 0.02f, 1.5f);
             return true;
         }
@@ -860,7 +861,7 @@ namespace GodsAndPantheons
             World.world.getObjectsInChunks(pTile, radius, MapObjectType.Actor);
             foreach (Actor victim in World.world.temp_map_objects)
             {
-                if(victim == ByWho) continue;
+                if(victim == ByWho || IsGod(victim)) continue;
                 victim.addStatusEffect("Blinded", length);
             }
         }
@@ -1091,6 +1092,12 @@ namespace GodsAndPantheons
                     World.world.dropManager.spawnParabolicDrop(s.pTile, "lava", 0, 2, 200, 20, 110, 1.5f);
             }
         }
+        private static bool GodOfFireGetHit(BaseSimObject pTarget, BaseSimObject pAttackedBy, WorldTile pTile)
+        {
+            if (pAttackedBy == null || pTarget.a.asset.id != SA.dragon) return true;
+            ShootCustomProjectile(pTarget.a, pAttackedBy, "red_orb", 5);
+            return true;
+        }
         public static bool FireStorm(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Fire", "FireStorm%")))
@@ -1155,20 +1162,14 @@ namespace GodsAndPantheons
                     {
                         foreach (BaseSimObject enemy in enemies)
                         {
-                            ShootCustomProjectile(pSelf.a, enemy, "red_orb", 5);
+                            if (enemy.isActor())
+                            {
+                                pSelf.a.GetComponent<Dragon>().aggroTargets.Add(enemy.a);
+                            }
+                            ShootCustomProjectile(pSelf.a, enemy, "red_orb", 3);
                         }
                     }
-                    pSelf.a.data.get("cityToAttack", out string cityid, null);
-                    if (cityid == null)
-                    {
-                        City citytoattack = getCitytoattack(pSelf.a);
-                        if(citytoattack != null)
-                        {
-                            pSelf.a.data.set("cityToAttack", citytoattack.data.id);
-                            pSelf.a.data.set("attacksForCity", Toolbox.randomInt(1, 3));
-                        }
-                    }
-                    if (!AnyEnemies && pSelf.kingdom.getWars().Count == 0)
+                    if (!AnyEnemies)
                     {
                         pSelf.a.data.get("oldself", out string oldself, SA.dragon);
                         Morph(pSelf.a, oldself);
@@ -1176,32 +1177,6 @@ namespace GodsAndPantheons
                 }
             }
             return true;
-        }
-        public static City getCitytoattack(Actor pSelf)
-        {
-            if (pSelf.kingdom.isCiv())
-            {
-                List<Kingdom> enemiesKingdoms = pSelf.kingdom.getEnemiesKingdoms();
-                City citytoattack = null;
-                float distancetocity = 999999999;
-                foreach (Kingdom enemiesKingdom in enemiesKingdoms)
-                {
-                    if (enemiesKingdom.isCiv())
-                    {
-                        foreach (City city in enemiesKingdom.cities)
-                        {
-                            float distance = Toolbox.Dist(pSelf.currentPosition.x, pSelf.currentPosition.y, city.cityCenter.x, city.cityCenter.y);
-                            if (distance < distancetocity)
-                            {
-                                distancetocity = distance;
-                                citytoattack = city;
-                            }
-                        }
-                    }
-                }
-                return citytoattack;
-            }
-            return null;
         }
         public static Vector2 getAttackPosition(BaseSimObject target)
         {
@@ -1266,6 +1241,9 @@ namespace GodsAndPantheons
                 if (Main.savedSettings.deathera)
                     World.world.eraManager.setEra(S.age_hope, true);
             }
+            EffectsLibrary.spawn("fx_napalm_flash", pself.currentTile, null, null, 0f, -1f, -1f);
+            for (int i = 0; i < Toolbox.randomInt(5, 10); i++)
+                World.world.dropManager.spawnParabolicDrop(pTile, "lava", 0, 2, 200, 20, 110, 1.5f);
             return true;
         }
         public static bool chaosGodsTrick(BaseSimObject pSelf, WorldTile pTile = null)
