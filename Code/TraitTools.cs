@@ -320,7 +320,7 @@ namespace GodsAndPantheons
                   if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemmult))
                   {
                     DemiGod.get("Demi" + kvp.Key, out float value);
-                    DemiGod.set("Demi" + kvp.Key, (kvp.Value / 2) + Random.Range(-(kvp.Value / 4), kvp.Value / 4) + value);
+                    DemiGod.set("Demi" + kvp.Key, Random.Range(kvp.Value * 0.5f, kvp.Value * 0.75f) + value);
                   }
                 }
             }
@@ -337,7 +337,7 @@ namespace GodsAndPantheons
                     if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
                     {
                         LesserGod.get("Demi" + kvp.Key, out float value);
-                        LesserGod.set("Demi" + kvp.Key, (kvp.Value / (4/3)) + Random.Range(-(kvp.Value / 4), kvp.Value / 4) + value);
+                        LesserGod.set("Demi" + kvp.Key, Random.Range(kvp.Value * 0.75f, kvp.Value) + value);
                     }
                 }
                 foreach (AttackAction ability in GodAbilities[trait])
