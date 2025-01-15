@@ -258,7 +258,7 @@ namespace GodsAndPantheons
             temp_base_stats[S.max_age] = maxage;
             return temp_base_stats;
         }
-        public static bool Morph(Actor pActor, string morphid, bool savedata = true)
+        public static bool Morph(Actor pActor, string morphid, bool savedata = true, bool destroyWeapon = true)
         {
             if (pActor == null)
             {
@@ -272,9 +272,14 @@ namespace GodsAndPantheons
             {
                 return false;
             }
+            if (destroyWeapon)
+            {
+                pActor.equipment?.weapon?.emptySlot();
+            }
             Actor actor = World.world.units.createNewUnit(morphid, pActor.currentTile, 0f);
             actor.data.traits.Clear();
             actor.setKingdom(pActor.kingdom);
+            actor.setCity(pActor.city);
             if (savedata)
             {
                 actor.data.custom_data_bool = pActor.data.custom_data_bool;
@@ -315,7 +320,7 @@ namespace GodsAndPantheons
                   if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemmult))
                   {
                     DemiGod.get("Demi" + kvp.Key, out float value);
-                    DemiGod.set("Demi" + kvp.Key, (kvp.Value / 2) + Random.Range(-(kvp.Value / 4), kvp.Value / 4) + value);
+                    DemiGod.set("Demi" + kvp.Key, Random.Range(kvp.Value * 0.5f, kvp.Value * 0.75f) + value);
                   }
                 }
             }
@@ -332,7 +337,7 @@ namespace GodsAndPantheons
                     if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
                     {
                         LesserGod.get("Demi" + kvp.Key, out float value);
-                        LesserGod.set("Demi" + kvp.Key, (kvp.Value / (4/3)) + Random.Range(-(kvp.Value / 4), kvp.Value / 4) + value);
+                        LesserGod.set("Demi" + kvp.Key, Random.Range(kvp.Value * 0.75f, kvp.Value) + value);
                     }
                 }
                 foreach (AttackAction ability in GodAbilities[trait])

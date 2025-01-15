@@ -10,6 +10,7 @@ using static UnityEngine.GraphicsBuffer;
 using Amazon.Runtime.Internal.Transform;
 using UnityEngine.Tilemaps;
 using System.Linq;
+using NeoModLoader.General.UI.Tab;
 
 namespace GodsAndPantheons
 {
@@ -530,6 +531,7 @@ namespace GodsAndPantheons
             godoffire.action_special_effect = (WorldAction)Delegate.Combine(godoffire.action_special_effect, new WorldAction(MorphIntoDragon));
             godoffire.action_death = new WorldAction(GodOfFireDeath);
             godoffire.action_attack_target += new AttackAction(GodOfFireAttack);
+            godoffire.action_get_hit = new GetHitAction(GodOfFireGetHit);
             godoffire.group_id = "GodTraits";
             AddTrait(godoffire, "The Most Powerfull of the gods, the god of fire, many spheres of domain lie with him");
 
@@ -630,7 +632,7 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            RandomForce.CreateRandomForce(World.world, pTile, 32, 3);
+            RandomForce.CreateRandomForce(World.world, pTile, 256, 3);
             World.world.startShake(1, 0.02f, 1.5f);
             return true;
         }
@@ -651,10 +653,10 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "UnleashChaos%")))
             {
-                World.world.getObjectsInChunks(pTile, 8, MapObjectType.Actor);
+                World.world.getObjectsInChunks(pTile, 16, MapObjectType.Actor);
                 foreach(Actor a in World.world.temp_map_objects)
                 {
-                    if (a != pSelf.a)
+                    if (a != pSelf.a && !a.asset.die_if_has_madness && !IsGod(a))
                     {
                         a.addTrait("madness");
                     }
@@ -859,7 +861,7 @@ namespace GodsAndPantheons
             World.world.getObjectsInChunks(pTile, radius, MapObjectType.Actor);
             foreach (Actor victim in World.world.temp_map_objects)
             {
-                if(victim == ByWho) continue;
+                if(victim == ByWho || IsGod(victim)) continue;
                 victim.addStatusEffect("Blinded", length);
             }
         }
@@ -1090,6 +1092,12 @@ namespace GodsAndPantheons
                     World.world.dropManager.spawnParabolicDrop(s.pTile, "lava", 0, 2, 200, 20, 110, 1.5f);
             }
         }
+        private static bool GodOfFireGetHit(BaseSimObject pTarget, BaseSimObject pAttackedBy, WorldTile pTile)
+        {
+            if (pAttackedBy == null || pTarget.a.asset.id != SA.dragon) return true;
+            ShootCustomProjectile(pTarget.a, pAttackedBy, "red_orb", 5);
+            return true;
+        }
         public static bool FireStorm(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Fire", "FireStorm%")))
@@ -1154,10 +1162,14 @@ namespace GodsAndPantheons
                     {
                         foreach (BaseSimObject enemy in enemies)
                         {
-                            ShootCustomProjectile(pSelf.a, enemy, "red_orb", 5);
+                            if (enemy.isActor())
+                            {
+                                pSelf.a.GetComponent<Dragon>().aggroTargets.Add(enemy.a);
+                            }
+                            ShootCustomProjectile(pSelf.a, enemy, "red_orb", 3);
                         }
                     }
-                    if (!AnyEnemies || pSelf.a.data.health < pSelf.getMaxHealth() * 0.1f)
+                    if (!AnyEnemies)
                     {
                         pSelf.a.data.get("oldself", out string oldself, SA.dragon);
                         Morph(pSelf.a, oldself);
@@ -1182,11 +1194,6 @@ namespace GodsAndPantheons
             attackPosition.y += 0.1f;
             float TargetSize = Target.stats[S.size];
             float Size = Self.stats[S.size];
-            Vector2 vector = new Vector2(attackPosition.x, attackPosition.y);
-            vector.x += Toolbox.randomFloat(-(TargetSize + 1f), TargetSize + 1f);
-            vector.y += Toolbox.randomFloat(-TargetSize, TargetSize);
-            Vector3 newPoint = Toolbox.getNewPoint(Self.currentPosition.x, Self.currentPosition.y, vector.x, vector.y, Size, true);
-            newPoint.y += 0.5f;
             float num5 = 0f;
             if (Target.isInAir())
             {
@@ -1194,6 +1201,11 @@ namespace GodsAndPantheons
             }
             for (int i = 0; i < amount; i++)
             {
+                Vector2 vector = new Vector2(attackPosition.x, attackPosition.y);
+                vector.x += Toolbox.randomFloat(-(TargetSize + 1f), TargetSize + 1f);
+                vector.y += Toolbox.randomFloat(-TargetSize, TargetSize);
+                Vector3 newPoint = Toolbox.getNewPoint(Self.currentPosition.x, Self.currentPosition.y, vector.x, vector.y, Size, true);
+                newPoint.y += 0.5f;
                 Projectile Projectile = EffectsLibrary.spawnProjectile(projectile, newPoint, vector, num5);
                 if (Projectile != null)
                 {
@@ -1229,6 +1241,9 @@ namespace GodsAndPantheons
                 if (Main.savedSettings.deathera)
                     World.world.eraManager.setEra(S.age_hope, true);
             }
+            EffectsLibrary.spawn("fx_napalm_flash", pself.currentTile, null, null, 0f, -1f, -1f);
+            for (int i = 0; i < Toolbox.randomInt(5, 10); i++)
+                World.world.dropManager.spawnParabolicDrop(pTile, "lava", 0, 2, 200, 20, 110, 1.5f);
             return true;
         }
         public static bool chaosGodsTrick(BaseSimObject pSelf, WorldTile pTile = null)

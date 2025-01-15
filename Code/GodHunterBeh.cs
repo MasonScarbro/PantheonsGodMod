@@ -13,7 +13,7 @@ namespace GodsAndPantheons
             GodHunt.addBeh(new GodHunt());
             GodHunt.addBeh(new BehAttackGod());
             GodHunt.addBeh(new escape());
-            GodHunt.addBeh(new BehGoToTileTarget() { walkOnBlocks = true, walkOnWater = true });
+            GodHunt.addBeh(new BehGoToTileTarget() { walkOnBlocks = false, walkOnWater = true });
             AssetManager.tasks_actor.add(GodHunt);
             ActorJob GodHunterob = new ActorJob
             {

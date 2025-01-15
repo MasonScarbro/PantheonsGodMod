@@ -17,38 +17,69 @@ namespace GodsAndPantheons
     public class RandomForce
     {
         [HarmonyReversePatch]
-        //pforce out here is useless!
+        //pforce out here is useless! the radius can also be infinite unlike in the game (max in-game is 32)
         public static void CreateRandomForce(object instance, WorldTile pTile, int pRad = 10, float pSpeedForce = 1.5f, bool pForceOut = true, bool useOnNature = false, int pDamage = 0, string[] pIgnoreKingdoms = null, BaseSimObject pByWho = null, TerraformOptions pOptions = null)
         {
             IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
-                foreach (CodeInstruction instr in instructions)
+                CodeMatcher Matcher = new CodeMatcher(instructions);
+                Matcher.MatchForward(false, new CodeMatch[] { new CodeMatch(OpCodes.Ldarg_1) });
+                int Pos = Matcher.Pos;
+                Matcher.RemoveInstructions(26);
+                Matcher.Insert(new CodeInstruction[]
                 {
-                    if (instr.opcode == OpCodes.Ldarg_S && instr.operand is byte i && i == 4)
-                    {
-                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Toolbox), nameof(Toolbox.randomBool))) { labels = instr.labels };
-                    }
-                    else
-                    {
-                        yield return instr;
-                    }
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(MapBox), "_force_temp_actor_list")),
+                    new CodeInstruction(OpCodes.Ldarg_S, (byte)1),
+                    new CodeInstruction(OpCodes.Ldarg_S, (byte)2),
+                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RandomForce), nameof(FillListWithAllActors)))
+                });
+                Matcher.MatchForward(false, new CodeMatch[]
+                {
+                    new CodeMatch(OpCodes.Ldarg_S, (byte)4)
+                });
+                List<Label> label = Matcher.Instruction.labels;
+                Matcher.RemoveInstruction();
+                Matcher.Insert(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Toolbox), nameof(Toolbox.randomBool))) {labels = label});
+                return Matcher.Instructions();
+            }
+        }
+        public static void FillListWithAllActors(List<Actor> pList, WorldTile Tile, int MaxDistance = 64)
+        {
+            foreach(Actor a in World.world.units)
+            {
+                if(Toolbox.DistTile(Tile, a.currentTile) < MaxDistance)
+                {
+                    pList.Add(a);
                 }
             }
         }
     }
-    [HarmonyPatch(typeof(KingdomBehCheckKing), nameof(KingdomBehCheckKing.checkClan))]
-    public class DontCreateClanIfDragon
+    [HarmonyPatch(typeof(Clan), nameof(Clan.createClan))]
+    public class FixClanRaceError
     {
-        static bool Prefix (Actor pActor)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            if(pActor != null)
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[]
             {
-                if(pActor.asset.id == SA.dragon)
-                {
-                    return false;
-                }
+                new CodeMatch(new OpCode?(OpCodes.Ldfld), AccessTools.Field(typeof(ActorBase), nameof(ActorBase.race)))
+            });
+            Matcher.RemoveInstruction();
+            Matcher.Insert(new CodeInstruction[]
+            {
+              new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FixClanRaceError), nameof(GetTrueRace)))
+            });
+            return Matcher.Instructions();
+        }
+        public static Race GetTrueRace(Actor actor)
+        {
+            if(actor.asset.race != SK.dragons)
+            {
+                return actor.race;
             }
-            return true;
+            actor.data.get("oldself", out string oldself, SA.unit_human);
+            return AssetManager.raceLibrary.get(AssetManager.actor_library.get(oldself).race);
         }
     }
     [HarmonyPatch(typeof(BaseAnimatedObject), nameof(BaseAnimatedObject.update))]
