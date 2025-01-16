@@ -51,6 +51,7 @@ namespace GodsAndPantheons
             if(!CheckStatus(pActor, out Actor Master))
             {
                 pActor.finishAllStatusEffects();
+                pActor.clearBeh();
                 return BehResult.Stop;
             }
             return BehFunctions.Minion(pActor, Master);
@@ -94,6 +95,7 @@ namespace GodsAndPantheons
             if (!CheckStatus(pActor, out Actor Master))
             {
                 pActor.finishStatusEffect("BrainWashed");
+                pActor.clearBeh();
                 return BehResult.Stop;
             }
             return BehFunctions.Minion(pActor, Master);

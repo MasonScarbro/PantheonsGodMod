@@ -305,7 +305,9 @@ namespace GodsAndPantheons
             {
                 Config.selectedUnit = actor;
             }
+            Clan clan = pActor.getClan();
             ActionLibrary.removeUnit(pActor);
+            clan?.addUnit(actor);
             EffectsLibrary.spawn("fx_spawn", actor.currentTile, null, null, 0f, -1f, -1f);
             return true;
         }

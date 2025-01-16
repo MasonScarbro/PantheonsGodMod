@@ -145,7 +145,6 @@ namespace GodsAndPantheons
                 {S.health, 700f},
                 {S.attack_speed, 12f},
                 {S.critical_chance, 0.5f},
-                {S.intelligence, 30f},
                 {S.armor, 30f},
                 {S.scale, 0.075f},
                 {S.range, 20f},
@@ -1239,7 +1238,7 @@ namespace GodsAndPantheons
             if (Main.savedSettings.deathera)
             {
                 if (Main.savedSettings.deathera)
-                    World.world.eraManager.setEra(S.age_hope, true);
+                    World.world.eraManager.setEra(S.age_ice, true);
             }
             EffectsLibrary.spawn("fx_napalm_flash", pself.currentTile, null, null, 0f, -1f, -1f);
             for (int i = 0; i < Toolbox.randomInt(5, 10); i++)
