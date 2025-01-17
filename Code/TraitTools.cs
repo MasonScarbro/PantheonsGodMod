@@ -333,7 +333,7 @@ namespace GodsAndPantheons
                   }
                 }
             }
-            DemiGod.set("Demi"+S.max_age, Random.Range(10, 30));
+            DemiGod.set("Demi"+S.max_age, Random.Range(100, 200));
         }
         public static void MakeLesserGod(ListPool<string> godtraits, ref ActorData LesserGod, float chancemult = 1)
         {
@@ -358,7 +358,6 @@ namespace GodsAndPantheons
                     }
                 }
             }
-            LesserGod.set("Demi" + S.max_age, Random.Range(30, 50));
         }
         //gets god traits which are stored in the data of failed gods / demigods
         public static List<string> Getinheritedgodtraits(ActorData pData)

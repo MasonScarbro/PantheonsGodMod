@@ -172,7 +172,6 @@ namespace GodsAndPantheons
              }
             },
             {"Demi God", new Dictionary<string, float>(){
-                { S.max_age, 200 }
              }
             },
         };
@@ -504,7 +503,7 @@ namespace GodsAndPantheons
             subGod.id = "Lesser God";
             subGod.path_icon = "ui/icons/subGod";
             subGod.group_id = TraitGroup.special;
-            subGod.can_be_given = true; // was there any particular reason that these shouldnt be given?
+            subGod.can_be_given = false;
             subGod.action_attack_target = new AttackAction(LesserAttack);
             subGod.action_special_effect = new WorldAction(LesserEraStatus);
             AddTrait(subGod, "like the demigod, but can also inherit abilities! all children in a gods clan are lessergods");
