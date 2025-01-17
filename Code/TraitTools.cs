@@ -338,6 +338,7 @@ namespace GodsAndPantheons
         public static void MakeLesserGod(ListPool<string> godtraits, ref ActorData LesserGod, float chancemult = 1)
         {
             LesserGod.addTrait("Lesser God");
+            LesserGod.addTrait("immortal"); // lesser gods immortal or very long lived? havent decided yet
             foreach (string trait in godtraits)
             {
                 LesserGod.set("Demi" + trait, true);
