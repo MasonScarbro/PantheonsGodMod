@@ -44,6 +44,7 @@ namespace GodsAndPantheons
                 return Matcher.Instructions();
             }
         }
+        //less optimized but allows infinite radius
         public static void FillListWithAllActors(List<Actor> pList, WorldTile Tile, int MaxDistance = 64)
         {
             foreach(Actor a in World.world.units)
@@ -90,6 +91,10 @@ namespace GodsAndPantheons
             if(__instance.GetComponent<EffectModifier>() != null)
             {
                 __instance.GetComponent<EffectModifier>().update(pElapsed);
+            }
+            if (__instance.GetComponent<ExplosionFlash>() != null)
+            {
+                __instance.GetComponent<ExplosionFlash>().update(pElapsed);
             }
         }
     }
@@ -237,6 +242,7 @@ namespace GodsAndPantheons
         {
             World.world.startShake(1f, 0.01f, 2f, true, true);
             LuckyOne.addTrait(godtrait);
+            LuckyOne.equipment.weapon.emptySlot();
             LuckyOnee = LuckyOne;
             blessingtime = 10;
             WorldLogMessage worldLogMessage = new WorldLogMessage($"A Divine Miracle Has Occurred in {LuckyOne.kingdom.name}!")

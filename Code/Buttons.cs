@@ -173,6 +173,16 @@ namespace GodsAndPantheons
                     WindowManager.windows["DarkGodWindow"].openWindow
               );
             PowerButtons.CreateButton(
+                    "LoveGodWindow",
+                    Resources.Load<Sprite>("ui/Icons/GodOfLove"),
+                    "Chance Modfier",
+                    "Manage The Gods Powers",
+                    new Vector2(208, -18),
+                    ButtonType.Click,
+                    tab.transform,
+                    WindowManager.windows["LoveGodWindow"].openWindow
+              );
+            PowerButtons.CreateButton(
                     "SunGodWindow",
                     Resources.Load<Sprite>("ui/Icons/lightGod"),
                     "Chance Modfier",

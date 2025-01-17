@@ -2,15 +2,11 @@
 AUTHOR: MASON SCARBRO
 VERSION: 1.0.0
 */
-using System;
-using UnityEngine;
 using ReflectionUtility;
+using System;
 using System.Collections.Generic;
-using static UnityEngine.GraphicsBuffer;
-using Amazon.Runtime.Internal.Transform;
-using UnityEngine.Tilemaps;
-using System.Linq;
-using NeoModLoader.General.UI.Tab;
+using System.Diagnostics.Contracts;
+using UnityEngine;
 
 namespace GodsAndPantheons
 {
@@ -155,6 +151,18 @@ namespace GodsAndPantheons
                 {S.fertility, 0.6f},
              }
             },
+            {"God Of Love", new Dictionary<string, float>(){
+                {S.health, 850},
+                {S.intelligence, 10f },
+                {S.speed, 15f},
+                {S.knockback_reduction, 0.05f},
+                {S.accuracy, 10f},
+                {S.fertility, 1f},
+                {S.loyalty_traits, 10f },
+                {S.max_children, 6},
+                {S.diplomacy, 15 }
+             }
+            },
             {"Summoned One", new Dictionary<string, float>(){
                 {S.damage, 10f},
                 {S.health, 20f},
@@ -185,6 +193,19 @@ namespace GodsAndPantheons
                 "fire_blood",
                 "immortal",
                 "regeneration"
+             }
+            },
+            {"God Of Love", new List<string>()
+             {
+                "blessed",
+                "poison_immune",
+                "shiny",
+                "lustful",
+                "fertile",
+                "fast",
+                "immortal",
+                "regeneration",
+                "thorns"
              }
             },
             {"God Of light", new List<string>()
@@ -314,11 +335,13 @@ namespace GodsAndPantheons
             {"God Of Chaos", new KeyValuePair<string, string>(S.age_chaos, "Chaos Prevails") },
             {"God Of The Lich", new KeyValuePair<string, string>(S.age_tears, "Sorrow Prevails") },
             {"God Of War", new KeyValuePair<string, string>(S.age_despair, "Despair Prevails") },
-            {"God Of the Earth", new KeyValuePair<string, string>(S.age_ash, "Earth Prevails") }
+            {"God Of the Earth", new KeyValuePair<string, string>(S.age_ash, "Earth Prevails") },
+            {"God Of Love", new KeyValuePair<string, string>(S.age_hope, "Love Prevails") },
         };
         #endregion
 
         #region GodAbilities Dict
+        //any abilities here can be inherited
         public static Dictionary<string, List<AttackAction>> GodAbilities = new Dictionary<string, List<AttackAction>>()
         {
             {"God Of Fire", new List<AttackAction>(){
@@ -378,10 +401,16 @@ namespace GodsAndPantheons
                 new AttackAction(summonskele),
                 new AttackAction(SummonDead)
              }
+            },
+            {"God Of Love", new List<AttackAction>(){
+                new AttackAction(HealAllies),
+                new AttackAction(BlessAllies),
+                new AttackAction(CastShields),
+                new AttackAction(CorruptEnemy)
+             }
             }
         };
         #endregion
-
         #region God Relations
         public static Dictionary<string, List<string>> GodEnemies = new Dictionary<string, List<string>>()
         {
@@ -389,7 +418,9 @@ namespace GodsAndPantheons
             { "God Of the Stars", new List<string>(){ "God Of light" } },
             { "God Of the Night", new List<string>(){ "God Of light" } },
             { "God Of Chaos", new List<string>(){ "God Of Knowledge" } },
-            { "God Of War", new List<string>(){ "God Of Knowledge" } },
+            { "God Of War", new List<string>(){ "God Of Knowledge", "God Of Love" } },
+            { "God Of Love", new List<string>(){ "God Of The Lich", "God Of War" } },
+            { "God Of The Lich", new List<string>(){ "God Of Love" } },
             { "God Of Knowledge", new List<string>(){ "God Of Chaos", "God Of War" } }
         };
         #endregion
@@ -520,6 +551,17 @@ namespace GodsAndPantheons
             godHunter.can_be_given = true;
             AddTrait(godHunter, "He will stop at NOTHING to kill a god");
 
+            ActorTrait GodOfLove = new ActorTrait();
+            GodOfLove.id = "God Of Love";
+            GodOfLove.path_icon = "ui/icons/GodOfLove";
+            GodOfLove.group_id = "GodTraits";
+            GodOfLove.action_death = new WorldAction(GodOfLoveDeath);
+            GodOfLove.action_special_effect = (WorldAction)Delegate.Combine(new WorldAction(GodWeaponManager.godGiveWeapon), new WorldAction(GodOfLoveautotrait));
+            GodOfLove.action_special_effect = (WorldAction)Delegate.Combine(GodOfLove.action_special_effect, new WorldAction(GodOfLoveerastatus));
+            GodOfLove.action_special_effect = (WorldAction)Delegate.Combine(GodOfLove.action_special_effect, new WorldAction(HealAllies));
+            GodOfLove.special_effect_interval = 0.0001f;
+            GodOfLove.action_attack_target = new AttackAction(GodOfLoveAttack);
+            AddTrait(GodOfLove, "i have no idea what to put here");
             //my traits
             ActorTrait godoffire = new ActorTrait();
             godoffire.id = "God Of Fire";
@@ -627,7 +669,7 @@ namespace GodsAndPantheons
         #region ChaosGodsAttack
         public static bool ChaosHell(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if(!Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "WorldOfChaos%")))
+            if (!Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "WorldOfChaos%")))
             {
                 return false;
             }
@@ -653,7 +695,7 @@ namespace GodsAndPantheons
             if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "UnleashChaos%")))
             {
                 World.world.getObjectsInChunks(pTile, 16, MapObjectType.Actor);
-                foreach(Actor a in World.world.temp_map_objects)
+                foreach (Actor a in World.world.temp_map_objects)
                 {
                     if (a != pSelf.a && !a.asset.die_if_has_madness && !IsGod(a))
                     {
@@ -820,7 +862,7 @@ namespace GodsAndPantheons
             {
                 pb.divineLightFX(pTarget.currentTile, null);
                 (EffectsLibrary.spawn("fx_napalm_flash", pTarget.currentTile, null, null, 0f, -1f, -1f) as NapalmFlash).bombSpawned = true;
-                CreateBlindess(pTile, 10, 5f, pSelf);
+                CreateBlindess(pTile, 10, 5f, pSelf.kingdom);
             }
             if (Toolbox.randomChance(0 / 100))
             {
@@ -855,12 +897,12 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        public static void CreateBlindess(WorldTile pTile, int radius, float length, BaseSimObject ByWho)
+        public static void CreateBlindess(WorldTile pTile, int radius, float length, Kingdom kingdom)
         {
             World.world.getObjectsInChunks(pTile, radius, MapObjectType.Actor);
             foreach (Actor victim in World.world.temp_map_objects)
             {
-                if(victim == ByWho || IsGod(victim)) continue;
+                if (victim.kingdom == kingdom || IsGod(victim)) continue;
                 victim.addStatusEffect("Blinded", length);
             }
         }
@@ -1009,7 +1051,7 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        public static readonly List<string> earthgodminionautotraits = new List<string>() { "fire_proof", "freeze_proof", "regeneration"};
+        public static readonly List<string> earthgodminionautotraits = new List<string>() { "fire_proof", "freeze_proof", "regeneration" };
         public static bool SummonDruids(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of the Earth", "SummonDruid%")))
@@ -1058,6 +1100,108 @@ namespace GodsAndPantheons
         #endregion
 
         //NEW_GOD_ATTACK_FUNC
+        #region GodOfLoveStuff
+        public static bool GodOfLoveDeath(BaseSimObject pSelf, WorldTile pTile)
+        {
+            if (Main.savedSettings.deathera)
+            {
+                World.world.eraManager.setEra(S.age_despair, true);
+            }
+            return true;
+        }
+        public static bool HealAllies(BaseSimObject pSelf, WorldTile pTile)
+        {
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Love", "healAllies%")))
+            {
+                World.world.getObjectsInChunks(pTile, 16, MapObjectType.Actor);
+                foreach(Actor a in World.world.temp_map_objects)
+                {
+                    if(a.kingdom == pSelf.kingdom && a.data.health < a.getMaxHealth())
+                    {
+                        ShootCustomProjectile(pSelf.a, a, "Heart", 2);
+                    }
+                }
+            }
+            return true;
+        }
+        public static void CreateHeartExplosion(Vector3 pVec, float pRadius, bool corrupted = false, float pSpeed = 1f)
+        {
+            BaseEffect baseEffect = EffectsLibrary.spawn("fx_Heart" + (corrupted ? "_Corrupted" : ""), null, null, null, 0f, -1f, -1f);
+            if (baseEffect == null)
+            {
+                return;
+            }
+            baseEffect.spriteAnimation.returnToPool = false;
+            baseEffect.gameObject.AddComponent<ExplosionFlash>().start(pVec, pRadius, pSpeed);
+            baseEffect.gameObject.GetComponent<ExplosionFlash>().controller = baseEffect.controller;
+
+        }
+        public static bool BlessAllies(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Love", "blessAllies%")))
+            {
+                CreateHeartExplosion(pTile.posV3, 60f);
+                World.world.getObjectsInChunks(pTile, 8, MapObjectType.Actor);
+                foreach (Actor a in World.world.temp_map_objects)
+                {
+                    if (a.kingdom == pSelf.kingdom)
+                    {
+                        a.a.addTrait("blessed");
+                    }
+                    else if(a.kingdom.isEnemy(pSelf.kingdom)) {
+                        a.addTrait("cursed");
+                    }
+                }
+            }
+            return true;
+        }
+        public static bool HealAllies(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Love", "healAllies%")))
+            {
+                CreateHeartExplosion(pTile.posV3, 100f);
+                World.world.getObjectsInChunks(pTile, 16, MapObjectType.Actor);
+                foreach (Actor a in World.world.temp_map_objects)
+                {
+                    if (a.kingdom == pSelf.kingdom)
+                    {
+                        SuperRegeneration(a, 100f, 20f);
+                    }
+                }
+            }
+            return true;
+        }
+        public static bool CastShields(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Love", "CastShields%")))
+            {
+                CreateHeartExplosion(pTile.posV3, 80f);
+                World.world.getObjectsInChunks(pTile, 13, MapObjectType.Actor);
+                foreach (Actor a in World.world.temp_map_objects)
+                {
+                    if (a.kingdom == pSelf.kingdom)
+                    {
+                        a.addStatusEffect("shield", 15f);
+                    }
+                }
+            }
+            return true;
+        }
+        public static bool CorruptEnemy(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Love", "CorruptEnemys%")))
+            {
+                if (!pTarget.isActor())
+                {
+                    return false;
+                }
+                CreateHeartExplosion(pTile.posV3, 80f, true);
+                CreateBlindess(pTile, 8, 15f, pSelf.kingdom);
+            }
+            return true;
+        }
+        public static bool GodOfLoveAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile) => GodAttack(pSelf, pTarget, pTile, "God Of Love");
+        #endregion
 
         #region GodOfFireStuff
         public static bool GodOfFireAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile) => GodAttack(pSelf, pTarget, pTile, "God Of Fire");
@@ -1177,6 +1321,7 @@ namespace GodsAndPantheons
             }
             return true;
         }
+
         public static Vector2 getAttackPosition(BaseSimObject target)
         {
             float num = target.stats[S.size];
@@ -1291,6 +1436,7 @@ namespace GodsAndPantheons
         public static bool nightgodautotrait(BaseSimObject pSelf, WorldTile pTile) => AutoTrait(pSelf.a, "God Of the Night");
         public static bool stargodautotrait(BaseSimObject pSelf, WorldTile pTile) => AutoTrait(pSelf.a, "God Of the Stars");
         public static bool earthgodautotrait(BaseSimObject pSelf, WorldTile pTile) => AutoTrait(pSelf.a, "God Of the Earth");
+        private static bool GodOfLoveautotrait(BaseSimObject pTarget, WorldTile pTile) => AutoTrait(pTarget.a, "God Of Love");
         public static bool chaosgodautotrait(BaseSimObject pSelf, WorldTile pTile) => AutoTrait(pSelf.a, "God Of Chaos");
         public static bool wargodautotrait(BaseSimObject pSelf, WorldTile pTile) => AutoTrait(pSelf.a, "God Of War");
         public static bool lichgodautotrait(BaseSimObject pSelf, WorldTile pTile) => AutoTrait(pSelf.a, "God Of The Lich");
@@ -1298,6 +1444,7 @@ namespace GodsAndPantheons
         public static bool sungoderastatus(BaseSimObject pSelf, WorldTile pTile) => EraStatus(pSelf.a, "God Of light");
         public static bool godoffireerastatus(BaseSimObject pSelf, WorldTile pTile) => EraStatus(pSelf.a, "God Of Fire");
         public static bool knowledgegoderastatus(BaseSimObject pSelf, WorldTile pTile) => EraStatus(pSelf.a, "God Of Knowledge");
+        private static bool GodOfLoveerastatus(BaseSimObject pTarget, WorldTile pTile) => EraStatus(pTarget.a, "God Of Love");
         public static bool nightgoderastatus(BaseSimObject pSelf, WorldTile pTile) => EraStatus(pSelf.a, "God Of the Night");
         public static bool stargoderastatus(BaseSimObject pSelf, WorldTile pTile) => EraStatus(pSelf.a, "God Of the Stars");
         public static bool earthgoderastatus(BaseSimObject pSelf, WorldTile pTile) => EraStatus(pSelf.a, "God Of the Earth");

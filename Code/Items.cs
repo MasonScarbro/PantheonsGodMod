@@ -200,7 +200,7 @@ namespace GodsAndPantheons
             AssetManager.items.list.AddItem(maceOfDestruction);
             Localization.Add("item_MaceOfDestruction", "Mace Of Destruction");
             addWeaponsSprite(maceOfDestruction.id, maceOfDestruction.materials[0]);
-
+            
             ItemAsset staffOfKnowledge = AssetManager.items.clone("StaffOfKnowledge", "_range");
             staffOfKnowledge.id = "StaffOfKnowledge";
             staffOfKnowledge.name_templates = List.Of<string>(new string[] { "Staff Of Knowledge" });
@@ -245,6 +245,44 @@ namespace GodsAndPantheons
             AssetManager.items.list.AddItem(staffOfKnowledge);
             Localization.Add("item_StaffOfKnowledge", "Staff Of Knowledge");
             addWeaponsSprite(staffOfKnowledge.id, staffOfKnowledge.materials[0]);
+            
+            ItemAsset StaffOfLove = AssetManager.items.clone("StaffOfLove", "_range");
+            StaffOfLove.id = "StaffOfLove";
+            StaffOfLove.name_templates = List.Of<string>(new string[] { "Staff Of Love" });
+            StaffOfLove.materials = List.Of<string>(new string[] { "base" });
+            StaffOfLove.base_stats[S.max_age] += 100f;
+            StaffOfLove.base_stats[S.attack_speed] = 1f;
+            StaffOfLove.base_stats[S.speed] += 1f;
+            StaffOfLove.base_stats[S.health] = 10;
+            StaffOfLove.base_stats[S.accuracy] = 1f;
+            StaffOfLove.base_stats[S.range] = 20;
+            StaffOfLove.base_stats[S.armor] = 1;
+            StaffOfLove.base_stats[S.scale] = 0.0f;
+            StaffOfLove.base_stats[S.dodge] = 1f;
+            StaffOfLove.base_stats[S.damage] = 10;
+            StaffOfLove.base_stats[S.targets] = 3f;
+            StaffOfLove.base_stats[S.critical_chance] = 0.0f;
+            StaffOfLove.base_stats[S.knockback] = 0.0f;
+            StaffOfLove.base_stats[S.knockback_reduction] = 0.1f;
+            StaffOfLove.base_stats[S.diplomacy] = 5;
+            StaffOfLove.base_stats[S.stewardship] = 10;
+            StaffOfLove.base_stats[S.damage_range] = 0.5f;
+            StaffOfLove.equipment_value = 3000;
+            StaffOfLove.path_slash_animation = "effects/slashes/darkSlash";
+            StaffOfLove.tech_needed = String.Empty;
+            StaffOfLove.quality = ItemQuality.Legendary;
+            StaffOfLove.equipmentType = EquipmentType.Weapon;
+            StaffOfLove.attackType = WeaponType.Range;
+            StaffOfLove.name_class = "item_class_weapon";
+            StaffOfLove.path_icon = "ui/weapon_icons/icon_StaffOfLove_base";
+            // For Ranged Weapons use "_range"
+            StaffOfLove.base_stats[S.projectiles] = 1;
+            StaffOfLove.base_stats[S.damage_range] = 0.9f;
+            StaffOfLove.projectile = "CorruptedHeart";
+
+            AssetManager.items.list.AddItem(StaffOfLove);
+            Localization.Add("item_StaffOfLove", "Staff Of Love");
+            addWeaponsSprite(StaffOfLove.id, StaffOfLove.materials[0]);
 
             ItemAsset FireGodStaff = AssetManager.items.clone("HellStaff", "evil_staff");
             FireGodStaff.id = "HellStaff";

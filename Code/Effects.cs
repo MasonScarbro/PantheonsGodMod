@@ -69,7 +69,7 @@ namespace GodsAndPantheons
             FireGodEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(FireGodEra.id, "God_Of_All", FireGodEra.description); // Localizes the status effect
             AssetManager.status.add(FireGodEra);
-
+            
             StatusEffect knowledgeGodEra = new StatusEffect();
             knowledgeGodEra.id = "Knowledge_Prevail";
             knowledgeGodEra.duration = 7000f;
@@ -91,6 +91,27 @@ namespace GodsAndPantheons
             knowledgeGodEra.action = new WorldAction(Traits.SuperRegeneration);
             localizeStatus(knowledgeGodEra.id, "Knowledge_Prevail", knowledgeGodEra.description); // Localizes the status effect
             AssetManager.status.add(knowledgeGodEra);
+            
+            StatusEffect LoveGodEra = new StatusEffect();
+            LoveGodEra.id = "Love Prevails";
+            LoveGodEra.duration = 7000f;
+            LoveGodEra.base_stats[S.armor] = 15;
+            LoveGodEra.base_stats[S.health] += 500;
+            LoveGodEra.base_stats[S.speed] += 20;
+            LoveGodEra.base_stats[S.knockback_reduction] += 0.9f;
+            LoveGodEra.base_stats[S.knockback] += 1f;
+            LoveGodEra.base_stats[S.attack_speed] += 20f;
+            LoveGodEra.base_stats[S.stewardship] += 20f;
+            LoveGodEra.base_stats[S.dodge] += 20f;
+            LoveGodEra.base_stats[S.range] += 10f;
+            LoveGodEra.base_stats[S.accuracy] += 5;
+            LoveGodEra.path_icon = "ui/icons/GodOfLove";
+            LoveGodEra.description = "The era of Love is here???";
+            LoveGodEra.name = "Love Prevails";
+            LoveGodEra.action_interval = 2;
+            LoveGodEra.action = new WorldAction(Traits.SuperRegeneration);
+            localizeStatus(LoveGodEra.id, "Love Prevails", LoveGodEra.description); // Localizes the status effect
+            AssetManager.status.add(LoveGodEra);
 
             StatusEffect starsGodEra = new StatusEffect();
             starsGodEra.id = "Stars_Prevail";

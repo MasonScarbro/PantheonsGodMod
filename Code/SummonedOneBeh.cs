@@ -57,7 +57,7 @@ namespace GodsAndPantheons
             return BehFunctions.Minion(pActor, Master);
         }
     }
-    //basically the same as summoned one but patrol is different
+    //basically the same as summoned one but checkstatus is different
     public class CorruptedOneBeh
     {
         public static void init()
