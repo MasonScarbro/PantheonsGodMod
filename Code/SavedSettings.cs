@@ -1,3 +1,4 @@
+using Amazon.Runtime.Internal.Transform;
 using System;
 using System.Collections.Generic;
 
@@ -107,6 +108,17 @@ namespace GodsAndPantheons
                   {"BoneFire%", new InputOption{active = true, value = 30 }},
                   {"WorldOfChaos%", new InputOption{active = true, value = 5 }},
                   {"God Of Chaosinherit%", new InputOption{active = true, value = 28 }}
+              }
+            },
+            {"LoveGodWindow",
+                new Dictionary<string, InputOption>
+              {
+                  {"Poisoning%", new InputOption{active = true, value = 50 }},
+                  {"healAllies%", new InputOption{active = true, value = 40}},
+                  {"blessAllies%", new InputOption{active = true, value = 10 }},
+                  {"CastShields%", new InputOption{active = true, value = 15 }},
+                  {"CorruptEnemys%", new InputOption{active = true, value = 20 }},
+                  {"God Of Loveinherit%", new InputOption{active = true, value = 55 }}
               }
             }
         };

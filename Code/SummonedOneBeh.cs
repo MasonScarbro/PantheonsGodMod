@@ -51,12 +51,13 @@ namespace GodsAndPantheons
             if(!CheckStatus(pActor, out Actor Master))
             {
                 pActor.finishAllStatusEffects();
+                pActor.clearBeh();
                 return BehResult.Stop;
             }
             return BehFunctions.Minion(pActor, Master);
         }
     }
-    //basically the same as summoned one but patrol is different
+    //basically the same as summoned one but checkstatus is different
     public class CorruptedOneBeh
     {
         public static void init()
@@ -94,6 +95,7 @@ namespace GodsAndPantheons
             if (!CheckStatus(pActor, out Actor Master))
             {
                 pActor.finishStatusEffect("BrainWashed");
+                pActor.clearBeh();
                 return BehResult.Stop;
             }
             return BehFunctions.Minion(pActor, Master);

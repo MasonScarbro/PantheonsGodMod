@@ -3,6 +3,7 @@ using ai;
 using SleekRender;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Burst;
 using UnityEngine;
 
 namespace GodsAndPantheons
@@ -140,6 +141,7 @@ namespace GodsAndPantheons
             || a.Equals("God Of War")
             || a.Equals("God Of the Earth")
             || a.Equals("God Of light")
+            || a.Equals("God Of Love")
             || a.Equals("God Of Fire");
 
         public static List<string> GetGodTraits(Actor a) => GetGodTraits(a.data.traits);
@@ -218,6 +220,7 @@ namespace GodsAndPantheons
                 "God Of War" => "WarGodWindow",
                 "God Of The Lich" => "LichGodWindow",
                 "God Of Fire" => "GodOfFireWindow",
+                "God Of Love" => "LoveGodWindow",
                 _ => "",
             };
 
@@ -239,6 +242,8 @@ namespace GodsAndPantheons
             pData.get("Demi" + S.fertility, out float fertility);
             pData.get("Demi" + S.max_children, out float maxchildren);
             pData.get("Demi" + S.max_age, out int maxage);
+            pData.get("Demi" + S.diplomacy, out float dimplomacy);
+            pData.get("Demi" + S.loyalty_traits, out float loyalty);
             temp_base_stats.clear();
             temp_base_stats[S.speed] = speed;
             temp_base_stats[S.critical_chance] = crit;
@@ -253,6 +258,8 @@ namespace GodsAndPantheons
             temp_base_stats[S.knockback_reduction] = knockback_reduction;
             temp_base_stats[S.warfare] = warfare;
             temp_base_stats[S.fertility] = fertility;
+            temp_base_stats[S.diplomacy] = dimplomacy;
+            temp_base_stats[S.loyalty_traits] = loyalty;
             temp_base_stats[S.max_children] = (int)maxchildren;
             //special
             temp_base_stats[S.max_age] = maxage;
@@ -305,7 +312,9 @@ namespace GodsAndPantheons
             {
                 Config.selectedUnit = actor;
             }
+            Clan clan = pActor.getClan();
             ActionLibrary.removeUnit(pActor);
+            clan?.addUnit(actor);
             EffectsLibrary.spawn("fx_spawn", actor.currentTile, null, null, 0f, -1f, -1f);
             return true;
         }
@@ -324,7 +333,7 @@ namespace GodsAndPantheons
                   }
                 }
             }
-            DemiGod.set("Demi"+S.max_age, Random.Range(10, 30));
+            DemiGod.set("Demi"+S.max_age, Random.Range(100, 200));
         }
         public static void MakeLesserGod(ListPool<string> godtraits, ref ActorData LesserGod, float chancemult = 1)
         {
@@ -349,7 +358,6 @@ namespace GodsAndPantheons
                     }
                 }
             }
-            LesserGod.set("Demi" + S.max_age, Random.Range(30, 50));
         }
         //gets god traits which are stored in the data of failed gods / demigods
         public static List<string> Getinheritedgodtraits(ActorData pData)
@@ -419,7 +427,7 @@ namespace GodsAndPantheons
             minion.data.set("life", 0);
             minion.data.set("lifespan", lifespan);
         }
-        public static void CorruptActor(Actor minion, Actor Master, int duration = 31)
+        public static void CorruptActor(Actor minion, Actor Master, float duration = 31)
         {
             minion.data.set("BrainWasher", Master.data.id);
             minion.addStatusEffect("BrainWashed", duration);

@@ -140,6 +140,16 @@ public static class GodWeaponManager
 
             }
 
+            if (pTarget.a.hasTrait("God Of Love"))
+            {
+                ItemData lovestaff = new ItemData();
+                lovestaff.id = "StaffOfLove";
+                lovestaff.material = "base";
+                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(lovestaff);
+                pTarget.a.setStatsDirty();
+
+            }
+
 
             if (pTarget.a.hasTrait("God Hunter"))
             {

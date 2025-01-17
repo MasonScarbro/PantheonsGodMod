@@ -58,11 +58,89 @@ namespace GodsAndPantheons
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
                 startScale = 0.2f,
                 targetScale = 0.2f,
-                impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+                impact_actions = new AttackAction(delegate (BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
                 {
                     string[]? kingdoms = pSelf != null && !pSelf.a.has_trait_madness && pSelf.kingdom != null ? new string[1] { pSelf.kingdom.id } : null;
-                    Traits.CreateBlindess(pTile, 3, 15, pSelf);
+                    Traits.CreateBlindess(pTile, 3, 15, pSelf.kingdom);
                     World.world.applyForce(pTile, 15, 1.5f, false, true, 12, kingdoms, pSelf, null);
+                    return true;
+                })
+            });
+
+            AssetManager.projectiles.add(new ProjectileAsset
+            {
+                id = "CorruptedHeart",
+                speed = 4f,
+                animation_speed = 0.2f,
+                texture = "CorruptedHeart",
+                trailEffect_enabled = false,
+                texture_shadow = "shadow_ball",
+                endEffect = string.Empty,
+                draw_light_area = true,
+                draw_light_size = 0.1f,
+                parabolic = false,
+                sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
+                sound_impact = "event:/SFX/WEAPONS/WeaponRedOrbLand",
+                startScale = 0.1f,
+                targetScale = 0.1f,
+                impact_actions = new AttackAction(delegate (BaseSimObject pSelf, BaseSimObject useless, WorldTile pTile)
+                {
+                    if(pSelf == null)
+                    {
+                        return false;
+                    }
+                    World.world.getObjectsInChunks(pTile, 3, MapObjectType.Actor);
+                    foreach (BaseSimObject pTarget in World.world.temp_map_objects)
+                    {
+                        if (pTarget.kingdom.isEnemy(pSelf.kingdom))
+                        {
+                            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%")))
+                            {
+                                pTarget.addStatusEffect("ash_fever", 15);
+                            }
+                            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%")))
+                            {
+                                pTarget.addStatusEffect("poisoned", 30);
+                            }
+                            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%")))
+                            {
+                                pTarget.addStatusEffect("cough", 60);
+                            }
+                        }
+                    }
+                    return true;
+                })
+            });
+            AssetManager.projectiles.add(new ProjectileAsset
+            {
+                id = "Heart",
+                speed = 6f,
+                animation_speed = 0.2f,
+                texture = "Heart",
+                trailEffect_enabled = false,
+                texture_shadow = "shadow_ball",
+                endEffect = string.Empty,
+                draw_light_area = true,
+                draw_light_size = 0.1f,
+                parabolic = false,
+                sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
+                sound_impact = "event:/SFX/WEAPONS/WeaponRedOrbLand",
+                startScale = 0.05f,
+                targetScale = 0.05f,
+                impact_actions = new AttackAction(delegate (BaseSimObject pSelf, BaseSimObject useless, WorldTile pTile)
+                {
+                    if (pSelf == null)
+                    {
+                        return false;
+                    }
+                    World.world.getObjectsInChunks(pTile, 3, MapObjectType.Actor);
+                    foreach (BaseSimObject pTarget in World.world.temp_map_objects)
+                    {
+                        if (pTarget.kingdom == pSelf.kingdom)
+                        {
+                            Traits.SuperRegeneration(pTarget, 100f, 10f);
+                        }
+                    }
                     return true;
                 })
             });
