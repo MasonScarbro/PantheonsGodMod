@@ -508,9 +508,14 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "CorruptEnemy%")) && pTarget.isActor() && !IsGod(pTarget.a))
             {
-                CorruptActor(pTarget.a, pSelf.a);
+                World.world.getObjectsInChunks(pTile, 8, MapObjectType.Actor);
+                foreach (Actor a in World.world.temp_map_objects)
+                {
+                    if(IsGod(a) || a.kingdom == pSelf.kingdom) continue;
+                    CorruptActor(a, pSelf.a);
+                }
                 MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionForce", pTile, false, false);
-                EffectsLibrary.spawnExplosionWave(pTile.posV3, 5f,0.5f);
+                EffectsLibrary.spawnExplosionWave(pTile.posV3, 5f, 0.5f);
             }
             return true;
         }

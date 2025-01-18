@@ -128,6 +128,7 @@ namespace GodsAndPantheons
         public bool GodKings = true;
         public bool MakeSummoned = false;
         public bool DiplomacyChanges = true;
+        public bool AutoTraits = true;
     }
     [Serializable]
     public struct InputOption
