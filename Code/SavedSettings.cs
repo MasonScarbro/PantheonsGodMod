@@ -114,11 +114,11 @@ namespace GodsAndPantheons
                 new Dictionary<string, InputOption>
               {
                   {"Poisoning%", new InputOption{active = true, value = 50 }},
-                  {"healAllies%", new InputOption{active = true, value = 40}},
+                  {"healAllies%", new InputOption{active = true, value = 35}},
                   {"blessAllies%", new InputOption{active = true, value = 10 }},
                   {"CastShields%", new InputOption{active = true, value = 15 }},
-                  {"CorruptEnemys%", new InputOption{active = true, value = 20 }},
-                  {"God Of Loveinherit%", new InputOption{active = true, value = 55 }}
+                  {"CorruptEnemys%", new InputOption{active = true, value = 15 }},
+                  {"God Of Loveinherit%", new InputOption{active = true, value = 40 }}
               }
             }
         };
@@ -128,6 +128,7 @@ namespace GodsAndPantheons
         public bool GodKings = true;
         public bool MakeSummoned = false;
         public bool DiplomacyChanges = true;
+        public bool AutoTraits = true;
     }
     [Serializable]
     public struct InputOption

@@ -152,6 +152,18 @@ namespace GodsAndPantheons
                     tab.transform,
                     WindowManager.windows["GodOfFireWindow"].openWindow
               );
+            PowerButton Button6 = PowerButtons.CreateButton(
+                    "ToggleAutoTraits",
+                    Resources.Load<Sprite>("ui/Icons/iconBlessing"),
+                    "ToggleAutoTraits",
+                    "if enabled, gods will automatically get some traits related to their god trait (all gods get the immortal trait, god of fire gets fireproof)",
+                    new Vector2(352, -18),
+                    ButtonType.Toggle,
+                    tab.transform,
+                    ToggleAutoTraits
+              );
+            if (Main.savedSettings.AutoTraits)
+                PowerButtons.ToggleButton(Button6.name);
             PowerButtons.CreateButton(
                     "MoonGodWindow",
                     Resources.Load<Sprite>("ui/Icons/starsGod"),
@@ -272,6 +284,11 @@ namespace GodsAndPantheons
         public static void ToggleDiplomacy()
         {
             Main.savedSettings.DiplomacyChanges = !Main.savedSettings.DiplomacyChanges;
+            Main.saveSettings();
+        }
+        public static void ToggleAutoTraits()
+        {
+            Main.savedSettings.AutoTraits = !Main.savedSettings.AutoTraits;
             Main.saveSettings();
         }
     }

@@ -152,7 +152,7 @@ namespace GodsAndPantheons
              }
             },
             {"God Of Love", new Dictionary<string, float>(){
-                {S.health, 850},
+                {S.health, 750},
                 {S.intelligence, 10f },
                 {S.speed, 15f},
                 {S.knockback_reduction, 0.05f},
@@ -1140,8 +1140,8 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Love", "blessAllies%")))
             {
-                CreateHeartExplosion(pTile.posV3, 60f);
-                World.world.getObjectsInChunks(pTile, 8, MapObjectType.Actor);
+                CreateHeartExplosion(pSelf.currentTile.posV3, 60f);
+                World.world.getObjectsInChunks(pSelf.currentTile, 8, MapObjectType.Actor);
                 foreach (Actor a in World.world.temp_map_objects)
                 {
                     if (a.kingdom == pSelf.kingdom)
@@ -1159,8 +1159,8 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Love", "healAllies%")))
             {
-                CreateHeartExplosion(pTile.posV3, 100f);
-                World.world.getObjectsInChunks(pTile, 16, MapObjectType.Actor);
+                CreateHeartExplosion(pSelf.currentTile.posV3, 100f);
+                World.world.getObjectsInChunks(pSelf.currentTile, 16, MapObjectType.Actor);
                 foreach (Actor a in World.world.temp_map_objects)
                 {
                     if (a.kingdom == pSelf.kingdom)
@@ -1175,8 +1175,8 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Love", "CastShields%")))
             {
-                CreateHeartExplosion(pTile.posV3, 80f);
-                World.world.getObjectsInChunks(pTile, 13, MapObjectType.Actor);
+                CreateHeartExplosion(pSelf.currentTile.posV3, 80f);
+                World.world.getObjectsInChunks(pSelf.currentTile, 13, MapObjectType.Actor);
                 foreach (Actor a in World.world.temp_map_objects)
                 {
                     if (a.kingdom == pSelf.kingdom)
@@ -1453,6 +1453,10 @@ namespace GodsAndPantheons
         public static bool lichgoderastatus(BaseSimObject pSelf, WorldTile pTile) => EraStatus(pSelf.a, "God Of The Lich");
         public static bool AutoTrait(Actor target, string trait)
         {
+            if (!Main.savedSettings.AutoTraits)
+            {
+                return true;
+            }
             if(AddAutoTraits(target, trait))
             {
                 target.setStatsDirty();
