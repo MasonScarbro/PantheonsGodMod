@@ -152,7 +152,7 @@ namespace GodsAndPantheons
              }
             },
             {"God Of Love", new Dictionary<string, float>(){
-                {S.health, 850},
+                {S.health, 750},
                 {S.intelligence, 10f },
                 {S.speed, 15f},
                 {S.knockback_reduction, 0.05f},
