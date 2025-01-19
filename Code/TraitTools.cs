@@ -354,7 +354,7 @@ namespace GodsAndPantheons
                 {
                     if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
                     {
-                        LesserGod.set("Demi" + nameof(ability), true);
+                        LesserGod.set("Demi" + ability.Method.Name, true);
                     }
                 }
             }
