@@ -38,6 +38,7 @@ namespace GodsAndPantheons
                 {"God Of The Lichinherit%", new InputOption{active = true, value = 36 }}
               } 
             },
+            //his children are terribly weak without his staff, so they need a high chance of inheriting
             {"GodOfFireWindow",
                 new Dictionary<string, InputOption>
               {
@@ -46,7 +47,7 @@ namespace GodsAndPantheons
                  {"Summoning%", new InputOption{active = true, value = 1.2f }},
                  {"Magic%", new InputOption{active = true, value = 2 }},
                  {"ChaosLaser%", new InputOption{active = true, value = 1 }},
-                 {"God Of Fireinherit%", new InputOption{active = true, value = 50 }}
+                 {"God Of Fireinherit%", new InputOption{active = true, value = 60 }}
               }
             },
             {"MoonGodWindow",
@@ -80,13 +81,14 @@ namespace GodsAndPantheons
                   {"God Of lightinherit%", new InputOption{active = true, value = 46 }}
               }
             },
+            //god of war is the strongest, but his strength comes from his stats and not his abilities, so he needs a high inheritence chance for his children to be strong
             {"WarGodWindow",
                 new Dictionary<string, InputOption>
               {
                   {"warGodsCry%", new InputOption{active = true, value = 1 }},
                   {"axeThrow%", new InputOption{active = true, value = 29 }},
                   {"seedsOfWar%", new InputOption{active = true, value = 0.2f }},
-                  {"God Of Warinherit%", new InputOption{active = true, value = 17 }}
+                  {"God Of Warinherit%", new InputOption{active = true, value = 40 }}
               }
             },
             {"EarthGodWindow",
@@ -113,12 +115,12 @@ namespace GodsAndPantheons
             {"LoveGodWindow",
                 new Dictionary<string, InputOption>
               {
-                  {"Poisoning%", new InputOption{active = true, value = 50 }},
-                  {"healAllies%", new InputOption{active = true, value = 35}},
-                  {"blessAllies%", new InputOption{active = true, value = 10 }},
-                  {"CastShields%", new InputOption{active = true, value = 15 }},
-                  {"CorruptEnemys%", new InputOption{active = true, value = 15 }},
-                  {"God Of Loveinherit%", new InputOption{active = true, value = 40 }}
+                  {"Poisoning%", new InputOption{active = true, value = 12.5f }},
+                  {"healAllies%", new InputOption{active = true, value = 30 }},
+                  {"blessAllies%", new InputOption{active = true, value = 5 }},
+                  {"CastShields%", new InputOption{active = true, value = 8 }},
+                  {"CorruptEnemys%", new InputOption{active = true, value = 10 }},
+                  {"God Of Loveinherit%", new InputOption{active = true, value = 35 }}
               }
             }
         };

@@ -94,15 +94,15 @@ namespace GodsAndPantheons
                     {
                         if (pTarget.kingdom.isEnemy(pSelf.kingdom))
                         {
-                            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%")))
+                            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%", 0, 1, 25)))
                             {
                                 pTarget.addStatusEffect("ash_fever", 15);
                             }
-                            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%")))
+                            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%", 0, 1, 25)))
                             {
                                 pTarget.addStatusEffect("poisoned", 30);
                             }
-                            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%")))
+                            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%", 0, 1, 25)))
                             {
                                 pTarget.addStatusEffect("cough", 60);
                             }

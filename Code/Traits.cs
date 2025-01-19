@@ -152,7 +152,7 @@ namespace GodsAndPantheons
              }
             },
             {"God Of Love", new Dictionary<string, float>(){
-                {S.health, 750},
+                {S.health, 700},
                 {S.intelligence, 10f },
                 {S.speed, 15f},
                 {S.knockback_reduction, 0.05f},
@@ -405,7 +405,8 @@ namespace GodsAndPantheons
                 new AttackAction(HealAllies),
                 new AttackAction(BlessAllies),
                 new AttackAction(CastShields),
-                new AttackAction(CorruptEnemy)
+                new AttackAction(CorruptEnemy),
+                new AttackAction(PoisonEnemys),
              }
             }
         };
@@ -633,6 +634,14 @@ namespace GodsAndPantheons
             }
             return true;
         }
+        public static void CastCurse(Actor pTarget)
+        {
+            if(IsGod(pTarget) || pTarget.hasTrait("blessed"))
+            {
+                return;
+            }
+            pTarget.addTrait("cursed");
+        }
         public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile) => SuperRegeneration(pTarget, 15, 5);
         #region attackthings
         // The Main Attack Function to set up a new attack
@@ -757,7 +766,7 @@ namespace GodsAndPantheons
             }
             if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "CastCurses%")))
             {
-                ActionLibrary.castCurses(null, pTarget, null); // casts curses
+                CastCurse(pTarget.a); // casts curses
                 ((Actor)pSelf).removeTrait("cursed");
             }
             return true;
@@ -1148,7 +1157,7 @@ namespace GodsAndPantheons
                         a.a.addTrait("blessed");
                     }
                     else if(a.kingdom.isEnemy(pSelf.kingdom)) {
-                        ActionLibrary.castCurses(null, a, null);
+                        CastCurse(a);
                     }
                 }
             }
@@ -1196,6 +1205,29 @@ namespace GodsAndPantheons
                 }
                 CreateHeartExplosion(pTile.posV3, 80f, true);
                 CreateBlindess(pTile, 8, 15f, pSelf.kingdom);
+            }
+            return true;
+        }
+        private static bool PoisonEnemys(BaseSimObject pSelf, BaseSimObject useless, WorldTile pTile)
+        {
+            World.world.getObjectsInChunks(pTile, 3, MapObjectType.Actor);
+            foreach (BaseSimObject pTarget in World.world.temp_map_objects)
+            {
+                if (pTarget.kingdom.isEnemy(pSelf.kingdom))
+                {
+                    if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%")))
+                    {
+                        pTarget.addStatusEffect("slowness", 15);
+                    }
+                    if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%")))
+                    {
+                        pTarget.addStatusEffect("poisoned", 30);
+                    }
+                    if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%")))
+                    {
+                        pTarget.addStatusEffect("cough", 60);
+                    }
+                }
             }
             return true;
         }
