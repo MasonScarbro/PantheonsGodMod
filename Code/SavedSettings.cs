@@ -18,7 +18,7 @@ namespace GodsAndPantheons
               {"UnleashFireAndAcid%", new InputOption{active = true, value = 20 }},
               {"CastCurses%", new InputOption{active = true, value = 5 }},
               {"Freeze%", new InputOption{active = true, value = 20 }},
-              {"CreateShield%", new InputOption{active = true, value = 1 }},
+              {"CreateShield%", new InputOption{active = true, value = 3 }},
               {"TeleprtTarget%", new InputOption{active = true, value = 1.8f }},
               {"SummonLightning%", new InputOption{active = true, value = 9 }},
               {"SummonMeteor%", new InputOption{active = true, value = 3 }},
@@ -116,11 +116,11 @@ namespace GodsAndPantheons
                 new Dictionary<string, InputOption>
               {
                   {"Poisoning%", new InputOption{active = true, value = 12.5f }},
-                  {"healAllies%", new InputOption{active = true, value = 30 }},
+                  {"healAllies%", new InputOption{active = true, value = 40 }},
                   {"blessAllies%", new InputOption{active = true, value = 5 }},
-                  {"CastShields%", new InputOption{active = true, value = 8 }},
+                  {"CastShields%", new InputOption{active = true, value = 15 }},
                   {"CorruptEnemys%", new InputOption{active = true, value = 10 }},
-                  {"God Of Loveinherit%", new InputOption{active = true, value = 35 }}
+                  {"God Of Loveinherit%", new InputOption{active = true, value = 40 }}
               }
             }
         };

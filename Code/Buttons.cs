@@ -1,6 +1,8 @@
 using NCMS.Utils;
 using UnityEngine;
 using ReflectionUtility;
+using System;
+using static UnityEngine.GraphicsBuffer;
 
 namespace GodsAndPantheons
 {
@@ -38,6 +40,18 @@ namespace GodsAndPantheons
             darkOneSpawn.actor_asset_id = "DarkOne";
             darkOneSpawn.click_action = new PowerActionWithID(callSpawnUnit);
             AssetManager.powers.add(darkOneSpawn);
+
+            var InspectInheritence = new GodPower();
+            InspectInheritence.id = "Inspect God Traits Inherited";
+            InspectInheritence.name = "Inspect God Traits Inherited";
+            InspectInheritence.click_action = new PowerActionWithID(callInspectInheritence);
+            AssetManager.powers.add(InspectInheritence);
+
+            var InspectAbilities = new GodPower();
+            InspectAbilities.id = "Inspect Abilities Inherited";
+            InspectAbilities.name = "Inspect Abilities Inherited";
+            InspectAbilities.click_action = new PowerActionWithID(callInspectAbilities);
+            AssetManager.powers.add(InspectAbilities);
 
             PowerButtons.CreateButton(
               "GodHunter",
@@ -244,7 +258,94 @@ namespace GodsAndPantheons
                     tab.transform,
                     WindowManager.windows["ChaosGodWindow"].openWindow
               );
+            PowerButtons.CreateButton(
+                    "Inspect God Traits Inherited",
+                    Resources.Load<Sprite>("ui/Icons/IconDemi"),
+                    "Inspect God Traits Inherited",
+                    "use this to inspect which god traits a lessergod/demi god inherited",
+                    new Vector2(496, 18),
+                    ButtonType.GodPower,
+                    tab.transform,
+                    null
+              );
+            PowerButtons.CreateButton(
+                   "Inspect Abilities Inherited",
+                   Resources.Load<Sprite>("ui/Icons/subGod"),
+                   "Inspect Abilities Inherited",
+                   "use this to inspect which god abiltiies a lessergod inherited",
+                   new Vector2(496, -18),
+                   ButtonType.GodPower,
+                   tab.transform,
+                   null
+             );
+        }
+        public static string GetGodTraitsInherited(WorldTile pTile)
+        {
+            World.world.getObjectsInChunks(pTile, 2, MapObjectType.Actor);
+            Actor pActor = null;
+            foreach (Actor a in World.world.temp_map_objects)
+            {
+                if (a.hasTrait("Lesser God") || a.hasTrait("Demi God"))
+                {
+                    pActor = a;
+                    break;
+                }
+            }
+            if (pActor == null)
+            {
+               return "no Lesser God or Demi God found!";
+            }
+            string message = "";
+            foreach (string trait in Traits.Getinheritedgodtraits(pActor.data))
+            {
+                message += trait + ", ";
+            }
+            return message;
+        }
+        public static string GetAbilitiesInherited(WorldTile pTile)
+        {
+            World.world.getObjectsInChunks(pTile, 2, MapObjectType.Actor);
+            Actor pActor = null;
+            foreach (Actor a in World.world.temp_map_objects)
+            {
+                if (a.hasTrait("Lesser God"))
+                {
+                    pActor = a;
+                    break;
+                }
+            }
+            if (pActor == null)
+            {
+                return "no Lesser God found!";
+            }
+            string message = "";
+            foreach (string godtrait in Traits.Getinheritedgodtraits(pActor.data))
+            {
+                foreach (AttackAction ability in Traits.GodAbilities[godtrait])
+                {
+                    pActor.data.get("Demi" + ability.Method.Name, out bool inherited);
+                    if (inherited)
+                    {
+                        message += ability.Method.Name + ", ";
+                    }
+                }
+            }
+            if(message == "")
+            {
+                message = "This Lesser God has no abilities inherited!";
+            }
+            return message;
+        }
 
+        private static bool callInspectInheritence(WorldTile pTile, string pPowerID)
+        {
+            WorldTip.instance.showToolbarText(GetGodTraitsInherited(pTile));
+            return true;
+        }
+        public static bool callInspectAbilities(WorldTile pTile, string pPowerID)
+        {
+            WorldTip.instance.showToolbarText(GetAbilitiesInherited(pTile));
+            return true;
         }
 
         private static PowersTab getPowersTab(string id)

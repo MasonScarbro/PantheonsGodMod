@@ -663,7 +663,7 @@ namespace GodsAndPantheons
             {
                 foreach (AttackAction ability in GodAbilities[godtrait])
                 {
-                    pSelf.a.data.get("Demi" + nameof(ability), out bool inherited);
+                    pSelf.a.data.get("Demi" + ability.Method.Name, out bool inherited);
                     if (inherited)
                     {
                         ability(pSelf, pTarget, pTile);
