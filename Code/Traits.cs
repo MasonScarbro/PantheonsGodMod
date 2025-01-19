@@ -188,7 +188,6 @@ namespace GodsAndPantheons
                 "poison_immune",
                 "fire_proof",
                 "acid_proof",
-                "burning_feet",
                 "shiny",
                 "fire_blood",
                 "immortal",
@@ -1149,7 +1148,7 @@ namespace GodsAndPantheons
                         a.a.addTrait("blessed");
                     }
                     else if(a.kingdom.isEnemy(pSelf.kingdom)) {
-                        a.addTrait("cursed");
+                        ActionLibrary.castCurses(null, a, null);
                     }
                 }
             }
