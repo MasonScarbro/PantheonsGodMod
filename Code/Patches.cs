@@ -210,11 +210,15 @@ namespace GodsAndPantheons
             {
                 return;
             }
+            DivineMiracle(instance);
+        }
+        public static bool DivineMiracle(MapBox instance)
+        {
             List<Kingdom> list = World.world.kingdoms.list_civs;
             List<string> availabletraits = getavailblegodtraits(instance);
             if (availabletraits.Count == 0)
             {
-                return;
+                return false;
             }
             availabletraits.Shuffle();
             list.Shuffle();
@@ -230,11 +234,12 @@ namespace GodsAndPantheons
                         {
                             DivineMiracle(a, availabletraits[0]);
                             Timer = 300;
-                            return;
+                            return true;
                         }
                     }
                 }
             }
+            return false;
         }
         static Actor LuckyOnee;
         static float blessingtime = 0;
@@ -242,7 +247,7 @@ namespace GodsAndPantheons
         {
             World.world.startShake(1f, 0.01f, 2f, true, true);
             LuckyOne.addTrait(godtrait);
-            LuckyOne.equipment.weapon.emptySlot();
+            LuckyOne.equipment?.weapon?.emptySlot();
             LuckyOnee = LuckyOne;
             blessingtime = 10;
             WorldLogMessage worldLogMessage = new WorldLogMessage($"A Divine Miracle Has Occurred in {LuckyOne.kingdom.name}!")

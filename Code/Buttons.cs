@@ -132,12 +132,22 @@ namespace GodsAndPantheons
               );
             if (Main.savedSettings.DevineMiracles)
                 PowerButtons.ToggleButton(button3.name);
+            PowerButtons.CreateButton(
+                    "Create a Divine Miracle",
+                    Resources.Load<Sprite>("ui/Icons/iconNightchild"),
+                    "Create a Divine Miracle",
+                    "press this to make a divine miracle manually",
+                    new Vector2(424, -18),
+                    ButtonType.Click,
+                    tab.transform,
+                    CreateDivineMiracle
+              );
             PowerButton button4 = PowerButtons.CreateButton(
                     "GodKings",
                     Resources.Load<Sprite>("ui/Icons/iconKings"),
                     "God Kings",
                     "if enabled, gods will always take higher priority when electing a new king",
-                    new Vector2(424, -18),
+                    new Vector2(352, 18),
                     ButtonType.Toggle,
                     tab.transform,
                     ToggleGodKings
@@ -161,7 +171,7 @@ namespace GodsAndPantheons
                     Resources.Load<Sprite>("ui/Icons/GodOfFire"),
                     "Chance Modfier",
                     "Manage The Gods Powers",
-                    new Vector2(352, 18),
+                    new Vector2(316, -18),
                     ButtonType.Click,
                     tab.transform,
                     WindowManager.windows["GodOfFireWindow"].openWindow
@@ -371,6 +381,13 @@ namespace GodsAndPantheons
         {
             Main.savedSettings.DevineMiracles = !Main.savedSettings.DevineMiracles;
             Main.saveSettings();
+        }
+        public static void CreateDivineMiracle()
+        {
+            if (!UpdateWorldStuff.DivineMiracle(World.world))
+            {
+                WorldTip.instance.showToolbarText("Could Not Create A Divine Miracle! there can only be a miracle if there is a kingdom with no gods");
+            }
         }
         public static void ToggleGodKings()
         {
