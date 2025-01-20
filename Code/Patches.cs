@@ -247,7 +247,7 @@ namespace GodsAndPantheons
         {
             World.world.startShake(1f, 0.01f, 2f, true, true);
             LuckyOne.addTrait(godtrait);
-            LuckyOne.equipment.weapon?.emptySlot();
+            LuckyOne.equipment?.weapon?.emptySlot();
             LuckyOnee = LuckyOne;
             blessingtime = 10;
             WorldLogMessage worldLogMessage = new WorldLogMessage($"A Divine Miracle Has Occurred in {LuckyOne.kingdom.name}!")
