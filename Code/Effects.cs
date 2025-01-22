@@ -392,6 +392,7 @@ namespace GodsAndPantheons
             if(!(a.transform.childCount > 0 && a.transform.GetChild(0).GetComponent<CrabArm>() != null))
             {
                 a.activeStatus_dict.Remove("Lassering");
+                a.updateStats();
                 return false;
             }
             if (a.has_attack_target)
