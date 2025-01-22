@@ -25,17 +25,16 @@ namespace GodsAndPantheons
         public bool CheckStatus(Actor pActor, out Actor Master)
         {
             Master = Traits.FindMaster(pActor);
-            if (pActor.hasTrait("madness"))
+            if (pActor.hasTrait("madness") || pActor.asset.die_if_has_madness)
             {
                 pActor.data.setName("Corrupted One");
                 ClearData(pActor);
                 pActor.removeTrait("Summoned One");
                 return false;
             }
-            if (pActor.asset.die_if_has_madness || Master == null)
+            if (Master == null)
             {
-                pActor.removeTrait("Summoned One");
-                ClearData(pActor);
+                pActor.killHimself();
                 return false;
             }
             return true;
@@ -50,8 +49,8 @@ namespace GodsAndPantheons
         {
             if(!CheckStatus(pActor, out Actor Master))
             {
-                pActor.finishAllStatusEffects();
-                pActor.clearBeh();
+                pActor?.finishAllStatusEffects();
+                pActor?.clearBeh();
                 return BehResult.Stop;
             }
             return BehFunctions.Minion(pActor, Master);

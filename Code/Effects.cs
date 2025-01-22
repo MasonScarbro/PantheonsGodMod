@@ -260,7 +260,7 @@ namespace GodsAndPantheons
             warGodsCry.name = "WarGodsCry";
             localizeStatus(warGodsCry.id, "WarGodsCry", warGodsCry.description); // Localizes the status effect
             AssetManager.status.add(warGodsCry);
-
+            
             StatusEffect ICANTSEE = new StatusEffect();
             ICANTSEE.id = "Blinded";
             ICANTSEE.duration = 7000f;
@@ -275,6 +275,21 @@ namespace GodsAndPantheons
             localizeStatus(ICANTSEE.id, "Blinded", ICANTSEE.description); // Localizes the status effect
             AssetManager.status.add(ICANTSEE);
             
+            StatusEffect Petrified = new StatusEffect();
+            Petrified.id = "Petrified";
+            Petrified.duration = 7000f;
+            Petrified.base_stats[S.range] -= 10000;
+            Petrified.base_stats[S.speed] -= 10000;
+            Petrified.base_stats[S.knockback_reduction] += 99999;
+            Petrified.base_stats[S.damage] -= 99999;
+            Petrified.path_icon = "ui/icons/iconResStone";
+            Petrified.description = "................";
+            Petrified.action_interval = 0.5f;
+            Petrified.action = new WorldAction(PetrifiedEffect);
+            Petrified.name = "Petrified";
+            localizeStatus(Petrified.id, "Petrified", Petrified.description); // Localizes the status effect
+            AssetManager.status.add(Petrified);
+
             StatusEffect BrainWashed = new StatusEffect();
             BrainWashed.id = "BrainWashed";
             BrainWashed.duration = 20f;
@@ -349,6 +364,23 @@ namespace GodsAndPantheons
             }
             return true;
         }
+        public static bool PetrifiedEffect(BaseSimObject pTarget, WorldTile pTile)
+        {
+            Color mycolor = pTarget.GetComponent<SpriteRenderer>().color;
+            if (mycolor.r != 0.2)
+            {
+                pTarget.GetComponent<SpriteRenderer>().color = new Color(0.2f, 0.4f, 0.4f, mycolor.a);
+            }
+            if (Toolbox.randomChance(0.25f))
+            {
+                pTarget.getHit(pTarget.getMaxHealth() * .1f, true, AttackType.Block, null, false);
+            }
+            if (Toolbox.randomChance(0.1f))
+            {
+                DropsLibrary.action_spawn_building(pTile, SD.stone);
+            }
+            return true;
+        }
         public static bool LaserEffect(BaseSimObject pTarget, WorldTile pTile)
         {
             Actor a = pTarget.a;
@@ -357,14 +389,18 @@ namespace GodsAndPantheons
                 pTarget.finishStatusEffect("Lassering");
                 return false;
             }
-            if (a.transform.childCount > 0 && a.transform.GetChild(0).GetComponent<CrabArm>() != null && a.has_attack_target)
+            if(!(a.transform.childCount > 0 && a.transform.GetChild(0).GetComponent<CrabArm>() != null))
+            {
+                a.activeStatus_dict.Remove("Lassering");
+                return false;
+            }
+            if (a.has_attack_target)
             {
                 UpdateCrabArnLaser(a.transform.GetChild(0).GetComponent<CrabArm>(), a);
             }
             else
             {
-                a.finishStatusEffect("Lassering");
-                return false;
+                pTarget.finishStatusEffect("Lassering");
             }
             return true;
         }

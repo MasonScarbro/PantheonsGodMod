@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using HarmonyLib;
 using NCMS.Utils;
 using static GodsAndPantheons.Traits;
+using System.Runtime.Serialization;
 
 namespace GodsAndPantheons
 {
@@ -594,17 +595,16 @@ namespace GodsAndPantheons
         {
             if (pTarget != null)
             {
-                
                 if (Toolbox.randomChance(GetEnhancedChance("God Of the Night", "DarkDash%")))
                 {
-                    EffectsLibrary.spawnAt("fx_teleportStart_dej", pSelf.currentPosition, pSelf.a.stats[S.scale]);
-                    BaseEffect baseEffect = EffectsLibrary.spawnAt("fx_teleportEnd_dej", pTarget.a.currentTile.posV3, pSelf.a.stats[S.scale]);
-                    if (baseEffect != null)
-                    {
-                        baseEffect.spriteAnimation.setFrameIndex(9);
+                    PushActor(pSelf.a, pTarget.currentTile.pos, 4);
+                    World.world.getObjectsInChunks(pTile, 4, MapObjectType.All);
+                    foreach(BaseSimObject enemy in World.world.temp_map_objects){
+                        if(enemy.kingdom != pSelf.kingdom)
+                        {
+                            enemy.getHit(80, true, AttackType.Weapon, pSelf);
+                        }
                     }
-                    pSelf.a.cancelAllBeh(null);
-                    pSelf.a.spawnOn(pTarget.a.currentTile, 0f);
                     return true;
                 }
                 return true;
