@@ -812,6 +812,10 @@ namespace GodsAndPantheons
             {
                 pb.spawnForce(Toolbox.getRandomTileWithinDistance(s.pTile, 60), null);
             }
+            if (Toolbox.randomChance(0.3f))
+            {
+                CreateBlindess(Toolbox.getRandomTileWithinDistance(s.pTile, 60), 5, 30, null);
+            }
         }
         public static bool CloudOfDarkness(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -905,12 +909,12 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        public static void CreateBlindess(WorldTile pTile, int radius, float length, Kingdom kingdom)
+        public static void CreateBlindess(WorldTile pTile, int radius, float length, Kingdom kingdom = null)
         {
             World.world.getObjectsInChunks(pTile, radius, MapObjectType.Actor);
             foreach (Actor victim in World.world.temp_map_objects)
             {
-                if (victim.kingdom == kingdom || IsGod(victim)) continue;
+                if ((kingdom != null && victim.kingdom == kingdom) || IsGod(victim)) continue;
                 victim.addStatusEffect("Blinded", length);
             }
         }

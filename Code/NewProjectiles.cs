@@ -106,6 +106,12 @@ namespace GodsAndPantheons
                             {
                                 pTarget.addStatusEffect("cough", 60);
                             }
+                            if(pTarget.isActor() && Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Petrification%")))
+                            {
+                                MusicBox.playSound("event:/SFX/DROPS/DropStone");
+                                pTarget.addStatusEffect("Petrified");
+                                Effects.PetrifiedEffect(pTarget, pTarget.currentTile);
+                            }
                         }
                     }
                     return true;

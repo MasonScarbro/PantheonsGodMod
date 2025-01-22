@@ -63,6 +63,7 @@ namespace GodsAndPantheons
             {"DarkGodWindow",
                 new Dictionary<string, InputOption>
               {
+                  {"DarkDash%", new InputOption{active = true, value = 30f }},
                   {"cloudOfDarkness%", new InputOption{active = true, value = 1 }},
                   {"blackHole%", new InputOption{active = true, value = 3 }},
                   {"darkDaggers%", new InputOption{active = true, value = 10 }},
@@ -120,6 +121,7 @@ namespace GodsAndPantheons
                   {"blessAllies%", new InputOption{active = true, value = 5 }},
                   {"CastShields%", new InputOption{active = true, value = 15 }},
                   {"CorruptEnemys%", new InputOption{active = true, value = 10 }},
+                  {"Petrification%", new InputOption{active = true, value = 20 }},
                   {"God Of Loveinherit%", new InputOption{active = true, value = 40 }}
               }
             }

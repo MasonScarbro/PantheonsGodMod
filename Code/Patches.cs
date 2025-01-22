@@ -1,4 +1,5 @@
-﻿using ai.behaviours;
+﻿using ai;
+using ai.behaviours;
 using HarmonyLib;
 using SimpleJSON;
 using SleekRender;
@@ -13,6 +14,25 @@ using static UnityEngine.GraphicsBuffer;
 //Harmony Patches
 namespace GodsAndPantheons
 {
+    [HarmonyPatch(typeof(Actor), nameof(Actor.updateParallelChecks))]
+    public class DontMoveIfPetrified
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[] { new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ActorBase), "has_status_frozen")) });
+            Matcher.RemoveInstruction();
+            Matcher.Insert(new CodeInstruction[]
+            {
+                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(DontMoveIfPetrified), nameof(CantMove)))
+            });
+            return Matcher.Instructions();
+        }
+        public static bool CantMove(Actor a)
+        {
+            return a.has_status_frozen || a.hasStatus("Petrified");
+        }
+    }
     [HarmonyPatch(typeof(MapBox), nameof(MapBox.applyForce))]
     public class RandomForce
     {
@@ -372,7 +392,7 @@ namespace GodsAndPantheons
         }
         static void Postfix(BaseSimObject __instance, BaseSimObject pTarget, ref bool __result)
         {
-            if (__instance.hasStatus("Blinded"))
+            if (__instance.hasStatus("Blinded") || __instance.hasStatus("Petrified"))
             {
                 __result = false;
                 return;
