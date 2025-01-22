@@ -395,7 +395,7 @@ namespace GodsAndPantheons
             }
             else
             {
-                a.finishStatusEffect("Lassering");
+                a.activeStatus_dict.Remove("Lassering");
                 return false;
             }
             return true;
