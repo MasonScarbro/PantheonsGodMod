@@ -389,14 +389,18 @@ namespace GodsAndPantheons
                 pTarget.finishStatusEffect("Lassering");
                 return false;
             }
-            if (a.transform.childCount > 0 && a.transform.GetChild(0).GetComponent<CrabArm>() != null && a.has_attack_target)
+            if(!(a.transform.childCount > 0 && a.transform.GetChild(0).GetComponent<CrabArm>() != null))
+            {
+                a.activeStatus_dict.Remove("Lassering");
+                return false;
+            }
+            if (a.has_attack_target)
             {
                 UpdateCrabArnLaser(a.transform.GetChild(0).GetComponent<CrabArm>(), a);
             }
             else
             {
-                a.activeStatus_dict.Remove("Lassering");
-                return false;
+                pTarget.finishStatusEffect("Lassering");
             }
             return true;
         }
