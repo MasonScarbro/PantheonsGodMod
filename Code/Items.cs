@@ -597,7 +597,7 @@ namespace GodsAndPantheons
             {
                 if (Toolbox.randomChance(GetEnhancedChance("God Of the Night", "DarkDash%")))
                 {
-                    PushActor(pSelf.a, pTarget.currentTile.pos, 4);
+                    PushActor(pSelf.a, pTarget.currentTile.pos, 4, 0.1f, true);
                     World.world.getObjectsInChunks(pTile, 4, MapObjectType.All);
                     foreach(BaseSimObject enemy in World.world.temp_map_objects){
                         if(enemy.kingdom != pSelf.kingdom)
