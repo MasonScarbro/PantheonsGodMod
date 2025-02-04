@@ -548,6 +548,7 @@ namespace GodsAndPantheons
             chancemult += demiparents / 8;
             float importantgenes = godparents + lesserparents;
             Actor? chief = GreatClan?.getChief();
+            AutoTrait(child, godtraits, true, chancemult);
             if (chief != null)
             {
                 if (IsGod(chief))
@@ -566,7 +567,6 @@ namespace GodsAndPantheons
                 MakeDemiGod(godtraits, ref child, chancemult);
                 return;
             }
-            AutoTrait(child, godtraits, true, chancemult);
         }
         static void AddRange(ListPool<string> list, List<string> range)
         {

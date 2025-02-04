@@ -216,7 +216,7 @@ namespace GodsAndPantheons
             FireStorm.duration = 9999;
             FireStorm.id = "FireStorm";
             FireStorm.path_icon = "ui/icons/GodOfFire";
-            FireStorm.name = "Lasering";
+            FireStorm.name = "FireStorm";
             FireStorm.description = "It burns!!!!!";
             FireStorm.base_stats[S.mod_speed] = 0.75f;
             FireStorm.action_interval = 0.8f;
@@ -392,6 +392,7 @@ namespace GodsAndPantheons
             if(!(a.transform.childCount > 0 && a.transform.GetChild(0).GetComponent<CrabArm>() != null))
             {
                 a.activeStatus_dict.Remove("Lassering");
+                a.setStatsDirty();
                 a.updateStats();
                 return false;
             }
@@ -432,11 +433,11 @@ namespace GodsAndPantheons
             {
                 MapAction.damageWorld(tile, 4, AssetManager.terraform.get("LesserCrabLaser"), pSelf);
                 ///ARMOR PENETRATING
-                pSelf.attackTarget.getHit(40, true, AttackType.Acid, pSelf, false, false);
+                pSelf.attackTarget.getHit(40, true, AttackType.Acid, pSelf, false);
 
                 if (pSelf.attackTarget.isActor())
                 {
-                    Traits.PushActor(pSelf.attackTarget.a, tile.pos, 0.5f);
+                    Traits.PushActor(pSelf.attackTarget.a, tile.pos, 0.5f, 0.1f, true);
                 }
             }
         }

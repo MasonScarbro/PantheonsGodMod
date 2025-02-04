@@ -434,10 +434,10 @@ namespace GodsAndPantheons
             minion.data.set("PreviousKingdom", minion.kingdom.id);
             minion.setKingdom(Master.kingdom);
         }
-        public static void PushActor(Actor pActor, Vector2Int point, float strength = 1, float Zstrength = 0.1f, bool Outward = false)
+        public static void PushActor(Actor pActor, Vector2Int point, float strength = 1, float Zstrength = 0.1f, bool IgnoreResistance = false, bool Outward = false)
         {
             float angle = Toolbox.getAngle(pActor.currentTile.x, pActor.currentTile.y, point.x, point.y);
-            float TrueStrength = strength - strength * pActor.stats[S.knockback_reduction];
+            float TrueStrength = IgnoreResistance ? strength : strength - strength * pActor.stats[S.knockback_reduction];
             float num4 = Mathf.Cos(angle) * TrueStrength * (Outward ? -1 : 1);
             float num5 = Mathf.Sin(angle) * TrueStrength * (Outward ? -1 : 1);
             pActor.addForce(num4, num5, Zstrength);
