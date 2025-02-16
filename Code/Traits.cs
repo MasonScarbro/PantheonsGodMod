@@ -191,7 +191,9 @@ namespace GodsAndPantheons
                 "shiny",
                 "fire_blood",
                 "immortal",
-                "regeneration"
+                "regeneration",
+                "immune",
+                "strong_minded"
              }
             },
             {"God Of Love", new List<string>()
@@ -204,7 +206,9 @@ namespace GodsAndPantheons
                 "fast",
                 "immortal",
                 "regeneration",
-                "thorns"
+                "thorns",
+                "immune",
+                "strong_minded"
              }
             },
             {"God Of light", new List<string>()
@@ -219,6 +223,8 @@ namespace GodsAndPantheons
                 "energized",
                 "light_lamp",
                 "immortal",
+                "immune",
+                "strong_minded"
              }
             },
             {"God Of Knowledge", new List<string>()
@@ -232,6 +238,7 @@ namespace GodsAndPantheons
                 "immortal",
                 "strong_minded",
                 "wise",
+                "immune"
              }
             },
             {"God Of the Night", new List<string>()
@@ -246,6 +253,7 @@ namespace GodsAndPantheons
                 "immortal",
                 "strong_minded",
                 "moonchild",
+                "immune"
              }
             },
             {"God Of the Stars", new List<string>()
@@ -260,6 +268,7 @@ namespace GodsAndPantheons
                 "immortal",
                 "strong_minded",
                 "moonchild",
+                "immune"
              }
             },
             {"God Of the Earth", new List<string>()
@@ -273,6 +282,8 @@ namespace GodsAndPantheons
                 "freeze_proof",
                 "tough",
                 "immortal",
+                "immune",
+                "strong_minded"
              }
             },
             {"God Of Chaos", new List<string>()
@@ -285,6 +296,8 @@ namespace GodsAndPantheons
                 "freeze_proof",
                 "tough",
                 "immortal",
+                "immune",
+                "strong_minded"
              }
             },
             {"God Of War", new List<string>()
@@ -297,7 +310,9 @@ namespace GodsAndPantheons
                 "pyromaniac",
                 "veteran",
                 "immortal",
-                "tough"
+                "tough",
+                "immune",
+                "strong_minded"
              }
             },
             {"God Of The Lich", new List<string>()
@@ -310,12 +325,14 @@ namespace GodsAndPantheons
                 "regeneration",
                 "immortal",
                 "tough",
+                "immune",
+                "strong_minded"
              }
             },
             {"God Killer", new List<string>()
              {
                 "blessed",
-                "fire_proof",
+                "strong",
                 "tough",
              }
             }
@@ -547,8 +564,8 @@ namespace GodsAndPantheons
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(godkillerautotrait));
             godHunter.action_special_effect = (WorldAction)Delegate.Combine(godHunter.action_special_effect, new WorldAction(InvisibleCooldown));
             godHunter.action_attack_target = new AttackAction(GodHunterAttack);
-            godHunter.group_id = "GodTraits";
-            godHunter.can_be_given = true;
+            godHunter.group_id = TraitGroup.special;
+            godHunter.can_be_given = false;
             AddTrait(godHunter, "He will stop at NOTHING to kill a god");
 
             ActorTrait GodOfLove = new ActorTrait();
@@ -620,7 +637,6 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        //if god is too far away the god hunter will teleport to them
         public static bool InvisibleCooldown(BaseSimObject pTarget, WorldTile pTile)
         {
             if (pTarget.isActor() && Main.savedSettings.HunterAssasins && pTarget.a.asset.id == "GodHunter")
@@ -705,7 +721,7 @@ namespace GodsAndPantheons
                 World.world.getObjectsInChunks(pTile, 16, MapObjectType.Actor);
                 foreach (Actor a in World.world.temp_map_objects)
                 {
-                    if (a != pSelf.a && !a.asset.die_if_has_madness && !IsGod(a))
+                    if (a != pSelf.a && !a.asset.die_if_has_madness)
                     {
                         a.addTrait("madness");
                     }
@@ -762,7 +778,10 @@ namespace GodsAndPantheons
             }
             if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "TeleprtTarget%")))
             {
-                ActionLibrary.teleportRandom(null, pTarget, null); // flee
+                if (pSelf.a.data.health < pSelf.a.getMaxHealth() * 0.3f)
+                {
+                    ActionLibrary.teleportRandom(null, pTarget, null); // flee
+                }
             }
             if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "CastCurses%")))
             {
@@ -944,7 +963,10 @@ namespace GodsAndPantheons
             if (Toolbox.randomChance(GetEnhancedChance("God Of light", "speedOfLight%")))
             {
                 pb.divineLightFX(pTarget.currentTile, null);
-                EffectsLibrary.spawn("fx_thunder_flash", pSelf.currentTile, null, null, 0f, -1f, -1f);
+                if (IsGod(pSelf.a))
+                {
+                    EffectsLibrary.spawn("fx_thunder_flash", pSelf.currentTile, null, null, 0f, -1f, -1f);
+                }
                 pSelf.a.addStatusEffect("caffeinated", 10f);
                 pTarget.addStatusEffect("slowness", 10f);
             }
@@ -1030,14 +1052,9 @@ namespace GodsAndPantheons
                 {
                     return true;
                 }
-                bool hasmadness = pSelf.a.hasTrait("madness");
-                if (!IsGod(pTarget.a))
-                {
-                    MapBox.instance.dropManager.spawn(pTarget.a.currentTile, SD.madness, 5f, -1f);
-                    MapBox.instance.dropManager.spawn(_tile, SD.madness, 5f, -1f);
-                    MapBox.instance.dropManager.spawn(_tile.neighbours[0], SD.madness, 5f, -1f);
-                }
-                if (!hasmadness) pSelf.a.removeTrait("madness");
+                MapBox.instance.dropManager.spawn(pTarget.a.currentTile, SD.madness, 5f, -1f);
+                MapBox.instance.dropManager.spawn(_tile, SD.madness, 5f, -1f);
+                MapBox.instance.dropManager.spawn(_tile.neighbours[0], SD.madness, 5f, -1f);
             }
             return true;
         }

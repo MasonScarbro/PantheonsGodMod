@@ -416,7 +416,13 @@ namespace GodsAndPantheons
     {
         static void Prefix(Actor __instance, Actor pDeadUnit)
         {
+            if(pDeadUnit == null) return;
             bool isgod = IsGod(pDeadUnit);
+            if(__instance.hasTrait("God Of The Lich") && !isgod)
+            {
+                Actor actor = CopyActor(pDeadUnit, pDeadUnit.asset.zombieID);
+                TurnActorIntoSummonedOne(actor, __instance, 300);
+            }
             if (isgod)
             {
                 __instance.addTrait("God Killer");

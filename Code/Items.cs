@@ -533,6 +533,17 @@ namespace GodsAndPantheons
             }
             return true;
         }
+        public static void MadStorm(Storm s) {
+            if (Vector3.Distance(s.transform.position, s.TileToGo.posV) < 10)
+            {
+                s.TileToGo = Toolbox.getRandomTileWithinDistance(s.pTile, 120);
+            }
+            if (Toolbox.randomChance(0.4f))
+            {
+                for (int i = 0; i < Toolbox.randomInt(5, 10); i++)
+                    World.world.dropManager.spawnParabolicDrop(s.pTile, SB.corrupted_brain, 0, 2, 20, 20, 50);
+            }
+        }
         static bool UnleashFire(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Chaos", "BoneFire%")))
@@ -542,6 +553,10 @@ namespace GodsAndPantheons
                 Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
                 Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.stats[S.size], true);
                 EffectsLibrary.spawnProjectile("boneFire", newPoint, newPoint2, 0.0f);
+                for (int i = 0; i < Toolbox.randomInt(3, 5); i++)
+                {
+                    CreateStorm(pTile, 30f, 0.5f, MadStorm, new Color(0.7f, 1, 1, 0.9f), 0.2f).GetComponent<Storm>().TileToGo = Toolbox.getRandomTileWithinDistance(pTile, 100);
+                }
             }
             return true;
         }

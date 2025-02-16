@@ -19,7 +19,7 @@ namespace GodsAndPantheons
               {"CastCurses%", new InputOption{active = true, value = 5 }},
               {"Freeze%", new InputOption{active = true, value = 20 }},
               {"CreateShield%", new InputOption{active = true, value = 3 }},
-              {"TeleprtTarget%", new InputOption{active = true, value = 1.8f }},
+              {"TeleprtTarget%", new InputOption{active = true, value = 5f }},
               {"SummonLightning%", new InputOption{active = true, value = 9 }},
               {"SummonMeteor%", new InputOption{active = true, value = 3 }},
               {"PagesOfKnowledge%", new InputOption{active = true, value = 3 }},
@@ -42,11 +42,11 @@ namespace GodsAndPantheons
             {"GodOfFireWindow",
                 new Dictionary<string, InputOption>
               {
-                 {"FireStorm%", new InputOption{active = true, value = 0.5f }},
-                 {"MorphIntoDragon%", new InputOption{active = true, value = 15 }},
-                 {"Summoning%", new InputOption{active = true, value = 1.2f }},
-                 {"Magic%", new InputOption{active = true, value = 2 }},
-                 {"ChaosLaser%", new InputOption{active = true, value = 1 }},
+                 {"FireStorm%", new InputOption{active = true, value = 1f }},
+                 {"MorphIntoDragon%", new InputOption{active = true, value = 30 }},
+                 {"Summoning%", new InputOption{active = true, value = 2.4f }},
+                 {"Magic%", new InputOption{active = true, value = 4 }},
+                 {"ChaosLaser%", new InputOption{active = true, value = 2 }},
                  {"God Of Fireinherit%", new InputOption{active = true, value = 60 }}
               }
             },
@@ -57,7 +57,7 @@ namespace GodsAndPantheons
                  {"cometAzure%", new InputOption{active = true, value = 2 }},
                  {"cometShower%", new InputOption{active = true, value = 4 }},
                  {"summonWolf%", new InputOption{active = true, value = 10 }},
-                 {"God Of the Starsinherit%", new InputOption{active = true, value = 22 }}
+                 {"God Of the Starsinherit%", new InputOption{active = true, value = 24 }}
               }
             },
             {"DarkGodWindow",
@@ -86,7 +86,7 @@ namespace GodsAndPantheons
             {"WarGodWindow",
                 new Dictionary<string, InputOption>
               {
-                  {"warGodsCry%", new InputOption{active = true, value = 1 }},
+                  {"warGodsCry%", new InputOption{active = true, value = 5 }},
                   {"axeThrow%", new InputOption{active = true, value = 29 }},
                   {"seedsOfWar%", new InputOption{active = true, value = 0.2f }},
                   {"God Of Warinherit%", new InputOption{active = true, value = 40 }}
