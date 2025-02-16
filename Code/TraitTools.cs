@@ -265,7 +265,19 @@ namespace GodsAndPantheons
             temp_base_stats[S.max_age] = maxage;
             return temp_base_stats;
         }
-        public static bool Morph(Actor pActor, string morphid, bool savedata = true, bool destroyWeapon = true)
+        public static Actor CopyActor(Actor pActor, string ActorID)
+        {
+            Actor actor = World.world.units.createNewUnit(ActorID, pActor.currentTile, 0f);
+            actor.data.traits.Clear();
+            actor.data.custom_data_bool = pActor.data.custom_data_bool;
+            actor.data.custom_data_float = pActor.data.custom_data_float;
+            actor.data.custom_data_int = pActor.data.custom_data_int;
+            actor.data.custom_data_string = pActor.data.custom_data_string;
+            actor.data.custom_data_flags = pActor.data.custom_data_flags;
+            ActorTool.copyUnitToOtherUnit(pActor, actor);
+            return actor;
+        }
+        public static bool Morph(Actor pActor, string morphid, bool destroyWeapon = true)
         {
             if (pActor == null)
             {
@@ -283,32 +295,21 @@ namespace GodsAndPantheons
             {
                 pActor.equipment?.weapon?.emptySlot();
             }
-            Actor actor = World.world.units.createNewUnit(morphid, pActor.currentTile, 0f);
-            actor.data.traits.Clear();
+            Actor actor = CopyActor(pActor, morphid);
+            if (!actor.asset.use_items && pActor.asset.use_items)
+            {
+                pActor.city?.takeAllItemsFromActor(pActor);
+            }
             actor.setKingdom(pActor.kingdom);
             actor.setCity(pActor.city);
-            if (savedata)
-            {
-                actor.data.custom_data_bool = pActor.data.custom_data_bool;
-                actor.data.custom_data_float = pActor.data.custom_data_float;
-                actor.data.custom_data_int = pActor.data.custom_data_int;
-                actor.data.custom_data_string = pActor.data.custom_data_string;
-                actor.data.custom_data_flags = pActor.data.custom_data_flags;
-                actor.data.set("morphedinto", morphid);
-                actor.data.set("oldself", pActor.asset.id);
-                
-                if (!actor.asset.use_items && pActor.asset.use_items)
-                {
-                    pActor.city?.takeAllItemsFromActor(pActor);
-                }
-                ActorTool.copyUnitToOtherUnit(pActor, actor);
-            }
             pActor.data.traits.Clear();
-            foreach(Actor minion in GetMinions(pActor))
+            actor.data.set("morphedinto", morphid);
+            actor.data.set("oldself", pActor.asset.id);
+            foreach (Actor minion in GetMinions(pActor))
             {
                 minion.data.set("Master", actor.data.id);
             }
-            if(Config.selectedUnit == pActor)
+            if (Config.selectedUnit == pActor)
             {
                 Config.selectedUnit = actor;
             }

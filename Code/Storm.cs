@@ -14,7 +14,6 @@ namespace GodsAndPantheons
         public WorldTile pTile;
         public float Speed;
 
-        //fire god stuff
         public WorldTile? TileToGo;
         public bool UsingLaser = false;
         public void Init(float Time, float TimeCooldown, StormAction? StormAction)
@@ -38,7 +37,11 @@ namespace GodsAndPantheons
             }
             if(StormAnimation.currentFrameIndex > 6)
             {
-                StormAnimation.setFrameIndex(2);
+                StormAnimation.playType = AnimPlayType.Backward;
+            }
+            if(StormAnimation.currentFrameIndex < 3)
+            {
+                StormAnimation.playType = AnimPlayType.Forward;
             }
             timeleft -= Elapsed;
             //fire god stuff
