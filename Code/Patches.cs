@@ -622,10 +622,23 @@ namespace GodsAndPantheons
     [HarmonyPatch(typeof(MapBox), "applyAttack")]
     public class KnowledgeGodEnemySwap
     {
-        static void Prefix(AttackData pData, ref BaseSimObject pTargetToCheck)
+        static bool Prefix(AttackData pData, ref BaseSimObject pTargetToCheck)
         {
             if (pTargetToCheck.isActor() && pData.initiator != null)
             {
+                if (pTargetToCheck.a.hasTrait("God Of War"))
+                {
+                    if (Toolbox.randomChance(GetEnhancedChance("God Of War", "BlockAttack%")))
+                    {
+                        MusicBox.playSound(MB.HitSwordSword, pTargetToCheck.currentTile);
+                        if (Toolbox.DistTile(pTargetToCheck.currentTile, pData.initiator.currentTile) < 3)
+                        {
+                            pTargetToCheck = pData.initiator;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
                 if (pTargetToCheck.a.hasTrait("God Of Knowledge"))
                 {
                     if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "EnemySwap%")))
@@ -634,7 +647,7 @@ namespace GodsAndPantheons
                         using ListPool<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(tile, pTargetToCheck.kingdom, -1).list;
                         if(enemies == null)
                         {
-                            return;
+                            return true;
                         }
                         Actor enemytoswap = null;
                         foreach (BaseSimObject enemy in enemies)
@@ -657,6 +670,7 @@ namespace GodsAndPantheons
                     }
                 }
             }
+            return true;
         }
     }
 }

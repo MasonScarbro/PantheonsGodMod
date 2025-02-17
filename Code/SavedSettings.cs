@@ -88,7 +88,10 @@ namespace GodsAndPantheons
               {
                   {"warGodsCry%", new InputOption{active = true, value = 5 }},
                   {"axeThrow%", new InputOption{active = true, value = 29 }},
-                  {"seedsOfWar%", new InputOption{active = true, value = 0.2f }},
+                  {"seedsOfWar%", new InputOption{active = true, value = 1f }},
+                  {"StunEnemy%", new InputOption{active = true, value = 20 }},
+                  {"axemaelstrom%", new InputOption{active = true, value = 8 }},
+                  {"BlockAttack%", new InputOption{active = true, value = 16 }},
                   {"God Of Warinherit%", new InputOption{active = true, value = 40 }}
               }
             },

@@ -96,7 +96,7 @@ namespace GodsAndPantheons
             axeOfFury.equipment_value = 3000;
             axeOfFury.path_slash_animation = "effects/slashes/slash_spear";
             axeOfFury.tech_needed = "weapon_axe";
-            axeOfFury.action_attack_target = new AttackAction(WarGodThrow);
+            axeOfFury.action_attack_target = new AttackAction(AxeMaestro);
             axeOfFury.quality = ItemQuality.Legendary;
             axeOfFury.equipmentType = EquipmentType.Weapon;
             axeOfFury.name_class = "item_class_weapon";
@@ -540,7 +540,7 @@ namespace GodsAndPantheons
             }
             if (Toolbox.randomChance(0.4f))
             {
-                for (int i = 0; i < Toolbox.randomInt(5, 10); i++)
+                for (int i = 0; i < Toolbox.randomInt(2, 5); i++)
                     World.world.dropManager.spawnParabolicDrop(s.pTile, SB.corrupted_brain, 0, 2, 20, 20, 50);
             }
         }
@@ -560,25 +560,17 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        static bool WarGodThrow(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        static bool AxeMaestro(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(GetEnhancedChance("God Of War", "axeThrow%")))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of War", "axemaelstrom%")))
             {
-                Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
-                float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
-                Vector3 newPoint = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
-                EffectsLibrary.spawnProjectile("WarAxeProjectile1", newPoint, newPoint2, 0.0f);
-
+                World.world.getObjectsInChunks(pSelf.currentTile, 12, MapObjectType.Actor);
+                foreach (Actor actor in GetAlliesOfActor(World.world.temp_map_objects, pTarget))
+                {
+                    ShootCustomProjectile(pSelf.a, actor, "WarAxeProjectile1", 1);
+                }
             }
-            return true;
-
-        }
-        static bool NoneRegularAction(BaseSimObject pTarget, WorldTile pTile = null)
-        {
-
             return false;
-
         }
         static bool NoneGetAttackedAction(BaseSimObject pSelf, BaseSimObject pAttackedBy = null, WorldTile pTile = null)
         {

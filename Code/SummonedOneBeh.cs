@@ -1,4 +1,5 @@
 ﻿using ai.behaviours;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace GodsAndPantheons
@@ -152,6 +153,18 @@ namespace GodsAndPantheons
             }
             pActor.beh_tile_target = gettilewithindistance(Master.currentTile);
             return BehResult.Continue;
+        }
+        public static int getalliesofactor(List<BaseSimObject> actors, BaseSimObject actor)
+        {
+            int count = 0;
+            foreach (BaseSimObject a in actors)
+            {
+                if (!a.kingdom.isEnemy(actor.kingdom))
+                {
+                    count++;
+                }
+            }
+            return count;
         }
     }
 }

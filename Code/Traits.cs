@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace GodsAndPantheons
 {
@@ -402,7 +403,9 @@ namespace GodsAndPantheons
             },
             {"God Of War", new List<AttackAction>(){
                 new AttackAction(wargodscry),
-                new AttackAction(SeedsOfWar)
+                new AttackAction(SeedsOfWar),
+                new AttackAction(WarGodThrow),
+                new AttackAction(StunEnemy)
              }
             },
             {"God Of the Earth", new List<AttackAction>(){
@@ -1031,13 +1034,43 @@ namespace GodsAndPantheons
             if (Toolbox.randomChance(GetEnhancedChance("God Of War", "warGodsCry%")))
             {
                 EffectsLibrary.spawnExplosionWave(pSelf.currentTile.posV3, 1f, 1f);
-                pSelf.a.addStatusEffect("WarGodsCry", 30f);
-                World.world.startShake(0.3f, 0.01f, 2f, true, true);
-                pSelf.a.addStatusEffect("invincible", 1f);
-                MapAction.damageWorld(pSelf.currentTile, 2, AssetManager.terraform.get("crab_step"), null);
-                pSelf.a.addStatusEffect("invincible", 1f);
-                World.world.applyForce(pSelf.currentTile, 4, 0.4f, false, true, 20, null, pTarget, null);
+                World.world.getObjectsInChunks(pSelf.currentTile, 10, MapObjectType.Actor);
+                foreach (Actor a in World.world.temp_map_objects)
+                {
+                    if (a.kingdom == pSelf.kingdom)
+                    {
+                        a.addStatusEffect("WarGodsCry", 10f);
+                    }
+                    else
+                    {
+                        PushActor(a, pSelf.currentTile.pos, 0.7f, 0.1f, true, true);
+                    }
+                }
+                pSelf.addStatusEffect("WarGodsCry", 30f);
+                if (IsGod(pSelf.a))
+                {
+                    World.world.startShake(0.3f, 0.01f, 2f, true, true);
+                }
+                MapAction.damageWorld(pSelf.currentTile, 2, AssetManager.terraform.get("crab_step"), pSelf);
+            }
+            return true;
+        }
+        public static bool WarGodThrow(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (Toolbox.randomChance(GetEnhancedChance("God Of War", "axeThrow%")))
+            {
+                ShootCustomProjectile(pSelf.a, pTarget, "WarAxeProjectile1", 1);
 
+            }
+            return true;
+
+        }
+        public static bool StunEnemy(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (Toolbox.randomChance(GetEnhancedChance("God Of War", "StunEnemy%")))
+            {
+                MusicBox.playSound(MB.ExplosionLightningStrike, pTile);
+                pTarget.addStatusEffect("Blinded", Toolbox.randomFloat(1f, 3f));
             }
             return true;
         }
@@ -1574,26 +1607,24 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            if (pTarget.a != null)
+            if (!pTarget.kingdom.isCiv())
             {
-
-                WorldTile _tile = Toolbox.getRandomTileWithinDistance(pTile, 60);
-                //WorldTile tile2 = Toolbox.getRandomTileWithinDistance(pTile, 40);
-                // List<WorldTile> randTile = List.Of<WorldTile>(new WorldTile[] { tile1, tile2 });
-                // WorldTile _tile = Toolbox.getRandomTileWithinDistance(randTile, pTile, 45, 120);
-                if (Toolbox.randomChance(GetEnhancedChance("God Of War", "seedsOfWar%")))
-                {
-                    MapBox.instance.dropManager.spawn(_tile, SD.spite, 5f, -1f);
-                }
-                if (Toolbox.randomChance(GetEnhancedChance("God Of War", "seedsOfWar%")))
-                {
-                    MapBox.instance.dropManager.spawn(_tile, SD.discord, 5f, -1f);
-                }
-                if (Toolbox.randomChance(GetEnhancedChance("God Of War", "seedsOfWar%")))
-                {
-                    MapBox.instance.dropManager.spawn(_tile, SD.inspiration, 5f, -1f);
-                }
-
+                return false;
+            }
+            //WorldTile tile2 = Toolbox.getRandomTileWithinDistance(pTile, 40);
+            // List<WorldTile> randTile = List.Of<WorldTile>(new WorldTile[] { tile1, tile2 });
+            // WorldTile _tile = Toolbox.getRandomTileWithinDistance(randTile, pTile, 45, 120);
+            if (Toolbox.randomChance(GetEnhancedChance("God Of War", "seedsOfWar%")))
+            {
+                MapBox.instance.clans.tryPlotWar(pTarget.kingdom.king, PlotsLibrary.new_war);
+            }
+            if (Toolbox.randomChance(GetEnhancedChance("God Of War", "seedsOfWar%")))
+            {
+                MapBox.instance.clans.tryPlotRebellion(pTarget.a, PlotsLibrary.rebellion);
+            }
+            if (Toolbox.randomChance(GetEnhancedChance("God Of War", "seedsOfWar%")))
+            {
+                MapBox.instance.clans.tryPlotDissolveAlliance(pTarget.kingdom.king, PlotsLibrary.alliance_destroy);
             }
             return true;
         }
