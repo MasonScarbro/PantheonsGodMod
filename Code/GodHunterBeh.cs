@@ -140,17 +140,5 @@ namespace GodsAndPantheons
             }
             return BehResult.Continue;
         }
-        static int getalliesofactor(List<BaseSimObject> actors, BaseSimObject actor)
-        {
-            int count = 0;
-            foreach (BaseSimObject a in actors)
-            {
-                if (!a.kingdom.isEnemy(actor.kingdom))
-                {
-                    count++;
-                }
-            }
-            return count;
-        }
     }
 }

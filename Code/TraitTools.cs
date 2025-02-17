@@ -265,6 +265,18 @@ namespace GodsAndPantheons
             temp_base_stats[S.max_age] = maxage;
             return temp_base_stats;
         }
+        public static List<Actor> GetAlliesOfActor(List<BaseSimObject> actors, BaseSimObject actor)
+        {
+            List<Actor> allies = new List<Actor>();
+            foreach (Actor a in actors)
+            {
+                if (a.kingdom == actor.kingdom)
+                {
+                    allies.Add(a);
+                }
+            }
+            return allies;
+        }
         public static Actor CopyActor(Actor pActor, string ActorID)
         {
             Actor actor = World.world.units.createNewUnit(ActorID, pActor.currentTile, 0f);

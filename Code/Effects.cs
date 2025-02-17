@@ -248,12 +248,12 @@ namespace GodsAndPantheons
             StatusEffect warGodsCry = new StatusEffect();
             warGodsCry.id = "WarGodsCry";
             warGodsCry.duration = 7000f;
-            warGodsCry.base_stats[S.mod_armor] += 0.40f;
-            warGodsCry.base_stats[S.health] += 60;
-            warGodsCry.base_stats[S.speed] += 10;
+            warGodsCry.base_stats[S.mod_armor] += 0.50f;
+            warGodsCry.base_stats[S.mod_health] = 0.20f;
+            warGodsCry.base_stats[S.speed] += 20;
             warGodsCry.base_stats[S.knockback_reduction] += 0.8f;
             warGodsCry.base_stats[S.knockback] += 2f;
-            warGodsCry.base_stats[S.attack_speed] += 8f;
+            warGodsCry.base_stats[S.mod_attack_speed] = 0.5f;
             warGodsCry.base_stats[S.damage] += 15f;
             warGodsCry.path_icon = "ui/icons/warGod";
             warGodsCry.description = "A Cry Of Anger and Rage";
