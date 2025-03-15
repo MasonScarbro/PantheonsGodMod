@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using HarmonyLib;
 using NCMS.Utils;
 using static GodsAndPantheons.Traits;
-using System.Runtime.Serialization;
 
 namespace GodsAndPantheons
 {
@@ -516,7 +515,7 @@ namespace GodsAndPantheons
                     CorruptActor(a, pSelf.a);
                 }
                 MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionForce", pTile, false, false);
-                EffectsLibrary.spawnExplosionWave(pTile.posV3, 5f, 0.5f);
+                SpawnCustomWave(pTile.posV3, 0.025f, 0.5f, 1);
             }
             return true;
         }
@@ -536,12 +535,12 @@ namespace GodsAndPantheons
         public static void MadStorm(Storm s) {
             if (Vector3.Distance(s.transform.position, s.TileToGo.posV) < 10)
             {
-                s.TileToGo = Toolbox.getRandomTileWithinDistance(s.pTile, 120);
+                s.TileToGo = Toolbox.getRandomTileWithinDistance(s.tile, 120);
             }
             if (Toolbox.randomChance(0.4f))
             {
                 for (int i = 0; i < Toolbox.randomInt(2, 5); i++)
-                    World.world.dropManager.spawnParabolicDrop(s.pTile, SB.corrupted_brain, 0, 2, 20, 20, 50);
+                    World.world.dropManager.spawnParabolicDrop(s.tile, SB.corrupted_brain, 0, 2, 20, 20, 50);
             }
         }
         static bool UnleashFire(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)

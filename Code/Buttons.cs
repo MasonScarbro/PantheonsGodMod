@@ -308,7 +308,7 @@ namespace GodsAndPantheons
             string message = "";
             foreach (string trait in Traits.Getinheritedgodtraits(pActor.data))
             {
-                message += trait + ", ";
+                message += (message == "" ? "" : ", ") + trait;
             }
             return message;
         }
@@ -336,7 +336,7 @@ namespace GodsAndPantheons
                     pActor.data.get("Demi" + ability.Method.Name, out bool inherited);
                     if (inherited)
                     {
-                        message += ability.Method.Name + ", ";
+                        message += (message == "" ? "" : ", ") + ability.Method.Name;
                     }
                 }
             }

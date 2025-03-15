@@ -824,19 +824,19 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(0.2f))
             {
-                pb.spawnLightning(Toolbox.getRandomTileWithinDistance(s.pTile, 60), null);
+                pb.spawnLightning(Toolbox.getRandomTileWithinDistance(s.tile, 60), null);
             }
             if (Toolbox.randomChance(0.8f))
             {
-                ActionLibrary.castCurses(null, null, Toolbox.getRandomTileWithinDistance(s.pTile, 60));
+                ActionLibrary.castCurses(null, null, Toolbox.getRandomTileWithinDistance(s.tile, 60));
             }
             if (Toolbox.randomChance(0.5f))
             {
-                pb.spawnForce(Toolbox.getRandomTileWithinDistance(s.pTile, 60), null);
+                pb.spawnForce(Toolbox.getRandomTileWithinDistance(s.tile, 60), null);
             }
             if (Toolbox.randomChance(0.3f))
             {
-                CreateBlindess(Toolbox.getRandomTileWithinDistance(s.pTile, 60), 5, 30, null);
+                CreateBlindess(Toolbox.getRandomTileWithinDistance(s.tile, 60), 5, 30, null);
             }
         }
         public static bool CloudOfDarkness(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -851,7 +851,7 @@ namespace GodsAndPantheons
                 float pDist = Vector2.Distance(pTarget.currentPosition, pos); // the distance between the target and the pTile
                 Vector3 newPoint = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
                 Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.currentPosition.x, pTarget.currentPosition.y, (float)pos.x, (float)pos.y, pTarget.stats[S.size], true);
-                EffectsLibrary.spawnProjectile("BlackHoleProjectile1", newPoint, newPoint2, 0.0f).byWho = pSelf;
+                EffectsLibrary.spawn("fx_BlackHole", pTile)?.gameObject.GetComponent<BlackHoleFlash>().Init(pSelf, pTile);
             }
             return true;
         }
@@ -1186,23 +1186,20 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        public static void CreateHeartExplosion(Vector3 pVec, float pRadius, bool corrupted = false, float pSpeed = 1f)
+        public static void CreateHeartExplosion(WorldTile pTile, float pRadius, bool corrupted = false, float pSpeed = 1f)
         {
-            BaseEffect baseEffect = EffectsLibrary.spawn("fx_Heart" + (corrupted ? "_Corrupted" : ""), null, null, null, 0f, -1f, -1f);
+            BaseEffect baseEffect = EffectsLibrary.spawn("fx_Heart" + (corrupted ? "_Corrupted" : ""), pTile, null, null, 0f, -1f, -1f);
             if (baseEffect == null)
             {
                 return;
             }
-            baseEffect.spriteAnimation.returnToPool = false;
-            baseEffect.gameObject.AddComponent<ExplosionFlash>().start(pVec, pRadius, pSpeed);
-            baseEffect.gameObject.GetComponent<ExplosionFlash>().controller = baseEffect.controller;
-
+            baseEffect.GetComponent<ExplosionFlash>().start(pTile.posV, pRadius, pSpeed);
         }
         public static bool BlessAllies(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Love", "blessAllies%")))
             {
-                CreateHeartExplosion(pSelf.currentTile.posV3, 60f);
+                CreateHeartExplosion(pSelf.currentTile, 60f);
                 World.world.getObjectsInChunks(pSelf.currentTile, 8, MapObjectType.Actor);
                 foreach (Actor a in World.world.temp_map_objects)
                 {
@@ -1221,7 +1218,7 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Love", "healAllies%")))
             {
-                CreateHeartExplosion(pSelf.currentTile.posV3, 100f);
+                CreateHeartExplosion(pSelf.currentTile, 100f);
                 World.world.getObjectsInChunks(pSelf.currentTile, 16, MapObjectType.Actor);
                 foreach (Actor a in World.world.temp_map_objects)
                 {
@@ -1237,7 +1234,7 @@ namespace GodsAndPantheons
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of Love", "CastShields%")))
             {
-                CreateHeartExplosion(pSelf.currentTile.posV3, 80f);
+                CreateHeartExplosion(pSelf.currentTile, 80f);
                 World.world.getObjectsInChunks(pSelf.currentTile, 13, MapObjectType.Actor);
                 foreach (Actor a in World.world.temp_map_objects)
                 {
@@ -1257,7 +1254,7 @@ namespace GodsAndPantheons
                 {
                     return false;
                 }
-                CreateHeartExplosion(pTile.posV3, 80f, true);
+                CreateHeartExplosion(pTile, 80f, true);
                 CreateBlindess(pTile, 8, 15f, pSelf.kingdom);
             }
             return true;
@@ -1295,7 +1292,7 @@ namespace GodsAndPantheons
         {
             if (Vector3.Distance(s.transform.position, s.TileToGo.posV) < 10)
             {
-                s.TileToGo = Toolbox.getRandomTileWithinDistance(s.pTile, 120);
+                s.TileToGo = Toolbox.getRandomTileWithinDistance(s.tile, 120);
             }
             if (Toolbox.randomChance(0.1f))
             {
@@ -1303,21 +1300,21 @@ namespace GodsAndPantheons
             }
             if (Toolbox.randomChance(0.6f))
             {
-                LavaHelper.addLava(Toolbox.getRandomTileWithinDistance(s.pTile, 30), "lava3");
+                LavaHelper.addLava(Toolbox.getRandomTileWithinDistance(s.tile, 30), "lava3");
             }
             if (Toolbox.randomChance(0.3f))
             {
-                EffectsLibrary.spawn("fx_napalm_flash", s.pTile, null, null, 0f, -1f, -1f);
-                EffectsLibrary.spawnAtTileRandomScale("fx_explosion_tiny", s.pTile, 0.15f, 0.3f);
+                EffectsLibrary.spawn("fx_napalm_flash", s.tile, null, null, 0f, -1f, -1f);
+                EffectsLibrary.spawnAtTileRandomScale("fx_explosion_tiny", s.tile, 0.15f, 0.3f);
             }
             if (Toolbox.randomChance(0.8f))
             {
-                World.world.applyForce(s.pTile, 40, 1.5f, false, true, 5);
+                World.world.applyForce(s.tile, 40, 1.5f, false, true, 5);
             }
             if (Toolbox.randomChance(0.4f))
             {
                 for(int i = 0; i < Toolbox.randomInt(5, 10); i++)
-                    World.world.dropManager.spawnParabolicDrop(s.pTile, "lava", 0, 2, 200, 20, 110, 1.5f);
+                    World.world.dropManager.spawnParabolicDrop(s.tile, "lava", 0, 2, 200, 20, 110, 1.5f);
             }
         }
         private static bool GodOfFireGetHit(BaseSimObject pTarget, BaseSimObject pAttackedBy, WorldTile pTile)
