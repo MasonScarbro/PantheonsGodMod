@@ -581,7 +581,7 @@ namespace GodsAndPantheons
             GodOfLove.action_special_effect = (WorldAction)Delegate.Combine(GodOfLove.action_special_effect, new WorldAction(HealAllies));
             GodOfLove.special_effect_interval = 0.0001f;
             GodOfLove.action_attack_target = new AttackAction(GodOfLoveAttack);
-            AddTrait(GodOfLove, "i have no idea what to put here");
+            AddTrait(GodOfLove, "The God of Hope, love and compassion");
             //my traits
             ActorTrait godoffire = new ActorTrait();
             godoffire.id = "God Of Fire";
