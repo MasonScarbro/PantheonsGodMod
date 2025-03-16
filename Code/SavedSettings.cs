@@ -65,7 +65,7 @@ namespace GodsAndPantheons
               {
                   {"DarkDash%", new InputOption{active = true, value = 30f }},
                   {"cloudOfDarkness%", new InputOption{active = true, value = 1 }},
-                  {"blackHole%", new InputOption{active = true, value = 3 }},
+                  {"blackHole%", new InputOption{active = true, value = 6 }},
                   {"darkDaggers%", new InputOption{active = true, value = 10 }},
                   {"smokeFlash%", new InputOption{active = true, value = 15 }},
                   {"summonDarkOne%", new InputOption{active = true, value = 15 }},

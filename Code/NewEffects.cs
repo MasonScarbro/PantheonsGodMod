@@ -2,20 +2,8 @@
 AUTHOR: MASON SCARBRO
 VERSION: 1.0.0
 */
-using System;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using NCMS;
-using NCMS.Utils;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using ReflectionUtility;
+using NeoModLoader.utils;
 
 namespace GodsAndPantheons
 {
@@ -42,8 +30,7 @@ namespace GodsAndPantheons
                 draw_light_area_offset_y = 0f
             });*/
             //World.world.stackEffects.CallMethod("add", effect1);
-
-            var effect2 = AssetManager.effects_library.add(new EffectAsset
+            AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_smokeFlash_dej",
                 use_basic_prefab = true,
@@ -56,9 +43,71 @@ namespace GodsAndPantheons
                 draw_light_area_offset_y = 0f,
                 time_between_frames = 0.08f
             });
-            World.world.stackEffects.CallMethod("add", effect2);
+            GameObject BlackHolePrefab = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
+            BlackHolePrefab.transform.position = new Vector3(-99999, -99999, 0);
+            DestroyImmediate(BlackHolePrefab.GetComponent<BaseEffect>());
+            SpriteAnimation component = BlackHolePrefab.GetComponent<SpriteAnimation>();
+            component.timeBetweenFrames = 0.08f;
+            component.returnToPool = false;
+            component.frames = Resources.LoadAll<Sprite>("effects/projectiles/blackHoleProjectile");
+            component.spriteRenderer.sortingLayerName = "EffectsBack";
+            BlackHolePrefab.AddComponent<BlackHoleFlash>();
+            ResourcesPatch.PatchResource("effects/prefabs/BlackHole", BlackHolePrefab);
+            AssetManager.effects_library.add(new EffectAsset
+            {
+                id = "fx_BlackHole",
+                use_basic_prefab = false,
+                prefab_id = "effects/prefabs/BlackHole",
+                show_on_mini_map = false,
+                draw_light_area = true,
+                draw_light_size = 2f,
+                draw_light_area_offset_y = 0f,
+                sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
+            });
+            GameObject CloudOfDarkness = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabAntimatterEffect"));
+            CloudOfDarkness.transform.position = new Vector3(-99999, -99999, 0);
+            DestroyImmediate(CloudOfDarkness.GetComponent<AntimatterBombEffect>());
+            CloudOfDarkness.AddComponent<Storm>();
+            ResourcesPatch.PatchResource("effects/prefabs/CloudOfDarkness", CloudOfDarkness);
+            AssetManager.effects_library.add(new EffectAsset
+            {
+                id = "fx_CloudOfDarkness",
+                use_basic_prefab = false,
+                prefab_id = "effects/prefabs/CloudOfDarkness",
+                show_on_mini_map = false,
+                limit = 100,
+                draw_light_area = true,
+                draw_light_size = 2f,
+                draw_light_area_offset_y = 0f,
+                sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
+            });
+            GameObject CustomWave = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabExplosionWave"));
+            CustomWave.transform.position = new Vector3(-99999, -99999, 0);
+            DestroyImmediate(CustomWave.GetComponent<ExplosionFlash>());
+            CustomWave.AddComponent<CustomExplosionFlash>();
+            ResourcesPatch.PatchResource("effects/prefabs/CustomExplosionWave", CustomWave);
+            AssetManager.effects_library.add(new EffectAsset
+            {
+                id = "fx_custom_explosion_wave",
+                use_basic_prefab = false,
+                prefab_id = "effects/prefabs/CustomExplosionWave",
+                show_on_mini_map = true
+            });
+            AssetManager.effects_library.add(new EffectAsset
+            {
+                id = "fx_smokeFlash_dej",
+                use_basic_prefab = true,
+                sorting_layer_id = "EffectsBack",
+                sprite_path = "effects/fx_smokeFlash_dej",
+                show_on_mini_map = true,
+                limit = 100,
+                draw_light_area = true,
+                draw_light_size = 2f,
+                draw_light_area_offset_y = 0f,
+                time_between_frames = 0.08f
+            });
 
-            var effect3 = AssetManager.effects_library.add(new EffectAsset
+            AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_cometAzureDown_dej",
                 use_basic_prefab = true,
@@ -72,9 +121,8 @@ namespace GodsAndPantheons
                 sound_launch = "event:/SFX/EXPLOSIONS/ExplosionAntimatterBomb",
                 time_between_frames = 0.08f,
             });
-            World.world.stackEffects.CallMethod("add", effect3);
 
-            var effect4 = AssetManager.effects_library.add(new EffectAsset
+            AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_cometShower_dej",
                 use_basic_prefab = true,
@@ -87,10 +135,8 @@ namespace GodsAndPantheons
                 draw_light_area_offset_y = 0f,
                 time_between_frames = 0.09f
             });
-            World.world.stackEffects.CallMethod("add", effect4);
 
-
-            var effect5 = AssetManager.effects_library.add(new EffectAsset
+            AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_teleportStart_dej",
                 use_basic_prefab = true,
@@ -103,9 +149,8 @@ namespace GodsAndPantheons
                 draw_light_area_offset_y = 0f,
                 time_between_frames = 0.06f
             });
-            World.world.stackEffects.CallMethod("add", effect5);
 
-            var effect6 = AssetManager.effects_library.add(new EffectAsset
+            AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_teleportEnd_dej",
                 use_basic_prefab = true,
@@ -118,9 +163,8 @@ namespace GodsAndPantheons
                 draw_light_area_offset_y = 0f,
                 time_between_frames = 0.08f
             });
-            World.world.stackEffects.CallMethod("add", effect6);
 
-            var effect7 = AssetManager.effects_library.add(new EffectAsset
+            AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_handgrab_dej",
                 use_basic_prefab = true,
@@ -133,26 +177,33 @@ namespace GodsAndPantheons
                 draw_light_area_offset_y = 0f,
                 time_between_frames = 0.1f
             });
-            World.world.stackEffects.CallMethod("add", effect7);
-            var Effect8 = AssetManager.effects_library.add(new EffectAsset
+            GameObject HeartPrefab = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
+            HeartPrefab.transform.position = new Vector3(-99999, -99999, 0);
+            DestroyImmediate(HeartPrefab.GetComponent<BaseEffect>());
+            SpriteAnimation com = HeartPrefab.GetComponent<SpriteAnimation>();
+            com.timeBetweenFrames = 0.1f;
+            com.returnToPool = false;
+            com.frames = Resources.LoadAll<Sprite>("effects/projectiles/Heart");
+            com.spriteRenderer.sortingLayerName = "EffectsBack";
+            HeartPrefab.AddComponent<ExplosionFlash>();
+            GameObject CorruptedHeartPrefab = Instantiate(HeartPrefab);
+            CorruptedHeartPrefab.GetComponent<SpriteAnimation>().frames = Resources.LoadAll<Sprite>("effects/projectiles/CorruptedHeart");
+            ResourcesPatch.PatchResource("effects/prefabs/CorruptedHeart", CorruptedHeartPrefab);
+            ResourcesPatch.PatchResource("effects/prefabs/Heart", HeartPrefab);
+            AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_Heart",
-                use_basic_prefab = true,
-                sorting_layer_id = "EffectsBack",
-                sprite_path = "effects/projectiles/Heart",
+                use_basic_prefab = false,
+                prefab_id = "effects/prefabs/Heart",
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 show_on_mini_map = true,
                 limit = 100,
                 draw_light_area = true,
                 draw_light_size = 2f,
                 draw_light_area_offset_y = 0f,
-                time_between_frames = 0.1f
             });
-            World.world.stackEffects.CallMethod("add", Effect8);
-            var Effect9 = AssetManager.effects_library.clone("fx_Heart_Corrupted", "fx_Heart");
-            Effect9.sprite_path = "effects/projectiles/CorruptedHeart";
-            World.world.stackEffects.CallMethod("add", Effect9);
-            //World.world.stackEffects.checkInit();
+            AssetManager.effects_library.clone("fx_Heart_Corrupted", "fx_Heart").prefab_id = "effects/prefabs/CorruptedHeart";
+            
         }
     }
 }

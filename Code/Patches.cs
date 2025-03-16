@@ -103,29 +103,6 @@ namespace GodsAndPantheons
             return AssetManager.raceLibrary.get(AssetManager.actor_library.get(oldself).race);
         }
     }
-    [HarmonyPatch(typeof(BaseAnimatedObject), nameof(BaseAnimatedObject.update))]
-    public class StormFinish
-    {
-        static void Prefix(BaseAnimatedObject __instance, float pElapsed)
-        {
-            if(__instance.GetComponent<EffectModifier>() != null)
-            {
-                __instance.GetComponent<EffectModifier>().update(pElapsed);
-            }
-            if (__instance.GetComponent<ExplosionFlash>() != null)
-            {
-                __instance.GetComponent<ExplosionFlash>().update(pElapsed);
-            }
-        }
-    }
-    [HarmonyPatch(typeof(BaseEffect), nameof(BaseEffect.deactivate))]
-    public class RemoveModifiers
-    {
-        static void Postfix(BaseEffect __instance)
-        {
-           __instance.GetComponent<EffectModifier>()?.RemoveModifier();
-        }
-    }
     [HarmonyPatch(typeof(PowerLibrary), "spawnUnit")]
     public class MakeSummoned
     {

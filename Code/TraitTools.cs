@@ -43,10 +43,11 @@ namespace GodsAndPantheons
         public static GameObject CreateStorm(WorldTile pTile, float time, float TimeCooldown, StormAction? Action, Color? StormColor, float Size)
         {
             World.world.startShake(0.3f, 0.01f, 0.03f, false, true);
-            GameObject Storm = EffectsLibrary.spawn("fx_antimatter_effect", pTile, null, null, 0f, -1f, -1f).gameObject;
-            Storm.GetComponent<SpriteRenderer>().color = StormColor ?? Color.white;
+            GameObject Storm = EffectsLibrary.spawn("fx_CloudOfDarkness", pTile, null, null, 0f, -1f, -1f).gameObject;
+            Storm.GetComponent<Storm>().spawnOnTile(pTile);
+            Storm.GetComponent<Storm>().Init(time, TimeCooldown, Action);
             Storm.transform.localScale = new Vector3(Size, Size, 1);
-            Storm.AddComponent<Storm>().Init(time,TimeCooldown, Action);
+            Storm.GetComponent<SpriteRenderer>().color = StormColor ?? Color.white;
             return Storm;
         }
         public static GameObject Laserr = LoadCrabZillaLaser(out LaserSprites);
@@ -97,7 +98,6 @@ namespace GodsAndPantheons
             return true;
         }
         static readonly List<string> summonedoneautotraits = new List<string>() { "regeneration", "fire_proof", "acid_proof"};
-        private static readonly object a;
 
         //summon ability
         public static void Summon(string creature, int times, BaseSimObject pSelf, WorldTile Ptile, int lifespan = 61, List<string>? autotraits = null)
@@ -372,7 +372,7 @@ namespace GodsAndPantheons
                 }
             }
         }
-        //gets god traits which are stored in the data of failed gods / demigods
+        //gets god traits which are stored in the data of lesser gods / demigods
         public static List<string> Getinheritedgodtraits(ActorData pData)
         {
             List<string> traits = new List<string>();
@@ -389,9 +389,10 @@ namespace GodsAndPantheons
         public static bool EraStatus(Actor Master, Actor Me)
         {
             bool added = false;
+            List<string> inherited = Getinheritedgodtraits(Master.data);
             foreach (string era in TraitEras.Keys)
             {
-                if (Master.a.hasTrait(era))
+                if (Master.a.hasTrait(era) || inherited.Contains(era))
                 {
                     if (World.world_era.id == TraitEras[era].Key)
                     {
@@ -451,9 +452,9 @@ namespace GodsAndPantheons
         {
             float angle = Toolbox.getAngle(pActor.currentTile.x, pActor.currentTile.y, point.x, point.y);
             float TrueStrength = IgnoreResistance ? strength : strength - strength * pActor.stats[S.knockback_reduction];
-            float num4 = Mathf.Cos(angle) * TrueStrength * (Outward ? -1 : 1);
-            float num5 = Mathf.Sin(angle) * TrueStrength * (Outward ? -1 : 1);
-            pActor.addForce(num4, num5, Zstrength);
+            float Xstrength = Mathf.Cos(angle) * TrueStrength * (Outward ? -1 : 1);
+            float Ystrength = Mathf.Sin(angle) * TrueStrength * (Outward ? -1 : 1);
+            pActor.addForce(Xstrength, Ystrength, Zstrength);
         }
         //call this by using finishStatusEffect("BrainWashed")
         public static void FinishBrainWashing(Actor pActor)
@@ -470,6 +471,16 @@ namespace GodsAndPantheons
             }
             pActor.data.removeString("PreviousKingdom");
             pActor.data.removeString("BrainWasher");
+        }
+        //formula so it dissapears as soon as it reaches final size: pAlphaSpeed = 1/((pRadius / pSpeed)*20)
+        public static void SpawnCustomWave(Vector2 pVector, float pRadius, float pSpeed = 1f, float pAlphaSpeed = 1f)
+        {
+            BaseEffect baseEffect = EffectsLibrary.spawn("fx_custom_explosion_wave");
+            if (baseEffect == null)
+            {
+                return;
+            }
+            ((CustomExplosionFlash)baseEffect).start(pVector, pRadius, pSpeed, pAlphaSpeed);
         }
     }
 }

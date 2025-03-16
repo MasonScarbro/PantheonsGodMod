@@ -21,16 +21,15 @@ namespace GodsAndPantheons
                     id = "BlackHole",
                     flash = true,
                     explode_tile = true,
-                    applyForce = true,
+                    applyForce = false,
                     removeFire = true,
                     destroyBuildings = true,
                     removeTreesFully = true,
-                    force_power = 1.5f,
                     explode_strength = 2,
                     explode_and_set_random_fire = true,
                     explosion_pixel_effect = true,
                     attackType = AttackType.Eaten,
-                    damage = 10,
+                    damage = 60,
 
 
                 });
