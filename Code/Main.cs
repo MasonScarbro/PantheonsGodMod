@@ -119,7 +119,7 @@ namespace GodsAndPantheons
         }
         public static void modifyGodOption(string ID, string key, bool active, float? value = null)
         {
-            savedSettings.Chances[ID][key] = new InputOption { active = active, value = value ?? savedSettings.Chances[ID][key].value};
+            savedSettings.Chances[ID][key].Set(value ?? savedSettings.Chances[ID][key].value, active);
             saveSettings();
         }
     }

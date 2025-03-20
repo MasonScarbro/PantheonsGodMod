@@ -10,7 +10,7 @@ namespace GodsAndPantheons
             GetComponent<SpriteAnimation>().returnToPool = false;
             byWho = actor;
             this.tile = tile;
-            start(tile.pos, 0.01f, 1, 0);
+            start(tile.pos, 0.01f, .1f, 0);
         }
         const float TimeCoolDown = 0.5f;
         float TimeLeft = TimeCoolDown;
@@ -40,7 +40,7 @@ namespace GodsAndPantheons
                         a.getHit(30, true, AttackType.Eaten, byWho, false);
                     }
                 }
-                SpawnCustomWave(tile.pos, 0.05f, -0.8f, 0.8f);
+                SpawnCustomWave(tile.pos, 0.1f, -0.08f, 0.8f);
                 MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionForce", tile);
             }
             base.update(pElapsed);
@@ -63,9 +63,9 @@ namespace GodsAndPantheons
             base.update(pElapsed);
             if (AlphaSpeed != 0)
             {
-                setAlpha(alpha + (pElapsed * AlphaSpeed * 2));
+                setAlpha(alpha + (pElapsed * AlphaSpeed));
             }
-            setScale(scale + pElapsed * speed * 0.1f);
+            setScale(scale + pElapsed * speed);
             if(AlphaSpeed > 0)
             {
                 if (alpha >= 1)

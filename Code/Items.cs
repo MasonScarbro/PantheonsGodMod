@@ -515,7 +515,7 @@ namespace GodsAndPantheons
                     CorruptActor(a, pSelf.a);
                 }
                 MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionForce", pTile, false, false);
-                SpawnCustomWave(pTile.posV3, 0.025f, 0.5f, 1);
+                SpawnCustomWave(pTile.posV3, 0.025f, 0.05f, 2);
             }
             return true;
         }

@@ -260,7 +260,19 @@ namespace GodsAndPantheons
             warGodsCry.name = "WarGodsCry";
             localizeStatus(warGodsCry.id, "WarGodsCry", warGodsCry.description); // Localizes the status effect
             AssetManager.status.add(warGodsCry);
-            
+
+            AssetManager.status.add(chaosgodsera);
+            StatusEffect SlamDunk = new StatusEffect();
+            SlamDunk.id = "War Gods Slam";
+            SlamDunk.duration = 7000f;
+            SlamDunk.action_interval = 0.0001f;
+            SlamDunk.action = new WorldAction(WarGodsSlam);
+            SlamDunk.path_icon = "ui/icons/warGod";
+            SlamDunk.description = "its a bird! its a plane! its the GOD OF WAR!";
+            SlamDunk.name = "War Gods Slam";
+            localizeStatus(SlamDunk.id, "War Gods Slam", SlamDunk.description); // Localizes the status effect
+            AssetManager.status.add(SlamDunk);
+
             StatusEffect ICANTSEE = new StatusEffect();
             ICANTSEE.id = "Blinded";
             ICANTSEE.duration = 7000f;
@@ -289,7 +301,7 @@ namespace GodsAndPantheons
             Petrified.name = "Petrified";
             localizeStatus(Petrified.id, "Petrified", Petrified.description); // Localizes the status effect
             AssetManager.status.add(Petrified);
-
+            
             StatusEffect BrainWashed = new StatusEffect();
             BrainWashed.id = "BrainWashed";
             BrainWashed.duration = 20f;
@@ -304,13 +316,23 @@ namespace GodsAndPantheons
             BrainWashed.animated = true;
             BrainWashed.texture = "projectiles/wordsOfKnowledgeProjectile";
             BrainWashed.random_frame = true;
-
             localizeStatus(BrainWashed.id, "BrainWashed", BrainWashed.description); // Localizes the status effect
             AssetManager.status.add(BrainWashed);
+            
+            StatusEffect Levitating = new StatusEffect();
+            Levitating.id = "Levitating";
+            Levitating.duration = 5;
+            Levitating.path_icon = "ui/icons/iconForce";
+            Levitating.description = "AHHHHHHHHHHHH!";
+            Levitating.name = "Levitating";
+            Levitating.action_interval = 0.0000001f;
+            Levitating.action = new WorldAction(LevitateEffect);
+            localizeStatus(Levitating.id, "Levitating", Levitating.description); // Localizes the status effect
+            AssetManager.status.add(Levitating);
 
-            AssetManager.status.get("ash_fever").opposite_status = new List<string>() { "Earth Prevails" };
-            AssetManager.status.get("cough").opposite_status = new List<string>() { "Earth Prevails" };
-            AssetManager.status.get("rage").opposite_status = new List<string>() { "Chaos Prevails" };
+            AssetManager.status.get("ash_fever").opposite_status.Add("Earth Prevails");
+            AssetManager.status.get("cough").opposite_status.Add("Earth Prevails");
+            AssetManager.status.get("rage").opposite_status.Add("Chaos Prevails");
 
 
             /*
@@ -334,6 +356,25 @@ namespace GodsAndPantheons
 
         }
 
+        public static bool LevitateEffect(BaseSimObject pTarget, WorldTile pTile)
+        {
+            if(pTarget.zPosition.y < 10)
+            {
+                pTarget.a.forceVector.z = 1;
+            }
+            return true;
+        }
+
+        public static bool WarGodsSlam (BaseSimObject pTarget, WorldTile pTile)
+        {
+            if(pTarget.a.forceVector.z == 0)
+            {
+                Traits.SpawnCustomWave(pTile.pos, 0.1f, 0.1f, 0.1f);
+                MapAction.damageWorld(pTile, 7, AssetManager.terraform.get("grenade"), pTarget);
+                pTarget.activeStatus_dict.Remove("War Gods Slam");
+            }
+            return true;
+        }
         public static void localizeStatus(string id, string name, string description)
         {
             Dictionary<string, string> localizedText = Reflection.GetField(LocalizedTextManager.instance.GetType(), LocalizedTextManager.instance, "localizedText") as Dictionary<string, string>;

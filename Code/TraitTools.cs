@@ -3,7 +3,6 @@ using ai;
 using SleekRender;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Burst;
 using UnityEngine;
 
 namespace GodsAndPantheons
@@ -265,6 +264,23 @@ namespace GodsAndPantheons
             temp_base_stats[S.max_age] = maxage;
             return temp_base_stats;
         }
+        public static Actor GetTargetToCrashLand(Actor actor)
+        {
+            World.world.getObjectsInChunks(actor.currentTile, 6, MapObjectType.Actor);
+            using ListPool<Actor> actors = new ListPool<Actor>();
+            foreach(Actor a in GetAlliesOfActor(World.world.temp_map_objects, actor))
+            {
+                if (!a.hasStatus("Levitating") && a != actor)
+                {
+                    actors.Add(a);
+                }
+            }
+            if(actors.Count == 0)
+            {
+                return null;
+            }
+            return actors.GetRandom();
+        }
         public static List<Actor> GetAlliesOfActor(List<BaseSimObject> actors, BaseSimObject actor)
         {
             List<Actor> allies = new List<Actor>();
@@ -386,13 +402,17 @@ namespace GodsAndPantheons
             }
             return traits;
         }
+        public static bool InheritedTrait(Actor a, string trait)
+        {
+            a.data.get("Demi" + trait, out bool inherited);
+            return inherited;
+        }
         public static bool EraStatus(Actor Master, Actor Me)
         {
             bool added = false;
-            List<string> inherited = Getinheritedgodtraits(Master.data);
             foreach (string era in TraitEras.Keys)
             {
-                if (Master.a.hasTrait(era) || inherited.Contains(era))
+                if (Master.hasTrait(era) || InheritedTrait(Master, era))
                 {
                     if (World.world_era.id == TraitEras[era].Key)
                     {
@@ -448,6 +468,19 @@ namespace GodsAndPantheons
             minion.data.set("PreviousKingdom", minion.kingdom.id);
             minion.setKingdom(Master.kingdom);
         }
+        //pushes the actor directly to the target
+        public static void PushActorTowardsTile(Vector2Int point, Actor pActor, float time = 6f/90f)
+        {
+            float pX = (point.x-pActor.currentPosition.x)/(24f*time);
+            float pY = (point.y-pActor.currentPosition.y)/(24f*time);
+            float pZ = (1.5f * time) - (pActor.zPosition.y/24);
+            //forces the actor add the force even if he is in the air
+            pActor.forceVector.x += pX * 0.6f;
+            pActor.forceVector.y += pY * 0.6f;
+            pActor.forceVector.z += pZ * 2f;
+            pActor.under_force = true;
+            return;
+        }
         public static void PushActor(Actor pActor, Vector2Int point, float strength = 1, float Zstrength = 0.1f, bool IgnoreResistance = false, bool Outward = false)
         {
             float angle = Toolbox.getAngle(pActor.currentTile.x, pActor.currentTile.y, point.x, point.y);
@@ -472,7 +505,7 @@ namespace GodsAndPantheons
             pActor.data.removeString("PreviousKingdom");
             pActor.data.removeString("BrainWasher");
         }
-        //formula so it dissapears as soon as it reaches final size: pAlphaSpeed = 1/((pRadius / pSpeed)*20)
+        //formula so it dissapears as soon as it reaches target size: pAlphaSpeed = 1/((ABS(pRadius-TargetRadius) / pSpeed))
         public static void SpawnCustomWave(Vector2 pVector, float pRadius, float pSpeed = 1f, float pAlphaSpeed = 1f)
         {
             BaseEffect baseEffect = EffectsLibrary.spawn("fx_custom_explosion_wave");

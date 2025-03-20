@@ -433,6 +433,18 @@ namespace GodsAndPantheons
                 {
                     FinishBrainWashing(__instance._simObject.a);
                 }
+                if(__instance.asset.id == "Levitating")
+                {
+                    Actor actor = __instance._simObject.a;
+                    Actor Target = GetTargetToCrashLand(actor);
+                    if (Target != null)
+                    {
+                        actor.forceVector.z = 0;
+                        PushActorTowardsTile(Target.currentTile.pos, actor, 0.1f);
+                        Target.getHit(Target.getMaxHealth() * 0.1f, true, AttackType.Other, null, false);
+                        actor.getHit(actor.getMaxHealth() * 0.4f, true, AttackType.Other, null, false);
+                    }
+                }
             }
         }
     }
@@ -563,7 +575,7 @@ namespace GodsAndPantheons
         }
     }
     [HarmonyPatch(typeof(ActorBase), "updateStats")]
-    public class UseDemiStats
+    public class AddCustomStats
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
@@ -577,7 +589,7 @@ namespace GodsAndPantheons
             Matcher.Insert(new CodeInstruction[]
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UseDemiStats), nameof(mergedemistats)))
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AddCustomStats), nameof(mergedemistats)))
             });
             return Matcher.Instructions();
         }

@@ -5,9 +5,7 @@ VERSION: 1.0.0
 using ReflectionUtility;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace GodsAndPantheons
 {
@@ -461,7 +459,7 @@ namespace GodsAndPantheons
             chaosGod.action_special_effect = (WorldAction)Delegate.Combine(chaosGod.action_special_effect, new WorldAction(chaosgoderastatus));
             chaosGod.group_id = "GodTraits";
             AddTrait(chaosGod, "Tis's The God Of Chaos!");
-
+            
             ActorTrait sunGod = new ActorTrait();
             sunGod.id = "God Of light";
             sunGod.path_icon = "ui/icons/lightGod";
@@ -489,11 +487,8 @@ namespace GodsAndPantheons
             ActorTrait knowledgeGod = new ActorTrait();
             knowledgeGod.id = "God Of Knowledge";
             knowledgeGod.path_icon = "ui/icons/knowledgeGod";
-            knowledgeGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
-            knowledgeGod.action_death = (WorldAction)Delegate.Combine(knowledgeGod.action_death, new WorldAction(genericGodsDeath));
+            knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine((WorldAction)GodWeaponManager.godGiveWeapon, (WorldAction)KnowledgeGodUseForce, (WorldAction)knowledgegoderastatus, (WorldAction)knowledgegodatuotrait);
             knowledgeGod.action_attack_target = new AttackAction(knowledgeGodAttack);
-            knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgegoderastatus));
-            knowledgeGod.action_special_effect = (WorldAction)Delegate.Combine(knowledgeGod.action_special_effect, new WorldAction(knowledgegodatuotrait));
             knowledgeGod.group_id = "GodTraits";
             AddTrait(knowledgeGod, "The God Of Knowledge, His mind excedes Time, he knows all");
 
@@ -531,7 +526,7 @@ namespace GodsAndPantheons
             ActorTrait warGod = new ActorTrait();
             warGod.id = "God Of War";
             warGod.path_icon = "ui/icons/warGod";
-            warGod.action_attack_target = new AttackAction(warGodAttack);
+            warGod.action_attack_target = (AttackAction)Delegate.Combine(new AttackAction(warGodAttack), new AttackAction(SlamDunk));
             warGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(wargodautotrait));
             warGod.action_special_effect = (WorldAction)Delegate.Combine(warGod.action_special_effect, new WorldAction(warGodSeeds));
@@ -542,7 +537,6 @@ namespace GodsAndPantheons
             ActorTrait lichGod = new ActorTrait();
             lichGod.id = "God Of The Lich";
             lichGod.path_icon = "ui/icons/lichGod";
-            lichGod.action_death = (WorldAction)Delegate.Combine(lichGod.action_death, new WorldAction(genericGodsDeath));
             lichGod.action_attack_target = new AttackAction(lichGodAttack);
             lichGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(lichgodautotrait));
@@ -642,7 +636,7 @@ namespace GodsAndPantheons
         }
         public static bool InvisibleCooldown(BaseSimObject pTarget, WorldTile pTile)
         {
-            if (pTarget.isActor() && Main.savedSettings.HunterAssasins && pTarget.a.asset.id == "GodHunter")
+            if (Main.savedSettings.HunterAssasins)
             {
                 pTarget.a.data.get("invisiblecooldown", out int invisiblecooldown);
                 pTarget.a.data.set("invisiblecooldown", invisiblecooldown > 0 ? invisiblecooldown - 1 : 0);
@@ -749,9 +743,36 @@ namespace GodsAndPantheons
         #endregion
 
         #region KnowledgeGodsAttack
+        public static bool KnowledgeGodUseForce(BaseSimObject pActor, WorldTile pTile)
+        {
+            if (!Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "UseForce%")))
+            {
+                return true;
+            }
+            using var Enemies = EnemiesFinder.findEnemiesFrom(pTile, pActor.kingdom, 3).list;
+            if(Enemies == null)
+            {
+                return true;
+            }
+            if(Enemies.Count < 6)
+            {
+                return true;
+            }
+            Main.savedSettings.Chances["KnowledgeGodWindow"]["UseForce%"].Set(0, true);
+            SpawnCustomWave(pTile.posV3, 0.025f, 0.05f, 2);
+            foreach (BaseSimObject enemy in Enemies)
+            {
+                if(Toolbox.randomBool() && enemy.isActor() && !enemy.hasStatus("Levitating") && enemy != pActor.a && !IsGod(enemy.a))
+                {
+                    enemy.a.addForce(0, 0, 0.5f);
+                    enemy.addStatusEffect("Levitating", Toolbox.randomInt(4, 10));
+                }
+            }
+            return true;
+        }
         public static bool CreateElements(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "UnleashFireAndAcid%") / 100))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "UnleashFireAndAcid%")))
             {
                 // randomly spawns a flash of fire or acid on the tile 
                 MapBox.instance.dropManager.spawn(pTile, "fire", 5f, -1f);
@@ -1055,6 +1076,20 @@ namespace GodsAndPantheons
             }
             return true;
         }
+
+        public static bool SlamDunk(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if(Toolbox.randomChance(GetEnhancedChance("God Of War", "War Gods Leap%")) && !pSelf.hasStatus("War Gods Leap"))
+            {
+                World.world.getObjectsInChunks(pTile, 6, MapObjectType.Actor);
+                if(BehFunctions.getalliesofactor(World.world.temp_map_objects, pTarget) > 6)
+                {
+                    PushActorTowardsTile(pTarget.currentTile.pos, pSelf.a, 1);
+                    pSelf.addStatusEffect("War Gods Slam");
+                }
+            }
+            return true;
+        }
         public static bool WarGodThrow(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of War", "axeThrow%")))
@@ -1114,6 +1149,7 @@ namespace GodsAndPantheons
             return true;
         }
         public static readonly List<string> earthgodminionautotraits = new List<string>() { "fire_proof", "freeze_proof", "regeneration" };
+
         public static bool SummonDruids(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of the Earth", "SummonDruid%")))
@@ -1502,12 +1538,6 @@ namespace GodsAndPantheons
             if (Main.savedSettings.deathera)
                 World.world.eraManager.setEra(S.age_sun, true);
             return true;
-        }
-
-        public static bool genericGodsDeath(BaseSimObject pTarget, WorldTile pTile = null)
-        {
-            return true;
-
         }
         #endregion
 

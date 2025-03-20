@@ -48,7 +48,7 @@ namespace GodsAndPantheons
                         ID,
                         $"{kv.Key}_setting",
                         kv.Key,
-                        "Modify The Value Of This Setting",
+                        kv.Value.Description,
                         0,
                         contents,
                         $"{kv.Value.value}"
@@ -68,7 +68,7 @@ namespace GodsAndPantheons
                         new Vector2(200, 0),
                         ButtonType.Toggle,
                         input.transform.parent.transform,
-                        delegate { Main.modifyGodOption(ID, kv.Key, !PowerButtons.GetToggleValue($"{kv.Key}Button")); }
+                        delegate { Main.modifyGodOption(ID, kv.Key, !Main.savedSettings.Chances[ID][kv.Key].active); }
                     );
                     if (kv.Value.active)
                     {

@@ -43,7 +43,7 @@ namespace GodsAndPantheons
             RectTransform statTextRect = statText.gameObject.GetComponent<RectTransform>();
             statTextRect.sizeDelta = new Vector2(statTextRect.sizeDelta.x + 50, 80);
 
-            Text descText = addText(window, desc, statHolder, 20, new Vector3(0, 60, 0), new Vector2(300, 0));
+            Text descText = addText(window, desc, statHolder, Mathf.Min(1300/desc.Length, 16), new Vector3(0, 80, 0), new Vector2(300, 0));
             RectTransform descTextRect = descText.gameObject.GetComponent<RectTransform>();
             descTextRect.sizeDelta = new Vector2(descTextRect.sizeDelta.x, 80);
 
