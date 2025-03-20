@@ -1,4 +1,5 @@
 using Amazon.Runtime.Internal.Transform;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -140,21 +141,21 @@ namespace GodsAndPantheons
         public bool AutoTraits = true;
     }
     [Serializable]
-    public struct InputOption
+    public class InputOption
     {
         public bool active;
         public float value;
-        public InputOption(bool active, float value, string description)
+        public InputOption(bool active, float value, string Description)
         {
             this.value = value;
             this.active = active;
-            this.Description = description;
+            this.Description = Description;
         }
         public void Set(float value, bool active)
         {
             this.value = value;
             this.active = active;
         }
-        public readonly string Description;
+        [JsonIgnore] public readonly string Description;
     }
 }

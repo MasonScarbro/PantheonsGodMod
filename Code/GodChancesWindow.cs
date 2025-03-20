@@ -48,7 +48,7 @@ namespace GodsAndPantheons
                         ID,
                         $"{kv.Key}_setting",
                         kv.Key,
-                        kv.Value.Description,
+                        Main.defaultSettings.Chances[ID][kv.Key].Description,
                         0,
                         contents,
                         $"{kv.Value.value}"
