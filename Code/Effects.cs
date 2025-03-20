@@ -322,7 +322,7 @@ namespace GodsAndPantheons
             StatusEffect Levitating = new StatusEffect();
             Levitating.id = "Levitating";
             Levitating.duration = 5;
-            Levitating.path_icon = "ui/icons/iconForce";
+            Levitating.path_icon = "ui/icons/iconPulse";
             Levitating.description = "AHHHHHHHHHHHH!";
             Levitating.name = "Levitating";
             Levitating.action_interval = 0.0000001f;

@@ -56,7 +56,7 @@ namespace GodsAndPantheons
                     input.inputField.characterValidation = InputField.CharacterValidation.Decimal;
                     input.inputField.onValueChanged.AddListener(delegate {
                         float pValue = NewUI.checkStatInput(input);
-                        Main.modifyGodOption(ID, kv.Key, PowerButtons.GetToggleValue($"{kv.Key}Button"), pValue);
+                        Main.modifyGodOption(ID, kv.Key, null, pValue);
                         input.setText($"{pValue}");
                     });
 
