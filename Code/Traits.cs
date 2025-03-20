@@ -758,7 +758,6 @@ namespace GodsAndPantheons
             {
                 return true;
             }
-            Main.savedSettings.Chances["KnowledgeGodWindow"]["UseForce%"].Set(0, true);
             SpawnCustomWave(pTile.posV3, 0.025f, 0.05f, 2);
             foreach (BaseSimObject enemy in Enemies)
             {
