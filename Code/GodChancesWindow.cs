@@ -48,7 +48,7 @@ namespace GodsAndPantheons
                         ID,
                         $"{kv.Key}_setting",
                         kv.Key,
-                        "Modify The Value Of This Setting",
+                        Main.defaultSettings.Chances[ID][kv.Key].Description,
                         0,
                         contents,
                         $"{kv.Value.value}"
@@ -56,7 +56,7 @@ namespace GodsAndPantheons
                     input.inputField.characterValidation = InputField.CharacterValidation.Decimal;
                     input.inputField.onValueChanged.AddListener(delegate {
                         float pValue = NewUI.checkStatInput(input);
-                        Main.modifyGodOption(ID, kv.Key, PowerButtons.GetToggleValue($"{kv.Key}Button"), pValue);
+                        Main.modifyGodOption(ID, kv.Key, null, pValue);
                         input.setText($"{pValue}");
                     });
 
@@ -68,7 +68,7 @@ namespace GodsAndPantheons
                         new Vector2(200, 0),
                         ButtonType.Toggle,
                         input.transform.parent.transform,
-                        delegate { Main.modifyGodOption(ID, kv.Key, !PowerButtons.GetToggleValue($"{kv.Key}Button")); }
+                        delegate { Main.modifyGodOption(ID, kv.Key, !Main.savedSettings.Chances[ID][kv.Key].active); }
                     );
                     if (kv.Value.active)
                     {

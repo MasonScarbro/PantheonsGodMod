@@ -80,7 +80,7 @@ namespace GodsAndPantheons
                             {
                                 pTarget.addStatusEffect("cough", 60);
                             }
-                            if(pTarget.isActor() && Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Petrification%")))
+                            if(pTarget.isActor() && !Traits.IsGod(pTarget.a) && Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Petrification%")))
                             {
                                 MusicBox.playSound("event:/SFX/DROPS/DropStone");
                                 pTarget.addStatusEffect("Petrified");
