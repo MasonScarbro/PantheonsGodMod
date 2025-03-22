@@ -60,7 +60,7 @@ namespace GodsAndPantheons
             godHunter.disableJumpAnimation = true;
             godHunter.has_soul = true;
             godHunter.swampCreature = false;
-            godHunter.oceanCreature = false;
+            godHunter.oceanCreature = true;
             godHunter.landCreature = true;
             godHunter.can_turn_into_demon_in_age_of_chaos = false;
             godHunter.canTurnIntoIceOne = false;

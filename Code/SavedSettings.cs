@@ -36,6 +36,7 @@ namespace GodsAndPantheons
                 {"waveOfMutilation%", new InputOption(true, 20, "[ITEM] shoots a very powerfull wave of mutilation on the enemy")},
                 {"summonSkele%", new InputOption(true, 8, "summons skeletons")},
                 {"summonDead%", new InputOption(true, 9, "summons zombies")},
+                {"UndeadArmy%", new InputOption(true, 5, "[Special] Converts nearby enemies into zombies")},
                 {"rigorMortisHand%", new InputOption(true, 10, "pulls an undead hand from the ground to grab the enemy")},
                 {"God Of The Lichinherit%", new InputOption(true, 36, "the chance of a child of a god of Lich to inherit a stat / ability")}
               } 
@@ -55,9 +56,10 @@ namespace GodsAndPantheons
             {"MoonGodWindow",
                 new Dictionary<string, InputOption>
               {
-                 {"summonMoonChunk%", new InputOption(true, 4, "Summons a moon chunk out of the sky onto \n the enemy")},
-                 {"cometAzure%", new InputOption(true, 2, "Summons a Powerfull comet on the enemy")},
-                 {"cometShower%", new InputOption(true, 4, "Summons a comet shower on the enemy")},
+                 {"summonMoonChunk%", new InputOption(true, 10, "[ITEM] Summons a moon chunk out of the sky onto \n the enemy")},
+                 {"MoonOrbit%", new InputOption(true, 10, "[Special] Creates orbiting Moon chunks around the \n god")},
+                 {"cometAzure%", new InputOption(true, 6, "Summons a Powerfull comet on the enemy")},
+                 {"cometShower%", new InputOption(true, 8, "Summons a comet shower on the enemy")},
                  {"summonWolf%", new InputOption(true, 10, "Summons wolfs")},
                  {"God Of the Starsinherit%", new InputOption(true, 24, "the chance of a child of a god of stars to inherit a stat / ability")}
               }
@@ -123,7 +125,7 @@ namespace GodsAndPantheons
                 new Dictionary<string, InputOption>
               {
                   {"Poisoning%", new InputOption(true, 12.5f, "Poisons, and slows the enemy")},
-                  {"healAllies%", new InputOption(true, 40, "heals allies")},
+                  {"healAllies%", new InputOption(true, 40, "heals allies, [SPECIAL] the god of love can shoot hearts to heal allies")},
                   {"blessAllies%", new InputOption(true, 5, "blesses allies")},
                   {"CastShields%", new InputOption(true, 15, "casts shields on nearby allies")},
                   {"CorruptEnemys%", new InputOption(true, 10, "blinds enemies")},
