@@ -227,6 +227,7 @@ namespace GodsAndPantheons
                     return Impact(pSelf, pTarget, pTile);
                 })*/
             });
+            AssetManager.projectiles.clone("moonFallSlow", "moonFall").speed = 10;
 
             AssetManager.projectiles.add(new ProjectileAsset
             {

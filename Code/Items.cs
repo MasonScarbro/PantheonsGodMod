@@ -506,7 +506,7 @@ namespace GodsAndPantheons
         //doesnt work on gods, that would be too overpowered
         public static bool CorruptEnemy(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "CorruptEnemy%")) && pTarget.isActor() && !IsGod(pTarget.a))
+            if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "CorruptEnemy%")))
             {
                 World.world.getObjectsInChunks(pTile, 8, MapObjectType.Actor);
                 foreach (Actor a in World.world.temp_map_objects)
@@ -515,7 +515,7 @@ namespace GodsAndPantheons
                     CorruptActor(a, pSelf.a);
                 }
                 MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionForce", pTile, false, false);
-                SpawnCustomWave(pTile.posV3, 0.025f, 0.05f, 2);
+                SpawnCustomWave(pTile.posV3, 0.025f, -0.05f, 2);
             }
             return true;
         }

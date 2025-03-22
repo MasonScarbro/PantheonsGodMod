@@ -293,9 +293,25 @@ namespace GodsAndPantheons
             }
             return allies;
         }
+        public static List<Actor> GetEnemiesOfActor(List<BaseSimObject> actors, BaseSimObject actor)
+        {
+            List<Actor> allies = new List<Actor>();
+            foreach (Actor a in actors)
+            {
+                if (a.kingdom != actor.kingdom)
+                {
+                    allies.Add(a);
+                }
+            }
+            return allies;
+        }
         public static Actor CopyActor(Actor pActor, string ActorID)
         {
             Actor actor = World.world.units.createNewUnit(ActorID, pActor.currentTile, 0f);
+            if(actor == null)
+            {
+                return null;
+            }
             actor.data.traits.Clear();
             actor.data.custom_data_bool = pActor.data.custom_data_bool;
             actor.data.custom_data_float = pActor.data.custom_data_float;
@@ -305,25 +321,29 @@ namespace GodsAndPantheons
             ActorTool.copyUnitToOtherUnit(pActor, actor);
             return actor;
         }
-        public static bool Morph(Actor pActor, string morphid, bool destroyWeapon = true)
+        public static Actor Morph(Actor pActor, string morphid, bool Log = true, bool destroyWeapon = true)
         {
             if (pActor == null)
             {
-                return false;
+                return null;
             }
             if (!pActor.inMapBorder())
             {
-                return false;
+                return null;
             }
             if(pActor.asset.id == morphid)
             {
-                return false;
+                return null;
             }
             if (destroyWeapon)
             {
                 pActor.equipment?.weapon?.emptySlot();
             }
             Actor actor = CopyActor(pActor, morphid);
+            if(actor == null)
+            {
+                return null;
+            }
             if (!actor.asset.use_items && pActor.asset.use_items)
             {
                 pActor.city?.takeAllItemsFromActor(pActor);
@@ -331,8 +351,11 @@ namespace GodsAndPantheons
             actor.setKingdom(pActor.kingdom);
             actor.setCity(pActor.city);
             pActor.data.traits.Clear();
-            actor.data.set("morphedinto", morphid);
-            actor.data.set("oldself", pActor.asset.id);
+            if (Log)
+            {
+                actor.data.set("morphedinto", morphid);
+                actor.data.set("oldself", pActor.asset.id);
+            }
             foreach (Actor minion in GetMinions(pActor))
             {
                 minion.data.set("Master", actor.data.id);
@@ -345,7 +368,7 @@ namespace GodsAndPantheons
             ActionLibrary.removeUnit(pActor);
             clan?.addUnit(actor);
             EffectsLibrary.spawn("fx_spawn", actor.currentTile, null, null, 0f, -1f, -1f);
-            return true;
+            return actor;
         }
         public static void MakeDemiGod(ListPool<string> godtraits, ref ActorData DemiGod, float chancemmult = 1)
         {
