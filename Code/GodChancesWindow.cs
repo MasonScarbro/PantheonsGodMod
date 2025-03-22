@@ -34,19 +34,45 @@ namespace GodsAndPantheons
         {
             Windows.ShowWindow(ID);
         }
+        public void Reset()
+        {
+            foreach(Transform Child in contents.transform)
+            {
+                if(Child.GetChild(0)?.GetComponent<NameInput>() != null)
+                {
+                    Child.GetChild(0).GetComponent<NameInput>().setText($"{Main.defaultSettings.Chances[ID][Child.name].value}");
+                    bool active = Main.defaultSettings.Chances[ID][Child.name].active;
+                    if (Main.savedSettings.Chances[ID][Child.name].active != active)
+                    {
+                        PowerButtons.ToggleButton($"{Child.name}Button");
+                    }
+                    Main.savedSettings.Chances[ID][Child.name].Set(Main.defaultSettings.Chances[ID][Child.name].value, active);
+                }
+            }
+            Main.saveSettings();
+        }
 
         private void LoadInputOptions()
         {
             Dictionary<string, InputOption> options = Main.savedSettings.Chances[ID];
             contents.GetComponent<RectTransform>().sizeDelta += new Vector2(0, (options.Count) * 250);
+            PowerButtons.CreateButton(
+                        $"Reset {ID} Settings",
+                        Mod.EmbededResources.LoadSprite($"{Mod.Info.Name}.Resources.units.icon.png"),
+                        "Reset the settings of this god",
+                        "",
+                        new Vector2(100, 0),
+                        ButtonType.Click,
+                        contents.transform,
+                        Reset
+            );
             foreach (KeyValuePair<string, InputOption> kv in options)
             {
-
                 if (options.ContainsKey(kv.Key))
                 {
                     NameInput input = NewUI.createInputOption(
                         ID,
-                        $"{kv.Key}_setting",
+                        kv.Key,
                         kv.Key,
                         Main.defaultSettings.Chances[ID][kv.Key].Description,
                         0,

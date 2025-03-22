@@ -30,7 +30,7 @@ namespace GodsAndPantheons
         public static NameInput createInputOption(string window, string objName, string title, string desc, int posY, GameObject parent, string textValue = "-1")
         {
             GameObject inputRef = GameObjects.FindEvenInactive("NameInputElement");
-            GameObject statHolder = new GameObject("OptionHolder");
+            GameObject statHolder = new GameObject(objName);
             statHolder.transform.SetParent(parent.transform);
             Image statImage = statHolder.AddComponent<Image>();
             statImage.sprite = Mod.EmbededResources.LoadSprite($"{Mod.Info.Name}.Resources.UI.windowInnerSliced1.png");

@@ -1,16 +1,11 @@
-﻿using ai;
-using ai.behaviours;
+﻿using ai.behaviours;
 using HarmonyLib;
-using SimpleJSON;
 using SleekRender;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 using static GodsAndPantheons.Traits;
-using static UnityEngine.GraphicsBuffer;
 //Harmony Patches
 namespace GodsAndPantheons
 {
@@ -398,7 +393,10 @@ namespace GodsAndPantheons
             if(__instance.hasTrait("God Of The Lich") && !isgod)
             {
                 Actor actor = CopyActor(pDeadUnit, pDeadUnit.asset.zombieID);
-                TurnActorIntoSummonedOne(actor, __instance, 300);
+                if (actor != null)
+                {
+                    TurnActorIntoSummonedOne(actor, __instance, 100);
+                }
             }
             if (isgod)
             {

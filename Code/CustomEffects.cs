@@ -2,6 +2,90 @@
 using UnityEngine;
 namespace GodsAndPantheons
 {
+    public class MoonOrbit : BaseEffect
+    {
+        Actor Actor;
+        string Kingdom;
+        const float TargetRadius = 5;
+        const float Cooldown = 0.5f;
+        float Radius;
+        float TimeCooldown = Cooldown;
+        float TimeLeft;
+        float Angle;
+        public void Init(Actor pActor, WorldTile pTile, float Time, float pAngleOffset = 0)
+        {
+            TimeLeft = Time;
+            Actor = pActor;
+            if(Actor.kingdom != null)
+            {
+                Kingdom = Actor.kingdom.id;
+            }
+            spawnOnTile(pTile);
+            Angle = pAngleOffset;
+        }
+        public override void create()
+        {
+            base.create();
+            Angle = 0;
+            Radius = 0;
+            TimeCooldown = Cooldown;
+            Kingdom = null;
+            Actor = null;
+        }
+        public override void update(float pElapsed)
+        {
+            base.update(pElapsed);
+            Angle += pElapsed * 2;
+            TimeLeft -= pElapsed;
+            if(Actor == null)
+            {
+                MapAction.damageWorld(tile, 5, AssetManager.terraform.get("moonFalling"));
+                deactivate();
+                return;
+            }
+            if(TimeLeft <= 0 )
+            {
+                BaseSimObject Target = Actor.findEnemyObjectTarget();
+                if (Target != null) {
+                    ShootCustomProjectile(Actor, Target, "moonFallSlow", 1);
+                }
+                else
+                {
+                    MapAction.damageWorld(tile, 5, AssetManager.terraform.get("moonFalling"), Actor);
+                }
+                deactivate();
+                return;
+            }
+            if(Radius < TargetRadius)
+            {
+                Radius += pElapsed;
+                if(Radius > TargetRadius)
+                {
+                    Radius = TargetRadius;
+                }
+            }
+            Orbit();
+            TimeCooldown -= pElapsed;
+            if (TimeCooldown <= 0)
+            {
+                World.world.applyForce(tile, 2, 0.2f, true, true, 20, Kingdom != null ? new string[] { Kingdom } : null, Actor);
+                TimeCooldown = Cooldown;
+            }
+        }
+        public void Orbit()
+        {
+            float x = (Radius * Mathf.Cos(Angle)) + Actor.currentPosition.x;
+            float y = (Radius * Mathf.Sin(Angle)) + Actor.currentPosition.y;
+            transform.position = new Vector2(x, y);
+            tile = World.world.GetTile((int)transform.position.x, (int)transform.position.y);
+        }
+        public override void spawnOnTile(WorldTile pTile)
+        {
+            tile = pTile;
+            prepare(pTile, 0.1f);
+            spriteAnimation.resetAnim(0);
+        }
+    }
     public class BlackHoleFlash : CustomExplosionFlash
     {
         BaseSimObject byWho;

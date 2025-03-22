@@ -497,7 +497,7 @@ namespace GodsAndPantheons
             starsGod.path_icon = "ui/icons/starsGod";
             starsGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
             starsGod.action_death = (WorldAction)Delegate.Combine(starsGod.action_death, new WorldAction(starsGodsDeath));
-            starsGod.action_attack_target += new AttackAction(starsGodAttack);
+            starsGod.action_attack_target = (AttackAction)Delegate.Combine(new AttackAction(starsGodAttack), new AttackAction(CreateMoonOrbit));
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(stargoderastatus));
             starsGod.group_id = "GodTraits";
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(stargodautotrait));
@@ -538,7 +538,7 @@ namespace GodsAndPantheons
             lichGod.id = "God Of The Lich";
             lichGod.path_icon = "ui/icons/lichGod";
             lichGod.action_attack_target = new AttackAction(lichGodAttack);
-            lichGod.action_special_effect = new WorldAction(GodWeaponManager.godGiveWeapon);
+            lichGod.action_special_effect = (WorldAction)Delegate.Combine(new WorldAction(GodWeaponManager.godGiveWeapon), new WorldAction(lichGodsUndeadArmy));
             lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(lichgodautotrait));
             lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(lichgoderastatus));
             lichGod.group_id = "GodTraits";
@@ -759,6 +759,7 @@ namespace GodsAndPantheons
                 return true;
             }
             SpawnCustomWave(pTile.posV3, 0.025f, 0.05f, 2);
+            MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionForce", pTile, false, false);
             foreach (BaseSimObject enemy in Enemies)
             {
                 if(Toolbox.randomBool() && enemy.isActor() && !enemy.hasStatus("Levitating") && enemy != pActor.a && !IsGod(enemy.a))
@@ -1012,6 +1013,16 @@ namespace GodsAndPantheons
             }
             return true;
         }
+        private static bool CreateMoonOrbit(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (Toolbox.randomChance(GetEnhancedChance("God Of the Stars", "MoonOrbit%")))
+            {
+                (EffectsLibrary.spawn("fx_Moon_Orbit", pTile, null, null, 0f, -1f, -1f) as MoonOrbit)?.Init(pSelf.a, pSelf.currentTile, Toolbox.randomFloat(5, 11));
+                (EffectsLibrary.spawn("fx_Moon_Orbit", pTile, null, null, 0f, -1f, -1f) as MoonOrbit)?.Init(pSelf.a, pSelf.currentTile, Toolbox.randomFloat(5, 11), 70);
+                (EffectsLibrary.spawn("fx_Moon_Orbit", pTile, null, null, 0f, -1f, -1f) as MoonOrbit)?.Init(pSelf.a, pSelf.currentTile, Toolbox.randomFloat(5, 11), 140);
+            }
+            return true;
+        }
         public static bool CometShower(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of the Stars", "cometShower%")))
@@ -1162,6 +1173,34 @@ namespace GodsAndPantheons
 
         #region LichGodsAttack
         public static bool lichGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile) => GodAttack(pSelf, pTarget, pTile, "God Of The Lich");
+        public static bool lichGodsUndeadArmy(BaseSimObject pTarget, WorldTile pTile)
+        {
+            if(!Toolbox.randomChance(GetEnhancedChance("God Of The Lich", "UndeadArmy%"))){
+                return true;
+            }
+            World.world.getObjectsInChunks(pTile, 6, MapObjectType.Actor);
+            List<Actor> Enemies = GetEnemiesOfActor(World.world.temp_map_objects, pTarget);
+            if(Enemies.Count < 5)
+            {
+                return true;
+            }
+            MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionForce", pTile, false, false);
+            SpawnCustomWave(pTile.posV3, 0.025f, -0.05f, 2);
+            foreach(Actor a in Enemies)
+            {
+                if (IsGod(a))
+                {
+                    continue;
+                }
+                Actor b = Morph(a, a.asset.zombieID, false, false);
+                if (b != null)
+                {
+                    TurnActorIntoSummonedOne(b, pTarget.a, 31);
+                }
+                EffectsLibrary.spawnAtTile("fx_handgrab_dej", a.currentTile, 0.1f);
+            }
+            return true;
+        }
         public static bool summonskele(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of The Lich", "summonSkele%")))

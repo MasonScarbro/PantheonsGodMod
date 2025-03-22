@@ -43,6 +43,7 @@ namespace GodsAndPantheons
                 draw_light_area_offset_y = 0f,
                 time_between_frames = 0.08f
             });
+
             GameObject BlackHolePrefab = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
             BlackHolePrefab.transform.position = new Vector3(-99999, -99999, 0);
             DestroyImmediate(BlackHolePrefab.GetComponent<BaseEffect>());
@@ -64,6 +65,7 @@ namespace GodsAndPantheons
                 draw_light_area_offset_y = 0f,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
             });
+
             GameObject CloudOfDarkness = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabAntimatterEffect"));
             CloudOfDarkness.transform.position = new Vector3(-99999, -99999, 0);
             DestroyImmediate(CloudOfDarkness.GetComponent<AntimatterBombEffect>());
@@ -81,6 +83,7 @@ namespace GodsAndPantheons
                 draw_light_area_offset_y = 0f,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
             });
+
             GameObject CustomWave = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabExplosionWave"));
             CustomWave.transform.position = new Vector3(-99999, -99999, 0);
             DestroyImmediate(CustomWave.GetComponent<ExplosionFlash>());
@@ -93,6 +96,7 @@ namespace GodsAndPantheons
                 prefab_id = "effects/prefabs/CustomExplosionWave",
                 show_on_mini_map = true
             });
+
             AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_smokeFlash_dej",
@@ -177,6 +181,7 @@ namespace GodsAndPantheons
                 draw_light_area_offset_y = 0f,
                 time_between_frames = 0.1f
             });
+
             GameObject HeartPrefab = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
             HeartPrefab.transform.position = new Vector3(-99999, -99999, 0);
             DestroyImmediate(HeartPrefab.GetComponent<BaseEffect>());
@@ -203,7 +208,28 @@ namespace GodsAndPantheons
                 draw_light_area_offset_y = 0f,
             });
             AssetManager.effects_library.clone("fx_Heart_Corrupted", "fx_Heart").prefab_id = "effects/prefabs/CorruptedHeart";
-            
+
+            GameObject Moonprefab = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
+            Moonprefab.transform.position = new Vector3(-99999, -99999, 0);
+            DestroyImmediate(Moonprefab.GetComponent<BaseEffect>());
+            SpriteAnimation moon = Moonprefab.GetComponent<SpriteAnimation>();
+            moon.timeBetweenFrames = 0.1f;
+            moon.returnToPool = false;
+            moon.frames = Resources.LoadAll<Sprite>("effects/projectiles/moonProjectile");
+            moon.spriteRenderer.sortingLayerName = "EffectsTop";
+            Moonprefab.AddComponent<MoonOrbit>();
+            ResourcesPatch.PatchResource("effects/prefabs/Moon", Moonprefab);
+            AssetManager.effects_library.add(new EffectAsset
+            {
+                id = "fx_Moon_Orbit",
+                use_basic_prefab = false,
+                prefab_id = "effects/prefabs/Moon",
+                show_on_mini_map = true,
+                limit = 300,
+                draw_light_area = true,
+                draw_light_size = 2f,
+                draw_light_area_offset_y = 0f,
+            });
         }
     }
 }
