@@ -370,6 +370,7 @@ namespace GodsAndPantheons
             if(pTarget.a.forceVector.z == 0)
             {
                 Traits.SpawnCustomWave(pTile.pos, 0.1f, 0.1f, 0.1f);
+                MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionBowlingBal", pTile.x, pTile.y);
                 MapAction.damageWorld(pTile, 7, AssetManager.terraform.get("grenade"), pTarget);
                 pTarget.activeStatus_dict.Remove("War Gods Slam");
             }

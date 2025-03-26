@@ -59,13 +59,16 @@ namespace GodsAndPantheons
             Laser.transform.localScale = new Vector3(0.3f, 0.25f, 1);
             pSelf.addStatusEffect("Lassering", time);
         }
-        public static void AddTrait(ActorTrait Trait, string disc)
+        public static void AddTrait(ActorTrait Trait, string disc, bool HasStats = true)
         {
-            foreach (KeyValuePair<string, float> kvp in TraitStats[Trait.id])
+            if (HasStats)
             {
-                Trait.base_stats[kvp.Key] = kvp.Value;
+                foreach (KeyValuePair<string, float> kvp in TraitStats[Trait.id])
+                {
+                    Trait.base_stats[kvp.Key] = kvp.Value;
+                }
             }
-            Trait.inherit = -99999999999999;
+            Trait.inherit = -1;
             AssetManager.traits.add(Trait);
             PlayerConfig.unlockTrait(Trait.id);
             addTraitToLocalizedLibrary(Trait.id, disc);
@@ -87,6 +90,10 @@ namespace GodsAndPantheons
         public static bool AddAutoTraits(Actor a, string trait) => AddAutoTraits(a.data, trait);
         public static bool AutoTrait(ActorData pTarget, ListPool<string> traits, bool MustBeInherited = false, float chancemult = 1)
         {
+            if (!Main.savedSettings.AutoTraits)
+            {
+                return false;
+            }
             foreach (string trait in AutoTraits.Keys)
              {
                if (traits.Contains(trait))
@@ -131,17 +138,7 @@ namespace GodsAndPantheons
             || a.asset.id == SA.crabzilla //crabzilla is obviously a god, duhh
             || a.asset.id == SA.godFinger; //its in the name
 
-        public static bool IsGodTrait(string a)
-             => a.Equals("God Of The Lich")
-            || a.Equals("God Of the Stars")
-            || a.Equals("God Of Knowledge")
-            || a.Equals("God Of the Night")
-            || a.Equals("God Of Chaos")
-            || a.Equals("God Of War")
-            || a.Equals("God Of the Earth")
-            || a.Equals("God Of light")
-            || a.Equals("God Of Love")
-            || a.Equals("God Of Fire");
+        public static bool IsGodTrait(string a) => TraitStats.Keys.Contains(a);
 
         public static List<string> GetGodTraits(Actor a) => GetGodTraits(a.data.traits);
         public static List<string> GetGodTraits(List<string> pTraits, bool includedemigods = false, bool includesubgods = false)
@@ -207,7 +204,7 @@ namespace GodsAndPantheons
         //returns 2 if the trait's era is one, 1 if it is not, Default if the trait is not found
         public static float GetEraMultiplier(string trait, float Default = 1) => TraitEras.Keys.Contains(trait) ? World.world_era.id == TraitEras[trait].Key ? 2 : 1f : Default;
         //returns the chance of the trait multiplied by its era multiplier devided by the devisor
-        public static float GetEnhancedChance(string trait, string chance, float DefaultChance = 0, float DefaultMult = 1, float devisor = 100) => GetChance(TraitToWindow(trait), chance, DefaultChance) * GetEraMultiplier(trait, DefaultMult) / devisor;
+        public static float GetEnhancedChance(string trait, string chance, float devisor = 100, float DefaultChance = 0, float DefaultMult = 1) => GetChance(TraitToWindow(trait), chance, DefaultChance) * GetEraMultiplier(trait, DefaultMult) / devisor;
         public static string TraitToWindow(string Trait) => Trait switch
             {
                 "God Of Chaos" => "ChaosGodWindow",

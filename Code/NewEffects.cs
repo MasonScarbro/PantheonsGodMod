@@ -208,7 +208,7 @@ namespace GodsAndPantheons
                 draw_light_area_offset_y = 0f,
             });
             AssetManager.effects_library.clone("fx_Heart_Corrupted", "fx_Heart").prefab_id = "effects/prefabs/CorruptedHeart";
-
+            
             GameObject Moonprefab = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
             Moonprefab.transform.position = new Vector3(-99999, -99999, 0);
             DestroyImmediate(Moonprefab.GetComponent<BaseEffect>());
@@ -224,6 +224,81 @@ namespace GodsAndPantheons
                 id = "fx_Moon_Orbit",
                 use_basic_prefab = false,
                 prefab_id = "effects/prefabs/Moon",
+                show_on_mini_map = true,
+                limit = 300,
+                draw_light_area = true,
+                draw_light_size = 2f,
+                draw_light_area_offset_y = 0f,
+            });
+            
+            GameObject MountainPath = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
+            MountainPath.transform.position = new Vector3(-99999, -99999, 0);
+            DestroyImmediate(MountainPath.GetComponent<BaseEffect>());
+            {
+                SpriteAnimation Texture = MountainPath.GetComponent<SpriteAnimation>();
+                Texture.timeBetweenFrames = 0.05f;
+                Texture.returnToPool = false;
+                Texture.looped = false;
+                Texture.frames = Resources.LoadAll<Sprite>("effects/fx_dustexplosion");
+                Texture.spriteRenderer.sortingLayerName = "EffectsTop";
+            }
+            MountainPath.AddComponent<TerraformPath>();
+            ResourcesPatch.PatchResource("effects/prefabs/TerraformPath", MountainPath);
+            AssetManager.effects_library.add(new EffectAsset
+            {
+                id = "fx_Build_Path",
+                use_basic_prefab = false,
+                prefab_id = "effects/prefabs/TerraformPath",
+                show_on_mini_map = true,
+                limit = 300,
+                draw_light_area = true,
+                draw_light_size = 2f,
+                draw_light_area_offset_y = 0f,
+            });
+
+            GameObject StalagmitePath = Instantiate(MountainPath);
+            DestroyImmediate(StalagmitePath.GetComponent<TerraformPath>());
+            StalagmitePath.AddComponent<StalagmitePath>();
+            ResourcesPatch.PatchResource("effects/prefabs/StalagmitePath", StalagmitePath);
+            AssetManager.effects_library.add(new EffectAsset
+            {
+                id = "fx_Stalagmite_path",
+                use_basic_prefab = false,
+                prefab_id = "effects/prefabs/StalagmitePath",
+                show_on_mini_map = true,
+                limit = 300,
+                draw_light_area = true,
+                draw_light_size = 2f,
+                draw_light_area_offset_y = 0f,
+            });
+            AssetManager.effects_library.add(new EffectAsset
+            {
+                id = "Stalagmite",
+                use_basic_prefab = true,
+                sorting_layer_id = "EffectsTop",
+                sprite_path = "effects/fx_Stalagmite",
+                limit = 900,
+                time_between_frames = 0.05f
+            });
+
+            GameObject PulledRock = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
+            PulledRock.transform.position = new Vector3(-99999, -99999, 0);
+            DestroyImmediate(PulledRock.GetComponent<BaseEffect>());
+            {
+                SpriteAnimation Texture = PulledRock.GetComponent<SpriteAnimation>();
+                Texture.timeBetweenFrames = 0.05f;
+                Texture.returnToPool = false;
+                Texture.looped = false;
+                Texture.frames = Resources.LoadAll<Sprite>("effects/fx_PulledRock");
+                Texture.spriteRenderer.sortingLayerName = "EffectsBack";
+            }
+            PulledRock.AddComponent<PulledRock>();
+            ResourcesPatch.PatchResource("effects/prefabs/PulledRock", PulledRock);
+            AssetManager.effects_library.add(new EffectAsset
+            {
+                id = "fx_Pull_Rock",
+                use_basic_prefab = false,
+                prefab_id = "effects/prefabs/PulledRock",
                 show_on_mini_map = true,
                 limit = 300,
                 draw_light_area = true,

@@ -7,8 +7,29 @@ using System.Reflection.Emit;
 using UnityEngine;
 using static GodsAndPantheons.Traits;
 //Harmony Patches
-namespace GodsAndPantheons
+namespace GodsAndPantheons.Patches
 {
+    [HarmonyPatch(typeof(Actor), nameof(Actor.u5_curTileAction))]
+    public class EarthGodWalkOnMountains
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[] { new CodeMatch(OpCodes.Callvirt), new CodeMatch(OpCodes.Ldarg_0)});
+            Matcher.Advance(2);
+            Matcher.RemoveInstructions(2);
+            Matcher.Insert(new CodeInstruction[]
+            {
+                    new CodeInstruction(OpCodes.Ldloc_0),
+                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(EarthGodWalkOnMountains), nameof(AffectedByBlock)))
+            });
+            return Matcher.Instructions();
+        }
+        public static bool AffectedByBlock(Actor actor, TileTypeBase type)
+        {
+            return type.block && !actor.hasTrait("Earth Walker");
+        }
+    }
     [HarmonyPatch(typeof(Actor), nameof(Actor.updateParallelChecks))]
     public class DontMoveIfPetrified
     {
@@ -390,12 +411,12 @@ namespace GodsAndPantheons
         {
             if(pDeadUnit == null) return;
             bool isgod = IsGod(pDeadUnit);
-            if(__instance.hasTrait("God Of The Lich") && !isgod)
+            if(__instance.hasTrait("NecroMancer") && !isgod)
             {
                 Actor actor = CopyActor(pDeadUnit, pDeadUnit.asset.zombieID);
                 if (actor != null)
                 {
-                    TurnActorIntoSummonedOne(actor, __instance, 100);
+                    TurnActorIntoSummonedOne(actor, __instance, 101);
                 }
             }
             if (isgod)
@@ -572,6 +593,35 @@ namespace GodsAndPantheons
             }
         }
     }
+    [HarmonyPatch(typeof(ActorBase), nameof(ActorBase.precalcMovementSpeed))]
+    public class ModifySpeed
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[]
+            {
+                new CodeMatch(OpCodes.Ldc_R4, 0.1f)
+            });
+            Matcher.Advance(1);
+            Matcher.Insert(new CodeInstruction[]
+            {
+                new CodeInstruction(OpCodes.Mul),
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(ModifySpeed), nameof(GetCustomSpeedModifier)))
+            });
+            return Matcher.Instructions();
+        }
+        public static float GetCustomSpeedModifier(ActorBase actor)
+        {
+            float Speed = 1;
+            if(actor.hasTrait("Earth Walker") && !actor.currentTile.Type.liquid)
+            {
+                Speed /= actor.currentTile.Type.walkMod;
+            }
+            return Speed;
+        }
+    }
     [HarmonyPatch(typeof(ActorBase), "updateStats")]
     public class AddCustomStats
     {
@@ -587,11 +637,11 @@ namespace GodsAndPantheons
             Matcher.Insert(new CodeInstruction[]
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AddCustomStats), nameof(mergedemistats)))
+                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AddCustomStats), nameof(MergeCustomStats)))
             });
             return Matcher.Instructions();
         }
-        static void mergedemistats(ActorBase __instance)
+        static void MergeCustomStats(ActorBase __instance)
         {
             if (__instance.hasTrait("Demi God") || __instance.hasTrait("Lesser God"))
             {

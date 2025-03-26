@@ -1,7 +1,221 @@
 ﻿using static GodsAndPantheons.Traits;
 using UnityEngine;
+using System.Collections.Generic;
+using System;
 namespace GodsAndPantheons
 {
+    public class StalagmitePath : BaseEffect
+    {
+        List<WorldTile> tiles;
+        int Current = 0;
+        float Speed;
+        float TimeLeft;
+        string Kingdom;
+        public void Init(WorldTile Start, WorldTile End, float Speed, string kingdom = null)
+        {
+            spawnOnTile(Start);
+            Kingdom = kingdom;
+            Current = 0;
+            sprRenderer.color = Start.Type.color;
+            this.Speed = Speed;
+            TimeLeft = Speed;
+            World.world.pathfindingParam.ocean = true;
+            World.world.pathfindingParam.block = true;
+            World.world.pathfindingParam.ground = true;
+            tiles = new List<WorldTile>();
+            if (!World.world.calcPath(Start, End, tiles))
+            {
+                kill();
+                return;
+            }
+            MusicBox.playSound("event:/SFX/NATURE/EarthQuake", Start);
+        }
+        public override void update(float pElapsed)
+        {
+            base.update(pElapsed);
+            if (Current < tiles.Count)
+            {
+                TimeLeft -= pElapsed;
+                if (TimeLeft <= 0)
+                {
+                    TimeLeft = Speed;
+                    CreateStalagmite();
+                    Current += 1;
+                }
+            }
+            else if (GetComponent<SpriteAnimation>().isLastFrame())
+            {
+                kill();
+            }
+        }
+        public void CreateStalagmite()
+        {
+            EffectsLibrary.spawnAtTile("Stalagmite", tiles[Current], 0.1f).GetComponent<SpriteRenderer>().color = tiles[Current].Type.color;
+            World.world.applyForce(tiles[Current], 2, 0.1f, false, true, 70, Kingdom != null ? new string[] { Kingdom } : null);
+        }
+        public override void spawnOnTile(WorldTile pTile)
+        {
+            prepare(pTile, 0.05f);
+            spriteAnimation.resetAnim(0);
+        }
+    }
+    public class PulledRock : BaseEffect
+    {
+        bool Launched;
+        Actor Actor;
+        public void Init(WorldTile Tile, Actor pActor)
+        {
+            Actor = pActor;
+            sprRenderer.color = Tile.Type.color;
+            Launched = false;
+            spawnOnTile(Tile);
+        }
+        public override void update(float pElapsed)
+        {
+            base.update(pElapsed);
+            if(Launched)
+            {
+                if(spriteAnimation.currentFrameIndex == 9)
+                {
+                    kill();
+                }
+                return;
+            }
+            if(spriteAnimation.currentFrameIndex == 7)
+            {
+                if (Toolbox.randomChance(0.2f))
+                {
+                    Launch();
+                    return;
+                }
+                spriteAnimation.playType = AnimPlayType.Backward;
+            }
+            if(spriteAnimation.currentFrameIndex == 5)
+            {
+                spriteAnimation.playType = AnimPlayType.Forward;
+            }
+        }
+
+        private void Launch()
+        {
+            spriteAnimation.playType = AnimPlayType.Forward;
+            Launched = true;
+            if(Actor != null)
+            {
+                World.world.getObjectsInChunks(tile, 8, MapObjectType.Actor);
+                List<Actor> enemies = GetEnemiesOfActor(World.world.temp_map_objects, Actor);
+                if(enemies.Count > 0)
+                {
+                    ShootCustomProjectile(Actor, enemies.GetRandom(), "EarthShardProjectile", 1, tile.pos);
+                }
+            }
+        }
+
+        public override void spawnOnTile(WorldTile pTile)
+        {
+            tile = pTile;
+            prepare(pTile, 0.1f);
+            spriteAnimation.resetAnim(0);
+        }
+    }
+    public class TerraformPath : BaseEffect
+    {
+        List<WorldTile> tiles;
+        int Current = 0;
+        bool BuildUp;
+        float Speed;
+        float TimeLeft;
+        bool shockwave;
+        string Kingdom;
+        int thickness;
+        bool Reverse;
+        bool Reversed = false;
+        public void Init(WorldTile Start, WorldTile End, bool BuildUp, float Speed, int thickness, bool shockwave, string kingdom = null, bool Reverse = false)
+        {
+            spawnOnTile(Start);
+            Kingdom = kingdom;
+            Current = 0;
+            this.Reverse = Reverse;
+            this.BuildUp = BuildUp;
+            this.thickness = thickness;
+            this.shockwave = shockwave;
+            sprRenderer.color = Start.Type.color;
+            this.Speed = Speed;
+            TimeLeft = Speed;
+            World.world.pathfindingParam.ocean = true;
+            World.world.pathfindingParam.block = true;
+            World.world.pathfindingParam.ground = true;
+            tiles = new List<WorldTile>();
+            if(!World.world.calcPath(Start, End, tiles))
+            {
+                kill();
+                return;
+            }
+            MusicBox.playSound("event:/SFX/NATURE/EarthQuake", Start);
+        }
+        public override void update(float pElapsed)
+        {
+            base.update(pElapsed);
+            if (Reversed ? Current > -1 : Current < tiles.Count)
+            {
+                TimeLeft -= pElapsed;
+                if (TimeLeft <= 0)
+                {
+                    TimeLeft = Speed;
+                    Build();
+                    Current += Reversed ? -1 : 1;
+                }
+            }
+            else if (GetComponent<SpriteAnimation>().isLastFrame())
+            {
+                if(Reverse && !Reversed)
+                {
+                    if (shockwave)
+                    {
+                        WorldTile tile = tiles[tiles.Count-1];
+                        World.world.applyForce(tile, 4, 0.4f, true, false, 50, Kingdom != null ? new string[] { Kingdom } : null);
+                        EffectsLibrary.spawnExplosionWave(tile.posV3, 10f);
+                    }
+                    Current--;
+                    Reversed = true;
+                    BuildUp = !BuildUp;
+                    Build();
+                    return;
+                }
+                kill();
+            }
+        }
+        public void Build()
+        {
+            WorldTile Current = tiles[this.Current];
+            TileType target = BuildUp ? TileLibrary.mountains : TileLibrary.soil_low;
+            TerraformTile(Current, BuildUp, target);
+            for (int i = -thickness; i <= thickness; i++)
+            {
+                for (int j = -thickness; j <= thickness; j++)
+                {
+                    WorldTile tile = World.world.GetTile(i + Current.x, j + Current.y);
+                    if (tile != null)
+                    {
+                        TerraformTile(tile, BuildUp, target);
+                    }
+                }
+            }
+        }
+        public static void TerraformTile(WorldTile pTile, bool Up, TileType TargetType)
+        {
+            if(pTile.Type == TargetType)
+            {
+                return;
+            }
+            MapAction.terraformMain(pTile, Up ? pTile.Type.increaseTo : pTile.Type.decreaseTo, AssetManager.terraform.get("flash"));
+        }
+        public override void spawnOnTile(WorldTile pTile)
+        {
+            prepare(pTile, 0.07f);
+            spriteAnimation.resetAnim(0);
+        }
+    }
     public class MoonOrbit : BaseEffect
     {
         Actor Actor;

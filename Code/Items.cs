@@ -403,7 +403,7 @@ namespace GodsAndPantheons
             hammerOfCreation.equipmentType = EquipmentType.Weapon;
             hammerOfCreation.name_class = "item_class_weapon";
             hammerOfCreation.path_icon = "ui/weapon_icons/icon_HammerOfCreation_base";
-            hammerOfCreation.action_attack_target = (AttackAction)Delegate.Combine(hammerOfCreation.action_attack_target, new AttackAction(earthGodSendMountain));
+            hammerOfCreation.action_attack_target = (AttackAction)Delegate.Combine(hammerOfCreation.action_attack_target, new AttackAction(earthGodImpaleEnemy));
             // For Ranged Weapons use "_range"
             AssetManager.items.list.AddItem(hammerOfCreation);
             Localization.Add("item_HammerOfCreation", "Hammer Of Creation");
@@ -658,61 +658,20 @@ namespace GodsAndPantheons
             return true;
         }
 
-            public static bool earthGodSendMountain(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
-        {
-            if (pSelf.a != null)
-            {
-                
-                if (Toolbox.randomChance(GetEnhancedChance("God Of the Earth", "buildWorld%")))
+            public static bool earthGodImpaleEnemy(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+            {   
+                if (Toolbox.randomChance(GetEnhancedChance("God Of the Earth", "StalagmitePath%")))
                 {
-
-                    buildMountainPath(pTile, pSelf, pTarget);
+                    CreateStalagmites(pTile, pSelf, pTarget);
                 }
-
                 return true;
             }
-            return false;
-        }
 
         
 
-        public static void buildMountainPath(WorldTile pTile, BaseSimObject pSelf, BaseSimObject pTarget)
+        public static void CreateStalagmites(WorldTile pTile, BaseSimObject pSelf, BaseSimObject pTarget)
         {
-            
-            List<WorldTile> selfTiles = pSelf.a.current_path;
-            List<WorldTile> targetTiles = pTarget.a.current_path;
-            if (selfTiles != null)
-            {
-                int length = selfTiles.Count;
-                for (int i = 0; i < selfTiles.Count; i++)
-                {
-                    
-                    WorldTile tileP = selfTiles[i];
-                    MapAction.terraformMain(tileP, AssetManager.tiles.get("mountains"), TerraformLibrary.destroy);
-                    
-
-
-                }
-                
-
-            }
-            if (targetTiles != null)
-            {
-                if (selfTiles.Count == 0)
-                {
-                    for (int i = 0; i < targetTiles.Count; i++)
-                    {
-                        WorldTile tileP = targetTiles[i];
-                        MapAction.terraformMain(tileP, AssetManager.tiles.get("mountains"), TerraformLibrary.destroy);
-                       
-
-                    }
-                   
-                }
-            }
-            
-
-
+            (EffectsLibrary.spawn("fx_Stalagmite_path", pTile) as StalagmitePath)?.Init(pSelf.currentTile, pTarget.currentTile, 0.15f, pSelf.kingdom?.id);
         }
 
 

@@ -6,7 +6,7 @@ using ReflectionUtility;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+using GodsAndPantheons.Patches;
 namespace GodsAndPantheons
 {
     //Contains the traits and their abilities & Stats
@@ -282,7 +282,8 @@ namespace GodsAndPantheons
                 "tough",
                 "immortal",
                 "immune",
-                "strong_minded"
+                "strong_minded",
+                "Earth Walker"
              }
             },
             {"God Of Chaos", new List<string>()
@@ -325,7 +326,8 @@ namespace GodsAndPantheons
                 "immortal",
                 "tough",
                 "immune",
-                "strong_minded"
+                "strong_minded",
+                "NecroMancer"
              }
             },
             {"God Killer", new List<string>()
@@ -409,7 +411,8 @@ namespace GodsAndPantheons
             {"God Of the Earth", new List<AttackAction>(){
                 new AttackAction(SummonDruids),
                 new AttackAction(MakeItRain),
-                new AttackAction(EarthQuake)
+                new AttackAction(buildMountainPath),
+                new AttackAction(PullRocks)
              }
             },
             //NEW_GOD_ABILITY_DICT
@@ -507,9 +510,8 @@ namespace GodsAndPantheons
             earthGod.id = "God Of the Earth";
             earthGod.path_icon = "ui/icons/earthGod";
             earthGod.group_id = "GodTraits";
-            earthGod.action_attack_target = new AttackAction(EarthGodAttack);
-            earthGod.action_special_effect = new WorldAction(earthGodBuildWorld);
-            earthGod.action_special_effect += new WorldAction(GodWeaponManager.godGiveWeapon);
+            earthGod.action_attack_target = (AttackAction)Delegate.Combine(new AttackAction(EarthGodAttack), new AttackAction(EarthQuake));
+            earthGod.action_special_effect = (WorldAction)Delegate.Combine(new WorldAction(GodWeaponManager.godGiveWeapon), new WorldAction(earthGodBuildWorld));
             earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(earthgodautotrait));
             earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(earthgoderastatus));
             AddTrait(earthGod, "God of the Natural Enviornment, The titan of creation");
@@ -546,13 +548,6 @@ namespace GodsAndPantheons
 
             //NEW_GOD_INIT
 
-            ActorTrait godKiller = new ActorTrait();
-            godKiller.id = "God Killer";
-            godKiller.path_icon = "ui/icons/godKiller";
-            godKiller.action_special_effect = (WorldAction)Delegate.Combine(godKiller.action_special_effect, new WorldAction(godkillerautotrait));
-            godKiller.group_id = "GodTraits";
-            AddTrait(godKiller, "To Kill a God is nearly to become one");
-
             ActorTrait godHunter = new ActorTrait();
             godHunter.id = "God Hunter";
             godHunter.path_icon = "ui/icons/godKiller";
@@ -576,7 +571,7 @@ namespace GodsAndPantheons
             GodOfLove.special_effect_interval = 0.0001f;
             GodOfLove.action_attack_target = new AttackAction(GodOfLoveAttack);
             AddTrait(GodOfLove, "The God of Hope, love and compassion");
-            //my traits
+
             ActorTrait godoffire = new ActorTrait();
             godoffire.id = "God Of Fire";
             godoffire.path_icon = "ui/icons/GodOfFire";
@@ -605,6 +600,29 @@ namespace GodsAndPantheons
             DemiGod.group_id = TraitGroup.special;
             DemiGod.can_be_given = false;
             AddTrait(DemiGod, "The Demi God, offspring of Gods and Mortals, the stat's of this trait are determined by the stats of his parent's");
+
+            //NON GOD TRAITS
+            
+            ActorTrait EarthWalker = new ActorTrait();
+            EarthWalker.id = "Earth Walker";
+            EarthWalker.path_icon = "ui/icons/earthGod";
+            EarthWalker.group_id = "NonGodTraits";
+            EarthWalker.can_be_given = true;
+            AddTrait(EarthWalker, "He can walk on mountains", false);
+            
+            ActorTrait NecroMancer = new ActorTrait();
+            NecroMancer.id = "NecroMancer";
+            NecroMancer.path_icon = "ui/icons/lichGod";
+            NecroMancer.group_id = "NonGodTraits";
+            NecroMancer.can_be_given = true;
+            AddTrait(NecroMancer, "When he kills a non god, they transform into his undead minion", false);
+
+            ActorTrait godKiller = new ActorTrait();
+            godKiller.id = "God Killer";
+            godKiller.path_icon = "ui/icons/godKiller";
+            godKiller.action_special_effect = (WorldAction)Delegate.Combine(godKiller.action_special_effect, new WorldAction(godkillerautotrait));
+            godKiller.group_id = "NonGodTraits";
+            AddTrait(godKiller, "To Kill a God is nearly to become one");
         }
 
         //****************************** MAIN ATTACK STUFF ******************************//
@@ -1148,14 +1166,34 @@ namespace GodsAndPantheons
             }
             return true;
         }
+        public static bool buildMountainPath(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (Toolbox.randomChance(GetEnhancedChance("God Of the Earth", "SendMountain%")))
+            {
+                (EffectsLibrary.spawn("fx_Build_Path", pTile) as TerraformPath)?.Init(pSelf.currentTile, pTarget.currentTile, true, 0.15f, 1, true, pSelf.kingdom?.id, true);
+            }
+            return true;
+        }
 
         public static bool MakeItRain(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Toolbox.randomChance(GetEnhancedChance("God Of the Earth", "makeItRain%")))
             {
                 pb.spawnCloudRain(pTarget.currentTile, null);
+            }
+            if (Toolbox.randomChance(GetEnhancedChance("God Of the Earth", "makeItRain%")))
+            {
                 pb.spawnCloudSnow(pTarget.currentTile, null);
             }
+            return true;
+        }
+        private static bool PullRocks(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (Toolbox.randomChance(GetEnhancedChance("God Of the Earth", "LiftRocks%")))
+            {
+                (EffectsLibrary.spawn("fx_Pull_Rock", pTile) as PulledRock)?.Init(Toolbox.getRandomTileWithinDistance(pTile, 6), pSelf.a);
+            }
+
             return true;
         }
         public static readonly List<string> earthgodminionautotraits = new List<string>() { "fire_proof", "freeze_proof", "regeneration" };
@@ -1488,30 +1526,38 @@ namespace GodsAndPantheons
             }
             return vector;
         }
-        public static void ShootCustomProjectile(Actor Self, BaseSimObject Target, string projectile, int amount)
+        public static void ShootCustomProjectile(BaseSimObject pSelf, BaseSimObject pTarget, string projectile, int amount, Vector2 Pos = default)
         {
-            Vector2 attackPosition = getAttackPosition(Target);
+            Vector2 attackPosition = getAttackPosition(pTarget);
             attackPosition.y += 0.1f;
-            float TargetSize = Target.stats[S.size];
-            float Size = Self.stats[S.size];
+            float TargetSize = pTarget.stats[S.size];
+            float Size = pSelf.stats[S.size];
             float num5 = 0f;
-            if (Target.isInAir())
+            if (pTarget.isInAir())
             {
-                num5 = Target.getZ();
+                num5 = pTarget.getZ();
             }
             for (int i = 0; i < amount; i++)
             {
-                Vector2 vector = new Vector2(attackPosition.x, attackPosition.y);
-                vector.x += Toolbox.randomFloat(-(TargetSize + 1f), TargetSize + 1f);
-                vector.y += Toolbox.randomFloat(-TargetSize, TargetSize);
-                Vector3 newPoint = Toolbox.getNewPoint(Self.currentPosition.x, Self.currentPosition.y, vector.x, vector.y, Size, true);
-                newPoint.y += 0.5f;
-                Projectile Projectile = EffectsLibrary.spawnProjectile(projectile, newPoint, vector, num5);
+                Vector2 Target = new Vector2(attackPosition.x, attackPosition.y);
+                Target.x += Toolbox.randomFloat(-(TargetSize + 1f), TargetSize + 1f);
+                Target.y += Toolbox.randomFloat(-TargetSize, TargetSize);
+                Vector3 Start;
+                if (Pos == null)
+                {
+                    Start = Toolbox.getNewPoint(pSelf.currentPosition.x, pSelf.currentPosition.y, Target.x, Target.y, Size, true);
+                }
+                else
+                {
+                    Start = Toolbox.getNewPoint(Pos.x, Pos.y, Target.x, Target.y, Size, true);
+                }
+                Start.y += 0.5f;
+                Projectile Projectile = EffectsLibrary.spawnProjectile(projectile, Start, Target, num5);
                 if (Projectile != null)
                 {
-                    Projectile.byWho = Self;
-                    Projectile.setStats(Self.stats);
-                    Projectile.targetObject = Target;
+                    Projectile.byWho = pSelf;
+                    Projectile.setStats(pSelf.stats);
+                    Projectile.targetObject = pTarget;
                 }
             }
         }
@@ -1538,8 +1584,7 @@ namespace GodsAndPantheons
         {
             if (Main.savedSettings.deathera)
             {
-                if (Main.savedSettings.deathera)
-                    World.world.eraManager.setEra(S.age_ice, true);
+               World.world.eraManager.setEra(S.age_ice, true);
             }
             EffectsLibrary.spawn("fx_napalm_flash", pself.currentTile, null, null, 0f, -1f, -1f);
             for (int i = 0; i < Toolbox.randomInt(5, 10); i++)
@@ -1710,9 +1755,9 @@ namespace GodsAndPantheons
                 {
                     BuildingActions.tryGrowMineralRandom(pSelf.a.currentTile);
                 }
-                if (Toolbox.randomChance(GetEnhancedChance("God Of the Earth", "buildWorld%")))
+                if (Toolbox.randomChance(GetEnhancedChance("God Of the Earth", "buildWorld%", 75)))
                 {
-                    buildMountain(pTile);
+                    CreateMountains(pSelf.a);
                 }
 
                 return true;
@@ -1723,34 +1768,74 @@ namespace GodsAndPantheons
         {
             ///not finushed
         }
-
-        public static void buildMountain(WorldTile pTile)
+        public static void CreateMountains(Actor pActor)
         {
-            WorldTile _tile = Toolbox.getRandomTileWithinDistance(pTile, 80);
-            if (_tile != null)
+            City city = pActor.city;
+            if (city == null)
             {
-                for (int j = 0; j < 4; j++)
+                return;
+            }
+            bool AtWar = pActor.kingdom.getWars().Count > 0;
+            if (!pActor.currentTile.zone.isSameCityHere(city))
+            {
+                return;
+            }
+            int count = Toolbox.randomInt(3, 6);
+            foreach (TileZone zone in city.neighbourZones)
+            {
+                if(zone.city != null && zone.city.kingdom == pActor.kingdom)
                 {
-                    for (int i = 0; i < _tile.neighbours.Length; i++)
+                    continue;
+                }
+                TileDirection direction = GetDirectionToCity(zone, city);
+                if(direction == TileDirection.Null)
+                {
+                    continue;
+                }
+                int Start = GetPath(direction, out int End);
+                if (AtWar ? (zone.tiles[Start].Type != TileLibrary.mountains && zone.tiles[End].Type != TileLibrary.mountains) : (zone.tiles[Start].Type == TileLibrary.mountains && zone.tiles[End].Type == TileLibrary.mountains))
+                {
+                    (EffectsLibrary.spawn("fx_Build_Path", zone.centerTile) as TerraformPath)?.Init(zone.tiles[Start], zone.tiles[End], AtWar, 0.25f, 2, false);
+                    count--;
+                    if(count == 0)
                     {
-                        //errror here!!!
-                        WorldTile tile = _tile.neighbours[i];   
-                        MapAction.terraformMain(tile, AssetManager.tiles.get("mountains"), TerraformLibrary.destroy);
-                        MapAction.terraformMain(tile.neighbours[i], AssetManager.tiles.get("mountains"), TerraformLibrary.destroy);
-                        MapAction.terraformMain(tile.neighbours[j], AssetManager.tiles.get("soil_high"), TerraformLibrary.destroy);
-                        MapAction.terraformMain(tile.neighbours[j].neighbours[i], AssetManager.tiles.get("soil_high"), TerraformLibrary.destroy);
-                        MapAction.terraformMain(tile.neighbours[j].neighbours[i], AssetManager.tiles.get("soil_low"), TerraformLibrary.destroy);
-                        MapAction.terraformMain(tile.neighbours[i].neighbours[j], AssetManager.tiles.get("soil_low"), TerraformLibrary.destroy);
-                        MapAction.terraformMain(tile.neighbours[i].neighbours[0], AssetManager.tiles.get("mountains"), TerraformLibrary.destroy);
-                        MapAction.terraformMain(tile.neighbours[i].neighbours[j].neighbours[j], AssetManager.tiles.get("soil_low"), TerraformLibrary.destroy);
-                        MapAction.terraformMain(tile.neighbours[j].neighbours[i].neighbours[i], AssetManager.tiles.get("soil_low"), TerraformLibrary.destroy);
-
+                        return;
                     }
                 }
             }
-
-
         }
+        public static int GetPath(TileDirection direction, out int End)
+        {
+            switch(direction)
+            {
+                case TileDirection.Up: End = 53;  return 13;
+                case TileDirection.Down: End = 50; return 10;
+                case TileDirection.Left: End = 22; return 17;
+                case TileDirection.Right: End = 40; return 46;
+                default: End = 0;  return 0;
+            }
+        }
+        public static TileDirection GetDirectionToCity(TileZone zone, City city)
+        {
+            if (city.zones.Contains(zone.zone_left))
+            {
+                return TileDirection.Left;
+            }
+            if (city.zones.Contains(zone.zone_down))
+            {
+                return TileDirection.Down;
+            }
+            if (city.zones.Contains(zone.zone_up))
+            {
+                return TileDirection.Up;
+            }
+            if (city.zones.Contains(zone.zone_right))
+            {
+                return TileDirection.Right;
+            }
+            return TileDirection.Null;
+        }
+        
         #endregion
 
         public static void addTraitToLocalizedLibrary(string id, string description)
