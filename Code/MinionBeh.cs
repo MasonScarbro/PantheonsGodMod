@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace GodsAndPantheons
 {
-    public class SummonedOneBeh
+    public class SummonedOneBeh : BehaviourActionActor
     {
         public static void init()
         {
             BehaviourTaskActor SummonedOne = new BehaviourTaskActor();
             SummonedOne.id = "SummonedOneTask";
-            SummonedOne.addBeh(new Patrol());
+            SummonedOne.addBeh(new SummonedOneBeh());
             SummonedOne.addBeh(new BehGoToTileTarget() { walkOnBlocks = true, walkOnWater = true });
             AssetManager.tasks_actor.add(SummonedOne);
             ActorJob SummonedOneJob = new ActorJob
@@ -20,16 +20,15 @@ namespace GodsAndPantheons
             SummonedOneJob.addTask("SummonedOneTask");
             AssetManager.job_actor.add(SummonedOneJob);
         }
-    }
-    public class Patrol : BehaviourActionActor
-    {
         public bool CheckStatus(Actor pActor, out Actor Master)
         {
             Master = Traits.FindMaster(pActor);
             if (pActor.hasTrait("madness") || pActor.asset.die_if_has_madness)
             {
                 pActor.data.setName("Corrupted One");
-                ClearData(pActor);
+                pActor.data.removeString("Master");
+                pActor.data.removeInt("life");
+                pActor.data.removeInt("lifespan");
                 pActor.removeTrait("Summoned One");
                 return false;
             }
@@ -40,15 +39,9 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        public void ClearData(Actor pActor)
-        {
-            pActor.data.removeString("Master");
-            pActor.data.removeInt("life");
-            pActor.data.removeInt("lifespan");
-        }
         public override BehResult execute(Actor pActor)
         {
-            if(!CheckStatus(pActor, out Actor Master))
+            if (!CheckStatus(pActor, out Actor Master))
             {
                 pActor?.finishAllStatusEffects();
                 pActor?.clearBeh();
@@ -58,13 +51,13 @@ namespace GodsAndPantheons
         }
     }
     //basically the same as summoned one but checkstatus is different
-    public class CorruptedOneBeh
+    public class CorruptedOneBeh : BehaviourActionActor
     {
         public static void init()
         {
             BehaviourTaskActor BrainWashed = new BehaviourTaskActor();
             BrainWashed.id = "BrainWashedTask";
-            BrainWashed.addBeh(new BrainWashed());
+            BrainWashed.addBeh(new CorruptedOneBeh());
             BrainWashed.addBeh(new BehGoToTileTarget() { walkOnBlocks = true, walkOnWater = true });
             AssetManager.tasks_actor.add(BrainWashed);
             ActorJob BrainWashedJob = new ActorJob
@@ -74,9 +67,6 @@ namespace GodsAndPantheons
             BrainWashedJob.addTask("BrainWashedTask");
             AssetManager.job_actor.add(BrainWashedJob);
         }
-    }
-    public class BrainWashed : BehaviourActionActor
-    {
         public bool CheckStatus(Actor pActor, out Actor Master)
         {
             Master = Traits.FindBrainWasher(pActor);

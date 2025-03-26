@@ -15,6 +15,13 @@ namespace GodsAndPantheons
             MTtraits.color = Color.black;
             AssetManager.trait_groups.add(MTtraits);
             addTraitGroupToLocalizedLibrary(MTtraits.id, "Godly Traits");
+
+            ActorTraitGroupAsset NTraits = new ActorTraitGroupAsset();
+            NTraits.id = "NonGodTraits";
+            NTraits.name = "Non God Traits But Still Special";
+            NTraits.color = Color.white;
+            AssetManager.trait_groups.add(NTraits);
+            addTraitGroupToLocalizedLibrary(NTraits.id, "Non Godly Traits");
         }
         private static void addTraitGroupToLocalizedLibrary(string id, string name)
         {
