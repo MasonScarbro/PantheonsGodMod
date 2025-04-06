@@ -15,19 +15,19 @@ namespace GodsAndPantheons
         //returns null if unable to find master
         public static Actor FindMaster(Actor summoned)
         {
-            summoned.data.get("Master", out string master, "");
+            summoned.data.get("Master", out long master, -1);
             return World.world.units.get(master);
         }
         public static Actor FindBrainWasher(Actor brainwashed)
         {
-            brainwashed.data.get("BrainWasher", out string master, "");
+            brainwashed.data.get("BrainWasher", out long master, -1);
             return World.world.units.get(master);
         }
         public static List<Sprite> LaserSprites;
         public static GameObject LoadCrabZillaLaser(out List<Sprite> sprites)
         {
-            GameObject crablaser = Object.Instantiate(Resources.Load<Actor>("actors/p_crabzilla").transform.GetChild(0).GetChild(2).gameObject);
-            crablaser.GetComponent<CrabArm>().giantzilla = null;
+            GameObject crablaser = Object.Instantiate(Resources.Load<GameObject>("actors/p_crabzilla").transform.GetChild(0).GetChild(2).gameObject);
+            crablaser.GetComponent<CrabArm>().crabzilla = null;
             crablaser.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(0).parent = crablaser.transform;
             crablaser.transform.GetChild(0).gameObject.DestroyImmediateIfNotNull();
             crablaser.transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
@@ -51,44 +51,42 @@ namespace GodsAndPantheons
         }
         public static GameObject Laserr = LoadCrabZillaLaser(out LaserSprites);
         public static void CreateLaserForActor(Actor pSelf, float time = 10)
-        {
+        {/*
             GameObject Laser = Object.Instantiate(Laserr);
-            Laser.transform.position = pSelf.currentPosition;
-            Laser.transform.parent = pSelf.transform;
+            Laser.transform.position = pSelf.current_position;
+            Laser.transform.parent = pSelf.avatar.transform;
             Laser.transform.localPosition = new Vector3(-3, 12, 0);
             Laser.transform.localScale = new Vector3(0.3f, 0.25f, 1);
-            pSelf.addStatusEffect("Lassering", time);
+            pSelf.addStatusEffect("Lassering", time);*/
+            //fix later
         }
-        public static void AddTrait(ActorTrait Trait, string disc, bool HasStats = true)
+        public static void AddTrait(ActorTrait Trait, string disc, bool HasStats = true, int InheritRate = 0)
         {
             if (HasStats)
             {
-                foreach (KeyValuePair<string, float> kvp in TraitStats[Trait.id])
+                Trait.base_stats = new BaseStats();
+                foreach (KeyValuePair<string, float> Stat in TraitStats[Trait.id])
                 {
-                    Trait.base_stats[kvp.Key] = kvp.Value;
+                    Trait.base_stats[Stat.Key] = Stat.Value;
                 }
             }
-            Trait.inherit = -1;
+            Trait.rate_inherit = InheritRate;
             AssetManager.traits.add(Trait);
-            PlayerConfig.unlockTrait(Trait.id);
+            Trait.unlock();
             addTraitToLocalizedLibrary(Trait.id, disc);
         }
         //returns true if a trait is added
-        public static bool AddAutoTraits(ActorData a, string trait, bool mustbeinherited = false, float chancemult = 1)
+        public static void AddAutoTraits(Actor a, string trait, bool mustbeinherited = false, float chancemult = 1)
         {
-            bool addednew = false;
             foreach (string autotrait in AutoTraits[trait])
             {
-                if (!mustbeinherited || Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
+                if (!mustbeinherited || Randy.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
                 {
-                    if (!a.traits.Contains(autotrait)) addednew = true;
-                    a.addTrait(autotrait);
+                   a.addTrait(autotrait);
                 }
             }
-            return addednew;
         }
-        public static bool AddAutoTraits(Actor a, string trait) => AddAutoTraits(a.data, trait);
-        public static bool AutoTrait(ActorData pTarget, ListPool<string> traits, bool MustBeInherited = false, float chancemult = 1)
+        public static bool AutoTrait(Actor pTarget, ListPool<string> traits, bool MustBeInherited = false, float chancemult = 1)
         {
             if (!Main.savedSettings.AutoTraits)
             {
@@ -111,7 +109,7 @@ namespace GodsAndPantheons
             Actor self = (Actor)pSelf;
             for (int i = 0; i < times; i++)
             {
-                Actor actor = World.world.units.spawnNewUnit(creature, Ptile, true, 3f);
+                Actor actor = World.world.units.spawnNewUnit(creature, Ptile);
                 TurnActorIntoSummonedOne(actor, self, lifespan);
                 foreach (string trait in autotraits ?? summonedoneautotraits)
                 {
@@ -136,19 +134,18 @@ namespace GodsAndPantheons
         public static bool IsGod(Actor a)
             => GetGodTraits(a).Count > 0
             || a.asset.id == SA.crabzilla //crabzilla is obviously a god, duhh
-            || a.asset.id == SA.godFinger; //its in the name
+            || a.asset.id == SA.god_finger; //its in the name
 
-        public static bool IsGodTrait(string a) => TraitStats.Keys.Contains(a);
-
-        public static List<string> GetGodTraits(Actor a) => GetGodTraits(a.data.traits);
-        public static List<string> GetGodTraits(List<string> pTraits, bool includedemigods = false, bool includesubgods = false)
+        public static bool IsGodTrait(ActorTrait a) => GodAbilities.Keys.Contains(a.id);
+        public static List<string> GetGodTraits(Actor a) => GetGodTraits(a.traits);
+        public static List<string> GetGodTraits(HashSet<ActorTrait> pTraits, bool includedemigods = false, bool includesubgods = false)
         {
             List<string> list = new List<string>();
-            foreach (string trait in pTraits)
+            foreach (ActorTrait trait in pTraits)
             {
                 if (IsGodTrait(trait) || (trait.Equals("Demi God") && includedemigods) || (trait.Equals("Lesser God") && includesubgods))
                 {
-                    list.Add(trait);
+                    list.Add(trait.id);
                 }
             }
             return list;
@@ -174,12 +171,12 @@ namespace GodsAndPantheons
         {
             if (Target != null)
             {
-                if (!MustBeFar || Vector2.Distance(Target.currentPosition, Actor.currentPosition) > distance || !Actor.currentTile.isSameIsland(Target.currentTile))
+                if (!MustBeFar || Vector2.Distance(Target.current_position, Actor.current_position) > distance || !Actor.current_tile.isSameIsland(Target.current_tile))
                 {
                     for(byte attempts = 0; attempts < Attempts; attempts++)
                     {
-                        WorldTile _tile = Toolbox.getRandomTileWithinDistance(Target.currentTile, distance);
-                        if (AllTiles || (_tile.Type.ground && !_tile.Type.block && _tile.isSameIsland(Target.currentTile)))
+                        WorldTile _tile = Toolbox.getRandomTileWithinDistance(Target.current_tile, distance);
+                        if (AllTiles || (_tile.Type.ground && !_tile.Type.block && _tile.isSameIsland(Target.current_tile)))
                         {
                             Actor.cancelAllBeh();
                             EffectsLibrary.spawnAt("fx_teleport_blue", _tile.posV3, Actor.stats[S.scale]);
@@ -193,7 +190,7 @@ namespace GodsAndPantheons
         }
         public static bool SuperRegeneration(BaseSimObject pTarget, float chance, float percent)
         {
-            if (Toolbox.randomChance(chance / 100))
+            if (Randy.randomChance(chance / 100))
             {
                 pTarget.a.restoreHealth((int)(pTarget.a.getMaxHealth() * (percent / 100)));
             }
@@ -233,13 +230,13 @@ namespace GodsAndPantheons
             pData.get("Demi" + S.range, out float range);
             pData.get("Demi" + S.scale, out float scale);
             pData.get("Demi" + S.intelligence, out float intell);
-            pData.get("Demi" + S.knockback_reduction, out float knockback_reduction);
+            pData.get("Demi" + S.mass, out float mass);
             pData.get("Demi" + S.warfare, out float warfare);
-            pData.get("Demi" + S.fertility, out float fertility);
-            pData.get("Demi" + S.max_children, out float maxchildren);
-            pData.get("Demi" + S.max_age, out int maxage);
-            pData.get("Demi" + S.diplomacy, out float dimplomacy);
+            pData.get("Demi" + S.offspring, out float offpsring);
+            pData.get("Demi" + S.max_nutrition, out float maxNutrition);
+            pData.get("Demi" + S.diplomacy, out float diplomacy);
             pData.get("Demi" + S.loyalty_traits, out float loyalty);
+            pData.get("Demi" + S.lifespan, out int lifespan); //special
             temp_base_stats.clear();
             temp_base_stats[S.speed] = speed;
             temp_base_stats[S.critical_chance] = crit;
@@ -251,21 +248,20 @@ namespace GodsAndPantheons
             temp_base_stats[S.range] = range;
             temp_base_stats[S.scale] = scale;
             temp_base_stats[S.intelligence] = intell;
-            temp_base_stats[S.knockback_reduction] = knockback_reduction;
+            temp_base_stats[S.mass] = mass;
             temp_base_stats[S.warfare] = warfare;
-            temp_base_stats[S.fertility] = fertility;
-            temp_base_stats[S.diplomacy] = dimplomacy;
+            temp_base_stats[S.offspring] = offpsring;
+            temp_base_stats[S.diplomacy] = diplomacy;
             temp_base_stats[S.loyalty_traits] = loyalty;
-            temp_base_stats[S.max_children] = (int)maxchildren;
+            temp_base_stats[S.max_nutrition] = (int)maxNutrition;
             //special
-            temp_base_stats[S.max_age] = maxage;
+            temp_base_stats[S.lifespan] = lifespan;
             return temp_base_stats;
         }
         public static Actor GetTargetToCrashLand(Actor actor)
         {
-            World.world.getObjectsInChunks(actor.currentTile, 6, MapObjectType.Actor);
             using ListPool<Actor> actors = new ListPool<Actor>();
-            foreach(Actor a in GetAlliesOfActor(World.world.temp_map_objects, actor))
+            foreach(Actor a in GetAlliesOfActor(Finder.getUnitsFromChunk(actor.current_tile, 0, 6), actor))
             {
                 if (!a.hasStatus("Levitating") && a != actor)
                 {
@@ -278,7 +274,7 @@ namespace GodsAndPantheons
             }
             return actors.GetRandom();
         }
-        public static List<Actor> GetAlliesOfActor(List<BaseSimObject> actors, BaseSimObject actor)
+        public static List<Actor> GetAlliesOfActor(IEnumerable<BaseSimObject> actors, BaseSimObject actor)
         {
             List<Actor> allies = new List<Actor>();
             foreach (Actor a in actors)
@@ -290,7 +286,7 @@ namespace GodsAndPantheons
             }
             return allies;
         }
-        public static List<Actor> GetEnemiesOfActor(List<BaseSimObject> actors, BaseSimObject actor)
+        public static List<Actor> GetEnemiesOfActor(IEnumerable<BaseSimObject> actors, BaseSimObject actor)
         {
             List<Actor> allies = new List<Actor>();
             foreach (Actor a in actors)
@@ -304,12 +300,12 @@ namespace GodsAndPantheons
         }
         public static Actor CopyActor(Actor pActor, string ActorID)
         {
-            Actor actor = World.world.units.createNewUnit(ActorID, pActor.currentTile, 0f);
+            Actor actor = World.world.units.createNewUnit(ActorID, pActor.current_tile);
             if(actor == null)
             {
                 return null;
             }
-            actor.data.traits.Clear();
+            actor.traits.Clear();
             actor.data.custom_data_bool = pActor.data.custom_data_bool;
             actor.data.custom_data_float = pActor.data.custom_data_float;
             actor.data.custom_data_int = pActor.data.custom_data_int;
@@ -328,26 +324,26 @@ namespace GodsAndPantheons
             {
                 return null;
             }
-            if(pActor.asset.id == morphid)
+            if (pActor.asset.id == morphid)
             {
                 return null;
             }
             if (destroyWeapon)
             {
-                pActor.equipment?.weapon?.emptySlot();
+                pActor.equipment?.weapon?.throwOutItem();
             }
             Actor actor = CopyActor(pActor, morphid);
-            if(actor == null)
+            if (actor == null)
             {
                 return null;
             }
             if (!actor.asset.use_items && pActor.asset.use_items)
             {
-                pActor.city?.takeAllItemsFromActor(pActor);
+                pActor.city?.takeAllItemsFromActorOnDeath(pActor);
             }
             actor.setKingdom(pActor.kingdom);
             actor.setCity(pActor.city);
-            pActor.data.traits.Clear();
+            pActor.traits.Clear();
             if (Log)
             {
                 actor.data.set("morphedinto", morphid);
@@ -357,53 +353,55 @@ namespace GodsAndPantheons
             {
                 minion.data.set("Master", actor.data.id);
             }
-            if (Config.selectedUnit == pActor)
+            if (SelectedUnit._unit_main == pActor)
             {
-                Config.selectedUnit = actor;
+                SelectedUnit.makeMainSelected(actor);
             }
-            Clan clan = pActor.getClan();
+            Clan clan = pActor.clan;
             ActionLibrary.removeUnit(pActor);
-            clan?.addUnit(actor);
-            EffectsLibrary.spawn("fx_spawn", actor.currentTile, null, null, 0f, -1f, -1f);
+            if (clan != null) { 
+            actor.setClan(clan);
+            }
+            EffectsLibrary.spawn("fx_spawn", actor.current_tile, null, null, 0f, -1f, -1f);
             return actor;
         }
-        public static void MakeDemiGod(ListPool<string> godtraits, ref ActorData DemiGod, float chancemmult = 1)
+        public static void MakeDemiGod(ListPool<string> godtraits, Actor DemiGod, float chancemmult = 1)
         {
             DemiGod.addTrait("Demi God");
             foreach (string trait in godtraits)
             {
-                DemiGod.set("Demi" + trait, true);
+                DemiGod.data.set("Demi" + trait, true);
                 foreach (KeyValuePair<string, float> kvp in TraitStats[trait])
                 {
-                  if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemmult))
+                  if (Randy.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemmult))
                   {
-                    DemiGod.get("Demi" + kvp.Key, out float value);
-                    DemiGod.set("Demi" + kvp.Key, Random.Range(kvp.Value * 0.5f, kvp.Value * 0.75f) + value);
+                    DemiGod.data.get("Demi" + kvp.Key, out float value);
+                    DemiGod.data.set("Demi" + kvp.Key, Random.Range(kvp.Value * 0.5f, kvp.Value * 0.75f) + value);
                   }
                 }
             }
-            DemiGod.set("Demi"+S.max_age, Random.Range(100, 200));
+            DemiGod.data.set("Demi"+S.lifespan, Random.Range(100, 200));
         }
-        public static void MakeLesserGod(ListPool<string> godtraits, ref ActorData LesserGod, float chancemult = 1)
+        public static void MakeLesserGod(ListPool<string> godtraits, Actor LesserGod, float chancemult = 1)
         {
             LesserGod.addTrait("Lesser God");
             LesserGod.addTrait("immortal"); // lesser gods immortal or very long lived? havent decided yet
             foreach (string trait in godtraits)
             {
-                LesserGod.set("Demi" + trait, true);
+                LesserGod.data.set("Demi" + trait, true);
                 foreach (KeyValuePair<string, float> kvp in TraitStats[trait])
                 {
-                    if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
+                    if (Randy.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
                     {
-                        LesserGod.get("Demi" + kvp.Key, out float value);
-                        LesserGod.set("Demi" + kvp.Key, Random.Range(kvp.Value * 0.75f, kvp.Value) + value);
+                        LesserGod.data.get("Demi" + kvp.Key, out float value);
+                        LesserGod.data.set("Demi" + kvp.Key, Random.Range(kvp.Value * 0.75f, kvp.Value) + value);
                     }
                 }
                 foreach (AttackAction ability in GodAbilities[trait])
                 {
-                    if (Toolbox.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
+                    if (Randy.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
                     {
-                        LesserGod.set("Demi" + ability.Method.Name, true);
+                        LesserGod.data.set("Demi" + ability.Method.Name, true);
                     }
                 }
             }
@@ -491,28 +489,30 @@ namespace GodsAndPantheons
         //pushes the actor directly to the target
         public static void PushActorTowardsTile(Vector2Int point, Actor pActor, float time = 6f/90f)
         {
-            float pX = (point.x-pActor.currentPosition.x)/(24f*time);
-            float pY = (point.y-pActor.currentPosition.y)/(24f*time);
-            float pZ = (1.5f * time) - (pActor.zPosition.y/24);
+            float pX = (point.x-pActor.current_position.x)/(24f*time);
+            float pY = (point.y-pActor.current_position.y)/(24f*time);
+            float pZ = (1.5f * time) - (pActor.position_height/24);
             //forces the actor add the force even if he is in the air
-            pActor.forceVector.x += pX * 0.6f;
-            pActor.forceVector.y += pY * 0.6f;
-            pActor.forceVector.z += pZ * 2f;
-            pActor.under_force = true;
+            pActor.velocity.x += pX * 0.6f;
+            pActor.velocity.y += pY * 0.6f;
+            pActor.velocity.z += pZ * 2f;
+            pActor.under_forces = true;
             return;
         }
-        public static void PushActor(Actor pActor, Vector2Int point, float strength = 1, float Zstrength = 0.1f, bool IgnoreResistance = false, bool Outward = false)
+        public static void PushActor(Actor pActor, Vector2Int point, float strength = 1, float Zstrength = 0.1f, bool Outward = false)
         {
-            float angle = Toolbox.getAngle(pActor.currentTile.x, pActor.currentTile.y, point.x, point.y);
-            float TrueStrength = IgnoreResistance ? strength : strength - strength * pActor.stats[S.knockback_reduction];
-            float Xstrength = Mathf.Cos(angle) * TrueStrength * (Outward ? -1 : 1);
-            float Ystrength = Mathf.Sin(angle) * TrueStrength * (Outward ? -1 : 1);
-            pActor.addForce(Xstrength, Ystrength, Zstrength);
+            if (!Outward) {
+                pActor.calculateForce(pActor.current_position.x, pActor.current_position.y, point.x, point.y, strength, Zstrength);
+            }
+            else
+            {
+                pActor.calculateForce(point.x, point.y, pActor.current_position.x, pActor.current_position.y, strength, Zstrength);
+            }
         }
         //call this by using finishStatusEffect("BrainWashed")
         public static void FinishBrainWashing(Actor pActor)
         {
-            pActor.data.get("PreviousKingdom", out string PreviousKingdom);
+            pActor.data.get("PreviousKingdom", out long PreviousKingdom);
             Kingdom kingdom = World.world.kingdoms.get(PreviousKingdom);
             if (kingdom != null)
             {

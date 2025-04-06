@@ -21,14 +21,14 @@ namespace GodsAndPantheons
                     id = "BlackHole",
                     flash = true,
                     explode_tile = true,
-                    applyForce = false,
-                    removeFire = true,
-                    destroyBuildings = true,
-                    removeTreesFully = true,
+                    apply_force = false,
+                    remove_fire = true,
+                    destroy_buildings = true,
+                    remove_trees_fully = true,
                     explode_strength = 2,
                     explode_and_set_random_fire = true,
                     explosion_pixel_effect = true,
-                    attackType = AttackType.Eaten,
+                    attack_type = AttackType.Eaten,
                     damage = 60,
 
 
@@ -36,16 +36,16 @@ namespace GodsAndPantheons
             TerraformOptions lessercrablaser = AssetManager.terraform.clone("LesserCrabLaser", "crab_laser");
             lessercrablaser.damage = 80;
             lessercrablaser.shake_intensity = 0.2f;
-            lessercrablaser.applyForce = false;
+            lessercrablaser.apply_force = false;
             AssetManager.terraform.add(lessercrablaser);
 
             AssetManager.terraform.add(new TerraformOptions
                 {
                     id = "darkDaggers",
 
-                    applyForce = true,
+                    apply_force = true,
                     force_power = .0001f,
-                    attackType = AttackType.Poison,
+                    attack_type = AttackType.Poison,
                     damage = 10,
 
 
@@ -54,13 +54,13 @@ namespace GodsAndPantheons
                 AssetManager.terraform.add(new TerraformOptions
                 {
                     id = "moonFalling",
-                    addBurned = true,
-                    applyForce = true,
+                    add_burned = true,
+                    apply_force = true,
                     force_power = .01f,
                     explode_tile = true,
                     explode_and_set_random_fire = true,
                     explode_strength = 10,
-                    damageBuildings = true,
+                    damage_buildings = true,
                     setFire = true,
                     damage = 20,
                     shake = true,
@@ -75,14 +75,14 @@ namespace GodsAndPantheons
                     id = "lightBallz",
                     flash = true,
                     explode_tile = true,
-                    destroyBuildings = true,
-                    removeTreesFully = true,
-                    addBurned = true,
+                    destroy_buildings = true,
+                    remove_trees_fully = true,
+                    add_burned = true,
                     force_power = .1f,
                     explode_strength = 3,
                     explode_and_set_random_fire = true,
                     explosion_pixel_effect = true,
-                    attackType = AttackType.Fire,
+                    attack_type = AttackType.Fire,
                     damage = 15,
 
 
@@ -93,13 +93,13 @@ namespace GodsAndPantheons
                     id = "chaosBoneFire",
                     flash = true,
                     explode_tile = true,
-                    destroyBuildings = true,
-                    removeTreesFully = true,
-                    addBurned = true,
+                    destroy_buildings = true,
+                    remove_trees_fully = true,
+                    add_burned = true,
                     explode_strength = 3,
                     explode_and_set_random_fire = true,
                     explosion_pixel_effect = true,
-                    attackType = AttackType.Fire,
+                    attack_type = AttackType.Fire,
                     damage = 15,
 
 
@@ -110,12 +110,12 @@ namespace GodsAndPantheons
                     id = "cometRain",
                     flash = true,
                     explode_tile = true,
-                    destroyBuildings = true,
-                    removeTreesFully = true,
-                    addBurned = true,
+                    destroy_buildings = true,
+                    remove_trees_fully = true,
+                    add_burned = true,
                     explode_strength = 1,
                     explosion_pixel_effect = true,
-                    attackType = AttackType.Acid,
+                    attack_type = AttackType.Acid,
                     damage = 15,
                 });
                 AssetManager.terraform.add(new TerraformOptions
@@ -123,8 +123,8 @@ namespace GodsAndPantheons
                     id = "cometAzureDownDamage",
                     flash = true,
                     explode_tile = true,
-                    destroyBuildings = true,
-                    removeTreesFully = true,
+                    destroy_buildings = true,
+                    remove_trees_fully = true,
                     explode_strength = 100,
                     explosion_pixel_effect = true,
                     damage = 50,
@@ -135,8 +135,8 @@ namespace GodsAndPantheons
                     id = "smokeFlash",
                     flash = true,
                     explode_tile = true,
-                    destroyBuildings = true,
-                    removeTreesFully = true,
+                    destroy_buildings = true,
+                    remove_trees_fully = true,
                     explode_strength = 10,
                     explosion_pixel_effect = true,
                     damage = 500,
@@ -147,14 +147,14 @@ namespace GodsAndPantheons
                     id = "waveTerra",
                     flash = false,
                     explode_tile = false,
-                    transformToWasteland = true,
-                    destroyBuildings = true,
-                    removeTreesFully = true,
+                    transform_to_wasteland = true,
+                    destroy_buildings = true,
+                    remove_trees_fully = true,
                     explode_strength = 5,
                     explosion_pixel_effect = true,
-                    applyForce = true,
+                    apply_force = true,
                     force_power = .0001f,
-                    attackType = AttackType.Poison,
+                    attack_type = AttackType.Poison,
                     damage = 50,
                 });
 

@@ -1,9 +1,12 @@
 using NCMS.Utils;
 using UnityEngine;
-using ReflectionUtility;
 using System;
 using static UnityEngine.GraphicsBuffer;
 using GodsAndPantheons.Patches;
+using UnityEngine.Events;
+using NeoModLoader.General;
+using UnityEngine.Windows;
+using YamlDotNet.Core.Tokens;
 
 namespace GodsAndPantheons
 {
@@ -15,17 +18,18 @@ namespace GodsAndPantheons
             Tab.createTab("Button Tab_GodsAndPantheons", "Tab_GodsAndPantheons", "GodsAndPantheons", "Gods Here", -150);
             loadButtons();
         }
+        static PowersTab tab;
         private static void loadButtons()
         {
-            PowersTab tab = getPowersTab("GodsAndPantheons");
+            tab = getPowersTab("GodsAndPantheons");
 
             var godHunterSpawn = new GodPower();
             godHunterSpawn.id = "GodHunter";
-            godHunterSpawn.showSpawnEffect = true;
+            godHunterSpawn.show_spawn_effect = true;
             godHunterSpawn.multiple_spawn_tip = true;
-            godHunterSpawn.actorSpawnHeight = 3f;
+            godHunterSpawn.actor_spawn_height = 3f;
             godHunterSpawn.name = "GodHunter";
-            godHunterSpawn.spawnSound = "spawnelf";
+            godHunterSpawn.sound_event = "spawnelf";
             godHunterSpawn.actor_asset_id = "GodHunter";
             godHunterSpawn.click_action = new PowerActionWithID(callSpawnUnit);
             AssetManager.powers.add(godHunterSpawn);
@@ -33,11 +37,11 @@ namespace GodsAndPantheons
 
             var darkOneSpawn = new GodPower();
             darkOneSpawn.id = "DarkOne";
-            darkOneSpawn.showSpawnEffect = true;
+            darkOneSpawn.show_spawn_effect = true;
             darkOneSpawn.multiple_spawn_tip = true;
-            darkOneSpawn.actorSpawnHeight = 3f;
+            darkOneSpawn.actor_spawn_height = 3f;
             darkOneSpawn.name = "DarkOne";
-            darkOneSpawn.spawnSound = "spawnelf";
+            darkOneSpawn.sound_event = "spawnelf";
             darkOneSpawn.actor_asset_id = "DarkOne";
             darkOneSpawn.click_action = new PowerActionWithID(callSpawnUnit);
             AssetManager.powers.add(darkOneSpawn);
@@ -58,7 +62,7 @@ namespace GodsAndPantheons
               "GodHunter",
               Resources.Load<Sprite>("ui/Icons/godKiller"),
               "Godhunter Spawn",
-              "Spawn a GodHunter",
+              "The God Hunter, Assassin Of Gods, they are usually successfull in groups",
               new Vector2(100, 18),
               ButtonType.GodPower,
               tab.transform,
@@ -67,9 +71,9 @@ namespace GodsAndPantheons
           );
             PowerButtons.CreateButton(
               "DarkOne",
-              Resources.Load<Sprite>("Actors/DarkOne/walk_0"),
+              Resources.Load<Sprite>("Actors/species/other/DarkOne/heads_male/walk_0"),
               "DarkOne Spawn",
-              "Spawn a Dark One",
+              "The Minion of the gods of darkness",
               new Vector2(100, -18),
               ButtonType.GodPower,
               tab.transform,
@@ -85,57 +89,45 @@ namespace GodsAndPantheons
                     tab.transform,
                     WindowManager.windows["KnowledgeGodWindow"].openWindow
               );
-            PowerButton butto = PowerButtons.CreateButton(
+            CreateToggleButton(
                     "ToggleDiplomacyModifiers",
                     Resources.Load<Sprite>("ui/Icons/iconDiplomacy"),
                     "Diplomacy Modifiers",
                     "if enabled, kingdoms will change their opinions on other kingdoms based on if their king's are gods",
                     new Vector2(388, -18),
-                    ButtonType.Toggle,
-                    tab.transform,
-                    ToggleDiplomacy
+                    ToggleDiplomacy,
+                    Main.savedSettings.DiplomacyChanges
               );
-            if (Main.savedSettings.DiplomacyChanges)
-                PowerButtons.ToggleButton(butto.name);
-            PowerButton button = PowerButtons.CreateButton(
+            CreateToggleButton(
                     "ToggleDeathEras",
                     Resources.Load<Sprite>("ui/Icons/ages/iconAgeHope"),
                     "Death Eras",
                     "should deaths change the era?",
                     new Vector2(388, 18),
-                    ButtonType.Toggle,
-                    tab.transform,
-                    ToggleEra
+                    ToggleEra,
+                    Main.savedSettings.deathera
               );
-            if (Main.savedSettings.deathera)
-                PowerButtons.ToggleButton(button.name);
-            PowerButton button2 = PowerButtons.CreateButton(
+            CreateToggleButton(
                     "HunterAssassins",
                     Resources.Load<Sprite>("ui/Icons/godKiller"),
                     "Hunter Assassins",
                     "if enabled, god hunters will become assassins and will hunt down gods",
                     new Vector2(460, 18),
-                    ButtonType.Toggle,
-                    tab.transform,
-                    ToggleAssassins
+                    ToggleAssassins,
+                    Main.savedSettings.HunterAssasins
               );
-            if (Main.savedSettings.HunterAssasins)
-                PowerButtons.ToggleButton(button2.name);
-            PowerButton button3 = PowerButtons.CreateButton(
+            CreateToggleButton(
                     "DevineMiracles",
-                    Resources.Load<Sprite>("ui/Icons/iconNightchild"),
+                    Resources.Load<Sprite>("ui/Icons/actor_traits/iconNightchild"),
                     "Devine Miracles",
                     "allows for a very, very rare chance that a mortal in a kingdom will become a god",
                     new Vector2(424, 18),
-                    ButtonType.Toggle,
-                    tab.transform,
-                    ToggleDevineMiracles
+                    ToggleDevineMiracles,
+                    Main.savedSettings.DevineMiracles
               );
-            if (Main.savedSettings.DevineMiracles)
-                PowerButtons.ToggleButton(button3.name);
             PowerButtons.CreateButton(
                     "Create a Divine Miracle",
-                    Resources.Load<Sprite>("ui/Icons/iconNightchild"),
+                    Resources.Load<Sprite>("ui/Icons/actor_traits/iconNightchild"),
                     "Create a Divine Miracle",
                     "press this to make a divine miracle manually",
                     new Vector2(424, -18),
@@ -143,30 +135,24 @@ namespace GodsAndPantheons
                     tab.transform,
                     CreateDivineMiracle
               );
-            PowerButton button4 = PowerButtons.CreateButton(
+            CreateToggleButton(
                     "GodKings",
                     Resources.Load<Sprite>("ui/Icons/iconKings"),
                     "God Kings",
                     "if enabled, gods will always take higher priority when electing a new king",
                     new Vector2(352, 18),
-                    ButtonType.Toggle,
-                    tab.transform,
-                    ToggleGodKings
+                    ToggleGodKings,
+                    Main.savedSettings.GodKings
               );
-            if (Main.savedSettings.GodKings)
-                PowerButtons.ToggleButton(button4.name);
-            PowerButton Button5 = PowerButtons.CreateButton(
+            CreateToggleButton(
                     "MakeSummonedOne",
-                    Resources.Load<Sprite>("ui/Icons/iconBlessing"),
+                    Resources.Load<Sprite>("ui/Icons/actor_traits/iconBlessing"),
                     "Spawn Summoned Ones",
                     "if enabled, if you were to spawn a creature on a tile that already has a creature on it, the new creature will be a summoned one of that creature, note that summoned ones have their own AI and only live for 60 or 120s (unless they are immortal)",
                     new Vector2(460, -18),
-                    ButtonType.Toggle,
-                    tab.transform,
-                    ToggleSummmoned
+                    ToggleSummmoned,
+                    Main.savedSettings.MakeSummoned
               );
-            if (Main.savedSettings.MakeSummoned)
-                PowerButtons.ToggleButton(Button5.name);
             PowerButtons.CreateButton(
                     "GodOfFireWindow",
                     Resources.Load<Sprite>("ui/Icons/GodOfFire"),
@@ -177,18 +163,15 @@ namespace GodsAndPantheons
                     tab.transform,
                     WindowManager.windows["GodOfFireWindow"].openWindow
               );
-            PowerButton Button6 = PowerButtons.CreateButton(
+            CreateToggleButton(
                     "ToggleAutoTraits",
-                    Resources.Load<Sprite>("ui/Icons/iconBlessing"),
+                    Resources.Load<Sprite>("ui/Icons/actor_traits/iconBlessing"),
                     "ToggleAutoTraits",
                     "if enabled, gods will automatically get some traits related to their god trait (all gods get the immortal trait, god of fire gets fireproof)",
                     new Vector2(352, -18),
-                    ButtonType.Toggle,
-                    tab.transform,
-                    ToggleAutoTraits
+                    ToggleAutoTraits,
+                    Main.savedSettings.AutoTraits
               );
-            if (Main.savedSettings.AutoTraits)
-                PowerButtons.ToggleButton(Button6.name);
             PowerButtons.CreateButton(
                     "MoonGodWindow",
                     Resources.Load<Sprite>("ui/Icons/starsGod"),
@@ -292,9 +275,8 @@ namespace GodsAndPantheons
         }
         public static string GetGodTraitsInherited(WorldTile pTile)
         {
-            World.world.getObjectsInChunks(pTile, 2, MapObjectType.Actor);
             Actor pActor = null;
-            foreach (Actor a in World.world.temp_map_objects)
+            foreach (Actor a in Finder.getUnitsFromChunk(pTile, 0, 2))
             {
                 if (a.hasTrait("Lesser God") || a.hasTrait("Demi God"))
                 {
@@ -315,9 +297,8 @@ namespace GodsAndPantheons
         }
         public static string GetAbilitiesInherited(WorldTile pTile)
         {
-            World.world.getObjectsInChunks(pTile, 2, MapObjectType.Actor);
             Actor pActor = null;
-            foreach (Actor a in World.world.temp_map_objects)
+            foreach (Actor a in Finder.getUnitsFromChunk(pTile, 0, 2))
             {
                 if (a.hasTrait("Lesser God"))
                 {
@@ -385,9 +366,39 @@ namespace GodsAndPantheons
         }
         public static void CreateDivineMiracle()
         {
-            if (!UpdateWorldStuff.DivineMiracle(World.world))
+            if (!WorldBehaviours.DivineMiracle(World.world))
             {
                 WorldTip.instance.showToolbarText("Could Not Create A Divine Miracle! there can only be a miracle if there is a kingdom with no gods");
+            }
+        }
+        public static void CreateToggleButton(string ID, Sprite sprite, string name, string Description, Vector2 pos, UnityAction toggleAction, bool Enabled)
+        {
+            GodPower power = AssetManager.powers.add(new GodPower()
+            {
+                id = ID,
+                name = name,
+                toggle_name = ID,
+                toggle_action = delegate
+                {
+                    toggleAction();
+                    PlayerConfig.dict[ID].boolVal = !PlayerConfig.dict[ID].boolVal;
+                    PowerButtonSelector.instance.checkToggleIcons();
+                }
+            });
+            LM.AddToCurrentLocale(power.name, power.name);
+            LM.AddToCurrentLocale(power.name + " Description", Description);
+            PlayerConfig.dict.Add(ID, new PlayerOptionData(ID));
+            var Button = PowerButtonCreator.CreateToggleButton(
+                ID,
+                sprite,
+                tab.transform,
+                pos,
+                true
+            );
+            if (!Enabled)
+            {
+                PlayerConfig.dict[ID].boolVal = false;
+                Button.checkToggleIcon();
             }
         }
         public static void ToggleGodKings()

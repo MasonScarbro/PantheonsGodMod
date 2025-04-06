@@ -10,18 +10,18 @@ namespace GodsAndPantheons
         int Current = 0;
         float Speed;
         float TimeLeft;
-        string Kingdom;
-        public void Init(WorldTile Start, WorldTile End, float Speed, string kingdom = null)
+        BaseSimObject ByWho;
+        public void Init(WorldTile Start, WorldTile End, float Speed, BaseSimObject ByWho)
         {
             spawnOnTile(Start);
-            Kingdom = kingdom;
             Current = 0;
-            sprRenderer.color = Start.Type.color;
+            this.ByWho = ByWho;
+            sprite_renderer.color = Start.Type.color;
             this.Speed = Speed;
             TimeLeft = Speed;
-            World.world.pathfindingParam.ocean = true;
-            World.world.pathfindingParam.block = true;
-            World.world.pathfindingParam.ground = true;
+            World.world.pathfinding_param.ocean = true;
+            World.world.pathfinding_param.block = true;
+            World.world.pathfinding_param.ground = true;
             tiles = new List<WorldTile>();
             if (!World.world.calcPath(Start, End, tiles))
             {
@@ -51,12 +51,12 @@ namespace GodsAndPantheons
         public void CreateStalagmite()
         {
             EffectsLibrary.spawnAtTile("Stalagmite", tiles[Current], 0.1f).GetComponent<SpriteRenderer>().color = tiles[Current].Type.color;
-            World.world.applyForce(tiles[Current], 2, 0.1f, false, true, 70, Kingdom != null ? new string[] { Kingdom } : null);
+            World.world.applyForceOnTile(tiles[Current], 2, 0.1f, true, 70, null, ByWho);
         }
         public override void spawnOnTile(WorldTile pTile)
         {
             prepare(pTile, 0.05f);
-            spriteAnimation.resetAnim(0);
+            sprite_animation.resetAnim(0);
         }
     }
     public class PulledRock : BaseEffect
@@ -66,7 +66,7 @@ namespace GodsAndPantheons
         public void Init(WorldTile Tile, Actor pActor)
         {
             Actor = pActor;
-            sprRenderer.color = Tile.Type.color;
+            sprite_renderer.color = Tile.Type.color;
             Launched = false;
             spawnOnTile(Tile);
         }
@@ -75,35 +75,34 @@ namespace GodsAndPantheons
             base.update(pElapsed);
             if(Launched)
             {
-                if(spriteAnimation.currentFrameIndex == 9)
+                if(sprite_animation.currentFrameIndex == 9)
                 {
                     kill();
                 }
                 return;
             }
-            if(spriteAnimation.currentFrameIndex == 7)
+            if(sprite_animation.currentFrameIndex == 7)
             {
-                if (Toolbox.randomChance(0.2f))
+                if (Randy.randomChance(0.2f))
                 {
                     Launch();
                     return;
                 }
-                spriteAnimation.playType = AnimPlayType.Backward;
+                sprite_animation.playType = AnimPlayType.Backward;
             }
-            if(spriteAnimation.currentFrameIndex == 5)
+            if(sprite_animation.currentFrameIndex == 5)
             {
-                spriteAnimation.playType = AnimPlayType.Forward;
+                sprite_animation.playType = AnimPlayType.Forward;
             }
         }
 
         private void Launch()
         {
-            spriteAnimation.playType = AnimPlayType.Forward;
+            sprite_animation.playType = AnimPlayType.Forward;
             Launched = true;
             if(Actor != null)
             {
-                World.world.getObjectsInChunks(tile, 8, MapObjectType.Actor);
-                List<Actor> enemies = GetEnemiesOfActor(World.world.temp_map_objects, Actor);
+                List<Actor> enemies = GetEnemiesOfActor(Finder.getUnitsFromChunk(tile, 1, 8), Actor);
                 if(enemies.Count > 0)
                 {
                     ShootCustomProjectile(Actor, enemies.GetRandom(), "EarthShardProjectile", 1, tile.pos);
@@ -115,7 +114,7 @@ namespace GodsAndPantheons
         {
             tile = pTile;
             prepare(pTile, 0.1f);
-            spriteAnimation.resetAnim(0);
+            sprite_animation.resetAnim(0);
         }
     }
     public class TerraformPath : BaseEffect
@@ -126,25 +125,25 @@ namespace GodsAndPantheons
         float Speed;
         float TimeLeft;
         bool shockwave;
-        string Kingdom;
         int thickness;
+        BaseSimObject ByWho;
         bool Reverse;
         bool Reversed = false;
-        public void Init(WorldTile Start, WorldTile End, bool BuildUp, float Speed, int thickness, bool shockwave, string kingdom = null, bool Reverse = false)
+        public void Init(WorldTile Start, WorldTile End, bool BuildUp, float Speed, int thickness, bool shockwave, BaseSimObject ByWho = null, bool Reverse = false)
         {
             spawnOnTile(Start);
-            Kingdom = kingdom;
+            this.ByWho = ByWho;
             Current = 0;
             this.Reverse = Reverse;
             this.BuildUp = BuildUp;
             this.thickness = thickness;
             this.shockwave = shockwave;
-            sprRenderer.color = Start.Type.color;
+            sprite_renderer.color = Start.Type.color;
             this.Speed = Speed;
             TimeLeft = Speed;
-            World.world.pathfindingParam.ocean = true;
-            World.world.pathfindingParam.block = true;
-            World.world.pathfindingParam.ground = true;
+            World.world.pathfinding_param.ocean = true;
+            World.world.pathfinding_param.block = true;
+            World.world.pathfinding_param.ground = true;
             tiles = new List<WorldTile>();
             if(!World.world.calcPath(Start, End, tiles))
             {
@@ -173,7 +172,7 @@ namespace GodsAndPantheons
                     if (shockwave)
                     {
                         WorldTile tile = tiles[tiles.Count-1];
-                        World.world.applyForce(tile, 4, 0.4f, true, false, 50, Kingdom != null ? new string[] { Kingdom } : null);
+                        World.world.applyForceOnTile(tile, 4, 0.4f, true, 50, null, ByWho);
                         EffectsLibrary.spawnExplosionWave(tile.posV3, 10f);
                     }
                     Current--;
@@ -208,18 +207,17 @@ namespace GodsAndPantheons
             {
                 return;
             }
-            MapAction.terraformMain(pTile, Up ? pTile.Type.increaseTo : pTile.Type.decreaseTo, AssetManager.terraform.get("flash"));
+            MapAction.terraformMain(pTile, Up ? pTile.Type.increase_to : pTile.Type.decrease_to, AssetManager.terraform.get("flash"));
         }
         public override void spawnOnTile(WorldTile pTile)
         {
             prepare(pTile, 0.07f);
-            spriteAnimation.resetAnim(0);
+            sprite_animation.resetAnim(0);
         }
     }
     public class MoonOrbit : BaseEffect
     {
         Actor Actor;
-        string Kingdom;
         const float TargetRadius = 5;
         const float Cooldown = 0.5f;
         float Radius;
@@ -230,10 +228,6 @@ namespace GodsAndPantheons
         {
             TimeLeft = Time;
             Actor = pActor;
-            if(Actor.kingdom != null)
-            {
-                Kingdom = Actor.kingdom.id;
-            }
             spawnOnTile(pTile);
             Angle = pAngleOffset;
         }
@@ -243,7 +237,6 @@ namespace GodsAndPantheons
             Angle = 0;
             Radius = 0;
             TimeCooldown = Cooldown;
-            Kingdom = null;
             Actor = null;
         }
         public override void update(float pElapsed)
@@ -282,14 +275,14 @@ namespace GodsAndPantheons
             TimeCooldown -= pElapsed;
             if (TimeCooldown <= 0)
             {
-                World.world.applyForce(tile, 2, 0.2f, true, true, 20, Kingdom != null ? new string[] { Kingdom } : null, Actor);
+                World.world.applyForceOnTile(tile, 2, 0.2f, true, 20, null, Actor);
                 TimeCooldown = Cooldown;
             }
         }
         public void Orbit()
         {
-            float x = (Radius * Mathf.Cos(Angle)) + Actor.currentPosition.x;
-            float y = (Radius * Mathf.Sin(Angle)) + Actor.currentPosition.y;
+            float x = (Radius * Mathf.Cos(Angle)) + Actor.current_position.x;
+            float y = (Radius * Mathf.Sin(Angle)) + Actor.current_position.y;
             transform.position = new Vector2(x, y);
             tile = World.world.GetTile((int)transform.position.x, (int)transform.position.y);
         }
@@ -297,7 +290,7 @@ namespace GodsAndPantheons
         {
             tile = pTile;
             prepare(pTile, 0.1f);
-            spriteAnimation.resetAnim(0);
+            sprite_animation.resetAnim(0);
         }
     }
     public class BlackHoleFlash : CustomExplosionFlash
@@ -329,12 +322,11 @@ namespace GodsAndPantheons
             if(TimeLeft <= 0)
             {
                 TimeLeft = TimeCoolDown;
-                World.world.getObjectsInChunks(tile, (int)scale*10, MapObjectType.Actor);
-                foreach (Actor a in World.world.temp_map_objects)
+                foreach (Actor a in Finder.getUnitsFromChunk(tile, 0, 5))
                 {
                     if(a.kingdom.id != byWho.kingdom.id)
                     {
-                        PushActor(a, tile.pos, 0.5f, 0.4f, true);
+                        PushActor(a, tile.pos, 0.5f, 0.4f);
                         a.getHit(30, true, AttackType.Eaten, byWho, false);
                     }
                 }
@@ -395,7 +387,7 @@ namespace GodsAndPantheons
             this.TimeCooldown = TimeCooldown;
             timeleft = TimeCooldown;
             StormAnimation = GetComponent<SpriteAnimation>();
-            Speed = Toolbox.randomFloat(4f, 10f);
+            Speed = Randy.randomFloat(4f, 10f);
         }
         public SpriteAnimation StormAnimation;
         public override void update(float Elapsed)
@@ -439,7 +431,7 @@ namespace GodsAndPantheons
         {
             tile = pTile;
             prepare(pTile, 1);
-            spriteAnimation.resetAnim(0);
+            sprite_animation.resetAnim(0);
         }
     }
     public delegate void StormAction(Storm S);

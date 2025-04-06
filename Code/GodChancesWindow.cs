@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using NCMS.Utils;
+using NeoModLoader.General;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -41,15 +42,9 @@ namespace GodsAndPantheons
                 if(Child.GetChild(0)?.GetComponent<NameInput>() != null)
                 {
                     Child.GetChild(0).GetComponent<NameInput>().setText($"{Main.defaultSettings.Chances[ID][Child.name].value}");
-                    bool active = Main.defaultSettings.Chances[ID][Child.name].active;
-                    if (Main.savedSettings.Chances[ID][Child.name].active != active)
-                    {
-                        PowerButtons.ToggleButton($"{Child.name}Button");
-                    }
-                    Main.savedSettings.Chances[ID][Child.name].Set(Main.defaultSettings.Chances[ID][Child.name].value, active);
+                    Main.modifyGodOption(ID, Child.name, Main.defaultSettings.Chances[ID][Child.name].active, Main.defaultSettings.Chances[ID][Child.name].value);
                 }
             }
-            Main.saveSettings();
         }
 
         private void LoadInputOptions()
@@ -81,28 +76,38 @@ namespace GodsAndPantheons
                     );
                     input.inputField.characterValidation = InputField.CharacterValidation.Decimal;
                     input.inputField.onValueChanged.AddListener(delegate {
-                        float pValue = NewUI.checkStatInput(input);
+                        int pValue = NewUI.checkStatInput(input);
                         Main.modifyGodOption(ID, kv.Key, null, pValue);
                         input.setText($"{pValue}");
                     });
-
-                    PowerButton activeButton = PowerButtons.CreateButton(
-                        $"{kv.Key}Button",
-                        Mod.EmbededResources.LoadSprite($"{Mod.Info.Name}.Resources.units.icon.png"),
-                        "Activate Setting",
-                        "",
-                        new Vector2(200, 0),
-                        ButtonType.Toggle,
-                        input.transform.parent.transform,
-                        delegate { Main.modifyGodOption(ID, kv.Key, !Main.savedSettings.Chances[ID][kv.Key].active); }
-                    );
-                    if (kv.Value.active)
+                    GodPower power = AssetManager.powers.add(new GodPower()
                     {
-                        PowerButtons.ToggleButton($"{kv.Key}Button");
+                        id = kv.Key,
+                        name = kv.Key,
+                        toggle_name = kv.Key,
+                        toggle_action = delegate
+                        {
+                            Main.modifyGodOption(ID, kv.Key, !Main.savedSettings.Chances[ID][kv.Key].active);
+                        }
+                    });
+                    LM.AddToCurrentLocale(power.name, power.name);
+                    LM.AddToCurrentLocale(power.name + " Description", "Toggle the option");
+                    PlayerConfig.dict.Add(kv.Key, new PlayerOptionData(kv.Key));
+                    PowerButton activeButton = PowerButtonCreator.CreateToggleButton(
+                        $"{kv.Key}",
+                        Mod.EmbededResources.LoadSprite($"{Mod.Info.Name}.Resources.units.icon.png"),
+                        input.transform.parent.transform,
+                        new Vector2(200, 0),
+                        true
+                    );
+                    if (!kv.Value.active)
+                    {
+                        PlayerConfig.dict[kv.Key].boolVal = false;
                     }
                     activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
                 }
             }
+            PowerButtonSelector.instance.checkToggleIcons();
         }
     }
 }

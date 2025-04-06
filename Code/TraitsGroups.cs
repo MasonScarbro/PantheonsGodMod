@@ -12,21 +12,21 @@ namespace GodsAndPantheons
             ActorTraitGroupAsset MTtraits = new ActorTraitGroupAsset();
             MTtraits.id = "GodTraits";
             MTtraits.name = "The Traits Of Gods";
-            MTtraits.color = Color.black;
+            MTtraits.color = "000000";
             AssetManager.trait_groups.add(MTtraits);
-            addTraitGroupToLocalizedLibrary(MTtraits.id, "Godly Traits");
+            addTraitGroupToLocalizedLibrary(MTtraits.name, "Godly Traits");
 
             ActorTraitGroupAsset NTraits = new ActorTraitGroupAsset();
             NTraits.id = "NonGodTraits";
             NTraits.name = "Non God Traits But Still Special";
-            NTraits.color = Color.white;
+            NTraits.color = "FFFFFF";
             AssetManager.trait_groups.add(NTraits);
-            addTraitGroupToLocalizedLibrary(NTraits.id, "Non Godly Traits");
+            addTraitGroupToLocalizedLibrary(NTraits.name, "Non Godly Traits");
         }
         private static void addTraitGroupToLocalizedLibrary(string id, string name)
         {
-            Dictionary<string, string> localizedText = LocalizedTextManager.instance.localizedText;
-            localizedText.Add("trait_group_" + id, name);
+            Dictionary<string, string> localizedText = LocalizedTextManager.instance._localized_text;
+            localizedText.Add(id, name);
         }
     }
 }

@@ -1,4 +1,3 @@
-using Amazon.Runtime.Internal.Transform;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -20,7 +19,7 @@ namespace GodsAndPantheons
               {"CastCurses%", new InputOption(true, 5, "casts curses on non-gods")},
               {"Freeze%", new InputOption(true, 20, "freezes the enemy")},
               {"CreateShield%", new InputOption(true, 3, "creates a temporary shield")},
-              {"TeleprtTarget%", new InputOption(true, 5f, "teleports the enemy if the god is low on health")},
+              {"TeleprtTarget%", new InputOption(true, 5, "teleports the enemy if the god is low on health")},
               {"SummonLightning%", new InputOption(true, 9, "casts lightning on the enemy")},
               {"SummonMeteor%", new InputOption(true, 3, "Summons a meteor on the enemy")},
               {"PagesOfKnowledge%", new InputOption(true, 3, "shoots special projectiles at the enemy")},
@@ -45,9 +44,9 @@ namespace GodsAndPantheons
             {"GodOfFireWindow",
                 new Dictionary<string, InputOption>
               {
-                 {"FireStorm%", new InputOption(true, 1f, "Can create a cloud of ash, fire tornados, or the FIRE STORM")},
+                 {"FireStorm%", new InputOption(true, 1, "Can create a cloud of ash, fire tornados, or the FIRE STORM")},
                  {"MorphIntoDragon%", new InputOption(true, 30, "[SPECIAL] the god of fire can morph into a dragon when sorrounded by enemies")},
-                 {"Summoning%", new InputOption(true, 2.4f, "Summons mages, fire skeletons and demons")},
+                 {"Summoning%", new InputOption(true, 3, "Summons mages, fire skeletons and demons")},
                  {"Magic%", new InputOption(true, 4, "creates explosions, lava and fire")},
                  {"ChaosLaser%", new InputOption(true, 2, "[ITEM] allows the holder of the staff of fire to cast a super-deadly laster to annihilate the enemy")},
                  {"God Of Fireinherit%", new InputOption(true, 55, "the chance of a child of a god of fire to inherit a stat / ability / trait")}
@@ -67,7 +66,7 @@ namespace GodsAndPantheons
             {"DarkGodWindow",
                 new Dictionary<string, InputOption>
               {
-                  {"DarkDash%", new InputOption(true, 30f, "[ITEM] allows the holder of the dark dagger to dash into enemies and deal damage")},
+                  {"DarkDash%", new InputOption(true, 30, "[ITEM] allows the holder of the dark dagger to dash into enemies and deal damage")},
                   {"cloudOfDarkness%", new InputOption(true, 1, "Creates a massive cloud of darkness that shrouds the area in darkness")},
                   {"blackHole%", new InputOption(true, 6, "Creates a black hole that sucks in enemies dealing alot of damage over time")},
                   {"darkDaggers%", new InputOption(true, 10, "throws dark daggers at enemies")},
@@ -92,7 +91,7 @@ namespace GodsAndPantheons
               {
                   {"warGodsCry%", new InputOption(true, 5, "A cry of anger and rage that inspires allies and pushes the enemy")},
                   {"axeThrow%", new InputOption(true, 29, "throws a axe")},
-                  {"seedsOfWar%", new InputOption(true, 1f, "allows the god of war to make political decisions while also making enemies mad")},
+                  {"seedsOfWar%", new InputOption(true, 1, "allows the god of war to make political decisions while also making enemies mad")},
                   {"StunEnemy%", new InputOption(true, 20, "stuns an enemy")},
                   {"axemaelstrom%", new InputOption(true, 8, "[ITEM] allows the holder of the Axe of fury to create a axe maelstrom, throwing many, many axes at enemies")},
                   {"BlockAttack%", new InputOption(true, 16, "[Special] lets the god of war block an attack")},
@@ -127,7 +126,7 @@ namespace GodsAndPantheons
             {"LoveGodWindow",
                 new Dictionary<string, InputOption>
               {
-                  {"Poisoning%", new InputOption(true, 12.5f, "Poisons, and slows the enemy")},
+                  {"Poisoning%", new InputOption(true, 13, "Poisons, and slows the enemy")},
                   {"healAllies%", new InputOption(true, 40, "heals allies, [SPECIAL] the god of love can shoot hearts to heal allies")},
                   {"blessAllies%", new InputOption(true, 5, "blesses allies")},
                   {"CastShields%", new InputOption(true, 15, "casts shields on nearby allies")},
@@ -149,14 +148,14 @@ namespace GodsAndPantheons
     public class InputOption
     {
         public bool active;
-        public float value;
-        public InputOption(bool active, float value, string Description)
+        public int value;
+        public InputOption(bool active, int value, string Description)
         {
             this.value = value;
             this.active = active;
             this.Description = Description;
         }
-        public void Set(float value, bool active)
+        public void Set(int value, bool active)
         {
             this.value = value;
             this.active = active;

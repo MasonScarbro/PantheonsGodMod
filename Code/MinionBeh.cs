@@ -23,7 +23,7 @@ namespace GodsAndPantheons
         public bool CheckStatus(Actor pActor, out Actor Master)
         {
             Master = Traits.FindMaster(pActor);
-            if (pActor.hasTrait("madness") || pActor.asset.die_if_has_madness)
+            if (pActor.hasTrait("madness"))
             {
                 pActor.data.setName("Corrupted One");
                 pActor.data.removeString("Master");
@@ -34,7 +34,7 @@ namespace GodsAndPantheons
             }
             if (Master == null)
             {
-                pActor.killHimself();
+                pActor.die();
                 return false;
             }
             return true;
@@ -70,11 +70,7 @@ namespace GodsAndPantheons
         public bool CheckStatus(Actor pActor, out Actor Master)
         {
             Master = Traits.FindBrainWasher(pActor);
-            if (pActor.hasTrait("madness"))
-            {
-                return false;
-            }
-            if (pActor.asset.die_if_has_madness || Master == null)
+            if (pActor.hasTrait("madness") || Master == null)
             {
                 return false;
             }
@@ -112,12 +108,12 @@ namespace GodsAndPantheons
         }
         public static void getrandomtile(ref Actor pActor)
         {
-            MapRegion mapRegion = pActor.currentTile.region;
-            if (Toolbox.randomChance(0.65f) && mapRegion.tiles.Count > 0)
+            MapRegion mapRegion = pActor.current_tile.region;
+            if (Randy.randomChance(0.65f) && mapRegion.tiles.Count > 0)
             {
                 pActor.beh_tile_target = mapRegion.tiles.GetRandom();
             }
-            if (mapRegion.neighbours.Count > 0 && Toolbox.randomBool())
+            if (mapRegion.neighbours.Count > 0 && Randy.randomBool())
             {
                 mapRegion = mapRegion.neighbours.GetRandom();
             }
@@ -138,13 +134,13 @@ namespace GodsAndPantheons
             }
             if (Master.has_attack_target)
             {
-                pActor.beh_tile_target = Master.attackTarget.currentTile;
+                pActor.beh_tile_target = Master.attack_target.current_tile;
                 return BehResult.Continue;
             }
-            pActor.beh_tile_target = gettilewithindistance(Master.currentTile);
+            pActor.beh_tile_target = gettilewithindistance(Master.current_tile);
             return BehResult.Continue;
         }
-        public static int getalliesofactor(List<BaseSimObject> actors, BaseSimObject actor)
+        public static int getalliesofactor(IEnumerable<BaseSimObject> actors, BaseSimObject actor)
         {
             int count = 0;
             foreach (BaseSimObject a in actors)

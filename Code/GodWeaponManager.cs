@@ -2,172 +2,94 @@
 AUTHOR: MASON SCARBRO
 VERSION: 1.0.0
 */
-using System;
-using System.Threading;
-using NCMS;
-using UnityEngine;
-using ReflectionUtility;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ai;
-using HarmonyLib;
-using NCMS.Utils;
 
 
 public static class GodWeaponManager
 {
-    public static int count = 0;
-
-    public static bool godGiveWeapon(BaseSimObject pTarget, WorldTile pTile)
+    public static bool godGiveWeapon(NanoObject pTarget, BaseAugmentationAsset asset)
     {
-
-       /* if (count == 1)
+        Actor pActor = (Actor)pTarget;
+        if (pActor.asset.use_items)
         {
-            Debug.Log("IGNORE THIS ERROR AND KEEP PLAYING!");
-        }*/ //why is this here??? just uses more cpu
-
-        if (pTarget.a != null)
-        {
-            if (pTarget.a.asset.use_items && !pTarget.a.hasWeapon())
+            pActor.equipment.weapon?.throwOutItem();
+            if (asset.id.Equals("God Of War"))
             {
-            if (pTarget.a.hasTrait("God Of War"))
-            {
-                ItemData axeOfFuryD = new ItemData();
-                axeOfFuryD.id = "AxeOfFury";
-                axeOfFuryD.material = "adamantine";
-                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(axeOfFuryD);
-                pTarget.a.setStatsDirty();
+                Item axeOfFuryD = World.world.items.generateItem(AssetManager.items.get("AxeOfFury"), pActor.kingdom, pActor.name, 1, pActor);
+                axeOfFuryD.addMod("eternal");
+                pActor.equipment.setItem(axeOfFuryD, pActor);
             }
 
-            if (pTarget.a.hasTrait("God Of the Night"))
+            if (asset.id.Equals("God Of the Night"))
             {
-                ItemData darkDaggerD = new ItemData();
-                darkDaggerD.id = "DarkDagger";
-                darkDaggerD.material = "adamantine";
-                var weaponSlot = pTarget.a.equipment.getSlot(EquipmentType.Weapon);
-                if (weaponSlot != null)
-                {
-                    weaponSlot.setItem(darkDaggerD);
-                }
-
-                pTarget.a.setStatsDirty();
+                Item Item = World.world.items.generateItem(AssetManager.items.get("DarkDagger"), pActor.kingdom, pActor.name, 1, pActor);
+                Item.addMod("eternal");
+                pActor.equipment.setItem(Item, pActor);
             }
 
-            if (pTarget.a.hasTrait("God Of light"))
+            if (asset.id.Equals("God Of light"))
             {
-                ItemData spearOfLightD = new ItemData();
-                spearOfLightD.id = "SpearOfLight";
-                spearOfLightD.material = "adamantine";
-
-                var weaponSlot = pTarget.a.equipment.getSlot(EquipmentType.Weapon);
-                if (weaponSlot != null)
-                {
-                    weaponSlot.setItem(spearOfLightD);
-                }
-
-
-                pTarget.a.setStatsDirty();
+                Item Item = World.world.items.generateItem(AssetManager.items.get("SpearOfLight"), pActor.kingdom, pActor.name, 1, pActor);
+                Item.addMod("divine_rune");
+                pActor.equipment.setItem(Item, pActor);
 
             }
-
-            if (pTarget.a.hasTrait("God Of Knowledge"))
+            if (asset.id.Equals("God Of Knowledge"))
             {
-                ItemData staffOfKnowledgeD = new ItemData();
-                staffOfKnowledgeD.id = "StaffOfKnowledge";
-                staffOfKnowledgeD.material = "base";
-
-                var weaponSlot = pTarget.a.equipment.getSlot(EquipmentType.Weapon);
-                if (weaponSlot != null)
-                {
-                    weaponSlot.setItem(staffOfKnowledgeD);
-                }
-                pTarget.a.setStatsDirty();
+                Item Item = World.world.items.generateItem(AssetManager.items.get("StaffOfKnowledge"), pActor.kingdom, pActor.name, 1, pActor);
+                Item.addMod("eternal");
+                pActor.equipment.setItem(Item, pActor);
 
             }
-
-            if (pTarget.a.hasTrait("God Of Chaos"))
+            if (asset.id.Equals("God Of Chaos"))
             {
-                ItemData maceOfDestructionD = new ItemData();
-                maceOfDestructionD.id = "MaceOfDestruction";
-                maceOfDestructionD.material = "adamantine";
-                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(maceOfDestructionD);
-                pTarget.a.setStatsDirty();
-
+                Item Item = World.world.items.generateItem(AssetManager.items.get("MaceOfDestruction"), pActor.kingdom, pActor.name, 1, pActor);
+                Item.addMod("eternal");
+                pActor.equipment.setItem(Item, pActor);
+            }
+            if (asset.id.Equals("God Of the Stars"))
+            {
+                Item Item = World.world.items.generateItem(AssetManager.items.get("CometScepter"), pActor.kingdom, pActor.name, 1, pActor);
+                Item.addMod("eternal");
+                pActor.equipment.setItem(Item, pActor);
             }
 
-            if (pTarget.a.hasTrait("God Of the Stars"))
+            if (asset.id.Equals("God Of The Lich"))
             {
-                ItemData cometScepterD = new ItemData();
-                cometScepterD.id = "CometScepter";
-                cometScepterD.material = "base";
-                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(cometScepterD);
-                pTarget.a.setStatsDirty();
-
-            }
-
-            if (pTarget.a.hasTrait("God Of The Lich"))
-            {
-                ItemData lichGodsGreatSwordD = new ItemData();
-                lichGodsGreatSwordD.id = "LichGodsGreatSword";
-                lichGodsGreatSwordD.material = "base";
-                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(lichGodsGreatSwordD);
-                pTarget.a.setStatsDirty();
-
-            }
-
-            if (pTarget.a.hasTrait("God Of Fire"))
-            {
-                //Debug.Log("Why No Activate!?!?!?");
-                ItemData FireStaff = new ItemData();
-                FireStaff.id = "HellStaff";
-                FireStaff.material = "base";
-                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(FireStaff);
-                pTarget.a.setStatsDirty();
-
+                Item Item = World.world.items.generateItem(AssetManager.items.get("LichGodsGreatSword"), pActor.kingdom, pActor.name, 1, pActor);
+                Item.addMod("eternal");
+                pActor.equipment.setItem(Item, pActor);
             }
 
 
-            if (pTarget.a.hasTrait("God Of the Earth"))
+            if (asset.id.Equals("God Of the Earth"))
             {
-                //Debug.Log("Why No Activate!?!?!?");
-                ItemData hammerOfCreationD = new ItemData();
-                hammerOfCreationD.id = "HammerOfCreation";
-                hammerOfCreationD.material = "base";
-                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(hammerOfCreationD);
-                pTarget.a.setStatsDirty();
+                Item Item = World.world.items.generateItem(AssetManager.items.get("HammerOfCreation"), pActor.kingdom, pActor.name, 1, pActor);
+                Item.addMod("eternal");
+                pActor.equipment.setItem(Item, pActor);
 
             }
 
-            if (pTarget.a.hasTrait("God Of Love"))
+            if (asset.id.Equals("God Of Love"))
             {
-                ItemData lovestaff = new ItemData();
-                lovestaff.id = "StaffOfLove";
-                lovestaff.material = "base";
-                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(lovestaff);
-                pTarget.a.setStatsDirty();
+                Item Item = World.world.items.generateItem(AssetManager.items.get("StaffOfLove"), pActor.kingdom, pActor.name, 1, pActor);
+                Item.addMod("eternal");
+                pActor.equipment.setItem(Item, pActor);
 
             }
-
-
-            if (pTarget.a.hasTrait("God Hunter"))
+            if (asset.id.Equals("God Of Fire"))
             {
-                //Debug.Log("Why No Activate!?!?!?");
-                ItemData godHuntersScythe = new ItemData();
-                godHuntersScythe.id = "GodHuntersScythe";
-                godHuntersScythe.material = "base";
-                pTarget.a.equipment.getSlot(EquipmentType.Weapon).setItem(godHuntersScythe);
-                pTarget.a.setStatsDirty();
+                Item Item = World.world.items.generateItem(AssetManager.items.get("HellStaff"), pActor.kingdom, pActor.name, 1, pActor);
+                Item.addMod("eternal");
+                pActor.equipment.setItem(Item, pActor);
             }
-            
-           // count++;
-            return true;
+            if (asset.id.Equals("God Hunter"))
+            {
+                Item Item = World.world.items.generateItem(AssetManager.items.get("GodHuntersScythe"), pActor.kingdom, pActor.name, 1, pActor);
+                Item.addMod("eternal");
+                pActor.equipment.setItem(Item, pActor);
             }
         }
-
-
-        return false;
+        return true;
     }
 
 }

@@ -9,66 +9,43 @@ using static GodsAndPantheons.Traits;
 //Harmony Patches
 namespace GodsAndPantheons.Patches
 {
-    [HarmonyPatch(typeof(Actor), nameof(Actor.u5_curTileAction))]
+    [HarmonyPatch(typeof(Actor), nameof(Actor.ignoresBlocks))]
     public class EarthGodWalkOnMountains
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        static void Postfix(Actor __instance, ref bool __result)
         {
-            CodeMatcher Matcher = new CodeMatcher(instructions);
-            Matcher.MatchForward(false, new CodeMatch[] { new CodeMatch(OpCodes.Callvirt), new CodeMatch(OpCodes.Ldarg_0)});
-            Matcher.Advance(2);
-            Matcher.RemoveInstructions(2);
-            Matcher.Insert(new CodeInstruction[]
+            if(__instance.hasTrait("Earth Walker"))
             {
-                    new CodeInstruction(OpCodes.Ldloc_0),
-                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(EarthGodWalkOnMountains), nameof(AffectedByBlock)))
-            });
-            return Matcher.Instructions();
-        }
-        public static bool AffectedByBlock(Actor actor, TileTypeBase type)
-        {
-            return type.block && !actor.hasTrait("Earth Walker");
+                __result = true;
+            }
         }
     }
-    [HarmonyPatch(typeof(Actor), nameof(Actor.updateParallelChecks))]
+    [HarmonyPatch(typeof(Actor), nameof(Actor.u6_checkFrozen))]
     public class DontMoveIfPetrified
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        static void Postfix(Actor __instance)
         {
-            CodeMatcher Matcher = new CodeMatcher(instructions);
-            Matcher.MatchForward(false, new CodeMatch[] { new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ActorBase), "has_status_frozen")) });
-            Matcher.RemoveInstruction();
-            Matcher.Insert(new CodeInstruction[]
+            if (__instance.hasStatus("Petrified"))
             {
-                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(DontMoveIfPetrified), nameof(CantMove)))
-            });
-            return Matcher.Instructions();
-        }
-        public static bool CantMove(Actor a)
-        {
-            return a.has_status_frozen || a.hasStatus("Petrified");
+                __instance.skipUpdates();
+            }
         }
     }
-    [HarmonyPatch(typeof(MapBox), nameof(MapBox.applyForce))]
+    [HarmonyPatch(typeof(MapBox), nameof(MapBox.applyForceOnTile))]
     public class RandomForce
     {
         [HarmonyReversePatch]
-        //pforce out here is useless! the radius can also be infinite unlike in the game (max in-game is 32)
-        public static void CreateRandomForce(object instance, WorldTile pTile, int pRad = 10, float pSpeedForce = 1.5f, bool pForceOut = true, bool useOnNature = false, int pDamage = 0, string[] pIgnoreKingdoms = null, BaseSimObject pByWho = null, TerraformOptions pOptions = null)
+        //pForceOut is useless here! the max radius is also a lot larger
+        public static void CreateRandomForce(object instance, WorldTile pTile, int pRad = 10, float pForceAmount = 1.5f, bool pForceOut = true, int pDamage = 0, string[] pIgnoreKingdoms = null, BaseSimObject pByWho = null, TerraformOptions pOptions = null, bool pChangeHappiness = false)
         {
             IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
                 CodeMatcher Matcher = new CodeMatcher(instructions);
-                Matcher.MatchForward(false, new CodeMatch[] { new CodeMatch(OpCodes.Ldarg_1) });
-                int Pos = Matcher.Pos;
-                Matcher.RemoveInstructions(26);
+                Matcher.MatchForward(false, new CodeMatch[] { new CodeMatch(OpCodes.Ldc_I4_1) });
+                Matcher.RemoveInstruction();
                 Matcher.Insert(new CodeInstruction[]
                 {
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(MapBox), "_force_temp_actor_list")),
-                    new CodeInstruction(OpCodes.Ldarg_S, (byte)1),
-                    new CodeInstruction(OpCodes.Ldarg_S, (byte)2),
-                    new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(RandomForce), nameof(FillListWithAllActors)))
+                    new CodeInstruction(OpCodes.Ldc_I4, 16),
                 });
                 Matcher.MatchForward(false, new CodeMatch[]
                 {
@@ -76,23 +53,12 @@ namespace GodsAndPantheons.Patches
                 });
                 List<Label> label = Matcher.Instruction.labels;
                 Matcher.RemoveInstruction();
-                Matcher.Insert(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Toolbox), nameof(Toolbox.randomBool))) {labels = label});
+                Matcher.Insert(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Randy), nameof(Randy.randomBool))) {labels = label});
                 return Matcher.Instructions();
             }
         }
-        //less optimized but allows infinite radius
-        public static void FillListWithAllActors(List<Actor> pList, WorldTile Tile, int MaxDistance = 64)
-        {
-            foreach(Actor a in World.world.units)
-            {
-                if(Toolbox.DistTile(Tile, a.currentTile) < MaxDistance)
-                {
-                    pList.Add(a);
-                }
-            }
-        }
     }
-    [HarmonyPatch(typeof(Clan), nameof(Clan.createClan))]
+    /*[HarmonyPatch(typeof(Clan), nameof(Clan.newClanInit))]
     public class FixClanRaceError
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -100,7 +66,7 @@ namespace GodsAndPantheons.Patches
             CodeMatcher Matcher = new CodeMatcher(instructions);
             Matcher.MatchForward(false, new CodeMatch[]
             {
-                new CodeMatch(new OpCode?(OpCodes.Ldfld), AccessTools.Field(typeof(ActorBase), nameof(ActorBase.race)))
+                new CodeMatch(new OpCode?(OpCodes.Ldfld), AccessTools.Field(typeof(Actor), nameof(Actor.race)))
             });
             Matcher.RemoveInstruction();
             Matcher.Insert(new CodeInstruction[]
@@ -109,7 +75,7 @@ namespace GodsAndPantheons.Patches
             });
             return Matcher.Instructions();
         }
-        public static Race GetTrueRace(Actor actor)
+        public static race GetTrueRace(Actor actor)
         {
             if(actor.asset.race != SK.dragons)
             {
@@ -118,8 +84,8 @@ namespace GodsAndPantheons.Patches
             actor.data.get("oldself", out string oldself, SA.unit_human);
             return AssetManager.raceLibrary.get(AssetManager.actor_library.get(oldself).race);
         }
-    }
-    [HarmonyPatch(typeof(PowerLibrary), "spawnUnit")]
+    }*/ //idk if this is neccessary anymore
+    //[HarmonyPatch(typeof(PowerLibrary), "spawnUnit")]
     public class MakeSummoned
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -127,14 +93,20 @@ namespace GodsAndPantheons.Patches
             CodeMatcher Matcher = new CodeMatcher(instructions);
             Matcher.MatchForward(false, new CodeMatch[]
 			{
-				new CodeMatch(new OpCode?(OpCodes.Callvirt), AccessTools.Method(typeof(ActorManager), nameof(ActorManager.spawnNewUnit)))
+				new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(ActorManager), nameof(ActorManager.spawnNewUnit)))
 			});
-            Matcher.Advance(1);
+            Debug.Log(Matcher.Operand);
+            Matcher.Advance(2);
+            Debug.Log(Matcher.Operand);
             Matcher.Insert(new CodeInstruction[]
             {
-              new CodeInstruction(OpCodes.Dup),
+              new CodeInstruction(OpCodes.Ldloc_2),
               new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(MakeSummoned), nameof(MakeSummonedone)))
             });
+            foreach(CodeInstruction instruction in instructions)
+            {
+                Debug.Log($"{instruction.opcode} with {instruction.operand}");
+            }
             return Matcher.Instructions();
         }
         public static void MakeSummonedone(Actor a)
@@ -143,7 +115,7 @@ namespace GodsAndPantheons.Patches
             {
                 return;
             }
-            Actor Master = GetActorFromTile(a.currentTile, a);
+            Actor Master = GetActorFromTile(a.current_tile, a);
             if(Master != null)
             {
                 TurnActorIntoSummonedOne(a, Master);
@@ -163,7 +135,7 @@ namespace GodsAndPantheons.Patches
                 Actor actor2 = simpleList[i];
                 if (actor2.isAlive() && actor2 != actortoexclude && !actor2.isInsideSomething() && !actor2.hasTrait("Summoned One"))
                 {
-                    float num2 = Toolbox.DistTile(actor2.currentTile, pTile);
+                    float num2 = Toolbox.DistTile(actor2.current_tile, pTile);
                     if (num2 <= 3f && (actor == null || num2 < num))
                     {
                         actor = actor2;
@@ -174,110 +146,10 @@ namespace GodsAndPantheons.Patches
             return actor;
         }
     }
-    [HarmonyPatch(typeof(MapBox), "Update")]
-    public class UpdateWorldStuff
-    {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            CodeMatcher Matcher = new CodeMatcher(instructions);
-            Matcher.MatchForward(false, new CodeMatch[]
-            {
-                new CodeMatch(new OpCode?(OpCodes.Call), AccessTools.Method(typeof(MapBox), nameof(MapBox.isPaused)))
-            });
-            Matcher.Advance(2);
-            Matcher.Insert(new CodeInstruction[]
-            {
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(UpdateWorldStuff), nameof(TryDivineMiracles)))
-            });
-            return Matcher.Instructions();
-        }
-        public static float Timer = 30;
-        public static void TryDivineMiracles(MapBox instance)
-        {
-            if (blessingtime > 0)
-            {
-                blessingtime -= instance.elapsed;
-                pb.flashPixel(LuckyOnee.currentTile);
-                pb.divineLightFX(LuckyOnee.currentTile, null);
-                pb.drawDivineLight(LuckyOnee.currentTile, null);
-                SuperRegeneration(LuckyOnee, 100, 25);
-            }
-            else if (LuckyOnee != null)
-            {
-                blessingtime = 0;
-                ActionLibrary.castShieldOnHimself(null, LuckyOnee, null);
-                LuckyOnee = null;
-            }
-            if (!Main.savedSettings.DevineMiracles)
-            {
-                return;
-            }
-            Timer -= instance.elapsed;
-            if (Timer > 0)
-            {
-                return;
-            }
-            Timer = 30;
-            if (!Toolbox.randomChance(0.002f))
-            {
-                return;
-            }
-            DivineMiracle(instance);
-        }
-        public static bool DivineMiracle(MapBox instance)
-        {
-            List<Kingdom> list = World.world.kingdoms.list_civs;
-            List<string> availabletraits = getavailblegodtraits(instance);
-            if (availabletraits.Count == 0)
-            {
-                return false;
-            }
-            availabletraits.Shuffle();
-            list.Shuffle();
-            foreach (Kingdom k in list)
-            {
-                if (!DoesKingdomHaveGod(k))
-                {
-                    List<Actor> units = k.units.getSimpleList();
-                    units.Shuffle();
-                    foreach (Actor a in units)
-                    {
-                        if (!a.hasTrait("infertile") && !a.hasTrait("Demi God") && !a.hasTrait("Lesser God"))
-                        {
-                            DivineMiracle(a, availabletraits[0]);
-                            Timer = 300;
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-        static Actor LuckyOnee;
-        static float blessingtime = 0;
-        public static void DivineMiracle(Actor LuckyOne, string godtrait)
-        {
-            World.world.startShake(1f, 0.01f, 2f, true, true);
-            LuckyOne.addTrait(godtrait);
-            LuckyOne.equipment?.weapon?.emptySlot();
-            LuckyOnee = LuckyOne;
-            blessingtime = 10;
-            WorldLogMessage worldLogMessage = new WorldLogMessage($"A Divine Miracle Has Occurred in {LuckyOne.kingdom.name}!")
-            {
-                unit = LuckyOne,
-                icon = "iconNightchild",
-                location = LuckyOne.currentPosition,
-                color_special1 = LuckyOne.kingdom.kingdomColor.getColorText(),
-                color_special2 = LuckyOne.kingdom.kingdomColor.getColorText()
-            };
-            worldLogMessage.add();
-        }
-    }
-    [HarmonyPatch(typeof(ActorBase), "nextJobActor")]
+    [HarmonyPatch(typeof(Actor), "nextJobActor")]
     public class jobapply
     {
-        static void Postfix(ref string __result, ActorBase pActor)
+        static void Postfix(ref string __result, Actor pActor)
         {
             if (pActor.hasStatus("Blinded"))
             {
@@ -294,7 +166,7 @@ namespace GodsAndPantheons.Patches
             }
         }
     }
-    [HarmonyPatch(typeof(KingdomBehCheckKing), "findKing")]
+    [HarmonyPatch(typeof(SuccessionTool), nameof(SuccessionTool.getKingFromLeaders))]
     public class findking
     {
         static Actor GetKing(Kingdom pKingdom)
@@ -313,35 +185,30 @@ namespace GodsAndPantheons.Patches
             }
             if(list.Count > 0)
             {
-                list.Sort(new Comparison<Actor>(ListSorters.sortUnitByAge));
+                list.Sort(new Comparison<Actor>(ListSorters.sortUnitByAgeOldFirst));
                 return list[0];
             }
             return null;
         }
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        static void Postfix(Kingdom pKingdom, ref Actor __result)
         {
-            CodeMatcher Matcher = new CodeMatcher(instructions);
-            Matcher.MatchForward(false, new CodeMatch[]
+            Actor GodKing = GetKing(pKingdom);
+            if (GodKing != null)
             {
-                new CodeMatch(OpCodes.Ldnull)
-            });
-            Matcher.RemoveInstruction();
-            Matcher.Insert(new CodeInstruction[] {
-                new CodeInstruction(OpCodes.Ldarg_1),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(findking), nameof(GetKing))) });
-            return Matcher.Instructions();
+                __result = GodKing;
+            }
         }
     }
     [HarmonyPatch(typeof(TooltipLibrary), "showTrait")]
     public class showdemistats
     {
-        static BaseStats getdemistats(ActorTrait trait)
+        static BaseStats[] getdemistats(ActorTrait trait)
         {
-            if((trait.id == "Demi God" || trait.id == "Lesser God") && Config.selectedUnit != null)
+            if((trait.id == "Demi God" || trait.id == "Lesser God") && SelectedUnit.unit != null)
             {
-                return GetDemiStats(Config.selectedUnit.data);
+                return new BaseStats[] { GetDemiStats(SelectedUnit.unit.data) };
             }
-            return trait.base_stats;
+            return null;
         }
         
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -349,10 +216,11 @@ namespace GodsAndPantheons.Patches
             CodeMatcher Matcher = new CodeMatcher(instructions);
             Matcher.MatchForward(false, new CodeMatch[]
             {
-                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ActorTrait), "base_stats"))
+                new CodeMatch(OpCodes.Call, AccessTools.Field(typeof(Array), nameof(Array.Empty)))
             });
             Matcher.RemoveInstruction();
             Matcher.Insert(new CodeInstruction[] {
+                new CodeInstruction(OpCodes.Ldloc_0),
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(showdemistats), nameof(getdemistats))) });
             return Matcher.Instructions();
         }
@@ -360,29 +228,6 @@ namespace GodsAndPantheons.Patches
     [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
     public class DontAttack
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            CodeMatcher Matcher = new CodeMatcher(instructions);
-            Matcher.MatchForward(false, new CodeMatch[]
-            {
-                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ActorAsset), "skipFightLogic"))
-            });
-            Matcher.Advance(1);
-            Label CodeLabel = (Label)Matcher.Operand;
-            Matcher.Advance(1);
-            Matcher.Insert(new CodeInstruction[] {
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(BaseSimObject), "a")),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(DontAttack), nameof(CanUseFightLogic))),
-                new CodeInstruction(OpCodes.Brtrue_S, CodeLabel)
-            });
-            return Matcher.Instructions();
-        }
-        //add anything you want here
-        static bool CanUseFightLogic(Actor Actor)
-        {
-            return Actor.asset.id == SA.dragon && Actor.hasTrait("God Of Fire");
-        }
         static void Postfix(BaseSimObject __instance, BaseSimObject pTarget, ref bool __result)
         {
             if (__instance.hasStatus("Blinded") || __instance.hasStatus("Petrified"))
@@ -413,7 +258,7 @@ namespace GodsAndPantheons.Patches
             bool isgod = IsGod(pDeadUnit);
             if(__instance.hasTrait("NecroMancer") && !isgod)
             {
-                Actor actor = CopyActor(pDeadUnit, pDeadUnit.asset.zombieID);
+                Actor actor = CopyActor(pDeadUnit, pDeadUnit.asset.zombie_id);
                 if (actor != null)
                 {
                     TurnActorIntoSummonedOne(actor, __instance, 101);
@@ -433,33 +278,33 @@ namespace GodsAndPantheons.Patches
             }
         }
     }
-    [HarmonyPatch(typeof(StatusEffectData), "update")]
+    [HarmonyPatch(typeof(Status), "update")]
     public class finishinvisibility
     {
-        static void Postfix(StatusEffectData __instance)
+        static void Postfix(Status __instance)
         {
-            if (__instance.finished)
+            if (__instance._finished)
             {
-                if (__instance.asset.id == "Invisible" || __instance.asset.id == "FireStorm")
+                if (__instance.asset.id == "Invisible")
                 {
-                    __instance._simObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                   // __instance._sim_object.a.avatar.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1); //stupid maxim
                 }
-                if(__instance.asset.id == "Lassering" && __instance._simObject.transform.childCount > 0)
+                if(__instance.asset.id == "Lassering" && __instance._sim_object.a.avatar.transform.childCount > 0)
                 {
-                    __instance._simObject.transform.GetChild(0)?.gameObject.DestroyImmediateIfNotNull();
+                    //__instance._sim_object.a.avatar.transform.GetChild(0)?.gameObject.DestroyImmediateIfNotNull(); fix later
                 }
                 if(__instance.asset.id == "BrainWashed")
                 {
-                    FinishBrainWashing(__instance._simObject.a);
+                    FinishBrainWashing(__instance._sim_object.a);
                 }
                 if(__instance.asset.id == "Levitating")
                 {
-                    Actor actor = __instance._simObject.a;
+                    Actor actor = __instance._sim_object.a;
                     Actor Target = GetTargetToCrashLand(actor);
                     if (Target != null)
                     {
-                        actor.forceVector.z = 0;
-                        PushActorTowardsTile(Target.currentTile.pos, actor, 0.1f);
+                        actor.velocity.z = 0;
+                        PushActorTowardsTile(Target.current_tile.pos, actor, 0.1f);
                         Target.getHit(Target.getMaxHealth() * 0.1f, true, AttackType.Other, null, false);
                         actor.getHit(actor.getMaxHealth() * 0.4f, true, AttackType.Other, null, false);
                     }
@@ -472,16 +317,16 @@ namespace GodsAndPantheons.Patches
     {
         static void Postfix(string pID, BaseSimObject __instance)
         {
-            if(__instance.activeStatus_dict == null) { return; }
-            if (__instance.activeStatus_dict.ContainsKey(pID))
+            if(__instance._active_status_dict == null) { return; }
+            if (__instance._active_status_dict.ContainsKey(pID))
             {
-                if(pID == "Invisible" || pID == "FireStorm")
+                if(pID == "Invisible")
                 {
-                    __instance.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                    //__instance.a.avatar.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1); nuh uh
                 }
-                if(pID == "Lassering" && __instance.transform.childCount > 0)
+                if(pID == "Lassering" && __instance.a.avatar.transform.childCount > 0)
                 {
-                    __instance.transform.GetChild(0)?.gameObject.DestroyImmediateIfNotNull();
+                   // __instance.a.avatar.transform.GetChild(0)?.gameObject.DestroyImmediateIfNotNull(); fix later
                 }
                 if (pID == "BrainWashed")
                 {
@@ -490,58 +335,18 @@ namespace GodsAndPantheons.Patches
             }
         }
     }
-    [HarmonyPatch(typeof(BehMakeBaby), "makeBaby")]
-    public class InheritGodTraitsFromNonCitizens
-    {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            CodeMatcher Matcher = new CodeMatcher(instructions);
-            Matcher.MatchForward(false, new CodeMatch[]
-            {
-                new CodeMatch(OpCodes.Stloc_2)
-            });
-            Matcher.Advance(1);
-            Matcher.Insert(new CodeInstruction[]
-            {
-                new CodeInstruction(OpCodes.Ldloc_2),
-                new CodeInstruction(OpCodes.Ldarg_1),
-                new CodeInstruction(OpCodes.Ldarg_2),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(InheritGodTraitsFromNonCitizens), nameof(MakeBaby)))
-            });
-            return Matcher.Instructions();
-        }
-        public static void MakeBaby(Actor child, Actor pParent1, Actor pParent2)
-        {
-            InheritGodTraits.inheritgodtraits(child.data, pParent1, pParent2, null);
-            child.setStatsDirty();
-        }
-    }
-    [HarmonyPatch(typeof(CityBehProduceUnit), "produceNewCitizen")]
+    [HarmonyPatch(typeof(BabyHelper), "applyParentsMeta")]
     public class InheritGodTraits
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        public static void Postfix(Actor pParent1, Actor pParent2, Actor pBaby)
         {
-            CodeMatcher Matcher = new CodeMatcher(instructions);
-            Matcher.MatchForward(false, new CodeMatch[]
-            {
-                new CodeMatch((ci) => ci.opcode == OpCodes.Stloc_S && ci.operand is LocalBuilder localBuilder && localBuilder.LocalIndex == 5)
-            });
-            Matcher.Advance(1);
-            Matcher.Insert(new CodeInstruction[]
-            {
-                new CodeInstruction(OpCodes.Ldloc_S, 4),
-                new CodeInstruction(OpCodes.Ldloc_0),
-                new CodeInstruction(OpCodes.Ldloc_1),
-                new CodeInstruction(OpCodes.Ldloc_S, 5),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(InheritGodTraits), nameof(inheritgodtraits)))
-            });
-            return Matcher.Instructions();
+            inheritgodtraits(pBaby, pParent1, pParent2, BabyHelper.checkGreatClan(pParent1, pParent2));
         }
-        public static void inheritgodtraits(ActorData child, Actor pParent1, Actor pParent2, Clan GreatClan)
+        public static void inheritgodtraits(Actor child, Actor pParent1, Actor pParent2, Clan GreatClan)
         {
             int parents = pParent2 != null ? 2 : 1;
             float godparents = IsGod(pParent1) ? 1 : 0;
-            float demiparents = pParent1.data.hasTrait("Demi God") ? 1 : 0;
+            float demiparents = pParent1.hasTrait("Demi God") ? 1 : 0;
             float lesserparents = pParent1.hasTrait("Lesser God") ? 1 : 0;
             using ListPool<string> godtraits = new ListPool<string>(GetGodTraits(pParent1));
             AddRange(godtraits, Getinheritedgodtraits(pParent1.data));
@@ -550,7 +355,7 @@ namespace GodsAndPantheons.Patches
                 AddRange(godtraits, GetGodTraits(pParent2));
                 AddRange(godtraits, Getinheritedgodtraits(pParent2.data));
                 godparents += IsGod(pParent2) ? 1 : 0;
-                demiparents += pParent2.data.hasTrait("Demi God") ? 1 : 0;
+                demiparents += pParent2.hasTrait("Demi God") ? 1 : 0;
                 lesserparents += pParent2.hasTrait("Lesser God") ? 1 : 0;
             }
             if(godparents == 0 && demiparents == 0 && lesserparents == 0) {
@@ -567,18 +372,18 @@ namespace GodsAndPantheons.Patches
             {
                 if (IsGod(chief))
                 {
-                    MakeLesserGod(godtraits, ref child, chancemult);
+                    MakeLesserGod(godtraits, child, chancemult);
                     return;
                 }
             }
             if (parents == importantgenes)
             {
-                MakeLesserGod(godtraits, ref child, chancemult);
+                MakeLesserGod(godtraits, child, chancemult);
                 return;
             }
             else if (importantgenes == 1 || demiparents == parents)
             {
-                MakeDemiGod(godtraits, ref child, chancemult);
+                MakeDemiGod(godtraits, child, chancemult);
                 return;
             }
         }
@@ -593,7 +398,7 @@ namespace GodsAndPantheons.Patches
             }
         }
     }
-    [HarmonyPatch(typeof(ActorBase), nameof(ActorBase.precalcMovementSpeed))]
+    [HarmonyPatch(typeof(Actor), nameof(Actor.precalcMovementSpeed))]
     public class ModifySpeed
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -601,7 +406,7 @@ namespace GodsAndPantheons.Patches
             CodeMatcher Matcher = new CodeMatcher(instructions);
             Matcher.MatchForward(false, new CodeMatch[]
             {
-                new CodeMatch(OpCodes.Ldc_R4, 0.1f)
+                new CodeMatch(OpCodes.Ldc_R4, 0.4f)
             });
             Matcher.Advance(1);
             Matcher.Insert(new CodeInstruction[]
@@ -612,17 +417,17 @@ namespace GodsAndPantheons.Patches
             });
             return Matcher.Instructions();
         }
-        public static float GetCustomSpeedModifier(ActorBase actor)
+        public static float GetCustomSpeedModifier(Actor actor)
         {
             float Speed = 1;
-            if(actor.hasTrait("Earth Walker") && !actor.currentTile.Type.liquid)
+            if(actor.hasTrait("Earth Walker") && !actor.current_tile.Type.liquid)
             {
-                Speed /= actor.currentTile.Type.walkMod;
+                Speed /= actor.current_tile.Type.walk_multiplier;
             }
             return Speed;
         }
     }
-    [HarmonyPatch(typeof(ActorBase), "updateStats")]
+    [HarmonyPatch(typeof(Actor), "updateStats")]
     public class AddCustomStats
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -630,10 +435,9 @@ namespace GodsAndPantheons.Patches
             CodeMatcher Matcher = new CodeMatcher(instructions);
             Matcher.MatchForward(false, new CodeMatch[]
             {
-                new CodeMatch(OpCodes.Ldsfld),
-                new CodeMatch(OpCodes.Stloc_S),
+                new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(BaseStats), nameof(BaseStats.clear)))
             });
-            Matcher.Advance(2);
+            Matcher.Advance(1);
             Matcher.Insert(new CodeInstruction[]
             {
                 new CodeInstruction(OpCodes.Ldarg_0),
@@ -641,18 +445,11 @@ namespace GodsAndPantheons.Patches
             });
             return Matcher.Instructions();
         }
-        static void MergeCustomStats(ActorBase __instance)
+        static void MergeCustomStats(Actor __instance)
         {
             if (__instance.hasTrait("Demi God") || __instance.hasTrait("Lesser God"))
             {
-                mergeStats(GetDemiStats(__instance.data).stats_list, ref __instance.stats);
-            }
-        }
-        static void mergeStats(ListPool<BaseStatsContainer> pStats, ref BaseStats __instance)
-        {
-            for (int i = 0; i < pStats.Count; i++)
-            {
-                __instance[pStats[i].id] += pStats[i].value;
+                __instance.stats.mergeStats(GetDemiStats(__instance.data));
             }
         }
     }
@@ -665,10 +462,10 @@ namespace GodsAndPantheons.Patches
             {
                 if (pTargetToCheck.a.hasTrait("God Of War"))
                 {
-                    if (Toolbox.randomChance(GetEnhancedChance("God Of War", "BlockAttack%")))
+                    if (Randy.randomChance(GetEnhancedChance("God Of War", "BlockAttack%")))
                     {
-                        MusicBox.playSound(MB.HitSwordSword, pTargetToCheck.currentTile);
-                        if (Toolbox.DistTile(pTargetToCheck.currentTile, pData.initiator.currentTile) < 3)
+                        MusicBox.playSound(MB.HitSwordSword, pTargetToCheck.current_tile);
+                        if (Toolbox.DistTile(pTargetToCheck.current_tile, pData.initiator.current_tile) < 3)
                         {
                             pTargetToCheck = pData.initiator;
                             return true;
@@ -678,10 +475,10 @@ namespace GodsAndPantheons.Patches
                 }
                 if (pTargetToCheck.a.hasTrait("God Of Knowledge"))
                 {
-                    if (Toolbox.randomChance(GetEnhancedChance("God Of Knowledge", "EnemySwap%")))
+                    if (Randy.randomChance(GetEnhancedChance("God Of Knowledge", "EnemySwap%")))
                     {
-                        WorldTile tile = pTargetToCheck.currentTile;
-                        using ListPool<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(tile, pTargetToCheck.kingdom, -1).list;
+                        WorldTile tile = pTargetToCheck.current_tile;
+                        List<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(tile, pTargetToCheck.kingdom, -1).list;
                         if(enemies == null)
                         {
                             return true;
@@ -699,8 +496,8 @@ namespace GodsAndPantheons.Patches
                         {
                             enemytoswap.cancelAllBeh();
                             EffectsLibrary.spawnAt("fx_teleport_blue", tile.posV3, enemytoswap.stats[S.scale]);
-                            EffectsLibrary.spawnAt("fx_teleport_blue", enemytoswap.currentTile.posV3, pTargetToCheck.stats[S.scale]);
-                            pTargetToCheck.a.spawnOn(enemytoswap.currentTile);
+                            EffectsLibrary.spawnAt("fx_teleport_blue", enemytoswap.current_tile.posV3, pTargetToCheck.stats[S.scale]);
+                            pTargetToCheck.a.spawnOn(enemytoswap.current_tile);
                             enemytoswap.spawnOn(tile);
                             pTargetToCheck = enemytoswap;
                         }

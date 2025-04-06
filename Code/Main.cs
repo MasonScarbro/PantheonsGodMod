@@ -12,6 +12,7 @@ using UnityEngine;
 using ReflectionUtility;
 using Newtonsoft.Json;
 using HarmonyLib;
+using NeoModLoader.constants;
 namespace GodsAndPantheons
 {
     [ModEntry]
@@ -42,7 +43,7 @@ namespace GodsAndPantheons
             GodHunterBeh.init();
             SummonedOneBeh.init();
             CorruptedOneBeh.init();
-
+            WorldBehaviours.init();
             Units.init();
             Tab.init();
             Invasions.init();
@@ -64,16 +65,16 @@ namespace GodsAndPantheons
                 savedSettings.settingVersion = correctSettingsVersion;
             }
             string json = JsonConvert.SerializeObject(savedSettings, Formatting.Indented);
-            File.WriteAllText($"{Core.NCMSModsPath}/GodChancesWindow.json", json);
+            File.WriteAllText($"{Paths.ModsConfigPath}/GodChancesWindow.json", json);
         }
         public static bool loadSettings()
         {
-            if (!File.Exists($"{Core.NCMSModsPath}/GodChancesWindow.json"))
+            if (!File.Exists($"{Paths.ModsConfigPath}/GodChancesWindow.json"))
             {
                 saveSettings();
                 return false;
             }
-            string data = File.ReadAllText($"{Core.NCMSModsPath}/GodChancesWindow.json");
+            string data = File.ReadAllText($"{Paths.ModsConfigPath}/GodChancesWindow.json");
             SavedSettings loadedData;
             try
             {
@@ -92,9 +93,14 @@ namespace GodsAndPantheons
             savedSettings = loadedData;
             return true;
         }
-        public static void modifyGodOption(string ID, string key, bool? active, float? value = null)
+        public static void modifyGodOption(string ID, string key, bool? active, int? value = null)
         {
             savedSettings.Chances[ID][key].Set(value ?? savedSettings.Chances[ID][key].value, active ?? savedSettings.Chances[ID][key].active);
+            if (active != null)
+            {
+                PlayerConfig.dict[key].boolVal = (bool)active;
+                PowerButtonSelector.instance.checkToggleIcons();
+            }
             saveSettings();
         }
     }

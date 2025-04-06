@@ -23,17 +23,16 @@ namespace GodsAndPantheons
                 id = "WarAxeProjectile1",
                 speed = 7f,
                 texture = "warAxeProjectile",
-                trailEffect_enabled = false,
+                trail_effect_enabled = false,
                 texture_shadow = "shadow_ball",
-                endEffect = string.Empty,
-                terraformRange = 1,
+                end_effect = string.Empty,
+                terraform_range = 1,
                 draw_light_area = true,
                 draw_light_size = 0.1f,
-                parabolic = true,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
-                startScale = 0.1f,
-                targetScale = 0.1f,
+                scale_start = 0.1f,
+                scale_target = 0.1f,
                 
                 /*impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
                 {
@@ -47,44 +46,42 @@ namespace GodsAndPantheons
                 speed = 4f,
                 animation_speed = 0.2f,
                 texture = "CorruptedHeart",
-                trailEffect_enabled = false,
+                trail_effect_enabled = false,
                 texture_shadow = "shadow_ball",
-                endEffect = string.Empty,
+                end_effect = string.Empty,
                 draw_light_area = true,
                 draw_light_size = 0.1f,
-                parabolic = false,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 sound_impact = "event:/SFX/WEAPONS/WeaponRedOrbLand",
-                startScale = 0.1f,
-                targetScale = 0.1f,
+                scale_start = 0.1f,
+                scale_target = 0.1f,
                 impact_actions = new AttackAction(delegate (BaseSimObject pSelf, BaseSimObject useless, WorldTile pTile)
                 {
                     if(pSelf == null)
                     {
                         return false;
                     }
-                    World.world.getObjectsInChunks(pTile, 3, MapObjectType.Actor);
-                    foreach (BaseSimObject pTarget in World.world.temp_map_objects)
+                    foreach (BaseSimObject pTarget in Finder.getUnitsFromChunk(pTile, 0, 3))
                     {
                         if (pTarget.kingdom.isEnemy(pSelf.kingdom))
                         {
-                            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%", 25)))
+                            if (Randy.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%", 25)))
                             {
                                 pTarget.addStatusEffect("ash_fever", 15);
                             }
-                            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%", 25)))
+                            if (Randy.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%", 25)))
                             {
                                 pTarget.addStatusEffect("poisoned", 30);
                             }
-                            if (Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%", 25)))
+                            if (Randy.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%", 25)))
                             {
                                 pTarget.addStatusEffect("cough", 60);
                             }
-                            if(pTarget.isActor() && !Traits.IsGod(pTarget.a) && Toolbox.randomChance(Traits.GetEnhancedChance("God Of Love", "Petrification%")))
+                            if(pTarget.isActor() && !Traits.IsGod(pTarget.a) && Randy.randomChance(Traits.GetEnhancedChance("God Of Love", "Petrification%")))
                             {
                                 MusicBox.playSound("event:/SFX/DROPS/DropStone");
                                 pTarget.addStatusEffect("Petrified");
-                                Effects.PetrifiedEffect(pTarget, pTarget.currentTile);
+                                Effects.PetrifiedEffect(pTarget, pTarget.current_tile);
                             }
                         }
                     }
@@ -97,24 +94,22 @@ namespace GodsAndPantheons
                 speed = 6f,
                 animation_speed = 0.2f,
                 texture = "Heart",
-                trailEffect_enabled = false,
+                trail_effect_enabled = false,
                 texture_shadow = "shadow_ball",
-                endEffect = string.Empty,
+                end_effect = string.Empty,
                 draw_light_area = true,
                 draw_light_size = 0.1f,
-                parabolic = false,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 sound_impact = "event:/SFX/WEAPONS/WeaponRedOrbLand",
-                startScale = 0.05f,
-                targetScale = 0.05f,
+                scale_start = 0.05f,
+                scale_target = 0.05f,
                 impact_actions = new AttackAction(delegate (BaseSimObject pSelf, BaseSimObject useless, WorldTile pTile)
                 {
                     if (pSelf == null)
                     {
                         return false;
                     }
-                    World.world.getObjectsInChunks(pTile, 3, MapObjectType.Actor);
-                    foreach (BaseSimObject pTarget in World.world.temp_map_objects)
+                    foreach (BaseSimObject pTarget in Finder.getUnitsFromChunk(pTile, 0, 3))
                     {
                         if (pTarget.kingdom == pSelf.kingdom)
                         {
@@ -130,20 +125,18 @@ namespace GodsAndPantheons
                 id = "DarkDaggersProjectiles",
                 speed = 10f,
                 texture = "darkDaggersProjectile",
-                trailEffect_enabled = false,
+                trail_effect_enabled = false,
                 texture_shadow = "shadow_ball",
-                endEffect = string.Empty,
-                terraformOption = "darkDaggers",
-                terraformRange = 1,
+                end_effect = string.Empty,
+                terraform_option = "darkDaggers",
+                terraform_range = 1,
                 draw_light_area = true,
-                looped = true,
                 draw_light_size = 0.1f,
                 look_at_target = true,
-                parabolic = false,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
-                startScale = 0.01f,
-                targetScale = 0.01f,
+                scale_start = 0.01f,
+                scale_target = 0.01f,
                 animation_speed = 0.08f,
                 /*
                 impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -157,19 +150,17 @@ namespace GodsAndPantheons
                 id = "boneFire",
                 speed = 10f,
                 texture = "chaosProjectile",
-                trailEffect_enabled = false,
+                trail_effect_enabled = false,
                 texture_shadow = "shadow_ball",
-                endEffect = string.Empty,
-                terraformOption = "chaosBoneFire",
-                terraformRange = 1,
+                end_effect = string.Empty,
+                terraform_option = "chaosBoneFire",
+                terraform_range = 1,
                 draw_light_area = true,
-                looped = true,
                 draw_light_size = 0.1f,
-                parabolic = false,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
-                startScale = 0.08f,
-                targetScale = 0.1f,
+                scale_start = 0.08f,
+                scale_target = 0.1f,
                 /*
                 impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
                 {
@@ -182,19 +173,17 @@ namespace GodsAndPantheons
                 id = "fireBallX",
                 speed = 10f,
                 texture = "fireBallProjectile",
-                trailEffect_enabled = false,
+                trail_effect_enabled = false,
                 texture_shadow = "shadow_ball",
-                endEffect = string.Empty,
-                terraformOption = "chaosBoneFire",
-                terraformRange = 1,
+                end_effect = string.Empty,
+                terraform_option = "chaosBoneFire",
+                terraform_range = 1,
                 draw_light_area = true,
-                looped = true,
                 draw_light_size = 0.1f,
-                parabolic = false,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
-                startScale = 0.08f,
-                targetScale = 0.1f,
+                scale_start = 0.08f,
+                scale_target = 0.1f,
                 /*
                 impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
                 {
@@ -208,19 +197,17 @@ namespace GodsAndPantheons
                 id = "moonFall",
                 speed = 30f,
                 texture = "moonProjectile",
-                trailEffect_enabled = false,
+                trail_effect_enabled = false,
                 texture_shadow = "shadow_ball",
-                endEffect = string.Empty,
-                terraformOption = "moonFalling",
-                terraformRange = 5,
+                end_effect = string.Empty,
+                terraform_option = "moonFalling",
+                terraform_range = 5,
                 draw_light_area = true,
-                looped = true,
                 draw_light_size = 0.1f,
-                parabolic = false,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
-                startScale = 0.1f,
-                targetScale = 0.1f,
+                scale_start = 0.1f,
+                scale_target = 0.1f,
                 /*
                 impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
                 {
@@ -234,19 +221,17 @@ namespace GodsAndPantheons
                 id = "PagesOfKnowledge",
                 speed = 10f,
                 texture = "pagesProjectile",
-                trailEffect_enabled = false,
+                trail_effect_enabled = false,
                 texture_shadow = "shadow_ball",
-                endEffect = string.Empty,
-                terraformOption = "darkDaggers",
-                terraformRange = 1,
+                end_effect = string.Empty,
+                terraform_option = "darkDaggers",
+                terraform_range = 1,
                 draw_light_area = true,
-                looped = true,
                 draw_light_size = 0.1f,
-                parabolic = false,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
-                startScale = 0.04f,
-                targetScale = 0.04f,
+                scale_start = 0.04f,
+                scale_target = 0.04f,
                 /*
                 impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
                 {
@@ -259,19 +244,17 @@ namespace GodsAndPantheons
                 id = "lightBallzProjectiles",
                 speed = 5f,
                 texture = "lightBallzProjectile",
-                trailEffect_enabled = false,
+                trail_effect_enabled = false,
                 texture_shadow = "shadow_ball",
-                endEffect = string.Empty,
-                terraformOption = "lightBallz",
-                terraformRange = 4,
+                end_effect = string.Empty,
+                terraform_option = "lightBallz",
+                terraform_range = 4,
                 draw_light_area = true,
                 draw_light_size = 0.1f,
-                looped = false,
-                parabolic = false,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
-                startScale = 0.03f,
-                targetScale = 0.03f,
+                scale_start = 0.03f,
+                scale_target = 0.03f,
                 /*
                 impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
                 {
@@ -285,19 +268,17 @@ namespace GodsAndPantheons
                 animation_speed = 0.09f,
                 speed = 3f,
                 texture = "lightSlashesProjectile",
-                trailEffect_enabled = false,
+                trail_effect_enabled = false,
                 texture_shadow = "shadow_ball",
-                endEffect = string.Empty,
-                terraformOption = string.Empty,
-                terraformRange = 1,
+                end_effect = string.Empty,
+                terraform_option = string.Empty,
+                terraform_range = 1,
                 draw_light_area = true,
                 draw_light_size = 0.1f,
-                looped = false,
-                parabolic = false,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
-                startScale = 0.1f,
-                targetScale = 0.1f,
+                scale_start = 0.1f,
+                scale_target = 0.1f,
                 look_at_target = true,
 
                 /*
@@ -314,19 +295,17 @@ namespace GodsAndPantheons
                 animation_speed = 0.1f,
                 speed = 5f,
                 texture = "starShowerProjectile",
-                trailEffect_enabled = false,
+                trail_effect_enabled = false,
                 texture_shadow = "shadow_ball",
-                endEffect = string.Empty,
-                terraformOption = string.Empty,
-                terraformRange = 1,
+                end_effect = string.Empty,
+                terraform_option = string.Empty,
+                terraform_range = 1,
                 draw_light_area = true,
                 draw_light_size = 0.1f,
-                looped = false,
-                parabolic = false,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
-                startScale = 0.1f,
-                targetScale = 0.1f,
+                scale_start = 0.1f,
+                scale_target = 0.1f,
                 look_at_target = true,
 
                 /*
@@ -343,19 +322,17 @@ namespace GodsAndPantheons
                 animation_speed = 0.2f,
                 speed = 4f,
                 texture = "wordsOfKnowledgeProjectile",
-                trailEffect_enabled = false,
+                trail_effect_enabled = false,
                 texture_shadow = "shadow_ball",
-                endEffect = string.Empty,
-                terraformOption = string.Empty,
-                terraformRange = 1,
+                end_effect = string.Empty,
+                terraform_option = string.Empty,
+                terraform_range = 1,
                 draw_light_area = true,
                 draw_light_size = 0.1f,
-                looped = true,
-                parabolic = false,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
-                startScale = 0.1f,
-                targetScale = 0.1f,
+                scale_start = 0.1f,
+                scale_target = 0.1f,
                 look_at_target = true,
 
                 /*
@@ -370,18 +347,17 @@ namespace GodsAndPantheons
                 id = "EarthShardProjectile",
                 speed = 8f,
                 texture = "EarthShardProjectile",
-                trailEffect_enabled = false,
+                trail_effect_enabled = false,
                 texture_shadow = "shadow_ball",
-                endEffect = string.Empty,
-                terraformOption = string.Empty,
-                terraformRange = 1,
+                end_effect = string.Empty,
+                terraform_option = string.Empty,
+                terraform_range = 1,
                 draw_light_area = true,
                 draw_light_size = 0.1f,
-                parabolic = false,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
-                startScale = 0.1f,
-                targetScale = 0.1f,
+                scale_start = 0.1f,
+                scale_target = 0.1f,
                 look_at_target = true,
 
                 /*
@@ -397,19 +373,17 @@ namespace GodsAndPantheons
                 animation_speed = 0.3f,
                 speed = 5f,
                 texture = "waveOfMutilationProjectile",
-                trailEffect_enabled = true,
+                trail_effect_enabled = true,
                 texture_shadow = "shadow_ball",
-                endEffect = string.Empty,
-                terraformOption = "waveTerra",
-                terraformRange = 2,
+                end_effect = string.Empty,
+                terraform_option = "waveTerra",
+                terraform_range = 2,
                 draw_light_area = true,
                 draw_light_size = 0.1f,
-                looped = true,
-                parabolic = false,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
-                startScale = 0.08f,
-                targetScale = 0.08f,
+                scale_start = 0.08f,
+                scale_target = 0.08f,
                 look_at_target = true,
 
                 /*
@@ -425,7 +399,7 @@ namespace GodsAndPantheons
             if (pTarget != null)
             { 
                 
-                    EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.currentTile.neighbours[2].neighbours[2].neighbours[1].neighbours[1].neighbours[2], null, null, 0f, -1f, -1f);
+                    EffectsLibrary.spawn("fx_napalm_flash", pTarget.a.current_tile.neighbours[2].neighbours[2].neighbours[1].neighbours[1].neighbours[2], null, null, 0f, -1f, -1f);
                     pSelf.a.addStatusEffect("invincible", 5f);
                 return true;
             }

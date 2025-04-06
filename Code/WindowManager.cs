@@ -9,6 +9,10 @@ namespace GodsAndPantheons
         public static Dictionary<string, GodWindow> windows = new Dictionary<string, GodWindow>();
         public static void init()
         {
+            if(GameObjects.FindEvenInactive("NameInputElement") == null)
+            {
+                Object.Instantiate(Resources.Load<ScrollWindow>("windows/unit").transform.GetChild(2).GetChild(4));
+            }
             newWindow("KnowledgeGodWindow", "Knowledge Chance Modfier");
             newWindow("MoonGodWindow", "Ranni Chance Modifier");
             newWindow("DarkGodWindow", "Dark Chance Modifier");
