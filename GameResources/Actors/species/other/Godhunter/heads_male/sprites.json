@@ -1,0 +1,24 @@
+{
+    "Specific": [
+        {
+            "Path": "walk_0.png",
+            "PivotX": 0.2,
+            "PivotY": 0.6
+        },
+        {
+            "Path": "walk_1.png",
+            "PivotX": 0.2,
+            "PivotY": 0.6
+        },
+        {
+            "Path": "walk_2.png",
+            "PivotX": 0.2,
+            "PivotY": 0.6
+        },
+        {
+            "Path": "walk_3.png",
+            "PivotX": 0.2,
+            "PivotY": 0.6
+        }
+    ]
+}

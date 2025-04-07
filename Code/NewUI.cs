@@ -47,8 +47,6 @@ namespace GodsAndPantheons
             RectTransform descTextRect = descText.gameObject.GetComponent<RectTransform>();
             descTextRect.sizeDelta = new Vector2(descTextRect.sizeDelta.x, 80);
 
-
-
             NameInput nameInputComp = inputField.GetComponent<NameInput>();
             nameInputComp.setText(textValue);
             RectTransform inputRect = inputField.GetComponent<RectTransform>();
@@ -83,15 +81,15 @@ namespace GodsAndPantheons
 
             return buttonButton;
         }
-        public static float checkStatInput(NameInput pInput = null, string pText = null)
+        public static int checkStatInput(NameInput pInput = null, string pText = null)
         {
             string text = pText;
             if (pInput != null)
             {
                 text = pInput.inputField.text;
             }
-            float num;
-            if (!float.TryParse(text, out num))
+            int num;
+            if (!int.TryParse(text, out num))
             {
                 return 0;
             }
