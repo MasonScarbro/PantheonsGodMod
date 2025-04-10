@@ -208,9 +208,9 @@ namespace GodsAndPantheons.Patches
                 }
                 pKingdom.setKing(pNewKing, true);
                 WorldLog.logNewKing(pKingdom);
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
     }
     [HarmonyPatch(typeof(TooltipLibrary), "showTrait")]
