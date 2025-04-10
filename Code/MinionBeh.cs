@@ -1,4 +1,5 @@
 ﻿using ai.behaviours;
+using NeoModLoader.General;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,14 +11,16 @@ namespace GodsAndPantheons
         {
             BehaviourTaskActor SummonedOne = new BehaviourTaskActor();
             SummonedOne.id = "SummonedOneTask";
+            SummonedOne.locale_key = "Minion";
             SummonedOne.addBeh(new SummonedOneBeh());
-            SummonedOne.addBeh(new BehGoToTileTarget() { walkOnBlocks = true, walkOnWater = true });
+            SummonedOne.addBeh(new BehGoToTileTarget() { walkOnBlocks = false, walkOnWater = true });
             AssetManager.tasks_actor.add(SummonedOne);
             ActorJob SummonedOneJob = new ActorJob
             {
                 id = "SummonedJob",
             };
             SummonedOneJob.addTask("SummonedOneTask");
+            LM.AddToCurrentLocale("Minion", "Obeying My Master");
             AssetManager.job_actor.add(SummonedOneJob);
         }
         public bool CheckStatus(Actor pActor, out Actor Master)
@@ -57,6 +60,7 @@ namespace GodsAndPantheons
         {
             BehaviourTaskActor BrainWashed = new BehaviourTaskActor();
             BrainWashed.id = "BrainWashedTask";
+            BrainWashed.locale_key = "Minion";
             BrainWashed.addBeh(new CorruptedOneBeh());
             BrainWashed.addBeh(new BehGoToTileTarget() { walkOnBlocks = true, walkOnWater = true });
             AssetManager.tasks_actor.add(BrainWashed);
@@ -69,7 +73,7 @@ namespace GodsAndPantheons
         }
         public bool CheckStatus(Actor pActor, out Actor Master)
         {
-            Master = Traits.FindBrainWasher(pActor);
+            Master = Traits.FindMaster(pActor);
             if (pActor.hasTrait("madness") || Master == null)
             {
                 return false;

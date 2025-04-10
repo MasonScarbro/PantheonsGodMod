@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NeoModLoader.General;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using static GodsAndPantheons.Traits;
@@ -13,24 +14,28 @@ namespace GodsAndPantheons
             EnemyGods.translation_key = "Enemy Gods";
             EnemyGods.calc = EnemyGodKings;
             AssetManager.opinion_library.add(EnemyGods);
+            LM.AddToCurrentLocale("Enemy Gods", "Enemy Gods");
 
             OpinionAsset NoRespect = new OpinionAsset();
             NoRespect.id = "No Respect";
             NoRespect.translation_key = "The Other King Isnt A God!";
             NoRespect.calc = NoRespectForKings;
             AssetManager.opinion_library.add(NoRespect);
+            LM.AddToCurrentLocale("The Other King Isnt A God", "The Other King Isnt A God!");
 
             OpinionAsset ThereCanOnlyBeOne = new OpinionAsset();
             ThereCanOnlyBeOne.id = "There Can Only Be One";
             ThereCanOnlyBeOne.translation_key = "There Can Only Be One God!";
             ThereCanOnlyBeOne.calc = ThereCanOnlyBeOneGod;
             AssetManager.opinion_library.add(ThereCanOnlyBeOne);
+            LM.AddToCurrentLocale("There Can Only Be One God", "There Can Only Be One God!");
 
             OpinionAsset MyAgeHasBegun = new OpinionAsset();
             MyAgeHasBegun.id = "My Age Has Begun";
             MyAgeHasBegun.translation_key = "My Age Has Begun!";
             MyAgeHasBegun.calc = MyAgeHasBegunn;
             AssetManager.opinion_library.add(MyAgeHasBegun);
+            LM.AddToCurrentLocale("My Age Has Begun", "My Age Has Begun!");
         }
         public static int MyAgeHasBegunn(Kingdom Self, Kingdom Target)
         {

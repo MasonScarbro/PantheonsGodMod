@@ -146,7 +146,7 @@ namespace GodsAndPantheons
               );
             CreateToggleButton(
                     "MakeSummonedOne",
-                    Resources.Load<Sprite>("ui/Icons/actor_traits/iconBlessing"),
+                    Resources.Load<Sprite>("ui/Icons/SummonedOne"),
                     "Spawn Summoned Ones",
                     "if enabled, if you were to spawn a creature on a tile that already has a creature on it, the new creature will be a summoned one of that creature, note that summoned ones have their own AI and only live for 60 or 120s (unless they are immortal)",
                     new Vector2(460, -18),
@@ -276,7 +276,7 @@ namespace GodsAndPantheons
         public static string GetGodTraitsInherited(WorldTile pTile)
         {
             Actor pActor = null;
-            foreach (Actor a in Finder.getUnitsFromChunk(pTile, 0, 2))
+            foreach (Actor a in Finder.getUnitsFromChunk(pTile, 1, 2))
             {
                 if (a.hasTrait("Lesser God") || a.hasTrait("Demi God"))
                 {
@@ -298,7 +298,7 @@ namespace GodsAndPantheons
         public static string GetAbilitiesInherited(WorldTile pTile)
         {
             Actor pActor = null;
-            foreach (Actor a in Finder.getUnitsFromChunk(pTile, 0, 2))
+            foreach (Actor a in Finder.getUnitsFromChunk(pTile, 1, 2))
             {
                 if (a.hasTrait("Lesser God"))
                 {

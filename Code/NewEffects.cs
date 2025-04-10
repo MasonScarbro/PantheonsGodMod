@@ -4,6 +4,7 @@ VERSION: 1.0.0
 */
 using UnityEngine;
 using NeoModLoader.utils;
+using SleekRender;
 
 namespace GodsAndPantheons
 {
@@ -43,17 +44,6 @@ namespace GodsAndPantheons
                 draw_light_area_offset_y = 0f,
                 time_between_frames = 0.08f
             });
-
-            GameObject BlackHolePrefab = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
-            BlackHolePrefab.transform.position = new Vector3(-99999, -99999, 0);
-            DestroyImmediate(BlackHolePrefab.GetComponent<BaseEffect>());
-            SpriteAnimation component = BlackHolePrefab.GetComponent<SpriteAnimation>();
-            component.timeBetweenFrames = 0.08f;
-            component.returnToPool = false;
-            component.frames = Resources.LoadAll<Sprite>("effects/projectiles/blackHoleProjectile");
-            component.spriteRenderer.sortingLayerName = "EffectsBack";
-            BlackHolePrefab.AddComponent<BlackHoleFlash>();
-            ResourcesPatch.PatchResource("effects/prefabs/BlackHole", BlackHolePrefab);
             AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_BlackHole",
@@ -66,11 +56,6 @@ namespace GodsAndPantheons
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
             });
 
-            GameObject CloudOfDarkness = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabAntimatterEffect"));
-            CloudOfDarkness.transform.position = new Vector3(-99999, -99999, 0);
-            DestroyImmediate(CloudOfDarkness.GetComponent<AntimatterBombEffect>());
-            CloudOfDarkness.AddComponent<Storm>();
-            ResourcesPatch.PatchResource("effects/prefabs/CloudOfDarkness", CloudOfDarkness);
             AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_CloudOfDarkness",
@@ -83,11 +68,6 @@ namespace GodsAndPantheons
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
             });
 
-            GameObject CustomWave = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabExplosionWave"));
-            CustomWave.transform.position = new Vector3(-99999, -99999, 0);
-            DestroyImmediate(CustomWave.GetComponent<ExplosionFlash>());
-            CustomWave.AddComponent<CustomExplosionFlash>();
-            ResourcesPatch.PatchResource("effects/prefabs/CustomExplosionWave", CustomWave);
             AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_custom_explosion_wave",
@@ -181,19 +161,6 @@ namespace GodsAndPantheons
                 time_between_frames = 0.1f
             });
 
-            GameObject HeartPrefab = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
-            HeartPrefab.transform.position = new Vector3(-99999, -99999, 0);
-            DestroyImmediate(HeartPrefab.GetComponent<BaseEffect>());
-            SpriteAnimation com = HeartPrefab.GetComponent<SpriteAnimation>();
-            com.timeBetweenFrames = 0.1f;
-            com.returnToPool = false;
-            com.frames = Resources.LoadAll<Sprite>("effects/projectiles/Heart");
-            com.spriteRenderer.sortingLayerName = "EffectsBack";
-            HeartPrefab.AddComponent<ExplosionFlash>();
-            GameObject CorruptedHeartPrefab = Instantiate(HeartPrefab);
-            CorruptedHeartPrefab.GetComponent<SpriteAnimation>().frames = Resources.LoadAll<Sprite>("effects/projectiles/CorruptedHeart");
-            ResourcesPatch.PatchResource("effects/prefabs/CorruptedHeart", CorruptedHeartPrefab);
-            ResourcesPatch.PatchResource("effects/prefabs/Heart", HeartPrefab);
             AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_Heart",
@@ -207,16 +174,6 @@ namespace GodsAndPantheons
             });
             AssetManager.effects_library.clone("fx_Heart_Corrupted", "fx_Heart").prefab_id = "effects/prefabs/CorruptedHeart";
             
-            GameObject Moonprefab = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
-            Moonprefab.transform.position = new Vector3(-99999, -99999, 0);
-            DestroyImmediate(Moonprefab.GetComponent<BaseEffect>());
-            SpriteAnimation moon = Moonprefab.GetComponent<SpriteAnimation>();
-            moon.timeBetweenFrames = 0.1f;
-            moon.returnToPool = false;
-            moon.frames = Resources.LoadAll<Sprite>("effects/projectiles/moonProjectile");
-            moon.spriteRenderer.sortingLayerName = "EffectsTop";
-            Moonprefab.AddComponent<MoonOrbit>();
-            ResourcesPatch.PatchResource("effects/prefabs/Moon", Moonprefab);
             AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_Moon_Orbit",
@@ -228,19 +185,6 @@ namespace GodsAndPantheons
                 draw_light_area_offset_y = 0f,
             });
             
-            GameObject MountainPath = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
-            MountainPath.transform.position = new Vector3(-99999, -99999, 0);
-            DestroyImmediate(MountainPath.GetComponent<BaseEffect>());
-            {
-                SpriteAnimation Texture = MountainPath.GetComponent<SpriteAnimation>();
-                Texture.timeBetweenFrames = 0.05f;
-                Texture.returnToPool = false;
-                Texture.looped = false;
-                Texture.frames = Resources.LoadAll<Sprite>("effects/fx_dustexplosion");
-                Texture.spriteRenderer.sortingLayerName = "EffectsTop";
-            }
-            MountainPath.AddComponent<TerraformPath>();
-            ResourcesPatch.PatchResource("effects/prefabs/TerraformPath", MountainPath);
             AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_Build_Path",
@@ -252,10 +196,6 @@ namespace GodsAndPantheons
                 draw_light_area_offset_y = 0f,
             });
 
-            GameObject StalagmitePath = Instantiate(MountainPath);
-            DestroyImmediate(StalagmitePath.GetComponent<TerraformPath>());
-            StalagmitePath.AddComponent<StalagmitePath>();
-            ResourcesPatch.PatchResource("effects/prefabs/StalagmitePath", StalagmitePath);
             AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_Stalagmite_path",
@@ -275,19 +215,6 @@ namespace GodsAndPantheons
                 time_between_frames = 0.05f
             });
 
-            GameObject PulledRock = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
-            PulledRock.transform.position = new Vector3(-99999, -99999, 0);
-            DestroyImmediate(PulledRock.GetComponent<BaseEffect>());
-            {
-                SpriteAnimation Texture = PulledRock.GetComponent<SpriteAnimation>();
-                Texture.timeBetweenFrames = 0.05f;
-                Texture.returnToPool = false;
-                Texture.looped = false;
-                Texture.frames = Resources.LoadAll<Sprite>("effects/fx_PulledRock");
-                Texture.spriteRenderer.sortingLayerName = "EffectsBack";
-            }
-            PulledRock.AddComponent<PulledRock>();
-            ResourcesPatch.PatchResource("effects/prefabs/PulledRock", PulledRock);
             AssetManager.effects_library.add(new EffectAsset
             {
                 id = "fx_Pull_Rock",
@@ -298,6 +225,19 @@ namespace GodsAndPantheons
                 draw_light_size = 2f,
                 draw_light_area_offset_y = 0f,
             });
+
+            AssetManager.effects_library.add(new EffectAsset
+            {
+                id = "ChaosLaser",
+                use_basic_prefab = false,
+                prefab_id = "effects/prefabs/ChaosLaser",
+            });
+
+            AssetManager.effects_library.clone("FireTornado", "fx_tornado").prefab_id = "effects/prefabs/FireTornado";
+
+            EffectAsset FireBomb = AssetManager.effects_library.clone("FireGodsExplsion", "fx_firebomb_explosion");
+            FireBomb.sprite_path = "effects/FireExplosion";
+            FireBomb.time_between_frames = 0.1f;
         }
     }
 }

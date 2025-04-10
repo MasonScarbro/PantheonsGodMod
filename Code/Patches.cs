@@ -9,8 +9,16 @@ using static GodsAndPantheons.Traits;
 //Harmony Patches
 namespace GodsAndPantheons.Patches
 {
+    [HarmonyPatch(typeof(Actor), nameof(Actor.makeStunned))]
+    public class GodsImmuneToStuns
+    {
+        static bool Prefix(Actor __instance)
+        {
+            return !IsGod(__instance);
+        }
+    }
     [HarmonyPatch(typeof(Actor), nameof(Actor.ignoresBlocks))]
-    public class EarthGodWalkOnMountains
+    public class EarthGodNotAffectedByMountains
     {
         static void Postfix(Actor __instance, ref bool __result)
         {
@@ -20,14 +28,13 @@ namespace GodsAndPantheons.Patches
             }
         }
     }
-    [HarmonyPatch(typeof(Actor), nameof(Actor.u6_checkFrozen))]
-    public class DontMoveIfPetrified
+    [HarmonyPatch(typeof(Actor), nameof(Actor.goTo))]
+    public class EarthGodWalkOnMountains
     {
-        static void Postfix(Actor __instance)
+        static void Prefix(Actor __instance, ref bool pWalkOnBlocks)
         {
-            if (__instance.hasStatus("Petrified"))
-            {
-                __instance.skipUpdates();
+            if (__instance.hasTrait("Earth Walker")) {
+                pWalkOnBlocks = true;
             }
         }
     }
@@ -85,28 +92,22 @@ namespace GodsAndPantheons.Patches
             return AssetManager.raceLibrary.get(AssetManager.actor_library.get(oldself).race);
         }
     }*/ //idk if this is neccessary anymore
-    //[HarmonyPatch(typeof(PowerLibrary), "spawnUnit")]
+    [HarmonyPatch(typeof(PowerLibrary), "spawnUnit")]
     public class MakeSummoned
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             CodeMatcher Matcher = new CodeMatcher(instructions);
             Matcher.MatchForward(false, new CodeMatch[]
-			{
-				new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(ActorManager), nameof(ActorManager.spawnNewUnit)))
-			});
-            Debug.Log(Matcher.Operand);
-            Matcher.Advance(2);
-            Debug.Log(Matcher.Operand);
+            {
+                new CodeMatch(OpCodes.Stloc_2)
+            });
+            Matcher.Advance(1);
             Matcher.Insert(new CodeInstruction[]
             {
               new CodeInstruction(OpCodes.Ldloc_2),
               new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(MakeSummoned), nameof(MakeSummonedone)))
             });
-            foreach(CodeInstruction instruction in instructions)
-            {
-                Debug.Log($"{instruction.opcode} with {instruction.operand}");
-            }
             return Matcher.Instructions();
         }
         public static void MakeSummonedone(Actor a)
@@ -121,29 +122,27 @@ namespace GodsAndPantheons.Patches
                 TurnActorIntoSummonedOne(a, Master);
             }
         }
-        public static Actor GetActorFromTile(WorldTile pTile, Actor actortoexclude)
+        public static Actor GetActorFromTile(WorldTile pTile, Actor ActorToExclude)
         {
             if (pTile == null)
             {
                 return null;
             }
-            Actor actor = null;
-            float num = 0f;
-            List<Actor> simpleList = World.world.units.getSimpleList();
-            for (int i = 0; i < simpleList.Count; i++)
+            Actor Master = null;
+            float MinDist = 3.1f;
+            foreach (Actor Actor in World.world.units)
             {
-                Actor actor2 = simpleList[i];
-                if (actor2.isAlive() && actor2 != actortoexclude && !actor2.isInsideSomething() && !actor2.hasTrait("Summoned One"))
+                if (Actor.isAlive() && Actor != ActorToExclude && !Actor.isInsideSomething() && !Actor.hasTrait("Summoned One"))
                 {
-                    float num2 = Toolbox.DistTile(actor2.current_tile, pTile);
-                    if (num2 <= 3f && (actor == null || num2 < num))
+                    float Dist = Toolbox.DistTile(Actor.current_tile, pTile);
+                    if (Dist < MinDist)
                     {
-                        actor = actor2;
-                        num = num2;
+                        Master = Actor;
+                        MinDist = Dist;
                     }
                 }
             }
-            return actor;
+            return Master;
         }
     }
     [HarmonyPatch(typeof(Actor), "nextJobActor")]
@@ -166,7 +165,7 @@ namespace GodsAndPantheons.Patches
             }
         }
     }
-    [HarmonyPatch(typeof(SuccessionTool), nameof(SuccessionTool.getKingFromLeaders))]
+    [HarmonyPatch(typeof(KingdomBehCheckKing), nameof(KingdomBehCheckKing.execute))]
     public class findking
     {
         static Actor GetKing(Kingdom pKingdom)
@@ -190,13 +189,28 @@ namespace GodsAndPantheons.Patches
             }
             return null;
         }
-        static void Postfix(Kingdom pKingdom, ref Actor __result)
+        static bool Prefix(Kingdom pKingdom)
         {
-            Actor GodKing = GetKing(pKingdom);
-            if (GodKing != null)
+            if (pKingdom.hasKing() || pKingdom.data.timer_new_king > 0)
             {
-                __result = GodKing;
+                return true;
             }
+            Actor pNewKing = GetKing(pKingdom);
+            if(pNewKing != null)
+            {
+                if (pNewKing.hasCity() && pNewKing.isCityLeader())
+                {
+                    pNewKing.city.removeLeader();
+                }
+                if (pKingdom.hasCapital() && pNewKing.city != pKingdom.capital)
+                {
+                    pNewKing.setCity(pKingdom.capital);
+                }
+                pKingdom.setKing(pNewKing, true);
+                WorldLog.logNewKing(pKingdom);
+                return true;
+            }
+            return false;
         }
     }
     [HarmonyPatch(typeof(TooltipLibrary), "showTrait")]
@@ -235,14 +249,28 @@ namespace GodsAndPantheons.Patches
                 __result = false;
                 return;
             }
-            if (Main.savedSettings.HunterAssasins)
+            if (pTarget.hasStatus("Invisible"))
             {
-                if (pTarget.hasStatus("Invisible") || __instance.hasStatus("Invisible"))
+                __result = false;
+                return;
+            }
+            if (__instance.isActor())
+            {
+                if(__instance.hasStatus("BrainWashed") || __instance.a.hasTrait("Summoned One"))
                 {
-                    __result = false;
-                    return;
+                    Actor Master = FindMaster(__instance.a);
+                    if (Master != null)
+                    {
+                        if (Master == pTarget)
+                        {
+                            __result = false;
+                            return;
+                        }
+                        __result = Master.canAttackTarget(pTarget);
+                        return;
+                    }
                 }
-                if (__instance.isActor() && __instance.a.hasTrait("God Hunter") && __instance.a.data.health < __instance.getMaxHealth() * (__instance.hasStatus("powerup") ? 0.7 : 0.35))
+                if (__instance.hasStatus("Invisible") && __instance.a.asset.id == "GodHunter")
                 {
                     __result = false;
                 }
@@ -278,42 +306,8 @@ namespace GodsAndPantheons.Patches
             }
         }
     }
-    [HarmonyPatch(typeof(Status), "update")]
-    public class finishinvisibility
-    {
-        static void Postfix(Status __instance)
-        {
-            if (__instance._finished)
-            {
-                if (__instance.asset.id == "Invisible")
-                {
-                   // __instance._sim_object.a.avatar.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1); //stupid maxim
-                }
-                if(__instance.asset.id == "Lassering" && __instance._sim_object.a.avatar.transform.childCount > 0)
-                {
-                    //__instance._sim_object.a.avatar.transform.GetChild(0)?.gameObject.DestroyImmediateIfNotNull(); fix later
-                }
-                if(__instance.asset.id == "BrainWashed")
-                {
-                    FinishBrainWashing(__instance._sim_object.a);
-                }
-                if(__instance.asset.id == "Levitating")
-                {
-                    Actor actor = __instance._sim_object.a;
-                    Actor Target = GetTargetToCrashLand(actor);
-                    if (Target != null)
-                    {
-                        actor.velocity.z = 0;
-                        PushActorTowardsTile(Target.current_tile.pos, actor, 0.1f);
-                        Target.getHit(Target.getMaxHealth() * 0.1f, true, AttackType.Other, null, false);
-                        actor.getHit(actor.getMaxHealth() * 0.4f, true, AttackType.Other, null, false);
-                    }
-                }
-            }
-        }
-    }
     [HarmonyPatch(typeof(BaseSimObject), "finishStatusEffect")]
-    public class finishinvisibility2
+    public class finishstatuseffects
     {
         static void Postfix(string pID, BaseSimObject __instance)
         {
@@ -322,11 +316,7 @@ namespace GodsAndPantheons.Patches
             {
                 if(pID == "Invisible")
                 {
-                    //__instance.a.avatar.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1); nuh uh
-                }
-                if(pID == "Lassering" && __instance.a.avatar.transform.childCount > 0)
-                {
-                   // __instance.a.avatar.transform.GetChild(0)?.gameObject.DestroyImmediateIfNotNull(); fix later
+                    __instance.a.color = new Color(1, 1, 1, 1);
                 }
                 if (pID == "BrainWashed")
                 {
@@ -425,6 +415,22 @@ namespace GodsAndPantheons.Patches
                 Speed /= actor.current_tile.Type.walk_multiplier;
             }
             return Speed;
+        }
+    }
+    [HarmonyPatch(typeof(Actor), nameof(Actor.getHit))]
+    public class GetHitMore
+    {
+        static void Prefix(Actor __instance, BaseSimObject pAttacker, ref float pDamage)
+        {
+            if(pAttacker == null || !pAttacker.isActor() || __instance == null)
+            {
+                return;
+            }
+            ItemAsset Weapon = pAttacker.a.getWeaponAsset();
+            if (IsGod(__instance) && Weapon.id == "GodHuntersScythe")
+            {
+                pDamage *= 5;
+            }
         }
     }
     [HarmonyPatch(typeof(Actor), "updateStats")]
