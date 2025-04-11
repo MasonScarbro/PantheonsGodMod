@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GodsAndPantheons.Patches;
 using System.Linq;
+using static UnityEngine.GraphicsBuffer;
 namespace GodsAndPantheons
 {
     //Contains the traits and their abilities & Stats
@@ -21,7 +22,9 @@ namespace GodsAndPantheons
             {"God Of Chaos", new Dictionary<string, float>(){
                 {S.damage, 30f},
                 {S.health, 500},
+                {S.mana, 300 },
                 {S.attack_speed, 15f},
+                {S.accuracy, 30},
                 {S.armor, 10f },
                 {S.critical_chance, 0.05f},
                 {S.range, 8f},
@@ -32,12 +35,13 @@ namespace GodsAndPantheons
             },
             {"God Of light", new Dictionary<string, float>(){
                 {S.damage, 20f},
+                {S.mana, 300 },
                 {S.health, 500f},
+                {S.accuracy, 30},
                 {S.attack_speed, 100f},
                 {S.critical_chance, 0.05f},
                 {S.range, 5f},
                 {S.speed, 90f},
-                {S.accuracy, 10f},
                 {S.max_nutrition, 30},
                 {S.offspring, 8},
              }
@@ -45,6 +49,8 @@ namespace GodsAndPantheons
             {"God Of the Night", new Dictionary<string, float>(){
                 {S.damage, 20f},
                 {S.health, 550f},
+                {S.mana, 300 },
+                {S.accuracy, 30},
                 {S.attack_speed, 3f},
                 {S.critical_chance, 0.25f},
                 {S.range, 6f},
@@ -56,19 +62,22 @@ namespace GodsAndPantheons
             {"God Of Knowledge", new Dictionary<string, float>(){
                 {S.damage, 5f},
                 {S.health, 300},
+                {S.mana, 300 },
+                {S.accuracy, 30},
                 {S.attack_speed, 1f},
                 {S.critical_chance, 0.25f},
                 {S.range, 15f},
                 {S.scale, 0.01f},
                 {S.intelligence, 35f},
-                {S.accuracy, 10f},
                 {S.max_nutrition, 20},
                 {S.offspring, 6}
              }
             },
             {"God Of the Stars", new Dictionary<string, float>(){
                 {S.damage, 25f},
+                {S.mana, 300 },
                 {S.health, 500f},
+                {S.accuracy, 30},
                 {S.attack_speed, 1f},
                 {S.critical_chance, 0.05f},
                 {S.range, 15f},
@@ -82,6 +91,8 @@ namespace GodsAndPantheons
                 {S.damage, 60f},
                 {S.health, 800f},
                 {S.attack_speed, 1f},
+                {S.mana, 300 },
+                {S.accuracy, 30},
                 {S.armor, 50f},
                 {S.scale, 0.1f},
                 {S.range, 10f},
@@ -96,6 +107,8 @@ namespace GodsAndPantheons
                 {S.attack_speed, 35f},
                 {S.armor, 35f},
                 {S.mass, 0.05f},
+                {S.mana, 300 },
+                {S.accuracy, 30},
                 {S.scale, 0.03f},
                 {S.range, 8f},
                 {S.warfare, 40f},
@@ -110,6 +123,8 @@ namespace GodsAndPantheons
                 {S.armor, 25f},
                 {S.mass, 0.05f},
                 {S.scale, 0.03f},
+                {S.accuracy, 30},
+                {S.mana, 300 },
                 {S.range, 8f},
                 {S.warfare, 40f},
                 {S.max_nutrition, 20},
@@ -121,7 +136,9 @@ namespace GodsAndPantheons
                 {S.damage, 10f},
                 {S.health, 100f},
                 {S.attack_speed, 15f},
+                {S.mana, 100 },
                 {S.mass, 0.1f},
+                {S.accuracy, 10},
                 {S.scale, 0.01f},
                 {S.range, 4f},
                 {S.warfare, 4f},
@@ -133,10 +150,11 @@ namespace GodsAndPantheons
                 {S.health, 700f},
                 {S.attack_speed, 12f},
                 {S.critical_chance, 0.5f},
+                {S.mana, 300 },
                 {S.armor, 30f},
+                {S.accuracy, 30},
                 {S.scale, 0.075f},
                 {S.range, 20f},
-                {S.accuracy, 15f},
                 {S.speed, 30f},
                 {S.max_nutrition, 30},
                 {S.offspring, 6},
@@ -147,7 +165,8 @@ namespace GodsAndPantheons
                 {S.intelligence, 10f },
                 {S.speed, 15f},
                 {S.mass, 0.05f},
-                {S.accuracy, 10f},
+                {S.mana, 300 },
+                {S.accuracy, 30},
                 {S.offspring, 10},
                 {S.loyalty_traits, 10f },
                 {S.max_nutrition, 60},
@@ -158,7 +177,8 @@ namespace GodsAndPantheons
                 {S.damage, 10f},
                 {S.health, 20f},
                 {S.armor, 10f},
-                {S.mass, 0.5f},
+                {S.speed, 15},
+                {S.mass, 1},
              }
             }
         };
@@ -403,7 +423,6 @@ namespace GodsAndPantheons
                 new AttackAction(PullRocks)
              }
             },
-            //NEW_GOD_ABILITY_DICT
             {"God Of The Lich", new List<AttackAction>(){
                 new AttackAction(SummonHand),
                 new AttackAction(summonskele),
@@ -448,6 +467,7 @@ namespace GodsAndPantheons
             chaosGod.action_death = (WorldAction)Delegate.Combine(chaosGod.action_death, new WorldAction(chaosGodsTrick));
             chaosGod.action_special_effect = (WorldAction)Delegate.Combine(chaosGod.action_special_effect, new WorldAction(chaosgoderastatus));
             chaosGod.group_id = "GodTraits";
+            chaosGod.rarity = Rarity.R3_Legendary;
             AddTrait(chaosGod, "Tis's The God Of Chaos!");
             
             ActorTrait sunGod = new ActorTrait();
@@ -459,6 +479,7 @@ namespace GodsAndPantheons
             sunGod.action_death = new WorldAction(sunGodsDeath);
             sunGod.action_special_effect = new WorldAction(sungoderastatus);
             sunGod.group_id = "GodTraits";
+            sunGod.rarity = Rarity.R3_Legendary;
             AddTrait(sunGod, "The God Of light, controls the very light that shines and can pass through with great speed");
 
             ActorTrait darkGod = new ActorTrait();
@@ -469,6 +490,7 @@ namespace GodsAndPantheons
             darkGod.action_special_effect = (WorldAction)Delegate.Combine(darkGod.action_special_effect, new WorldAction(nightgoderastatus));
             darkGod.action_on_add = (WorldActionTrait)Delegate.Combine(new WorldActionTrait(AutoTrait), new WorldActionTrait(GodWeaponManager.godGiveWeapon));
             darkGod.group_id = "GodTraits";
+            darkGod.rarity = Rarity.R3_Legendary;
             AddTrait(darkGod, "The God Of darkness, thievery and the shadows of which is his domain ");
 
             ActorTrait knowledgeGod = new ActorTrait();
@@ -478,6 +500,7 @@ namespace GodsAndPantheons
             knowledgeGod.action_attack_target = new AttackAction(knowledgeGodAttack);
             knowledgeGod.action_on_add = (WorldActionTrait)Delegate.Combine(new WorldActionTrait(AutoTrait), new WorldActionTrait(GodWeaponManager.godGiveWeapon));
             knowledgeGod.group_id = "GodTraits";
+            knowledgeGod.rarity = Rarity.R3_Legendary;
             AddTrait(knowledgeGod, "The God Of Knowledge, His mind excedes Time, he knows all");
 
             ActorTrait starsGod = new ActorTrait();
@@ -487,6 +510,7 @@ namespace GodsAndPantheons
             starsGod.action_attack_target = (AttackAction)Delegate.Combine(new AttackAction(starsGodAttack), new AttackAction(CreateMoonOrbit));
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(stargoderastatus));
             starsGod.group_id = "GodTraits";
+            starsGod.rarity = Rarity.R3_Legendary;
             starsGod.action_on_add = (WorldActionTrait)Delegate.Combine(new WorldActionTrait(AutoTrait), new WorldActionTrait(GodWeaponManager.godGiveWeapon));
             AddTrait(starsGod, "Now Cometh the Age of stars, A Thousand Year Voyage under the wisdom of the moon");
 
@@ -494,6 +518,7 @@ namespace GodsAndPantheons
             earthGod.id = "God Of the Earth";
             earthGod.path_icon = "ui/icons/earthGod";
             earthGod.group_id = "GodTraits";
+            earthGod.rarity = Rarity.R3_Legendary;
             earthGod.action_attack_target = (AttackAction)Delegate.Combine(new AttackAction(EarthGodAttack), new AttackAction(EarthQuake));
             earthGod.action_special_effect = (WorldAction)Delegate.Combine(new WorldAction(earthGodBuildWorld));
             earthGod.action_on_add = (WorldActionTrait)Delegate.Combine(new WorldActionTrait(AutoTrait), new WorldActionTrait(GodWeaponManager.godGiveWeapon));
@@ -502,15 +527,17 @@ namespace GodsAndPantheons
 
             ActorTrait subGod = new ActorTrait();
             subGod.id = "Lesser God";
+            subGod.rarity = Rarity.R3_Legendary;
             subGod.path_icon = "ui/icons/subGod";
             subGod.group_id = S_TraitGroup.special;
             subGod.can_be_given = false;
             subGod.action_attack_target = new AttackAction(LesserAttack);
             subGod.action_special_effect = new WorldAction(LesserEraStatus);
-            AddTrait(subGod, "like the demigod, but can also inherit abilities! all children in a gods clan are lessergods", false);
+            AddTrait(subGod, "like the demigod, but can also inherit abilities! all children in a gods clan are lessergods");
 
             ActorTrait warGod = new ActorTrait();
             warGod.id = "God Of War";
+            warGod.rarity = Rarity.R3_Legendary;
             warGod.path_icon = "ui/icons/warGod";
             warGod.action_attack_target = (AttackAction)Delegate.Combine(new AttackAction(warGodAttack), new AttackAction(SlamDunk));
             warGod.action_on_add = (WorldActionTrait)Delegate.Combine(new WorldActionTrait(AutoTrait), new WorldActionTrait(GodWeaponManager.godGiveWeapon));
@@ -521,6 +548,7 @@ namespace GodsAndPantheons
 
             ActorTrait lichGod = new ActorTrait();
             lichGod.id = "God Of The Lich";
+            lichGod.rarity = Rarity.R3_Legendary;
             lichGod.path_icon = "ui/icons/lichGod";
             lichGod.action_attack_target = new AttackAction(lichGodAttack);
             lichGod.action_special_effect = (WorldAction)Delegate.Combine(new WorldAction(lichGodsUndeadArmy));
@@ -540,10 +568,11 @@ namespace GodsAndPantheons
             godHunter.action_attack_target = new AttackAction(GodHunterAttack);
             godHunter.group_id = S_TraitGroup.special;
             godHunter.can_be_given = false;
-            AddTrait(godHunter, "He will stop at NOTHING to kill a god", false);
+            AddTrait(godHunter, "He will stop at NOTHING to kill a god");
 
             ActorTrait GodOfLove = new ActorTrait();
             GodOfLove.id = "God Of Love";
+            GodOfLove.rarity = Rarity.R3_Legendary;
             GodOfLove.path_icon = "ui/icons/GodOfLove";
             GodOfLove.group_id = "GodTraits";
             GodOfLove.action_death = new WorldAction(GodOfLoveDeath);
@@ -556,6 +585,7 @@ namespace GodsAndPantheons
 
             ActorTrait godoffire = new ActorTrait();
             godoffire.id = "God Of Fire";
+            godoffire.rarity = Rarity.R3_Legendary;
             godoffire.path_icon = "ui/icons/GodOfFire";
             godoffire.action_death = new WorldAction(ActionLibrary.deathBomb);
             godoffire.action_on_add = (WorldActionTrait)Delegate.Combine(new WorldActionTrait(AutoTrait), new WorldActionTrait(GodWeaponManager.godGiveWeapon));
@@ -569,7 +599,7 @@ namespace GodsAndPantheons
 
             ActorTrait SummonedOne = new ActorTrait();
             SummonedOne.id = "Summoned One";
-            SummonedOne.path_icon = "ui/icons/iconBlessing";
+            SummonedOne.path_icon = "ui/icons/SummonedOne";
             SummonedOne.group_id = S_TraitGroup.special;
             SummonedOne.can_be_given = false;
             SummonedOne.action_special_effect = (WorldAction)Delegate.Combine(new WorldAction(SummonedBeing), new WorldAction(SummonedOneEraStatus));
@@ -578,9 +608,10 @@ namespace GodsAndPantheons
             ActorTrait DemiGod = new ActorTrait();
             DemiGod.id = "Demi God";
             DemiGod.path_icon = "ui/icons/IconDemi";
+            DemiGod.rarity = Rarity.R2_Epic;
             DemiGod.group_id = S_TraitGroup.special;
             DemiGod.can_be_given = false;
-            AddTrait(DemiGod, "The Demi God, offspring of Gods and Mortals, the stat's of this trait are determined by the stats of his parent's", false);
+            AddTrait(DemiGod, "The Demi God, offspring of Gods and Mortals, the stat's of this trait are determined by the stats of his parents");
 
             //NON GOD TRAITS
             
@@ -588,18 +619,21 @@ namespace GodsAndPantheons
             EarthWalker.id = "Earth Walker";
             EarthWalker.path_icon = "ui/icons/earthGod";
             EarthWalker.group_id = "NonGodTraits";
+            EarthWalker.rarity = Rarity.R2_Epic;
             EarthWalker.can_be_given = true;
-            AddTrait(EarthWalker, "He can walk on mountains", false, 20);
+            AddTrait(EarthWalker, "He can walk on mountains", 20);
             
             ActorTrait NecroMancer = new ActorTrait();
             NecroMancer.id = "NecroMancer";
+            NecroMancer.rarity = Rarity.R2_Epic;
             NecroMancer.path_icon = "ui/icons/lichGod";
             NecroMancer.group_id = "NonGodTraits";
             NecroMancer.can_be_given = true;
-            AddTrait(NecroMancer, "When he kills a non god, they transform into his undead minion", false);
+            AddTrait(NecroMancer, "When he kills a non god, they transform into his undead minion", 2);
 
             ActorTrait godKiller = new ActorTrait();
             godKiller.id = "God Killer";
+            godKiller.rarity = Rarity.R2_Epic;
             godKiller.path_icon = "ui/icons/godKiller";
             godKiller.action_on_add = new WorldActionTrait(AutoTrait);
             godKiller.group_id = "NonGodTraits";
@@ -652,7 +686,7 @@ namespace GodsAndPantheons
             {
                 return;
             }
-            pTarget.addTrait("cursed");
+            pTarget.addStatusEffect("cursed", 100);
         }
         public static bool SuperRegeneration(BaseSimObject pTarget, WorldTile pTile) => SuperRegeneration(pTarget, 15, 5);
         #region attackthings
@@ -693,7 +727,7 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            RandomForce.CreateRandomForce(World.world, pTile, 256, 3);
+            RandomForce.CreateRandomForce(World.world, pTile, 256, 6);
             World.world.startShake(1, 0.02f, 1.5f);
             return true;
         }
@@ -808,7 +842,6 @@ namespace GodsAndPantheons
             if (Randy.randomChance(GetEnhancedChance("God Of Knowledge", "CastCurses%")))
             {
                 CastCurse(pTarget.a); // casts curses
-                ((Actor)pSelf).removeTrait("cursed");
             }
             return true;
         }
@@ -1086,7 +1119,7 @@ namespace GodsAndPantheons
         {
             if(Randy.randomChance(GetEnhancedChance("God Of War", "War Gods Leap%")) && !pSelf.hasStatus("War Gods Leap"))
             {
-                if(BehFunctions.getalliesofactor(Finder.getUnitsFromChunk(pTile, 0, 6), pTarget) > 6)
+                if(BehFunctions.getalliesofactor(Finder.getUnitsFromChunk(pTile, 1, 6), pTarget) > 6)
                 {
                     PushActorTowardsTile(pTarget.current_tile.pos, pSelf.a, 1);
                     pSelf.addStatusEffect("War Gods Slam");
@@ -1106,10 +1139,10 @@ namespace GodsAndPantheons
         }
         public static bool StunEnemy(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Randy.randomChance(GetEnhancedChance("God Of War", "StunEnemy%")))
+            if (pTarget.isActor() && Randy.randomChance(GetEnhancedChance("God Of War", "StunEnemy%")))
             {
                 MusicBox.playSound(MB.ExplosionLightningStrike, pTile);
-                pTarget.addStatusEffect("Blinded", Randy.randomFloat(1f, 3f));
+                pTarget.a.addStatusEffect("Blinded", Randy.randomFloat(1f, 3f));
             }
             return true;
         }
@@ -1146,7 +1179,7 @@ namespace GodsAndPantheons
         {
             if (Randy.randomChance(GetEnhancedChance("God Of the Earth", "SendMountain%")))
             {
-                (EffectsLibrary.spawn("fx_Build_Path", pTile) as TerraformPath)?.Init(pSelf.current_tile, pTarget.current_tile, true, 0.15f, 1, true, pSelf, true);
+                (EffectsLibrary.spawn("fx_Build_Path", pTile) as TerraformPath)?.Init(pSelf.current_tile, pTarget.current_tile, true, 0.1f, 1, true, pSelf, true);
             }
             return true;
         }
@@ -1192,7 +1225,7 @@ namespace GodsAndPantheons
             if(!Randy.randomChance(GetEnhancedChance("God Of The Lich", "UndeadArmy%"))){
                 return true;
             }
-            List<Actor> Enemies = GetEnemiesOfActor(Finder.getUnitsFromChunk(pTile, 0, 6), pTarget);
+            List<Actor> Enemies = GetEnemiesOfActor(Finder.getUnitsFromChunk(pTile, 1, 6), pTarget);
             if(Enemies.Count < 5)
             {
                 return true;
@@ -1205,7 +1238,7 @@ namespace GodsAndPantheons
                 {
                     continue;
                 }
-                Actor b = Morph(a, a.asset.zombie_id, false, false);
+                Actor b = Morph(a, a.asset.getZombieID(), false, false);
                 if (b != null)
                 {
                     TurnActorIntoSummonedOne(b, pTarget.a, 31);
@@ -1286,7 +1319,7 @@ namespace GodsAndPantheons
             if (Randy.randomChance(GetEnhancedChance("God Of Love", "blessAllies%")))
             {
                 CreateHeartExplosion(pSelf.current_tile, 60f);
-                foreach (Actor a in Finder.getUnitsFromChunk(pSelf.current_tile, 0, 6))
+                foreach (Actor a in Finder.getUnitsFromChunk(pSelf.current_tile, 1, 6))
                 {
                     if (a.kingdom == pSelf.kingdom)
                     {
@@ -1344,7 +1377,7 @@ namespace GodsAndPantheons
         }
         private static bool PoisonEnemys(BaseSimObject pSelf, BaseSimObject useless, WorldTile pTile)
         {
-            foreach (BaseSimObject pTarget in Finder.getUnitsFromChunk(pTile, 0, 3))
+            foreach (BaseSimObject pTarget in Finder.getUnitsFromChunk(pTile, 1, 3))
             {
                 if (pTarget.kingdom.isEnemy(pSelf.kingdom))
                 {
@@ -1402,29 +1435,30 @@ namespace GodsAndPantheons
         private static bool GodOfFireGetHit(BaseSimObject pTarget, BaseSimObject pAttackedBy, WorldTile pTile)
         {
             if (pAttackedBy == null || pTarget.a.asset.id != SA.dragon) return true;
-            ShootCustomProjectile(pTarget.a, pAttackedBy, "red_orb", 5);
+            if(Randy.randomChance(GetEnhancedChance("God Of Fire", "MorphIntoDragon%")))
+            {
+                CreateFireExplosion(pTarget.current_tile, pTarget);
+            }
             return true;
         }
         public static bool FireStorm(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Randy.randomChance(GetEnhancedChance("God Of Fire", "FireStorm%")))
             {
-                switch (Randy.randomInt(1, 4))
+                switch (Randy.randomInt(1, 11))
                 {
-                    case 1: pb.spawnCloudAsh(pTile, null); break;
+                    case 1: case 2: case 3: case 4: case 5:  pb.spawnCloudAsh(pTile, null); break;
                     //FIRE TORNADOS
-                    case 2:
+                    case 6: case 7: case 8:
                         {
                             for (int i = 0; i < Randy.randomInt(3, 6); i++)
                             {
-                                TornadoEffect component = (EffectsLibrary.spawnAtTile("fx_tornado", pTile, 0.083333336f) as TornadoEffect);
-                                component.resizeTornado(0.16666667f);
-                                //Effects.FireStormEefect(component.actor, pTile); fuck tornados are now effects
+                                EffectsLibrary.spawnAtTile("FireTornado", pTile, 0.35f);
                             }
                             break;
                         }
                     //FIRESTORM
-                    case 3:
+                    case 10:
                         {
                             CreateStorm(pTile, 30f, 0.8f, FireStorm, Color.red, 0.8f).GetComponent<Storm>().TileToGo = Toolbox.getRandomTileWithinDistance(pTile, 100);
                             World.world.startShake(0.3f, 0.1f, 1);
@@ -1451,7 +1485,8 @@ namespace GodsAndPantheons
         public static bool MorphIntoDragon(BaseSimObject pSelf, WorldTile pTile)
         {
             bool IsDragon = pSelf.a.asset.id == SA.dragon;
-            if (Randy.randomChance(GetEnhancedChance("God Of Fire", "MorphIntoDragon%")) || IsDragon)
+            bool Triggered = Randy.randomChance(GetEnhancedChance("God Of Fire", "MorphIntoDragon%"));
+            if (Triggered || IsDragon)
             {
                 List<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(pTile, pSelf.kingdom, 2).list;
                 if (!IsDragon)
@@ -1462,7 +1497,7 @@ namespace GodsAndPantheons
                     }
                 }
                 else {
-                    bool AnyEnemies = enemies != null;
+                    bool AnyEnemies = enemies != null && enemies.Count > 0;
                     if (AnyEnemies)
                     {
                         foreach (BaseSimObject enemy in enemies)
@@ -1471,7 +1506,10 @@ namespace GodsAndPantheons
                             {
                                 pSelf.a.avatar.GetComponent<Dragon>().aggroTargets.Add(enemy.a);
                             }
-                            ShootCustomProjectile(pSelf.a, enemy, "red_orb", 3);
+                            if (Triggered)
+                            {
+                                CreateFireExplosion(enemy.current_tile, pSelf.a);
+                            }
                         }
                     }
                     if (!AnyEnemies)
@@ -1493,6 +1531,11 @@ namespace GodsAndPantheons
                 vector = Vector2.MoveTowards(vector, target.a.next_step_position, num * 3f);
             }
             return vector;
+        }
+        public static void CreateFireExplosion(WorldTile Tile, BaseSimObject ByWho)
+        {
+            EffectsLibrary.spawnAtTile("FireGodsExplsion", Tile, 0.1f);
+            MapAction.damageWorld(Tile, 4, AssetManager.terraform.get("bomb"), ByWho);
         }
         public static void ShootCustomProjectile(BaseSimObject pSelf, BaseSimObject pTarget, string projectile, int amount, Vector2 Pos = default)
         {
@@ -1744,7 +1787,7 @@ namespace GodsAndPantheons
                 int Start = GetPath(direction, out int End);
                 if (AtWar ? (zone.tiles[Start].Type != TileLibrary.mountains && zone.tiles[End].Type != TileLibrary.mountains) : (zone.tiles[Start].Type == TileLibrary.mountains && zone.tiles[End].Type == TileLibrary.mountains))
                 {
-                    (EffectsLibrary.spawn("fx_Build_Path", zone.centerTile) as TerraformPath)?.Init(zone.tiles[Start], zone.tiles[End], AtWar, 0.25f, 2, false);
+                    (EffectsLibrary.spawn("fx_Build_Path", zone.centerTile) as TerraformPath)?.Init(zone.tiles[Start], zone.tiles[End], AtWar, 0.15f, 2, false);
                     count--;
                     if(count == 0)
                     {

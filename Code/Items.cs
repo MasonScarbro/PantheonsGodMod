@@ -51,7 +51,7 @@ namespace GodsAndPantheons
             spearOfLight.path_icon = "ui/weapon_icons/icon_SpearOfLight";
             spearOfLight.action_attack_target = new AttackAction(sunGodFuryStrikesAttack);
             AssetManager.items.list.AddItem(spearOfLight);
-            Localization.Add("item_SpearOfLight", "Spear Of Divine Light");
+            Localization.Add("SpearOfLight", "Spear Of Divine Light");
             Localization.Add("SpearOfLight_description", "The Light of the Sun Flows through it!");
             addWeaponsSprite(spearOfLight.id);
 
@@ -88,8 +88,8 @@ namespace GodsAndPantheons
             axeOfFury.name_class = "item_class_weapon";
             axeOfFury.path_icon = "ui/weapon_icons/icon_AxeOfFury";
 
-            Localization.Add("item_AxeOfFury", "Axe Of War");
-            Localization.Add("AxeOfFury_descriptin", "The Sight of my blade trembles my enemies! (they dont care)"); ///idk
+            Localization.Add("AxeOfFury", "Axe Of War");
+            Localization.Add("AxeOfFury_description", "The Sight of my blade trembles my enemies! (they dont care)"); ///idk
             addWeaponsSprite(axeOfFury.id);
 
             ItemAsset darkDagger = AssetManager.items.clone("DarkDagger", "$melee");
@@ -117,7 +117,7 @@ namespace GodsAndPantheons
             darkDagger.path_icon = "ui/weapon_icons/icon_DarkDagger";
             darkDagger.action_attack_target = new AttackAction(darkGodTeleportAttack);
             Localization.Add("DarkDagger_description", "The Daggers of darkness");
-            Localization.Add("item_DarkDagger", "Dagger Of Darkness");
+            Localization.Add("DarkDagger", "Dagger Of Darkness");
             addWeaponsSprite(darkDagger.id);
 
 
@@ -142,7 +142,7 @@ namespace GodsAndPantheons
             maceOfDestruction.action_attack_target = new AttackAction(UnleashFire);
             maceOfDestruction.name_class = "item_class_weapon";
             maceOfDestruction.path_icon = "ui/weapon_icons/icon_MaceOfDestruction";
-            Localization.Add("item_MaceOfDestruction", "Mace Of Destruction");
+            Localization.Add("MaceOfDestruction", "Mace Of Destruction");
             Localization.Add("MaceOfDestruction_description", "Here Comes the Chaos!");
             addWeaponsSprite(maceOfDestruction.id);
             
@@ -172,7 +172,7 @@ namespace GodsAndPantheons
             staffOfKnowledge.base_stats[S.damage_range] = 0.9f;
             staffOfKnowledge.projectile = "wordsOfKnowledgeProjectile";
             Localization.Add("StaffOfKnowledge_description", "Knowledge is the true source of power -guy who is holding it");
-            Localization.Add("item_StaffOfKnowledge", "Staff Of Knowledge");
+            Localization.Add("StaffOfKnowledge", "Staff Of Knowledge");
             addWeaponsSprite(staffOfKnowledge.id);
             
             ItemAsset StaffOfLove = AssetManager.items.clone("StaffOfLove", "$range");
@@ -205,7 +205,7 @@ namespace GodsAndPantheons
             StaffOfLove.base_stats[S.damage_range] = 0.9f;
             StaffOfLove.projectile = "CorruptedHeart";
             Localization.Add("StaffOfLove_description", "You get some love, you get love, everyone gets loved! except me ):");
-            Localization.Add("item_StaffOfLove", "Staff Of Love");
+            Localization.Add("StaffOfLove", "Staff Of Love");
             addWeaponsSprite(StaffOfLove.id);
 
             ItemAsset FireGodStaff = AssetManager.items.clone("HellStaff", "evil_staff");
@@ -229,9 +229,8 @@ namespace GodsAndPantheons
             FireGodStaff.name_class = "item_class_weapon";
             FireGodStaff.path_icon = "ui/weapon_icons/icon_HellStaf";
             FireGodStaff.action_attack_target = new AttackAction(UnleashHell);
-
             AssetManager.items.list.AddItem(FireGodStaff);
-            Localization.Add("item_HellStaff", "the Staff of fire");
+            Localization.Add("HellStaff", "the Staff of fire");
             Localization.Add("HellStaff_description", "You will taste the true power of the fire side?");
             addWeaponsSprite(FireGodStaff.id);
 
@@ -265,7 +264,7 @@ namespace GodsAndPantheons
 
             AssetManager.items.list.AddItem(cometScepter);
             Localization.Add("CometScepter_description", "The power of the moon is incredible! right?");
-            Localization.Add("item_CometScepter", "Scepter Of The Stars");
+            Localization.Add("CometScepter", "Scepter Of The Stars");
             addWeaponsSprite(cometScepter.id);
 
             ItemAsset hammerOfCreation = AssetManager.items.clone("HammerOfCreation", "$melee");
@@ -293,7 +292,7 @@ namespace GodsAndPantheons
             hammerOfCreation.action_attack_target = (AttackAction)Delegate.Combine(hammerOfCreation.action_attack_target, new AttackAction(earthGodImpaleEnemy));
             AssetManager.items.list.AddItem(hammerOfCreation);
             Localization.Add("HammerOfCreation_description", "With this Hammer i hereby cast COOL SPIKES OUT OF GROUND!");
-            Localization.Add("item_HammerOfCreation", "Hammer Of Creation");
+            Localization.Add("HammerOfCreation", "Hammer Of Creation");
             addWeaponsSprite(hammerOfCreation.id);
 
             ItemAsset lichGodsGreatSword = AssetManager.items.clone("LichGodsGreatSword", "$melee");
@@ -322,7 +321,7 @@ namespace GodsAndPantheons
             
             AssetManager.items.list.AddItem(lichGodsGreatSword);
             Localization.Add("LichGodsGreatSword_description", "The Power of the Undead lies in this Great Sword!");
-            Localization.Add("item_LichGodsGreatSword", "Great Sword Of The Lich");
+            Localization.Add("LichGodsGreatSword", "Great Sword Of The Lich");
             addWeaponsSprite(lichGodsGreatSword.id);
 
             ItemAsset godHuntersScythe = AssetManager.items.clone("GodHuntersScythe", "$melee");
@@ -344,7 +343,7 @@ namespace GodsAndPantheons
             godHuntersScythe.base_stats[S.opinion] = 20f;
             godHuntersScythe.equipment_value = 1800;
             godHuntersScythe.path_slash_animation = "effects/slashes/slash_sword";
-            godHuntersScythe.quality = Rarity.R3_Legendary;
+            godHuntersScythe.quality = Rarity.R2_Epic;
             godHuntersScythe.equipment_type = EquipmentType.Weapon;
             godHuntersScythe.name_class = "item_class_weapon";
             godHuntersScythe.path_icon = "ui/weapon_icons/icon_GodHuntersScythe";
@@ -352,7 +351,7 @@ namespace GodsAndPantheons
 
             AssetManager.items.list.AddItem(godHuntersScythe);
             Localization.Add("GodHuntersScythe_description", "Why did the god hunters choose this weapon? it Deals 5x more damage to Gods AND it only costs 10.99!!!!!!");
-            Localization.Add("item_GodHuntersScythe", "The God Hunters Scythe");
+            Localization.Add("GodHuntersScythe", "The God Hunters Scythe");
             addWeaponsSprite(godHuntersScythe.id);
         }
 
@@ -466,7 +465,7 @@ namespace GodsAndPantheons
                 if (Randy.randomChance(GetEnhancedChance("God Of the Night", "DarkDash%")))
                 {
                     PushActor(pSelf.a, pTarget.current_tile.pos, 4, 0.1f);
-                    foreach(BaseSimObject enemy in Finder.getUnitsFromChunk(pTile, 0, 4)){
+                    foreach(BaseSimObject enemy in Finder.getUnitsFromChunk(pTile, 1, 4)){
                         if(enemy.kingdom != pSelf.kingdom)
                         {
                             enemy.getHit(80, true, AttackType.Weapon, pSelf);
@@ -481,12 +480,8 @@ namespace GodsAndPantheons
         public static bool GodHunterAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile){
             if(pTarget != null && pTarget.isActor()){
                 pTarget.addStatusEffect("ash_fever", 5);
-                if (IsGod(pTarget.a)){
-                    pTarget.getHit(pSelf.stats[S.damage] * 2f, true, AttackType.Weapon, pSelf, false, true);
-                }
             }
             return true;
-                
         }
 
         public static bool UnleashHell(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)

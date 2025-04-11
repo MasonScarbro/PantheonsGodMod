@@ -100,10 +100,7 @@ namespace GodsAndPantheons
                         new Vector2(200, 0),
                         true
                     );
-                    if (!kv.Value.active)
-                    {
-                        PlayerConfig.dict[kv.Key].boolVal = false;
-                    }
+                    PlayerConfig.dict[kv.Key].boolVal = kv.Value.active;
                     activeButton.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(64, 64);
                 }
             }

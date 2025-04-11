@@ -3,8 +3,6 @@ AUTHOR: MASON SCARBRO
 VERSION: 1.0.0
 */
 using System.Collections.Generic;
-using ReflectionUtility;
-using SleekRender;
 using UnityEngine;
 
 namespace GodsAndPantheons
@@ -183,13 +181,14 @@ namespace GodsAndPantheons
             StatusAsset Invisible = new StatusAsset();
             Invisible.duration = 7000f;
             Invisible.id = "Invisible";
-            Invisible.path_icon = "Actors/Godhunter/walk_0";
+            Invisible.path_icon = "Actors/species/other/Godhunter/heads_male/walk_0";
             Invisible.locale_id = "Invisible";
             Invisible.locale_description = "you cant see me";
             Invisible.base_stats[S.speed] += 60;
             Invisible.base_stats[S.mass] += 0.2f;
             Invisible.action_interval = 0.5f;
             Invisible.action = new WorldAction(InvisibleEffect);
+            Invisible.action_finish = FinishInvisibility;
             localizeStatus(Invisible.id, "Invisible", Invisible.locale_description); // Localizes the status effect
             AssetManager.status.add(Invisible);
 
@@ -202,21 +201,8 @@ namespace GodsAndPantheons
             Lassering.locale_description = "Unlimited power!!!!";
             Lassering.base_stats[S.multiplier_speed] = -0.75f;
             Lassering.action_interval = 0.01f;
-            Lassering.action = new WorldAction(LaserEffect);
             localizeStatus(Lassering.id, "Lassering", Lassering.locale_description); // Localizes the status effect
             AssetManager.status.add(Lassering);
-            //only meant for tornados
-            StatusAsset FireStorm = new StatusAsset();
-            FireStorm.duration = 9999;
-            FireStorm.id = "FireStorm";
-            FireStorm.path_icon = "ui/icons/GodOfFire";
-            FireStorm.locale_id = "FireStorm";
-            FireStorm.locale_description = "It burns!!!!!";
-            FireStorm.base_stats[S.multiplier_speed] = 0.75f;
-            FireStorm.action_interval = 0.8f;
-            FireStorm.action = new WorldAction(FireStormEefect);
-            localizeStatus(FireStorm.id, "FireStorm", FireStorm.locale_description); // Localizes the status effect
-            AssetManager.status.add(FireStorm);
 
             StatusAsset chaosgodsera = new StatusAsset();
             chaosgodsera.duration = 7000f;
@@ -275,7 +261,7 @@ namespace GodsAndPantheons
             ICANTSEE.base_stats[S.speed] -= 15;
             ICANTSEE.base_stats[S.mass] -= 0.6f;
             ICANTSEE.base_stats[S.damage] -= 30f;
-            ICANTSEE.path_icon = "ui/icons/iconMadness";
+            ICANTSEE.path_icon = "ui/icons/actor_traits/iconMadness";
             ICANTSEE.locale_description = "I CANNOT SEE AHHHHHHH!";
             ICANTSEE.locale_id = "Blinded";
             localizeStatus(ICANTSEE.id, "Blinded", ICANTSEE.locale_description); // Localizes the status effect
@@ -291,6 +277,9 @@ namespace GodsAndPantheons
             Petrified.path_icon = "ui/icons/iconResStone";
             Petrified.locale_description = "................";
             Petrified.action_interval = 0.5f;
+            Petrified.base_stats.addTag("immovable");
+            Petrified.base_stats.addTag("frozen_ai");
+            Petrified.base_stats.addTag("stop_idle_animation");
             Petrified.action = new WorldAction(PetrifiedEffect);
             Petrified.locale_id = "Petrified";
             localizeStatus(Petrified.id, "Petrified", Petrified.locale_description); // Localizes the status effect
@@ -299,16 +288,18 @@ namespace GodsAndPantheons
             StatusAsset BrainWashed = new StatusAsset();
             BrainWashed.id = "BrainWashed";
             BrainWashed.duration = 20f;
-            BrainWashed.base_stats[S.range] -= 2;
+            BrainWashed.render_priority = 8;
             BrainWashed.base_stats[S.speed] += 3;
             BrainWashed.base_stats[S.mass] -= 0.6f;
             BrainWashed.base_stats[S.attack_speed] += 3;
             BrainWashed.base_stats[S.damage] += 5f;
-            BrainWashed.path_icon = "ui/icons/iconMadness";
+            BrainWashed.action_finish = FinishBrainWashing;
+            BrainWashed.path_icon = "ui/icons/CorruptedOne";
             BrainWashed.locale_description = "Must.... Obey!";
             BrainWashed.locale_id = "BrainWashed";
             BrainWashed.animated = true;
             BrainWashed.texture = "projectiles/wordsOfKnowledgeProjectile";
+            BrainWashed.sprite_list = Resources.LoadAll<Sprite>("effects/" + BrainWashed.texture);
             BrainWashed.random_frame = true;
             localizeStatus(BrainWashed.id, "BrainWashed", BrainWashed.locale_description); // Localizes the status effect
             AssetManager.status.add(BrainWashed);
@@ -318,6 +309,7 @@ namespace GodsAndPantheons
             Levitating.duration = 5;
             Levitating.path_icon = "ui/icons/iconPulse";
             Levitating.locale_description = "AHHHHHHHHHHHH!";
+            Levitating.action_finish = LaunchToGround;
             Levitating.locale_id = "Levitating";
             Levitating.action_interval = 0.0000001f;
             Levitating.action = new WorldAction(LevitateEffect);
@@ -345,6 +337,24 @@ namespace GodsAndPantheons
             */
 
         }
+        public static bool LaunchToGround(BaseSimObject pTarget, WorldTile pTile)
+        {
+            Actor actor = pTarget.a;
+            Actor Target = Traits.GetTargetToCrashLand(actor);
+            if (Target != null)
+            {
+                actor.velocity.z = 0;
+                Traits.PushActorTowardsTile(Target.current_tile.pos, actor, 0.1f);
+                Target.getHit(Target.getMaxHealth() * 0.1f, true, AttackType.Other, null, false);
+                actor.getHit(actor.getMaxHealth() * 0.4f, true, AttackType.Other, null, false);
+            }
+            return true;
+        }
+        public static bool FinishBrainWashing(BaseSimObject pself, WorldTile ptile)
+        {
+            Traits.FinishBrainWashing(pself.a);
+            return true;
+        }
 
         public static bool LevitateEffect(BaseSimObject pTarget, WorldTile pTile)
         {
@@ -360,7 +370,7 @@ namespace GodsAndPantheons
             if(pTarget.a.velocity.z == 0)
             {
                 Traits.SpawnCustomWave(pTile.pos, 0.1f, 0.1f, 0.1f);
-                MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionBowlingBal", pTile.x, pTile.y);
+                MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionBowlingBall", pTile.x, pTile.y);
                 MapAction.damageWorld(pTile, 7, AssetManager.terraform.get("grenade"), pTarget);
                 pTarget._active_status_dict.Remove("War Gods Slam");
             }
@@ -372,37 +382,27 @@ namespace GodsAndPantheons
             localizedText.Add(name, id);
             localizedText.Add(description, description);
         }
-        public static bool InvisibleEffect(BaseSimObject pTarget, WorldTile pTile)
+        public static bool FinishInvisibility(BaseSimObject pTarget, WorldTile pTile)
         {
-            //maxim ruined this function
-           /* Color mycolor = pTarget.a.avatar.GetComponent<SpriteRenderer>().color;
-                if (mycolor.a != 0.4)
-                {
-                    pTarget.a.restoreHealth(pTarget.a.getMaxHealth());
-                    pTarget.a.avatar.GetComponent<SpriteRenderer>().color = new Color(mycolor.r, mycolor.g, mycolor.b, 0.4f);
-                }*/
+            pTarget.a.color = new Color(1, 1, 1, 1);
             return true;
         }
-        public static bool FireStormEefect(BaseSimObject pTarget, WorldTile pTile)
+        public static bool InvisibleEffect(BaseSimObject pTarget, WorldTile pTile)
         {
-            Color mycolor = pTarget.a.avatar.GetComponent<SpriteRenderer>().color;
-            if (mycolor.b != 0.2)
-            {
-                pTarget.a.avatar.GetComponent<SpriteRenderer>().color = new Color(mycolor.r, 0.15f, 0.2f, mycolor.a);
-            }
-            ActionLibrary.burningFeetEffect(pTarget, pTile);
-            for (int i = 0; i < 5; i++)
-            {
-                World.world.drop_manager.spawnParabolicDrop(pTarget.a.current_tile, "fire", 0, 0.15f, 113, 1, 80, 0.7f);
-            }
+            Color mycolor = pTarget.a.color;
+                if (mycolor.r != 0.8)
+                {
+                    pTarget.a.restoreHealth(pTarget.a.getMaxHealth());
+                    pTarget.a.color = new Color(0.8f, mycolor.g, mycolor.b, 0.4f);
+                }
             return true;
         }
         public static bool PetrifiedEffect(BaseSimObject pTarget, WorldTile pTile)
         {
-            Color mycolor = pTarget.a.avatar.GetComponent<SpriteRenderer>().color;
-            if (mycolor.r != 0.2)
+            Color mycolor = pTarget.a.color;
+            if (mycolor.r != 0.2 || mycolor.g == 0.4f)
             {
-                pTarget.a.avatar.GetComponent<SpriteRenderer>().color = new Color(0.2f, 0.4f, 0.4f, mycolor.a);
+                pTarget.a.color = new Color(0.2f, 0.4f, 0.4f, mycolor.a);
             }
             if (Randy.randomChance(0.25f))
             {
@@ -410,86 +410,9 @@ namespace GodsAndPantheons
             }
             if (Randy.randomChance(0.1f))
             {
-                DropsLibrary.action_spawn_building(pTile, "mineral_bones");
+                DropsLibrary.action_spawn_building(pTile, "stone");
             }
             return true;
-        }
-        public static bool LaserEffect(BaseSimObject pTarget, WorldTile pTile)
-        {
-            Actor a = pTarget.a;
-            if(a == null)
-            {
-                pTarget.finishStatusEffect("Lassering");
-                return false;
-            }
-            if(!(a.avatar.transform.childCount > 0 && a.avatar.transform.GetChild(0).GetComponent<CrabArm>() != null))
-            {
-                a._active_status_dict.Remove("Lassering");
-                a.setStatsDirty();
-                a.updateStats();
-                return false;
-            }
-            if (a.has_attack_target)
-            {
-                UpdateCrabArnLaser(a.avatar.transform.GetChild(0).GetComponent<CrabArm>(), a);
-            }
-            else
-            {
-                pTarget.finishStatusEffect("Lassering");
-            }
-            return true;
-        }
-        public static void UpdateCrabArnLaser(CrabArm arm, Actor pSelf)
-        {
-            float angle = Mathf.Atan2(pSelf.attack_target.current_position.y - arm.transform.position.y, pSelf.attack_target.current_position.x - arm.transform.position.x) * Mathf.Rad2Deg + 90;
-            arm.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, angle));
-            updatelasersprite(arm, Time.deltaTime);
-            float x = arm.laserPoint.transform.position.x;
-            float y = arm.laserPoint.transform.position.y;
-            MusicBox.inst.playDrawingSound("event:/SFX/UNIQUE/Crabzilla/CrabzillaLazer", x, y);
-            World.world.stack_effects.light_blobs.Add(new LightBlobData
-            {
-                position = new Vector2(arm.laser.transform.position.x, arm.laser.transform.position.y),
-                radius = 1.3f
-            });
-            if (arm._laser_frame_index > 6 && arm._laser_frame_index < 10)
-            {
-                DamageWorld(arm, pSelf);
-            }
-        }
-        public static void DamageWorld(CrabArm arm, Actor pSelf)
-        {
-            float x = arm.laserPoint.transform.position.x;
-            float y = arm.laserPoint.transform.position.y;
-            WorldTile tile = World.world.GetTile(Mathf.RoundToInt(x), Mathf.RoundToInt(y));
-            if (tile != null)
-            {
-                MapAction.damageWorld(tile, 4, AssetManager.terraform.get("LesserCrabLaser"), pSelf);
-                ///ARMOR PENETRATING
-                pSelf.attack_target.getHit(40, true, AttackType.Fire, pSelf, false);
-                if (pSelf.attack_target.isActor())
-                {
-                    Traits.PushActor(pSelf.attack_target.a, tile.pos, 0.5f, 0.1f);
-                }
-            }
-        }
-        public static void updatelasersprite(CrabArm arm, float pTime)
-        {
-            arm._laser_timer -= pTime;
-            arm.laser.enabled = true;
-            if (arm._laser_timer <= 0f)
-            {
-                arm._laser_frame_index++;
-                if (arm._laser_frame_index >= 10)
-                {
-                    arm._laser_frame_index = 6;
-                }
-                arm._laser_timer = 0.07f;
-            }
-            if (arm.laser.sprite.name != Traits.LaserSprites[arm._laser_frame_index].name)
-            {
-                arm.laser.sprite = Traits.LaserSprites[arm._laser_frame_index];
-            }
         }
     }
 

@@ -14,14 +14,14 @@ namespace GodsAndPantheons
             MTtraits.name = "The Traits Of Gods";
             MTtraits.color = "000000";
             AssetManager.trait_groups.add(MTtraits);
-            addTraitGroupToLocalizedLibrary(MTtraits.name, "Godly Traits");
+            addTraitGroupToLocalizedLibrary(MTtraits.name, "The Traits Of Gods");
 
             ActorTraitGroupAsset NTraits = new ActorTraitGroupAsset();
             NTraits.id = "NonGodTraits";
             NTraits.name = "Non God Traits But Still Special";
             NTraits.color = "FFFFFF";
             AssetManager.trait_groups.add(NTraits);
-            addTraitGroupToLocalizedLibrary(NTraits.name, "Non Godly Traits");
+            addTraitGroupToLocalizedLibrary(NTraits.name, "Non God Traits But Still Special");
         }
         private static void addTraitGroupToLocalizedLibrary(string id, string name)
         {

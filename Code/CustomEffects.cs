@@ -1,9 +1,143 @@
 ﻿using static GodsAndPantheons.Traits;
 using UnityEngine;
 using System.Collections.Generic;
-using System;
+using static UnityEngine.GraphicsBuffer;
 namespace GodsAndPantheons
 {
+    public class FireTornado : TornadoEffect
+    {
+        float FireTimer = 0.8f;
+        public override void update(float pElapsed)
+        {
+            base.update(pElapsed);
+            if (World.world.isPaused())
+            {
+                return;
+            }
+            if (isKilled())
+            {
+                return;
+            }
+            FireTimer -= pElapsed;
+            if (FireTimer < 0)
+            {
+                FireTimer = 0.8f;
+                for (int i = 0; i < Randy.randomInt(3, 7); i++)
+                {
+                    World.world.drop_manager.spawnParabolicDrop(current_tile, "fire", 0, 0.15f, 113, 1, 80, 0.7f);
+                }
+            }
+        }
+    }
+    public class ChaosLaser : BaseEffect
+    {
+        public Actor pSelf;
+        public int currentframe;
+        public float timetochange;
+        const float Timer = 0.07f;
+        public SpriteRenderer laser;
+        public Transform laserPoint;
+        public Transform Laser;
+        public override void Awake()
+        {
+        }
+        public void UpdateTransform()
+        {
+            transform.localScale = pSelf.current_scale;
+            transform.position = pSelf.current_position;
+            transform.rotation = Quaternion.Euler(pSelf.current_rotation);
+            float angle = Mathf.Atan2(pSelf.attack_target.current_position.y - Laser.position.y, pSelf.attack_target.current_position.x - Laser.position.x) * Mathf.Rad2Deg;
+            Laser.rotation = Quaternion.Euler(0f, 0f, angle);
+        }
+        public void Init(Actor actor)
+        {
+            currentframe = 0;
+            timetochange = Timer;
+            laser.sprite = LaserSprites[currentframe];
+            pSelf = actor;
+            UpdateTransform();
+        }
+        public override void update(float pElapsed)
+        {
+            if (pSelf == null || !pSelf.hasStatus("Lassering"))
+            {
+                kill();
+                return;
+            }
+            if (pSelf.has_attack_target)
+            {
+                updatelaser();
+            }
+            else
+            {
+                pSelf.checkEnemyTargets();
+                if (!pSelf.has_attack_target)
+                {
+                    pSelf.finishStatusEffect("Lassering");
+                    kill();
+                }
+            }
+        }
+
+        public void updatelaser()
+        {
+            if (World.world.isPaused())
+            {
+                return;
+            }
+            UpdateTransform();
+            updatelasersprite(Time.deltaTime);
+            float x = laserPoint.transform.position.x;
+            float y = laserPoint.transform.position.y;
+            MusicBox.inst.playDrawingSound("event:/SFX/UNIQUE/Crabzilla/CrabzillaLazer", x, y);
+            if (currentframe > 6 && currentframe < 10)
+            {
+                DamageWorld();
+            }
+        }
+        public void DamageWorld()
+        {
+            float x = laserPoint.transform.position.x;
+            float y = laserPoint.transform.position.y;
+            WorldTile tile = World.world.GetTile(Mathf.RoundToInt(x), Mathf.RoundToInt(y));
+            if (tile != null)
+            {
+                MapAction.damageWorld(tile, 4, AssetManager.terraform.get("LesserCrabLaser"), pSelf);
+                ///ARMOR PENETRATING
+                BaseSimObject Enemy = pSelf.attack_target;
+                Enemy.getHit(2 * pSelf.stats["damage"], true, AttackType.Fire, pSelf, false);
+                if (Enemy.isActor())
+                {
+                    Enemy.a.calculateForce(x, y, Enemy.a.current_position.x, Enemy.a.current_position.y, 6, 1);
+                }
+            }
+        }
+        
+        public void InitPrefab(SpriteRenderer laser, Transform laserPoint, Transform Laser)
+        {
+            this.laser = laser;
+            this.laserPoint = laserPoint;
+            this.Laser = Laser;
+        }
+        public void updatelasersprite(float pElapsed)
+        {
+            timetochange -= pElapsed;
+            laser.enabled = true;
+            if (timetochange <= 0f)
+            {
+                currentframe++;
+                if (currentframe >= 10)
+                {
+                    currentframe = 6;
+                }
+                timetochange = Timer;
+            }
+            if (laser.sprite.name != LaserSprites[currentframe].name)
+            {
+                laser.sprite = LaserSprites[currentframe];
+            }
+        }
+    }
     public class StalagmitePath : BaseEffect
     {
         List<WorldTile> tiles;
@@ -19,7 +153,7 @@ namespace GodsAndPantheons
             sprite_renderer.color = Start.Type.color;
             this.Speed = Speed;
             TimeLeft = Speed;
-            World.world.pathfinding_param.ocean = true;
+            World.world.pathfinding_param.ocean = false;
             World.world.pathfinding_param.block = true;
             World.world.pathfinding_param.ground = true;
             tiles = new List<WorldTile>();
@@ -135,6 +269,7 @@ namespace GodsAndPantheons
             this.ByWho = ByWho;
             Current = 0;
             this.Reverse = Reverse;
+            Reversed = false;
             this.BuildUp = BuildUp;
             this.thickness = thickness;
             this.shockwave = shockwave;
@@ -322,7 +457,7 @@ namespace GodsAndPantheons
             if(TimeLeft <= 0)
             {
                 TimeLeft = TimeCoolDown;
-                foreach (Actor a in Finder.getUnitsFromChunk(tile, 0, 5))
+                foreach (Actor a in Finder.getUnitsFromChunk(tile, 1, 5))
                 {
                     if(a.kingdom.id != byWho.kingdom.id)
                     {

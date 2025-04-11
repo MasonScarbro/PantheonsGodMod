@@ -44,7 +44,7 @@ namespace GodsAndPantheons
             {"GodOfFireWindow",
                 new Dictionary<string, InputOption>
               {
-                 {"FireStorm%", new InputOption(true, 1, "Can create a cloud of ash, fire tornados, or the FIRE STORM")},
+                 {"FireStorm%", new InputOption(true, 4, "Can create a cloud of ash, fire tornados, or the FIRE STORM")},
                  {"MorphIntoDragon%", new InputOption(true, 30, "[SPECIAL] the god of fire can morph into a dragon when sorrounded by enemies")},
                  {"Summoning%", new InputOption(true, 3, "Summons mages, fire skeletons and demons")},
                  {"Magic%", new InputOption(true, 4, "creates explosions, lava and fire")},

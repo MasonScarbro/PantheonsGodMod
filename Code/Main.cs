@@ -29,6 +29,7 @@ namespace GodsAndPantheons
             loadSettings();
             WindowManager.init();
             Buttons.init();
+            Prefabs.Init();
 
             Effects.init();
             Group.init();

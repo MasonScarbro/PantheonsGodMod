@@ -1,5 +1,6 @@
 ﻿
 using ai;
+using ReflectionUtility;
 using SleekRender;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,32 +14,18 @@ namespace GodsAndPantheons
         public static PowerLibrary pb = AssetManager.powers;
 
         //returns null if unable to find master
-        public static Actor FindMaster(Actor summoned)
+        public static Actor FindMaster(Actor Minion)
         {
-            summoned.data.get("Master", out long master, -1);
-            return World.world.units.get(master);
-        }
-        public static Actor FindBrainWasher(Actor brainwashed)
-        {
-            brainwashed.data.get("BrainWasher", out long master, -1);
+            if (Minion.hasStatus("BrainWashed"))
+            {
+                Minion.data.get("BrainWasher", out long BrainWasher, -1);
+                return World.world.units.get(BrainWasher);
+            }
+            Minion.data.get("Master", out long master, -1);
             return World.world.units.get(master);
         }
         public static List<Sprite> LaserSprites;
-        public static GameObject LoadCrabZillaLaser(out List<Sprite> sprites)
-        {
-            GameObject crablaser = Object.Instantiate(Resources.Load<GameObject>("actors/p_crabzilla").transform.GetChild(0).GetChild(2).gameObject);
-            crablaser.GetComponent<CrabArm>().crabzilla = null;
-            crablaser.transform.GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(0).parent = crablaser.transform;
-            crablaser.transform.GetChild(0).gameObject.DestroyImmediateIfNotNull();
-            crablaser.transform.GetChild(0).localPosition = new Vector3(0, 0, 0);
-            crablaser.transform.GetChild(0).localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
-            crablaser.transform.GetChild(0).localScale = new Vector3(1, 1, 1);
-            crablaser.transform.GetComponent<CrabArm>().laser.color = new Color(1, 0, 0, 1);
-            crablaser.transform.GetChild(0).GetChild(0).localPosition = new Vector3(140, 0, 0);
-            sprites = new List<Sprite>(crablaser.GetComponent<CrabArm>().laserSprites);
-            crablaser.GetComponent<CrabArm>().laserSprites = null;
-            return crablaser;
-        }
+        
         public static GameObject CreateStorm(WorldTile pTile, float time, float TimeCooldown, StormAction? Action, Color? StormColor, float Size)
         {
             World.world.startShake(0.3f, 0.01f, 0.03f, false, true);
@@ -49,20 +36,18 @@ namespace GodsAndPantheons
             Storm.GetComponent<SpriteRenderer>().color = StormColor ?? Color.white;
             return Storm;
         }
-        public static GameObject Laserr = LoadCrabZillaLaser(out LaserSprites);
         public static void CreateLaserForActor(Actor pSelf, float time = 10)
-        {/*
-            GameObject Laser = Object.Instantiate(Laserr);
-            Laser.transform.position = pSelf.current_position;
-            Laser.transform.parent = pSelf.avatar.transform;
-            Laser.transform.localPosition = new Vector3(-3, 12, 0);
-            Laser.transform.localScale = new Vector3(0.3f, 0.25f, 1);
-            pSelf.addStatusEffect("Lassering", time);*/
-            //fix later
-        }
-        public static void AddTrait(ActorTrait Trait, string disc, bool HasStats = true, int InheritRate = 0)
         {
-            if (HasStats)
+            if (!pSelf.has_attack_target)
+            {
+                return;
+            }
+            (EffectsLibrary.spawn("ChaosLaser") as ChaosLaser).Init(pSelf);
+            pSelf.addStatusEffect("Lassering", time);
+        }
+        public static void AddTrait(ActorTrait Trait, string disc, int InheritRate = 0)
+        {
+            if (TraitStats.ContainsKey(Trait.id))
             {
                 Trait.base_stats = new BaseStats();
                 foreach (KeyValuePair<string, float> Stat in TraitStats[Trait.id])
@@ -86,11 +71,11 @@ namespace GodsAndPantheons
                 }
             }
         }
-        public static bool AutoTrait(Actor pTarget, ListPool<string> traits, bool MustBeInherited = false, float chancemult = 1)
+        public static void AutoTrait(Actor pTarget, ListPool<string> traits, bool MustBeInherited = false, float chancemult = 1)
         {
             if (!Main.savedSettings.AutoTraits)
             {
-                return false;
+                return;
             }
             foreach (string trait in AutoTraits.Keys)
              {
@@ -99,7 +84,7 @@ namespace GodsAndPantheons
                   AddAutoTraits(pTarget, trait, MustBeInherited, chancemult);
                }
              }
-            return true;
+            return;
         }
         static readonly List<string> summonedoneautotraits = new List<string>() { "regeneration", "fire_proof", "acid_proof"};
 
@@ -109,7 +94,7 @@ namespace GodsAndPantheons
             Actor self = (Actor)pSelf;
             for (int i = 0; i < times; i++)
             {
-                Actor actor = World.world.units.spawnNewUnit(creature, Ptile);
+                Actor actor = World.world.units.spawnNewUnit(creature, Ptile, false, true);
                 TurnActorIntoSummonedOne(actor, self, lifespan);
                 foreach (string trait in autotraits ?? summonedoneautotraits)
                 {
@@ -227,6 +212,7 @@ namespace GodsAndPantheons
             pData.get("Demi" + S.armor, out float armor);
             pData.get("Demi" + S.attack_speed, out float attackSpeed);
             pData.get("Demi" + S.accuracy, out float accuracy);
+            pData.get("Demi" + S.mana, out float Mana);
             pData.get("Demi" + S.range, out float range);
             pData.get("Demi" + S.scale, out float scale);
             pData.get("Demi" + S.intelligence, out float intell);
@@ -239,6 +225,7 @@ namespace GodsAndPantheons
             pData.get("Demi" + S.lifespan, out int lifespan); //special
             temp_base_stats.clear();
             temp_base_stats[S.speed] = speed;
+            temp_base_stats[S.mana] = Mana;
             temp_base_stats[S.critical_chance] = crit;
             temp_base_stats[S.health] = health;
             temp_base_stats[S.damage] = damage;      
@@ -261,7 +248,7 @@ namespace GodsAndPantheons
         public static Actor GetTargetToCrashLand(Actor actor)
         {
             using ListPool<Actor> actors = new ListPool<Actor>();
-            foreach(Actor a in GetAlliesOfActor(Finder.getUnitsFromChunk(actor.current_tile, 0, 6), actor))
+            foreach(Actor a in GetAlliesOfActor(Finder.getUnitsFromChunk(actor.current_tile, 1, 6), actor))
             {
                 if (!a.hasStatus("Levitating") && a != actor)
                 {
@@ -300,7 +287,7 @@ namespace GodsAndPantheons
         }
         public static Actor CopyActor(Actor pActor, string ActorID)
         {
-            Actor actor = World.world.units.createNewUnit(ActorID, pActor.current_tile);
+            Actor actor = World.world.units.createNewUnit(ActorID, pActor.current_tile, true);
             if(actor == null)
             {
                 return null;
@@ -311,7 +298,7 @@ namespace GodsAndPantheons
             actor.data.custom_data_int = pActor.data.custom_data_int;
             actor.data.custom_data_string = pActor.data.custom_data_string;
             actor.data.custom_data_flags = pActor.data.custom_data_flags;
-            ActorTool.copyUnitToOtherUnit(pActor, actor);
+            ActorTool.copyUnitToOtherUnit(pActor, actor, true);
             return actor;
         }
         public static Actor Morph(Actor pActor, string morphid, bool Log = true, bool destroyWeapon = true)
@@ -410,7 +397,7 @@ namespace GodsAndPantheons
         public static List<string> Getinheritedgodtraits(ActorData pData)
         {
             List<string> traits = new List<string>();
-            foreach (string key in TraitStats.Keys)
+            foreach (string key in GodAbilities.Keys)
             {
                 pData.get("Demi" + key, out bool inherited);
                 if (inherited)

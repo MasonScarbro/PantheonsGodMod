@@ -21,10 +21,10 @@ namespace GodsAndPantheons
             AssetManager.projectiles.add(new ProjectileAsset
             {
                 id = "WarAxeProjectile1",
-                speed = 7f,
+                speed = 21f,
                 texture = "warAxeProjectile",
                 trail_effect_enabled = false,
-                texture_shadow = "shadow_ball",
+                texture_shadow = "shadows/projectiles/shadow_arrow",
                 end_effect = string.Empty,
                 terraform_range = 1,
                 draw_light_area = true,
@@ -43,11 +43,11 @@ namespace GodsAndPantheons
             AssetManager.projectiles.add(new ProjectileAsset
             {
                 id = "CorruptedHeart",
-                speed = 4f,
+                speed = 12f,
                 animation_speed = 0.2f,
                 texture = "CorruptedHeart",
                 trail_effect_enabled = false,
-                texture_shadow = "shadow_ball",
+                texture_shadow = "shadows/projectiles/shadow_snowball",
                 end_effect = string.Empty,
                 draw_light_area = true,
                 draw_light_size = 0.1f,
@@ -55,13 +55,14 @@ namespace GodsAndPantheons
                 sound_impact = "event:/SFX/WEAPONS/WeaponRedOrbLand",
                 scale_start = 0.1f,
                 scale_target = 0.1f,
+                look_at_target = true,
                 impact_actions = new AttackAction(delegate (BaseSimObject pSelf, BaseSimObject useless, WorldTile pTile)
                 {
                     if(pSelf == null)
                     {
                         return false;
                     }
-                    foreach (BaseSimObject pTarget in Finder.getUnitsFromChunk(pTile, 0, 3))
+                    foreach (BaseSimObject pTarget in Finder.getUnitsFromChunk(pTile, 1, 3))
                     {
                         if (pTarget.kingdom.isEnemy(pSelf.kingdom))
                         {
@@ -91,17 +92,18 @@ namespace GodsAndPantheons
             AssetManager.projectiles.add(new ProjectileAsset
             {
                 id = "Heart",
-                speed = 6f,
+                speed = 18f,
                 animation_speed = 0.2f,
                 texture = "Heart",
                 trail_effect_enabled = false,
-                texture_shadow = "shadow_ball",
+                texture_shadow = "shadows/projectiles/shadow_snowball",
                 end_effect = string.Empty,
                 draw_light_area = true,
                 draw_light_size = 0.1f,
                 sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
                 sound_impact = "event:/SFX/WEAPONS/WeaponRedOrbLand",
                 scale_start = 0.05f,
+                look_at_target = true,
                 scale_target = 0.05f,
                 impact_actions = new AttackAction(delegate (BaseSimObject pSelf, BaseSimObject useless, WorldTile pTile)
                 {
@@ -109,7 +111,7 @@ namespace GodsAndPantheons
                     {
                         return false;
                     }
-                    foreach (BaseSimObject pTarget in Finder.getUnitsFromChunk(pTile, 0, 3))
+                    foreach (BaseSimObject pTarget in Finder.getUnitsFromChunk(pTile, 1, 3))
                     {
                         if (pTarget.kingdom == pSelf.kingdom)
                         {
@@ -123,10 +125,10 @@ namespace GodsAndPantheons
             AssetManager.projectiles.add(new ProjectileAsset
             {
                 id = "DarkDaggersProjectiles",
-                speed = 10f,
+                speed = 30f,
                 texture = "darkDaggersProjectile",
                 trail_effect_enabled = false,
-                texture_shadow = "shadow_ball",
+                texture_shadow = "shadows/projectiles/shadow_arrow",
                 end_effect = string.Empty,
                 terraform_option = "darkDaggers",
                 terraform_range = 1,
@@ -148,10 +150,10 @@ namespace GodsAndPantheons
             AssetManager.projectiles.add(new ProjectileAsset
             {
                 id = "boneFire",
-                speed = 10f,
+                speed = 30f,
                 texture = "chaosProjectile",
                 trail_effect_enabled = false,
-                texture_shadow = "shadow_ball",
+                texture_shadow = "shadows/projectiles/shadow_ball",
                 end_effect = string.Empty,
                 terraform_option = "chaosBoneFire",
                 terraform_range = 1,
@@ -171,10 +173,10 @@ namespace GodsAndPantheons
             AssetManager.projectiles.add(new ProjectileAsset
             {
                 id = "fireBallX",
-                speed = 10f,
+                speed = 30f,
                 texture = "fireBallProjectile",
                 trail_effect_enabled = false,
-                texture_shadow = "shadow_ball",
+                texture_shadow = "shadows/projectiles/shadow_ball",
                 end_effect = string.Empty,
                 terraform_option = "chaosBoneFire",
                 terraform_range = 1,
@@ -195,10 +197,10 @@ namespace GodsAndPantheons
             AssetManager.projectiles.add(new ProjectileAsset
             {
                 id = "moonFall",
-                speed = 30f,
+                speed = 90f,
                 texture = "moonProjectile",
                 trail_effect_enabled = false,
-                texture_shadow = "shadow_ball",
+                texture_shadow = "shadows/projectiles/shadow_snowball",
                 end_effect = string.Empty,
                 terraform_option = "moonFalling",
                 terraform_range = 5,
@@ -214,15 +216,15 @@ namespace GodsAndPantheons
                     return Impact(pSelf, pTarget, pTile);
                 })*/
             });
-            AssetManager.projectiles.clone("moonFallSlow", "moonFall").speed = 10;
+            AssetManager.projectiles.clone("moonFallSlow", "moonFall").speed = 30f;
 
             AssetManager.projectiles.add(new ProjectileAsset
             {
                 id = "PagesOfKnowledge",
-                speed = 10f,
+                speed = 30f,
                 texture = "pagesProjectile",
                 trail_effect_enabled = false,
-                texture_shadow = "shadow_ball",
+                texture_shadow = "shadows/projectiles/shadow_arrow",
                 end_effect = string.Empty,
                 terraform_option = "darkDaggers",
                 terraform_range = 1,
@@ -242,10 +244,10 @@ namespace GodsAndPantheons
             AssetManager.projectiles.add(new ProjectileAsset
             {
                 id = "lightBallzProjectiles",
-                speed = 5f,
+                speed = 20f,
                 texture = "lightBallzProjectile",
                 trail_effect_enabled = false,
-                texture_shadow = "shadow_ball",
+                texture_shadow = "shadows/projectiles/shadow_arrow",
                 end_effect = string.Empty,
                 terraform_option = "lightBallz",
                 terraform_range = 4,
@@ -266,10 +268,10 @@ namespace GodsAndPantheons
             {
                 id = "lightSlashesProjectile",
                 animation_speed = 0.09f,
-                speed = 3f,
+                speed = 9f,
                 texture = "lightSlashesProjectile",
                 trail_effect_enabled = false,
-                texture_shadow = "shadow_ball",
+                texture_shadow = "shadows/projectiles/shadow_arrow",
                 end_effect = string.Empty,
                 terraform_option = string.Empty,
                 terraform_range = 1,
@@ -293,10 +295,10 @@ namespace GodsAndPantheons
             {
                 id = "starShowerProjectile",
                 animation_speed = 0.1f,
-                speed = 5f,
+                speed = 15f,
                 texture = "starShowerProjectile",
                 trail_effect_enabled = false,
-                texture_shadow = "shadow_ball",
+                texture_shadow = "shadows/projectiles/shadow_ball",
                 end_effect = string.Empty,
                 terraform_option = string.Empty,
                 terraform_range = 1,
@@ -320,10 +322,10 @@ namespace GodsAndPantheons
             {
                 id = "wordsOfKnowledgeProjectile",
                 animation_speed = 0.2f,
-                speed = 4f,
+                speed = 12f,
                 texture = "wordsOfKnowledgeProjectile",
                 trail_effect_enabled = false,
-                texture_shadow = "shadow_ball",
+                texture_shadow = "shadows/projectiles/shadow_ball",
                 end_effect = string.Empty,
                 terraform_option = string.Empty,
                 terraform_range = 1,
@@ -345,10 +347,10 @@ namespace GodsAndPantheons
             AssetManager.projectiles.add(new ProjectileAsset
             {
                 id = "EarthShardProjectile",
-                speed = 8f,
+                speed = 24f,
                 texture = "EarthShardProjectile",
                 trail_effect_enabled = false,
-                texture_shadow = "shadow_ball",
+                texture_shadow = "shadows/projectiles/shadow_arrow",
                 end_effect = string.Empty,
                 terraform_option = string.Empty,
                 terraform_range = 1,
@@ -371,10 +373,10 @@ namespace GodsAndPantheons
             {
                 id = "waveOfMutilationProjectile",
                 animation_speed = 0.3f,
-                speed = 5f,
+                speed = 15f,
                 texture = "waveOfMutilationProjectile",
                 trail_effect_enabled = true,
-                texture_shadow = "shadow_ball",
+                texture_shadow = "shadows/projectiles/shadow_ball",
                 end_effect = string.Empty,
                 terraform_option = "waveTerra",
                 terraform_range = 2,
