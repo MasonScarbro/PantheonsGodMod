@@ -9,6 +9,20 @@ using static GodsAndPantheons.Traits;
 //Harmony Patches
 namespace GodsAndPantheons.Patches
 {
+    [HarmonyPatch(typeof(Dragon), nameof(Dragon.getHit))]
+    public class FireGodExplodeEnemy
+    {
+        static void Prefix(BaseSimObject pSelf, BaseSimObject pAttackedBy)
+        {
+            if(pSelf.a.hasTrait("God Of Fire") && pAttackedBy != null)
+            {
+                if (Randy.randomChance(GetEnhancedChance("God Of Fire", "MorphIntoDragon%", 25)))
+                {
+                    CreateFireExplosion(pSelf, pAttackedBy);
+                }
+            }
+        }
+    }
     [HarmonyPatch(typeof(Actor), nameof(Actor.makeStunned))]
     public class GodsImmuneToStuns
     {
@@ -38,60 +52,18 @@ namespace GodsAndPantheons.Patches
             }
         }
     }
-    [HarmonyPatch(typeof(MapBox), nameof(MapBox.applyForceOnTile))]
-    public class RandomForce
-    {
-        [HarmonyReversePatch]
-        //pForceOut is useless here! the max radius is also a lot larger
-        public static void CreateRandomForce(object instance, WorldTile pTile, int pRad = 10, float pForceAmount = 1.5f, bool pForceOut = true, int pDamage = 0, string[] pIgnoreKingdoms = null, BaseSimObject pByWho = null, TerraformOptions pOptions = null, bool pChangeHappiness = false)
-        {
-            IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-            {
-                CodeMatcher Matcher = new CodeMatcher(instructions);
-                Matcher.MatchForward(false, new CodeMatch[] { new CodeMatch(OpCodes.Ldc_I4_1) });
-                Matcher.RemoveInstruction();
-                Matcher.Insert(new CodeInstruction[]
-                {
-                    new CodeInstruction(OpCodes.Ldc_I4, 16),
-                });
-                Matcher.MatchForward(false, new CodeMatch[]
-                {
-                    new CodeMatch(OpCodes.Ldarg_S, (byte)4)
-                });
-                List<Label> label = Matcher.Instruction.labels;
-                Matcher.RemoveInstruction();
-                Matcher.Insert(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Randy), nameof(Randy.randomBool))) {labels = label});
-                return Matcher.Instructions();
-            }
-        }
-    }
-    /*[HarmonyPatch(typeof(Clan), nameof(Clan.newClanInit))]
+    [HarmonyPatch(typeof(KingdomBehCheckKing), nameof(KingdomBehCheckKing.checkClanCreation))]
     public class FixClanRaceError
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        static bool Prefix(Actor pActor)
         {
-            CodeMatcher Matcher = new CodeMatcher(instructions);
-            Matcher.MatchForward(false, new CodeMatch[]
+            if (HasMorphed(pActor))
             {
-                new CodeMatch(new OpCode?(OpCodes.Ldfld), AccessTools.Field(typeof(Actor), nameof(Actor.race)))
-            });
-            Matcher.RemoveInstruction();
-            Matcher.Insert(new CodeInstruction[]
-            {
-              new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FixClanRaceError), nameof(GetTrueRace)))
-            });
-            return Matcher.Instructions();
-        }
-        public static race GetTrueRace(Actor actor)
-        {
-            if(actor.asset.race != SK.dragons)
-            {
-                return actor.race;
+                return false;
             }
-            actor.data.get("oldself", out string oldself, SA.unit_human);
-            return AssetManager.raceLibrary.get(AssetManager.actor_library.get(oldself).race);
+            return true;
         }
-    }*/ //idk if this is neccessary anymore
+    }
     [HarmonyPatch(typeof(PowerLibrary), "spawnUnit")]
     public class MakeSummoned
     {
@@ -150,6 +122,11 @@ namespace GodsAndPantheons.Patches
     {
         static void Postfix(ref string __result, Actor pActor)
         {
+            if (HasMorphed(pActor) && pActor.asset.job.Length != 0)
+            {
+                __result = pActor.asset.job.GetRandom();
+                return;
+            }
             if (pActor.hasStatus("Blinded"))
             {
                 __result = "random_move";
@@ -213,6 +190,34 @@ namespace GodsAndPantheons.Patches
             return true;
         }
     }
+    [HarmonyPatch(typeof(Actor), nameof(Actor.getMaturationTimeSeconds))]
+    public class GodsDevelopFaster
+    {
+        static void Postfix(Actor __instance, ref float __result)
+        {
+            __result *= GetMul(__instance) * GetMul(__instance.lover);
+        }
+        static float GetMul(Actor Actor)
+        {
+            if(Actor == null)
+            {
+                return 1;
+            }
+            if (IsGod(Actor))
+            {
+                return Randy.randomFloat(0.1f, 0.2f);
+            }
+            if (Actor.hasTrait("Lesser God"))
+            {
+                return Randy.randomFloat(0.3f, 0.5f);
+            }
+            if (Actor.hasTrait("Demi God"))
+            {
+                return Randy.randomFloat(0.6f, 0.9f);
+            }
+            return 1;
+        }
+    }
     [HarmonyPatch(typeof(TooltipLibrary), "showTrait")]
     public class showdemistats
     {
@@ -239,12 +244,12 @@ namespace GodsAndPantheons.Patches
             return Matcher.Instructions();
         }
     }
-    [HarmonyPatch(typeof(BaseSimObject), "canAttackTarget")]
+    [HarmonyPatch(typeof(BaseSimObject), nameof(BaseSimObject.canAttackTarget))]
     public class DontAttack
     {
         static void Postfix(BaseSimObject __instance, BaseSimObject pTarget, ref bool __result)
         {
-            if (__instance.hasStatus("Blinded") || __instance.hasStatus("Petrified"))
+            if (__instance.hasStatus("Blinded"))
             {
                 __result = false;
                 return;
@@ -256,6 +261,10 @@ namespace GodsAndPantheons.Patches
             }
             if (__instance.isActor())
             {
+                if(__instance.a.hasTrait("God Of Chaos") && pTarget.isBuilding() && pTarget.b.asset.id == "corrupted_brain")
+                {
+                    __result = false;
+                }
                 if(__instance.hasStatus("BrainWashed") || __instance.a.hasTrait("Summoned One"))
                 {
                     Actor Master = FindMaster(__instance.a);
@@ -270,9 +279,25 @@ namespace GodsAndPantheons.Patches
                         return;
                     }
                 }
-                if (__instance.hasStatus("Invisible") && __instance.a.asset.id == "GodHunter")
+                if(__instance.a.asset.id == "GodHunter")
+                {
+                    if(pTarget.isActor() && pTarget.a.asset.id != "GodHunter" && IsGod(pTarget.a))
+                    {
+                        __result = true;
+                        return;
+                    }
+                    if (__instance.hasStatus("Invisible"))
+                    {
+                        __result = false;
+                    }
+                }
+            }
+            else
+            {
+                if(__instance.b.asset.id == "corrupted_brain" && pTarget.isActor() && pTarget.a.hasTrait("God Of Chaos"))
                 {
                     __result = false;
+                    return;
                 }
             }
         }
@@ -377,7 +402,7 @@ namespace GodsAndPantheons.Patches
                 return;
             }
         }
-        static void AddRange(ListPool<string> list, List<string> range)
+        static void AddRange(ListPool<string> list, IEnumerable<string> range)
         {
             foreach (string s in range)
             {
@@ -422,7 +447,11 @@ namespace GodsAndPantheons.Patches
     {
         static void Prefix(Actor __instance, BaseSimObject pAttacker, ref float pDamage)
         {
-            if(pAttacker == null || !pAttacker.isActor() || __instance == null)
+            if(pAttacker == null || !pAttacker.isActor() || pAttacker.a.equipment == null || __instance == null)
+            {
+                return;
+            }
+            if(__instance?.asset == null)
             {
                 return;
             }
@@ -457,57 +486,71 @@ namespace GodsAndPantheons.Patches
             {
                 __instance.stats.mergeStats(GetDemiStats(__instance.data));
             }
+            if(__instance.hasTrait("God Of Fire") && __instance.asset.id == SA.dragon)
+            {
+                __instance.stats[S.multiplier_health] += 5;
+            }
         }
     }
     [HarmonyPatch(typeof(MapBox), "applyAttack")]
     public class KnowledgeGodEnemySwap
     {
-        static bool Prefix(AttackData pData, ref BaseSimObject pTargetToCheck)
+        static bool Prefix(AttackData pData, ref BaseSimObject pTargetToCheck, ref AttackDataResult __result)
         {
-            if (pTargetToCheck.isActor() && pData.initiator != null)
+            if (pData.initiator == null)
             {
-                if (pTargetToCheck.a.hasTrait("God Of War"))
+                return true;
+            }
+            if (pData.initiator.isActor() && pData.initiator.a.hasTrait("God Of War"))
+            {
+                pData.initiator.a.data.set("MaelStrom", pData.is_projectile);
+            }
+            if (!pTargetToCheck.isActor())
+            {
+                return true;
+            }
+            if (pTargetToCheck.a.hasTrait("God Of War") && Randy.randomChance(GetEnhancedChance("God Of War", "BlockAttack%")))
+            {
+                MusicBox.playSound(MB.HitSwordSword, pTargetToCheck.current_tile);
+                if (pData.is_projectile)
                 {
-                    if (Randy.randomChance(GetEnhancedChance("God Of War", "BlockAttack%")))
+                    CombatActionLibrary.combat_action_deflect.action_actor(pTargetToCheck.a, pData);
+                    __result = new AttackDataResult(ApplyAttackState.Deflect, pTargetToCheck.getID());
+                    return false;
+                }
+                if (Toolbox.DistTile(pTargetToCheck.current_tile, pData.initiator.current_tile) < 4)
+                {
+                    pTargetToCheck = pData.initiator;
+                }
+                AssetManager.combat_action_library.doBlockAction(pTargetToCheck.a, pData);
+                __result = AttackDataResult.Block;
+                return false;
+            }
+            if (pTargetToCheck.a.hasTrait("God Of Knowledge") && Randy.randomChance(GetEnhancedChance("God Of Knowledge", "EnemySwap%")))
+            {
+                WorldTile tile = pTargetToCheck.current_tile;
+                List<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(tile, pTargetToCheck.kingdom, -1).list;
+                if (enemies == null)
+                {
+                    return true;
+                }
+                Actor enemytoswap = null;
+                foreach (BaseSimObject enemy in enemies)
+                {
+                    if (enemy.isActor() && enemy != pData.initiator && enemy != pTargetToCheck)
                     {
-                        MusicBox.playSound(MB.HitSwordSword, pTargetToCheck.current_tile);
-                        if (Toolbox.DistTile(pTargetToCheck.current_tile, pData.initiator.current_tile) < 3)
-                        {
-                            pTargetToCheck = pData.initiator;
-                            return true;
-                        }
-                        return false;
+                        enemytoswap = enemy.a;
+                        break;
                     }
                 }
-                if (pTargetToCheck.a.hasTrait("God Of Knowledge"))
+                if (enemytoswap != null)
                 {
-                    if (Randy.randomChance(GetEnhancedChance("God Of Knowledge", "EnemySwap%")))
-                    {
-                        WorldTile tile = pTargetToCheck.current_tile;
-                        List<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(tile, pTargetToCheck.kingdom, -1).list;
-                        if(enemies == null)
-                        {
-                            return true;
-                        }
-                        Actor enemytoswap = null;
-                        foreach (BaseSimObject enemy in enemies)
-                        {
-                            if (enemy.isActor() && enemy != pData.initiator && enemy != pTargetToCheck)
-                            {
-                                enemytoswap = enemy.a;
-                                break;
-                            }
-                        }
-                        if (enemytoswap != null)
-                        {
-                            enemytoswap.cancelAllBeh();
-                            EffectsLibrary.spawnAt("fx_teleport_blue", tile.posV3, enemytoswap.stats[S.scale]);
-                            EffectsLibrary.spawnAt("fx_teleport_blue", enemytoswap.current_tile.posV3, pTargetToCheck.stats[S.scale]);
-                            pTargetToCheck.a.spawnOn(enemytoswap.current_tile);
-                            enemytoswap.spawnOn(tile);
-                            pTargetToCheck = enemytoswap;
-                        }
-                    }
+                    enemytoswap.cancelAllBeh();
+                    EffectsLibrary.spawnAt("fx_teleport_blue", tile.posV3, enemytoswap.stats[S.scale]);
+                    EffectsLibrary.spawnAt("fx_teleport_blue", enemytoswap.current_tile.posV3, pTargetToCheck.stats[S.scale]);
+                    pTargetToCheck.a.spawnOn(enemytoswap.current_tile);
+                    enemytoswap.spawnOn(tile);
+                    pTargetToCheck = enemytoswap;
                 }
             }
             return true;

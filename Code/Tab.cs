@@ -1,17 +1,8 @@
-using System;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using NCMS;
 using NCMS.Utils;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using ReflectionUtility;
+using SleekRender;
 
 namespace GodsAndPantheons
 {
@@ -31,6 +22,8 @@ namespace GodsAndPantheons
 
 
                 GameObject newTabButton = GameObject.Instantiate(OtherTabButton);
+                newTabButton.GetComponent<GraphicRaycaster>().DestroyImmediateIfNotNull();
+                newTabButton.GetComponentAtIndex(9).DestroyImmediateIfNotNull();
                 newTabButton.transform.SetParent(OtherTabButton.transform.parent);
                 Button buttonComponent = newTabButton.GetComponent<Button>();
                 TipButton tipButton = buttonComponent.gameObject.GetComponent<TipButton>();

@@ -41,15 +41,15 @@ namespace GodsAndPantheons
             {
                 if(Child.GetChild(0)?.GetComponent<NameInput>() != null)
                 {
-                    Child.GetChild(0).GetComponent<NameInput>().setText($"{Main.defaultSettings.Chances[ID][Child.name].value}");
-                    Main.modifyGodOption(ID, Child.name, Main.defaultSettings.Chances[ID][Child.name].active, Main.defaultSettings.Chances[ID][Child.name].value);
+                    Child.GetChild(0).GetComponent<NameInput>().setText($"{Main.defaultSettings[ID][Child.name].value}");
+                    Main.modifyGodOption(ID, Child.name, Main.defaultSettings[ID][Child.name].active, Main.defaultSettings[ID][Child.name].value);
                 }
             }
         }
 
         private void LoadInputOptions()
         {
-            Dictionary<string, InputOption> options = Main.savedSettings.Chances[ID];
+            Dictionary<string, InputOption> options = Main.savedSettings[ID];
             contents.GetComponent<RectTransform>().sizeDelta += new Vector2(0, (options.Count) * 250);
             PowerButtons.CreateButton(
                         $"Reset {ID} Settings",
@@ -69,7 +69,7 @@ namespace GodsAndPantheons
                         ID,
                         kv.Key,
                         kv.Key,
-                        Main.defaultSettings.Chances[ID][kv.Key].Description,
+                        Main.defaultSettings[ID][kv.Key].Description,
                         0,
                         contents,
                         $"{kv.Value.value}"
@@ -87,7 +87,7 @@ namespace GodsAndPantheons
                         toggle_name = kv.Key,
                         toggle_action = delegate
                         {
-                            Main.modifyGodOption(ID, kv.Key, !Main.savedSettings.Chances[ID][kv.Key].active);
+                            Main.modifyGodOption(ID, kv.Key, !Main.savedSettings[ID][kv.Key].active);
                         }
                     });
                     LM.AddToCurrentLocale(power.name, power.name);

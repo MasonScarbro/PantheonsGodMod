@@ -15,29 +15,27 @@ namespace GodsAndPantheons
         {
             loadProjectiles();
         }
-
+        public static void MadStorm(Storm s)
+        {
+            if (Vector3.Distance(s.transform.position, s.TileToGo.posV) < 10)
+            {
+                s.TileToGo = Toolbox.getRandomTileWithinDistance(s.tile, 120);
+                  for (int i = 0; i < 3; i++)
+                    World.world.drop_manager.spawnParabolicDrop(s.tile, SB.corrupted_brain, 0, 2, 20, 20, 50);
+            }
+        }
         private static void loadProjectiles()
         {
             AssetManager.projectiles.add(new ProjectileAsset
             {
                 id = "WarAxeProjectile1",
                 speed = 21f,
+                size = 1,
                 texture = "warAxeProjectile",
-                trail_effect_enabled = false,
                 texture_shadow = "shadows/projectiles/shadow_arrow",
-                end_effect = string.Empty,
-                terraform_range = 1,
-                draw_light_area = true,
-                draw_light_size = 0.1f,
-                sound_launch = "event:/SFX/WEAPONS/WeaponFireballStart",
-                // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
-                scale_start = 0.1f,
-                scale_target = 0.1f,
-                
-                /*impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
-                {
-                    return fireAttributeImpact(pSelf, pTarget, pTile, 0.15f, 0, 0, 2);
-                })*/
+                sound_launch = "event:/SFX/WEAPONS/WeaponStartArrow",
+                sound_impact = "event:/SFX/HIT/HitGeneric",
+                can_be_left_on_ground = false
             });
 
             AssetManager.projectiles.add(new ProjectileAsset
@@ -163,11 +161,19 @@ namespace GodsAndPantheons
                 // sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
                 scale_start = 0.08f,
                 scale_target = 0.1f,
-                /*
+                
                 impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
                 {
-                    return Impact(pSelf, pTarget, pTile);
-                })*/
+                    if(!Randy.randomChance(Traits.GetEnhancedChance("God Of Chaos", "BoneFire%")))
+                    {
+                        return true;
+                    }
+                    for (int i = 0; i < Randy.randomInt(3, 5); i++)
+                    {
+                        Traits.CreateStorm(pTile, 30f, 0.5f, MadStorm, new Color(0.7f, 1, 1, 0.9f), 0.2f).GetComponent<Storm>().TileToGo = Toolbox.getRandomTileWithinDistance(pTile, 100);
+                    }
+                    return true;
+                })
             });
 
             AssetManager.projectiles.add(new ProjectileAsset
@@ -210,6 +216,7 @@ namespace GodsAndPantheons
                 sound_impact = "event:/SFX/WEAPONS/WeaponFireballLand",
                 scale_start = 0.1f,
                 scale_target = 0.1f,
+                size = 2,
                 /*
                 impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
                 {
@@ -378,6 +385,7 @@ namespace GodsAndPantheons
                 trail_effect_enabled = true,
                 texture_shadow = "shadows/projectiles/shadow_ball",
                 end_effect = string.Empty,
+                size = 2,
                 terraform_option = "waveTerra",
                 terraform_range = 2,
                 draw_light_area = true,

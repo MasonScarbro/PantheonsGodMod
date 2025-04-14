@@ -78,20 +78,6 @@ namespace GodsAndPantheons
 
             AssetManager.effects_library.add(new EffectAsset
             {
-                id = "fx_smokeFlash_dej",
-                use_basic_prefab = true,
-                sorting_layer_id = "EffectsBack",
-                sprite_path = "effects/fx_smokeFlash_dej",
-                show_on_mini_map = true,
-                limit = 100,
-                draw_light_area = true,
-                draw_light_size = 2f,
-                draw_light_area_offset_y = 0f,
-                time_between_frames = 0.08f
-            });
-
-            AssetManager.effects_library.add(new EffectAsset
-            {
                 id = "fx_cometAzureDown_dej",
                 use_basic_prefab = true,
                 sorting_layer_id = "EffectsBack",
@@ -231,6 +217,7 @@ namespace GodsAndPantheons
                 id = "ChaosLaser",
                 use_basic_prefab = false,
                 prefab_id = "effects/prefabs/ChaosLaser",
+                limit = 0
             });
 
             AssetManager.effects_library.clone("FireTornado", "fx_tornado").prefab_id = "effects/prefabs/FireTornado";

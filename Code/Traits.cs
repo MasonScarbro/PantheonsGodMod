@@ -94,6 +94,7 @@ namespace GodsAndPantheons
                 {S.mana, 300 },
                 {S.accuracy, 30},
                 {S.armor, 50f},
+                {S.mass, 30f },
                 {S.scale, 0.1f},
                 {S.range, 10f},
                 {S.intelligence, 3f},
@@ -561,6 +562,7 @@ namespace GodsAndPantheons
 
             ActorTrait godHunter = new ActorTrait();
             godHunter.id = "God Hunter";
+            godHunter.default_for_actor_assets = new List<ActorAsset>() { AssetManager.actor_library.get("GodHunter") };
             godHunter.path_icon = "ui/icons/godKiller";
             godHunter.action_special_effect = new WorldAction(SuperRegeneration);
             godHunter.action_on_add = (WorldActionTrait)Delegate.Combine(new WorldActionTrait(GodWeaponManager.godGiveWeapon));
@@ -592,8 +594,8 @@ namespace GodsAndPantheons
             godoffire.action_special_effect = (WorldAction)Delegate.Combine(godoffire.action_special_effect, new WorldAction(godoffireerastatus));
             godoffire.action_special_effect = (WorldAction)Delegate.Combine(godoffire.action_special_effect, new WorldAction(MorphIntoDragon));
             godoffire.action_death = new WorldAction(GodOfFireDeath);
+            godoffire.special_effect_interval = 0.5f;
             godoffire.action_attack_target += new AttackAction(GodOfFireAttack);
-            godoffire.action_get_hit = new GetHitAction(GodOfFireGetHit);
             godoffire.group_id = "GodTraits";
             AddTrait(godoffire, "The Most Powerfull of the gods, the god of fire, many spheres of domain lie with him");
 
@@ -727,10 +729,94 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            RandomForce.CreateRandomForce(World.world, pTile, 256, 6);
+            ShakeEveryone(pTile, 192);
             World.world.startShake(1, 0.02f, 1.5f);
             return true;
         }
+        #region coolability
+        public static void ShakeEveryone(WorldTile pTile, int Radius = 128)
+        {
+            foreach (Actor a in Finder.getUnitsFromChunk(pTile, (Radius / 16) + 1, Radius))
+            {
+                if (IsGod(a))
+                {
+                    continue;
+                }
+                if (a.kingdom.isCiv())
+                {
+                    if (Randy.randomChance(0.7f))
+                    {
+                        ListPool<Kingdom> kingdoms = a.kingdom.getEnemiesKingdoms();
+                        if (kingdoms == null || kingdoms.Count == 0)
+                        {
+                            PushActorRandomly(a);
+                            continue;
+                        }
+                        City city = GetTargetCity(kingdoms, a);
+                        if (city == null)
+                        {
+                            PushActorRandomly(a);
+                            continue;
+                        }
+                        PushActorTowardsTile(city.zones.GetRandom().tiles.GetRandom().pos, a, Randy.randomFloat(0.6f, 1.2f));
+                        continue;
+                    }
+                    City city2 = GetClosestCity(a);
+                    if (city2 == null)
+                    {
+                        PushActorRandomly(a);
+                        continue;
+                    }
+                    PushActorTowardsTile(city2.zones.GetRandom().tiles.GetRandom().pos, a, Randy.randomFloat(0.6f, 1.2f));
+                }
+                else
+                {
+                    PushActorRandomly(a);
+                }
+            }
+        }
+        public static City GetClosestCity(Actor a)
+        {
+            float Num = float.MaxValue;
+            City currentcity = null;
+            foreach (City City in a.kingdom.cities)
+            {
+                float Dist = Vector3.Distance(City.city_center, a.current_position);
+                if (Dist < Num)
+                {
+                    Num = Dist;
+                    currentcity = City;
+                }
+            }
+            return currentcity;
+        }
+        public static City GetTargetCity(ListPool<Kingdom> kingdoms, Actor a)
+        {
+            float Num = float.MaxValue;
+            City currentcity = null;
+            foreach (Kingdom kingdom in kingdoms)
+            {
+                foreach (City City in kingdom.cities)
+                {
+                    float Dist = Vector3.Distance(City.city_center, a.current_position);
+                    if (Dist < Num)
+                    {
+                        Num = Dist;
+                        currentcity = City;
+                    }
+                }
+            }
+            return currentcity;
+        }
+        public static void PushActorRandomly(Actor pActor, int Dist = -1)
+        {
+            if (Dist == -1)
+            {
+                Dist = Randy.randomInt(20, 40);
+            }
+            PushActorTowardsTile(Toolbox.getRandomTileWithinDistance(pActor.current_tile, Dist).pos, pActor, Randy.randomFloat(0.6f, 1.2f));
+        }
+        #endregion
         public static bool ChaosBall(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Randy.randomChance(GetEnhancedChance("God Of Chaos", "FireBall%")))
@@ -764,7 +850,7 @@ namespace GodsAndPantheons
         {
             if (Randy.randomChance(GetEnhancedChance("God Of Chaos", "ChaosBoulder%")))
             {
-                pb.spawnBoulder(pTarget.current_tile, null);
+                pb.prepareBoulder(pTarget.current_tile, null);
             }
             return true;
         }
@@ -817,7 +903,7 @@ namespace GodsAndPantheons
             }
             if (Randy.randomChance(GetEnhancedChance("God Of Knowledge", "SummonLightning%")))
             {
-                ActionLibrary.castLightning(null, pTarget, null); // Casts Lightning on the target
+                ActionLibrary.castLightning(pSelf, pTarget, null); // Casts Lightning on the target
             }
             return true;
         }
@@ -880,7 +966,7 @@ namespace GodsAndPantheons
             }
             if (Randy.randomChance(0.8f))
             {
-                ActionLibrary.castCurses(null, null, Toolbox.getRandomTileWithinDistance(s.tile, 60));
+                ActionLibrary.castCurses(s.ByWho, null, Toolbox.getRandomTileWithinDistance(s.tile, 60));
             }
             if (Randy.randomChance(0.5f))
             {
@@ -888,14 +974,14 @@ namespace GodsAndPantheons
             }
             if (Randy.randomChance(0.3f))
             {
-                CreateBlindess(Toolbox.getRandomTileWithinDistance(s.tile, 60), 5, 30, null);
+                CreateBlindess(Toolbox.getRandomTileWithinDistance(s.tile, 60), 5, 30, s.ByWho?.kingdom);
             }
         }
         public static bool CloudOfDarkness(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Randy.randomChance(GetEnhancedChance("God Of the Night", "cloudOfDarkness%")))
             {
-                CreateStorm(pTile, 30f, 0.4f, CloudOfDark, new Color(1, 1, 1, 0.75f), 4f);
+                CreateStorm(pTile, 30f, 0.4f, CloudOfDark, new Color(1, 1, 1, 0.75f), 4f, pSelf);
             }
             if (Randy.randomChance(GetEnhancedChance("God Of the Night", "blackHole%")))
             {
@@ -1121,8 +1207,11 @@ namespace GodsAndPantheons
             {
                 if(BehFunctions.getalliesofactor(Finder.getUnitsFromChunk(pTile, 1, 6), pTarget) > 6)
                 {
-                    PushActorTowardsTile(pTarget.current_tile.pos, pSelf.a, 1);
-                    pSelf.addStatusEffect("War Gods Slam");
+                    if (pSelf.addStatusEffect("War Gods Slam"))
+                    {
+                        PushActorTowardsTile(pTarget.current_tile.pos, pSelf.a, 3);
+                    }
+                    
                 }
             }
             return true;
@@ -1415,16 +1504,21 @@ namespace GodsAndPantheons
             }
             if (Randy.randomChance(0.6f))
             {
-                LavaHelper.addLava(Toolbox.getRandomTileWithinDistance(s.tile, 30), "lava3");
+                for (int i = 0; i < Randy.randomInt(3, 15); i++)
+                {
+                    LavaHelper.addLava(Toolbox.getRandomTileWithinDistance(s.tile, 10), "lava3");
+                }
+            }
+            if (Randy.randomChance(0.8f)){
+                MapAction.damageWorld(s.tile, 10, AssetManager.terraform.get("LesserCrabLaser"), s.ByWho);
             }
             if (Randy.randomChance(0.3f))
             {
-                EffectsLibrary.spawn("fx_napalm_flash", s.tile, null, null, 0f, -1f, -1f);
-                EffectsLibrary.spawnAtTileRandomScale("fx_explosion_tiny", s.tile, 0.15f, 0.3f);
+                DropsLibrary.action_napalm_bomb(s.tile);
             }
             if (Randy.randomChance(0.8f))
             {
-                World.world.applyForceOnTile(s.tile, 40, 1.5f, true, 5);
+                World.world.applyForceOnTile(s.tile, 40, 1.5f, false, 5, null, s.ByWho);
             }
             if (Randy.randomChance(0.4f))
             {
@@ -1432,20 +1526,11 @@ namespace GodsAndPantheons
                     World.world.drop_manager.spawnParabolicDrop(s.tile, "lava", 0, 2, 200, 20, 110, 1.5f);
             }
         }
-        private static bool GodOfFireGetHit(BaseSimObject pTarget, BaseSimObject pAttackedBy, WorldTile pTile)
-        {
-            if (pAttackedBy == null || pTarget.a.asset.id != SA.dragon) return true;
-            if(Randy.randomChance(GetEnhancedChance("God Of Fire", "MorphIntoDragon%")))
-            {
-                CreateFireExplosion(pTarget.current_tile, pTarget);
-            }
-            return true;
-        }
         public static bool FireStorm(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (Randy.randomChance(GetEnhancedChance("God Of Fire", "FireStorm%")))
             {
-                switch (Randy.randomInt(1, 11))
+                switch (Randy.randomInt(1, 10))
                 {
                     case 1: case 2: case 3: case 4: case 5:  pb.spawnCloudAsh(pTile, null); break;
                     //FIRE TORNADOS
@@ -1458,7 +1543,7 @@ namespace GodsAndPantheons
                             break;
                         }
                     //FIRESTORM
-                    case 10:
+                    case 9:
                         {
                             CreateStorm(pTile, 30f, 0.8f, FireStorm, Color.red, 0.8f).GetComponent<Storm>().TileToGo = Toolbox.getRandomTileWithinDistance(pTile, 100);
                             World.world.startShake(0.3f, 0.1f, 1);
@@ -1485,10 +1570,9 @@ namespace GodsAndPantheons
         public static bool MorphIntoDragon(BaseSimObject pSelf, WorldTile pTile)
         {
             bool IsDragon = pSelf.a.asset.id == SA.dragon;
-            bool Triggered = Randy.randomChance(GetEnhancedChance("God Of Fire", "MorphIntoDragon%"));
-            if (Triggered || IsDragon)
+            if (Randy.randomChance(GetEnhancedChance("God Of Fire", "MorphIntoDragon%")) || IsDragon)
             {
-                List<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(pTile, pSelf.kingdom, 2).list;
+                List<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(pTile, pSelf.kingdom, 3).list;
                 if (!IsDragon)
                 {
                     if (enemies?.Count > 10)
@@ -1506,13 +1590,13 @@ namespace GodsAndPantheons
                             {
                                 pSelf.a.avatar.GetComponent<Dragon>().aggroTargets.Add(enemy.a);
                             }
-                            if (Triggered)
+                            if (Randy.randomChance(GetEnhancedChance("God Of Fire", "MorphIntoDragon%", 50)))
                             {
-                                CreateFireExplosion(enemy.current_tile, pSelf.a);
+                                CreateFireExplosion(pSelf.a, enemy);
                             }
                         }
                     }
-                    if (!AnyEnemies)
+                    else
                     {
                         pSelf.a.data.get("oldself", out string oldself, SA.dragon);
                         Morph(pSelf.a, oldself);
@@ -1521,49 +1605,26 @@ namespace GodsAndPantheons
             }
             return true;
         }
-
-        public static Vector2 getAttackPosition(BaseSimObject target)
+        public static void CreateFireExplosion(BaseSimObject ByWho, BaseSimObject pTarget)
         {
-            float num = target.stats[S.size];
-            Vector2 vector = new Vector2(target.current_position.x, target.current_position.y);
-            if (target.isActor() && target.a.is_moving && target.isFlying())
-            {
-                vector = Vector2.MoveTowards(vector, target.a.next_step_position, num * 3f);
-            }
-            return vector;
+            EffectsLibrary.spawnAtTile("FireGodsExplsion", pTarget.current_tile, Randy.randomFloat(0.1f, 0.3f));
+            GodAttack(ByWho, pTarget, pTarget.current_tile, "God Of Fire");
+            MapAction.damageWorld(pTarget.current_tile, 4, AssetManager.terraform.get("bomb"), ByWho);
         }
-        public static void CreateFireExplosion(WorldTile Tile, BaseSimObject ByWho)
+        public static void ShootCustomProjectile(BaseSimObject pSelf, BaseSimObject pTarget, string projectile, int amount = 1, float pZ = 0.25f, Vector2 Pos = default)
         {
-            EffectsLibrary.spawnAtTile("FireGodsExplsion", Tile, 0.1f);
-            MapAction.damageWorld(Tile, 4, AssetManager.terraform.get("bomb"), ByWho);
-        }
-        public static void ShootCustomProjectile(BaseSimObject pSelf, BaseSimObject pTarget, string projectile, int amount, Vector2 Pos = default)
-        {
-            Vector2 attackPosition = getAttackPosition(pTarget);
-            attackPosition.y += 0.1f;
-            float TargetSize = pTarget.stats[S.size];
-            float Size = pSelf.stats[S.size];
-            float num5 = 0f;
+            Vector3 Start = Pos == default ? pSelf.current_position : Pos;
+            float tZ = 0f;
             if (pTarget.isInAir())
             {
-                num5 = pTarget.a.position_height;
+                tZ = pTarget.getHeight();
             }
             for (int i = 0; i < amount; i++)
             {
-                Vector2 Target = new Vector2(attackPosition.x, attackPosition.y);
-                Target.x += Randy.randomFloat(-(TargetSize + 1f), TargetSize + 1f);
-                Target.y += Randy.randomFloat(-TargetSize, TargetSize);
-                Vector3 Start;
-                if (Pos == null)
-                {
-                    Start = Toolbox.getNewPoint(pSelf.current_position.x, pSelf.current_position.y, Target.x, Target.y, Size, true);
-                }
-                else
-                {
-                    Start = Toolbox.getNewPoint(Pos.x, Pos.y, Target.x, Target.y, Size, true);
-                }
-                Start.y += 0.5f;
-                Projectile Projectile = World.world.projectiles.spawn(pSelf, pTarget, projectile, Start, Target, num5);
+                Vector3 tTargetPos = pTarget.current_tile.posV3;
+                tTargetPos.x += Randy.randomFloat(-(pTarget.stats["size"] + 1f), pTarget.stats["size"] + 1f);
+                tTargetPos.y += Randy.randomFloat(-pTarget.stats["size"], pTarget.stats["size"]);
+                World.world.projectiles.spawn(pSelf, pTarget, projectile, Start, tTargetPos, tZ, pZ);
             }
         }
         public static bool Magic(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -1604,6 +1665,7 @@ namespace GodsAndPantheons
             pActor.removeTrait("God Of Chaos");
             return true;
         }
+
 
         public static bool sunGodsDeath(BaseSimObject pTarget, WorldTile pTile = null)
         {
@@ -1716,15 +1778,15 @@ namespace GodsAndPantheons
             //WorldTile tile2 = Toolbox.getRandomTileWithinDistance(pTile, 40);
             // List<WorldTile> randTile = List.Of<WorldTile>(new WorldTile[] { tile1, tile2 });
             // WorldTile _tile = Toolbox.getRandomTileWithinDistance(randTile, pTile, 45, 120);
-            if (Randy.randomChance(GetEnhancedChance("God Of War", "seedsOfWar%")))
+            if (pTarget.kingdom.king != null && Randy.randomChance(GetEnhancedChance("God Of War", "seedsOfWar%")))
             {
-                MapBox.instance.plots.tryStartPlot(pTarget.kingdom.king, PlotsLibrary.new_war);
+                MapBox.instance.plots.tryStartPlot(pTarget.kingdom.king, AssetManager.plots_library.get("new_war"));
             }
-            if (Randy.randomChance(GetEnhancedChance("God Of War", "seedsOfWar%")))
+            if (pTarget.hasCity() && !pTarget.getCity().isCapitalCity() && Randy.randomChance(GetEnhancedChance("God Of War", "seedsOfWar%")))
             {
-                MapBox.instance.plots.tryStartPlot(pTarget.a, PlotsLibrary.rebellion);
+                MapBox.instance.plots.tryStartPlot(pTarget.a, AssetManager.plots_library.get("cause_rebellion"));
             }
-            if (Randy.randomChance(GetEnhancedChance("God Of War", "seedsOfWar%")))
+            if (pTarget.kingdom.king != null && Randy.randomChance(GetEnhancedChance("God Of War", "seedsOfWar%")))
             {
                 MapBox.instance.plots.tryStartPlot(pTarget.kingdom.king, AssetManager.plots_library.get("alliance_destroy"));
             }
@@ -1749,7 +1811,7 @@ namespace GodsAndPantheons
                 }
                 if (Randy.randomChance(GetEnhancedChance("God Of the Earth", "buildWorld%", 75)))
                 {
-                    CreateMountains(pSelf.a);
+                    CreateMountainWalls(pSelf.a);
                 }
 
                 return true;
@@ -1760,7 +1822,7 @@ namespace GodsAndPantheons
         {
             ///not finushed
         }
-        public static void CreateMountains(Actor pActor)
+        public static void CreateMountainWalls(Actor pActor)
         {
             City city = pActor.city;
             if (city == null)
@@ -1784,8 +1846,9 @@ namespace GodsAndPantheons
                 {
                     continue;
                 }
-                int Start = GetPath(direction, out int End);
-                if (AtWar ? (zone.tiles[Start].Type != TileLibrary.mountains && zone.tiles[End].Type != TileLibrary.mountains) : (zone.tiles[Start].Type == TileLibrary.mountains && zone.tiles[End].Type == TileLibrary.mountains))
+                int Start = GetPath(direction, zone, pActor.kingdom, out int End);
+                bool hasmountains = zone.getTilesOfType(TileLibrary.mountains)?.Count >= 40;
+                if (AtWar ? !hasmountains : hasmountains)
                 {
                     (EffectsLibrary.spawn("fx_Build_Path", zone.centerTile) as TerraformPath)?.Init(zone.tiles[Start], zone.tiles[End], AtWar, 0.15f, 2, false);
                     count--;
@@ -1796,16 +1859,34 @@ namespace GodsAndPantheons
                 }
             }
         }
-        public static int GetPath(TileDirection direction, out int End)
+        public static int GetPath(TileDirection direction, TileZone Zone, Kingdom kingdom, out int End)
         {
-            switch(direction)
+            bool UpCity = Zone.zone_up?.city?.kingdom == kingdom;
+            bool DownCity = Zone.zone_down?.city?.kingdom == kingdom;
+            bool LeftCity = Zone.zone_left?.city?.kingdom == kingdom;
+            bool RightCity = Zone.zone_right?.city?.kingdom == kingdom;
+            if (direction == TileDirection.Up)
             {
-                case TileDirection.Up: End = 53;  return 13;
-                case TileDirection.Down: End = 50; return 10;
-                case TileDirection.Left: End = 22; return 17;
-                case TileDirection.Right: End = 40; return 46;
-                default: End = 0;  return 0;
+                End = LeftCity ? 21 : 5;
+                return RightCity ? 45 : 61;
             }
+            if (direction == TileDirection.Down)
+            {
+                End = LeftCity ? 18 : 2;
+                return RightCity ? 42 : 58;
+            }
+            if (direction == TileDirection.Left)
+            {
+                End = UpCity ? 21 : 23;
+                return DownCity ? 18 : 16;
+            }
+            if (direction == TileDirection.Right)
+            {
+                End = UpCity ? 45 : 47;
+                return DownCity ? 42 : 40;
+            }
+            End = 0;
+            return 0;
         }
         public static TileDirection GetDirectionToCity(TileZone zone, City city)
         {

@@ -26,7 +26,7 @@ namespace GodsAndPantheons
             sunGodEra.locale_id = "Lights Prevail";
             sunGodEra.action_interval = 2;
             sunGodEra.action = new WorldAction(Traits.SuperRegeneration);
-            localizeStatus(sunGodEra.id, "Lights_Prevail", sunGodEra.locale_description); // Localizes the status effect
+            localizeStatus(sunGodEra.id, "Lights Prevail", sunGodEra.locale_description); // Localizes the status effect
             AssetManager.status.add(sunGodEra);
 
 
@@ -44,7 +44,7 @@ namespace GodsAndPantheons
             darkGodEra.locale_id = "Nights Prevail";
             darkGodEra.action_interval = 2;
             darkGodEra.action = new WorldAction(Traits.SuperRegeneration);
-            localizeStatus(darkGodEra.id, "Nights_Prevail", darkGodEra.locale_description); // Localizes the status effect
+            localizeStatus(darkGodEra.id, "Nights Prevail", darkGodEra.locale_description); // Localizes the status effect
             AssetManager.status.add(darkGodEra);
 
             StatusAsset FireGodEra = new StatusAsset();
@@ -62,7 +62,7 @@ namespace GodsAndPantheons
             FireGodEra.locale_id = "God Of All";
             FireGodEra.action_interval = 2;
             FireGodEra.action = new WorldAction(Traits.SuperRegeneration);
-            localizeStatus(FireGodEra.id, "God_Of_All", FireGodEra.locale_description); // Localizes the status effect
+            localizeStatus(FireGodEra.id, "God Of All", FireGodEra.locale_description); // Localizes the status effect
             AssetManager.status.add(FireGodEra);
             
             StatusAsset knowledgeGodEra = new StatusAsset();
@@ -83,7 +83,7 @@ namespace GodsAndPantheons
             knowledgeGodEra.locale_id = "Knowledge Prevails";
             knowledgeGodEra.action_interval = 2;
             knowledgeGodEra.action = new WorldAction(Traits.SuperRegeneration);
-            localizeStatus(knowledgeGodEra.id, "Knowledge_Prevail", knowledgeGodEra.locale_description); // Localizes the status effect
+            localizeStatus(knowledgeGodEra.id, "Knowledge Prevails", knowledgeGodEra.locale_description); // Localizes the status effect
             AssetManager.status.add(knowledgeGodEra);
             
             StatusAsset LoveGodEra = new StatusAsset();
@@ -120,7 +120,7 @@ namespace GodsAndPantheons
             starsGodEra.locale_id = "Stars Prevail";
             starsGodEra.action_interval = 20;
             starsGodEra.action = new WorldAction(Traits.SuperRegeneration);
-            localizeStatus(starsGodEra.id, "Stars_Prevail", starsGodEra.locale_description); // Localizes the status effect
+            localizeStatus(starsGodEra.id, "Stars Prevail", starsGodEra.locale_description); // Localizes the status effect
             AssetManager.status.add(starsGodEra);
 
             StatusAsset EarthGodEra = new StatusAsset();
@@ -185,14 +185,13 @@ namespace GodsAndPantheons
             Invisible.locale_id = "Invisible";
             Invisible.locale_description = "you cant see me";
             Invisible.base_stats[S.speed] += 60;
-            Invisible.base_stats[S.mass] += 0.2f;
+            Invisible.base_stats[S.mass] -= 5;
             Invisible.action_interval = 0.5f;
             Invisible.action = new WorldAction(InvisibleEffect);
             Invisible.action_finish = FinishInvisibility;
             localizeStatus(Invisible.id, "Invisible", Invisible.locale_description); // Localizes the status effect
             AssetManager.status.add(Invisible);
 
-            //you must use CreateLaserForActor() to add this effect, dont use addStatusAsset directly!!!!
             StatusAsset Lassering = new StatusAsset();
             Lassering.duration = 10;
             Lassering.id = "Lassering";
@@ -201,6 +200,7 @@ namespace GodsAndPantheons
             Lassering.locale_description = "Unlimited power!!!!";
             Lassering.base_stats[S.multiplier_speed] = -0.75f;
             Lassering.action_interval = 0.01f;
+            Lassering.action_on_receive = CreateLaserForActor;
             localizeStatus(Lassering.id, "Lassering", Lassering.locale_description); // Localizes the status effect
             AssetManager.status.add(Lassering);
 
@@ -224,7 +224,6 @@ namespace GodsAndPantheons
             AssetManager.status.add(chaosgodsera);
             localizeStatus(chaosgodsera.id, "Chaos Prevails", chaosgodsera.locale_description); // Localizes the status effect
 
-            AssetManager.status.add(chaosgodsera);
             StatusAsset warGodsCry = new StatusAsset();
             warGodsCry.id = "WarGodsCry";
             warGodsCry.duration = 7000f;
@@ -307,7 +306,7 @@ namespace GodsAndPantheons
             StatusAsset Levitating = new StatusAsset();
             Levitating.id = "Levitating";
             Levitating.duration = 5;
-            Levitating.path_icon = "ui/icons/iconPulse";
+            Levitating.path_icon = "ui/icons/iconForce";
             Levitating.locale_description = "AHHHHHHHHHHHH!";
             Levitating.action_finish = LaunchToGround;
             Levitating.locale_id = "Levitating";
@@ -337,6 +336,17 @@ namespace GodsAndPantheons
             */
 
         }
+        public static bool CreateLaserForActor(BaseSimObject baseSimObject, WorldTile Tile)
+        {
+            Actor pSelf = baseSimObject.a;
+            if (!pSelf.has_attack_target)
+            {
+                pSelf.finishStatusEffect("Lassering");
+                return false;
+            }
+            (EffectsLibrary.spawn("ChaosLaser") as ChaosLaser)?.Init(pSelf);
+            return true;
+        }
         public static bool LaunchToGround(BaseSimObject pTarget, WorldTile pTile)
         {
             Actor actor = pTarget.a;
@@ -344,9 +354,9 @@ namespace GodsAndPantheons
             if (Target != null)
             {
                 actor.velocity.z = 0;
-                Traits.PushActorTowardsTile(Target.current_tile.pos, actor, 0.1f);
-                Target.getHit(Target.getMaxHealth() * 0.1f, true, AttackType.Other, null, false);
-                actor.getHit(actor.getMaxHealth() * 0.4f, true, AttackType.Other, null, false);
+                Traits.PushActorTowardsTile(Target.current_tile.pos, actor, 0.3f);
+                Target.getHit(80, true, AttackType.Other, null, false);
+                actor.getHit(160, true, AttackType.Other, null, false);
             }
             return true;
         }
@@ -360,19 +370,26 @@ namespace GodsAndPantheons
         {
             if(pTarget.position_height < 10)
             {
-                pTarget.a.velocity.z = 1;
+                pTarget.a.velocity.z = Traits.GetDampConstant(pTarget.a)/10;
+                pTarget.a.velocity_speed = 3;
+                pTarget.a.velocity.x = Randy.randomFloat(-3, 3);
+                pTarget.a.velocity.y = Randy.randomFloat(-3, 3);
             }
+            pTarget.a.velocity.x -= pTarget.a.velocity.x * 0.1f;
+            pTarget.a.velocity.y -= pTarget.a.velocity.y * 0.1f;
+
             return true;
         }
 
         public static bool WarGodsSlam (BaseSimObject pTarget, WorldTile pTile)
         {
-            if(pTarget.a.velocity.z == 0)
+            if(pTarget.position_height == 0)
             {
                 Traits.SpawnCustomWave(pTile.pos, 0.1f, 0.1f, 0.1f);
                 MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionBowlingBall", pTile.x, pTile.y);
                 MapAction.damageWorld(pTile, 7, AssetManager.terraform.get("grenade"), pTarget);
-                pTarget._active_status_dict.Remove("War Gods Slam");
+                pTarget.a.restoreHealth(50);
+                pTarget.finishStatusEffect("War Gods Slam");
             }
             return true;
         }

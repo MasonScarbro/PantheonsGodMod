@@ -1,7 +1,6 @@
 ﻿using static GodsAndPantheons.Traits;
 using UnityEngine;
 using System.Collections.Generic;
-using static UnityEngine.GraphicsBuffer;
 namespace GodsAndPantheons
 {
     public class FireTornado : TornadoEffect
@@ -35,8 +34,8 @@ namespace GodsAndPantheons
         public int currentframe;
         public float timetochange;
         const float Timer = 0.07f;
-        public SpriteRenderer laser;
-        public Transform laserPoint;
+        public SpriteRenderer LaserSprite;
+        public Transform LaserPoint;
         public Transform Laser;
         public override void Awake()
         {
@@ -53,7 +52,7 @@ namespace GodsAndPantheons
         {
             currentframe = 0;
             timetochange = Timer;
-            laser.sprite = LaserSprites[currentframe];
+            LaserSprite.sprite = LaserSprites[currentframe];
             pSelf = actor;
             UpdateTransform();
         }
@@ -64,18 +63,14 @@ namespace GodsAndPantheons
                 kill();
                 return;
             }
-            if (pSelf.has_attack_target)
+            if (pSelf.has_attack_target && pSelf.attack_target != null)
             {
                 updatelaser();
             }
-            else
+            else if (!pSelf.checkEnemyTargets())
             {
-                pSelf.checkEnemyTargets();
-                if (!pSelf.has_attack_target)
-                {
-                    pSelf.finishStatusEffect("Lassering");
-                    kill();
-                }
+                pSelf.finishStatusEffect("Lassering");
+                kill();
             }
         }
 
@@ -87,42 +82,44 @@ namespace GodsAndPantheons
             }
             UpdateTransform();
             updatelasersprite(Time.deltaTime);
-            float x = laserPoint.transform.position.x;
-            float y = laserPoint.transform.position.y;
+            float x = LaserPoint.transform.position.x;
+            float y = LaserPoint.transform.position.y;
             MusicBox.inst.playDrawingSound("event:/SFX/UNIQUE/Crabzilla/CrabzillaLazer", x, y);
             if (currentframe > 6 && currentframe < 10)
             {
-                DamageWorld();
+                DamageWorld(x, y);
             }
         }
-        public void DamageWorld()
+        public void DamageWorld(float x, float y)
         {
-            float x = laserPoint.transform.position.x;
-            float y = laserPoint.transform.position.y;
             WorldTile tile = World.world.GetTile(Mathf.RoundToInt(x), Mathf.RoundToInt(y));
             if (tile != null)
             {
-                MapAction.damageWorld(tile, 4, AssetManager.terraform.get("LesserCrabLaser"), pSelf);
                 ///ARMOR PENETRATING
                 BaseSimObject Enemy = pSelf.attack_target;
-                Enemy.getHit(2 * pSelf.stats["damage"], true, AttackType.Fire, pSelf, false);
-                if (Enemy.isActor())
+                if(Enemy.isActor())
                 {
+                    Enemy.a.getHit(2 * pSelf.stats["damage"], true, AttackType.Fire, pSelf, false);
                     Enemy.a.calculateForce(x, y, Enemy.a.current_position.x, Enemy.a.current_position.y, 6, 1);
                 }
+                else
+                {
+                    Enemy.b.getHit(2 * pSelf.stats["damage"], true, AttackType.Fire, pSelf, false);
+                }
+                MapAction.damageWorld(tile, 4, AssetManager.terraform.get("LesserCrabLaser"), pSelf);
             }
         }
         
-        public void InitPrefab(SpriteRenderer laser, Transform laserPoint, Transform Laser)
+        public void InitPrefab(SpriteRenderer lasersprite, Transform laserPoint, Transform laser)
         {
-            this.laser = laser;
-            this.laserPoint = laserPoint;
-            this.Laser = Laser;
+            LaserSprite = lasersprite;
+            LaserPoint = laserPoint;
+            Laser = laser;
         }
         public void updatelasersprite(float pElapsed)
         {
             timetochange -= pElapsed;
-            laser.enabled = true;
+            LaserSprite.enabled = true;
             if (timetochange <= 0f)
             {
                 currentframe++;
@@ -132,9 +129,9 @@ namespace GodsAndPantheons
                 }
                 timetochange = Timer;
             }
-            if (laser.sprite.name != LaserSprites[currentframe].name)
+            if (LaserSprite.sprite.name != LaserSprites[currentframe].name)
             {
-                laser.sprite = LaserSprites[currentframe];
+                LaserSprite.sprite = LaserSprites[currentframe];
             }
         }
     }
@@ -239,7 +236,7 @@ namespace GodsAndPantheons
                 List<Actor> enemies = GetEnemiesOfActor(Finder.getUnitsFromChunk(tile, 1, 8), Actor);
                 if(enemies.Count > 0)
                 {
-                    ShootCustomProjectile(Actor, enemies.GetRandom(), "EarthShardProjectile", 1, tile.pos);
+                    ShootCustomProjectile(Actor, enemies.GetRandom(), "EarthShardProjectile", 1, 1, tile.pos);
                 }
             }
         }
@@ -336,7 +333,7 @@ namespace GodsAndPantheons
                 }
             }
         }
-        public static void TerraformTile(WorldTile pTile, bool Up, TileType TargetType)
+        public void TerraformTile(WorldTile pTile, bool Up, TileType TargetType)
         {
             if(pTile.Type == TargetType)
             {
@@ -346,6 +343,7 @@ namespace GodsAndPantheons
         }
         public override void spawnOnTile(WorldTile pTile)
         {
+            tile = pTile;
             prepare(pTile, 0.07f);
             sprite_animation.resetAnim(0);
         }
@@ -387,9 +385,13 @@ namespace GodsAndPantheons
             }
             if(TimeLeft <= 0 )
             {
-                BaseSimObject Target = Actor.findEnemyObjectTarget();
+                BaseSimObject Target = null;
+                if(Actor.kingdom != null)
+                {
+                    Target = Actor.findEnemyObjectTarget();
+                }
                 if (Target != null) {
-                    ShootCustomProjectile(Actor, Target, "moonFallSlow", 1);
+                    ShootCustomProjectile(Actor, Target, "moonFallSlow", 1, 0.25f, tile.pos);
                 }
                 else
                 {
@@ -459,7 +461,7 @@ namespace GodsAndPantheons
                 TimeLeft = TimeCoolDown;
                 foreach (Actor a in Finder.getUnitsFromChunk(tile, 1, 5))
                 {
-                    if(a.kingdom.id != byWho.kingdom.id)
+                    if(a.kingdom?.id != byWho.kingdom?.id)
                     {
                         PushActor(a, tile.pos, 0.5f, 0.4f);
                         a.getHit(30, true, AttackType.Eaten, byWho, false);
@@ -512,12 +514,13 @@ namespace GodsAndPantheons
         public float TimeCooldown;
         public float timeleft;
         public float Speed;
-
+        public BaseSimObject ByWho;
         public WorldTile? TileToGo;
         public bool UsingLaser = false;
-        public void Init(float Time, float TimeCooldown, StormAction? StormAction)
+        public void Init(float Time, float TimeCooldown, BaseSimObject ByWho, StormAction? StormAction)
         {
             this.Time = Time;
+            this.ByWho = ByWho;
             this.StormAction = StormAction;
             this.TimeCooldown = TimeCooldown;
             timeleft = TimeCooldown;

@@ -1,7 +1,4 @@
-﻿
-using ai;
-using ReflectionUtility;
-using SleekRender;
+﻿using ai;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -26,24 +23,15 @@ namespace GodsAndPantheons
         }
         public static List<Sprite> LaserSprites;
         
-        public static GameObject CreateStorm(WorldTile pTile, float time, float TimeCooldown, StormAction? Action, Color? StormColor, float Size)
+        public static GameObject CreateStorm(WorldTile pTile, float time, float TimeCooldown, StormAction? Action, Color? StormColor, float Size, BaseSimObject ByWho = null)
         {
             World.world.startShake(0.3f, 0.01f, 0.03f, false, true);
             GameObject Storm = EffectsLibrary.spawn("fx_CloudOfDarkness", pTile, null, null, 0f, -1f, -1f).gameObject;
             Storm.GetComponent<Storm>().spawnOnTile(pTile);
-            Storm.GetComponent<Storm>().Init(time, TimeCooldown, Action);
+            Storm.GetComponent<Storm>().Init(time, TimeCooldown, ByWho, Action);
             Storm.transform.localScale = new Vector3(Size, Size, 1);
             Storm.GetComponent<SpriteRenderer>().color = StormColor ?? Color.white;
             return Storm;
-        }
-        public static void CreateLaserForActor(Actor pSelf, float time = 10)
-        {
-            if (!pSelf.has_attack_target)
-            {
-                return;
-            }
-            (EffectsLibrary.spawn("ChaosLaser") as ChaosLaser).Init(pSelf);
-            pSelf.addStatusEffect("Lassering", time);
         }
         public static void AddTrait(ActorTrait Trait, string disc, int InheritRate = 0)
         {
@@ -102,76 +90,51 @@ namespace GodsAndPantheons
                 }
             }
         }
-        static List<Actor> temp_minion_list = new List<Actor>();
-        public static List<Actor> GetMinions(Actor a)
+        public static IEnumerable<Actor> GetMinions(Actor a)
         {
-            temp_minion_list.Clear();
             foreach (Actor actor in World.world.units)
             {
-               actor.data.get("Master", out string master, "");
-               if (a.data.id.Equals(master))
+               if(!(actor.hasStatus("BrainWashed") || actor.hasTrait("Summoned One")))
                {
-                 temp_minion_list.Add(actor);
+                    continue;
+               }
+               actor.data.get("Master", out long master, -1);
+               actor.data.get("BrainWasher", out long brainwasher, -1);
+               if (a.data.id.Equals(master) || a.data.id.Equals(brainwasher))
+               {
+                    yield return actor;
                }
             }
-            return temp_minion_list;
         }
         public static bool IsGod(Actor a)
-            => GetGodTraits(a).Count > 0
+            => GetGodTraits(a).ToList().Count > 0
             || a.asset.id == SA.crabzilla //crabzilla is obviously a god, duhh
             || a.asset.id == SA.god_finger; //its in the name
 
         public static bool IsGodTrait(ActorTrait a) => GodAbilities.Keys.Contains(a.id);
-        public static List<string> GetGodTraits(Actor a) => GetGodTraits(a.traits);
-        public static List<string> GetGodTraits(HashSet<ActorTrait> pTraits, bool includedemigods = false, bool includesubgods = false)
+        public static IEnumerable<string> GetGodTraits(Actor a) => GetGodTraits(a.traits);
+        public static IEnumerable<string> GetGodTraits(HashSet<ActorTrait> pTraits, bool includedemigods = false, bool includesubgods = false)
         {
-            List<string> list = new List<string>();
             foreach (ActorTrait trait in pTraits)
             {
                 if (IsGodTrait(trait) || (trait.Equals("Demi God") && includedemigods) || (trait.Equals("Lesser God") && includesubgods))
                 {
-                    list.Add(trait.id);
+                    yield return trait.id;
                 }
             }
-            return list;
         }
-        static List<Actor> temp_gods_list = new List<Actor>();
-        public static List<Actor> FindGods(Actor a, bool CanAttack = false, bool includeself = false)
+        public static IEnumerable<Actor> FindGods(Actor a, bool CanAttack = true, bool includeself = false)
         {
-            temp_gods_list.Clear();
             foreach (BaseSimObject actor in World.world.units)
             {
-                    if (actor.a != a || includeself)
-                    {
-                        if (IsGod(actor.a) && (!CanAttack || a.canAttackTarget(actor)))
-                        {
-                            temp_gods_list.Add(actor.a);
-                        }
-                    }
-            }
-            return temp_gods_list;
-        }
-        //returns true if teleported
-        public static bool TeleportNearActor(Actor Actor, BaseSimObject Target, int distance, bool AllTiles = false, bool MustBeFar = true, byte Attempts = 20)
-        {
-            if (Target != null)
-            {
-                if (!MustBeFar || Vector2.Distance(Target.current_position, Actor.current_position) > distance || !Actor.current_tile.isSameIsland(Target.current_tile))
+                if (actor.a != a || includeself)
                 {
-                    for(byte attempts = 0; attempts < Attempts; attempts++)
+                    if (IsGod(actor.a) && (!CanAttack || a.canAttackTarget(actor)))
                     {
-                        WorldTile _tile = Toolbox.getRandomTileWithinDistance(Target.current_tile, distance);
-                        if (AllTiles || (_tile.Type.ground && !_tile.Type.block && _tile.isSameIsland(Target.current_tile)))
-                        {
-                            Actor.cancelAllBeh();
-                            EffectsLibrary.spawnAt("fx_teleport_blue", _tile.posV3, Actor.stats[S.scale]);
-                            Actor.spawnOn(_tile, 0f);
-                            return true;
-                        }
+                        yield return actor.a;
                     }
                 }
             }
-            return false;
         }
         public static bool SuperRegeneration(BaseSimObject pTarget, float chance, float percent)
         {
@@ -182,11 +145,11 @@ namespace GodsAndPantheons
             return true;
         }
         //returns the raw chance
-        public static float GetChance(string ID, string Chance, float Default = 0) => Main.savedSettings.Chances.ContainsKey(ID) && Main.savedSettings.Chances[ID].ContainsKey(Chance) ? Main.savedSettings.Chances[ID][Chance].active ? Main.savedSettings.Chances[ID][Chance].value : 0 : Default;
+        public static float GetChance(string ID, string Key) => Main.savedSettings[ID][Key].active ? Main.savedSettings[ID][Key].value : 0;
         //returns 2 if the trait's era is one, 1 if it is not, Default if the trait is not found
-        public static float GetEraMultiplier(string trait, float Default = 1) => TraitEras.Keys.Contains(trait) ? World.world_era.id == TraitEras[trait].Key ? 2 : 1f : Default;
+        public static float GetEraMultiplier(string trait) => World.world_era.id == TraitEras[trait].Key ? 2 : 1f;
         //returns the chance of the trait multiplied by its era multiplier devided by the devisor
-        public static float GetEnhancedChance(string trait, string chance, float devisor = 100, float DefaultChance = 0, float DefaultMult = 1) => GetChance(TraitToWindow(trait), chance, DefaultChance) * GetEraMultiplier(trait, DefaultMult) / devisor;
+        public static float GetEnhancedChance(string trait, string chance, float devisor = 100) => GetChance(TraitToWindow(trait), chance) * GetEraMultiplier(trait) / devisor;
         public static string TraitToWindow(string Trait) => Trait switch
             {
                 "God Of Chaos" => "ChaosGodWindow",
@@ -201,8 +164,6 @@ namespace GodsAndPantheons
                 "God Of Love" => "LoveGodWindow",
                 _ => "",
             };
-
-        public static BaseStats temp_base_stats = new BaseStats();
         public static BaseStats GetDemiStats(ActorData pData)
         {
             pData.get("Demi" + S.speed, out float speed);
@@ -223,7 +184,7 @@ namespace GodsAndPantheons
             pData.get("Demi" + S.diplomacy, out float diplomacy);
             pData.get("Demi" + S.loyalty_traits, out float loyalty);
             pData.get("Demi" + S.lifespan, out int lifespan); //special
-            temp_base_stats.clear();
+            BaseStats temp_base_stats = new BaseStats();
             temp_base_stats[S.speed] = speed;
             temp_base_stats[S.mana] = Mana;
             temp_base_stats[S.critical_chance] = crit;
@@ -261,7 +222,7 @@ namespace GodsAndPantheons
             }
             return actors.GetRandom();
         }
-        public static List<Actor> GetAlliesOfActor(IEnumerable<BaseSimObject> actors, BaseSimObject actor)
+        public static List<Actor> GetAlliesOfActor(IEnumerable<BaseSimObject> actors, BaseSimObject actor, bool shuffle = true)
         {
             List<Actor> allies = new List<Actor>();
             foreach (Actor a in actors)
@@ -270,6 +231,10 @@ namespace GodsAndPantheons
                 {
                     allies.Add(a);
                 }
+            }
+            if (shuffle)
+            {
+                allies.Shuffle();
             }
             return allies;
         }
@@ -300,6 +265,12 @@ namespace GodsAndPantheons
             actor.data.custom_data_flags = pActor.data.custom_data_flags;
             ActorTool.copyUnitToOtherUnit(pActor, actor, true);
             return actor;
+        }
+        public static bool HasMorphed(Actor pActor)
+        {
+            pActor.data.get("morphedinto", out string morphed, "");
+            pActor.data.get("oldself", out string oldself, "");
+            return morphed != oldself;
         }
         public static Actor Morph(Actor pActor, string morphid, bool Log = true, bool destroyWeapon = true)
         {
@@ -347,7 +318,7 @@ namespace GodsAndPantheons
             Clan clan = pActor.clan;
             ActionLibrary.removeUnit(pActor);
             if (clan != null) { 
-            actor.setClan(clan);
+              actor.setClan(clan);
             }
             EffectsLibrary.spawn("fx_spawn", actor.current_tile, null, null, 0f, -1f, -1f);
             return actor;
@@ -394,18 +365,16 @@ namespace GodsAndPantheons
             }
         }
         //gets god traits which are stored in the data of lesser gods / demigods
-        public static List<string> Getinheritedgodtraits(ActorData pData)
+        public static IEnumerable<string> Getinheritedgodtraits(ActorData pData)
         {
-            List<string> traits = new List<string>();
             foreach (string key in GodAbilities.Keys)
             {
                 pData.get("Demi" + key, out bool inherited);
                 if (inherited)
                 {
-                    traits.Add(key);
+                    yield return key;
                 }
             }
-            return traits;
         }
         public static bool InheritedTrait(Actor a, string trait)
         {
@@ -473,18 +442,24 @@ namespace GodsAndPantheons
             minion.data.set("PreviousKingdom", minion.kingdom.id);
             minion.setKingdom(Master.kingdom);
         }
-        //pushes the actor directly to the target
-        public static void PushActorTowardsTile(Vector2Int point, Actor pActor, float time = 6f/90f)
+        //pushes the actor just enough so it lands exactly at the target
+        public static void PushActorTowardsTile(Vector2Int point, Actor pActor, float time = 6f/90f, float VelocitySpeed = 1)
         {
-            float pX = (point.x-pActor.current_position.x)/(24f*time);
-            float pY = (point.y-pActor.current_position.y)/(24f*time);
-            float pZ = (1.5f * time) - (pActor.position_height/24);
+            float pX = (point.x-pActor.current_position.x)/(time*VelocitySpeed);
+            float pY = (point.y-pActor.current_position.y)/(time*VelocitySpeed);
+            float pZ = (0.15f * time * GetDampConstant(pActor)) - (pActor.position_height / (time * GetDampConstant(pActor)));
             //forces the actor add the force even if he is in the air
-            pActor.velocity.x += pX * 0.6f;
-            pActor.velocity.y += pY * 0.6f;
-            pActor.velocity.z += pZ * 2f;
+            pActor.velocity_speed = VelocitySpeed;
+            pActor.velocity.x = pX;
+            pActor.velocity.y = pY;
+            pActor.velocity.z = pZ;
             pActor.under_forces = true;
             return;
+        }
+        public static float GetDampConstant(Actor pActor)
+        {
+            float tDampMod = pActor.stats["mass"] * SimGlobals.m.gravity;
+            return Mathf.Min(tDampMod, 20f);
         }
         public static void PushActor(Actor pActor, Vector2Int point, float strength = 1, float Zstrength = 0.1f, bool Outward = false)
         {
