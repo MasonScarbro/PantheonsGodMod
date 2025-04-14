@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using YamlDotNet.Core.Tokens;
 
 namespace GodsAndPantheons
 {
@@ -8,8 +9,8 @@ namespace GodsAndPantheons
     public class SavedSettings
     {
         public string settingVersion = "0.2.0";
-        //inheritance of the god traits is stored here
-        //if it has a god parent and normal parent it will use the inherit for the chance of changing the stats of the demi god trait for the baby
+        public Dictionary<string, InputOption> this[string ID] => Chances[ID]; 
+       
         public Dictionary<string, Dictionary<string, InputOption>> Chances = new Dictionary<string, Dictionary<string, InputOption>>
         {
             {"KnowledgeGodWindow",
@@ -91,9 +92,9 @@ namespace GodsAndPantheons
               {
                   {"warGodsCry%", new InputOption(true, 5, "A cry of anger and rage that inspires allies and pushes the enemy")},
                   {"axeThrow%", new InputOption(true, 29, "throws a axe")},
-                  {"seedsOfWar%", new InputOption(true, 1, "allows the god of war to make political decisions while also making enemies mad")},
+                  {"seedsOfWar%", new InputOption(true, 8, "allows the god of war to make political decisions while also making enemies mad")},
                   {"StunEnemy%", new InputOption(true, 20, "stuns an enemy")},
-                  {"axemaelstrom%", new InputOption(true, 8, "[ITEM] allows the holder of the Axe of fury to create a axe maelstrom, throwing many, many axes at enemies")},
+                  {"axemaelstrom%", new InputOption(true, 1, "[ITEM] allows the holder of the Axe of fury to create a axe maelstrom, throwing many, many axes at enemies")},
                   {"BlockAttack%", new InputOption(true, 16, "[Special] lets the god of war block an attack")},
                   {"War Gods Leap%", new InputOption(true, 20, "[Special] allows the god of war to leap to the skies and crash down in a big explosion")},
                   {"God Of Warinherit%", new InputOption(true, 40, "the chance of a child of a god of war to inherit a stat / ability / trait")}
@@ -118,7 +119,7 @@ namespace GodsAndPantheons
                   {"FireBall%", new InputOption(true, 28, "shoots a fire ball")},
                   {"UnleashChaos%", new InputOption(true, 40, "creates a cloud of rage and makes all nearby creatures mad, including allies")},
                   {"ChaosBoulder%", new InputOption(true, 15, "summons a boulder on the enemy")},
-                  {"BoneFire%", new InputOption(true, 30, "[ITEM] creates a bone fire that has orbs that create corrupted brains")},
+                  {"BoneFire%", new InputOption(true, 10, "[ITEM] creates a bone fire that has orbs that create corrupted brains")},
                   {"WorldOfChaos%", new InputOption(true, 5, "Shakes the area, flinging everyone across the \n map")},
                   {"God Of Chaosinherit%", new InputOption(true, 28, "the chance of a child of a god of chaos to inherit a stat / ability / trait")}
               }

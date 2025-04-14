@@ -22,33 +22,44 @@ namespace GodsAndPantheons
         private const string correctSettingsVersion = "0.2.0";
         public static SavedSettings savedSettings = new SavedSettings();
         public static SavedSettings defaultSettings = new SavedSettings();
-        public static Main instance;
         static Harmony _harmony;
         void Awake()
         {
+            //SETTINGS
             loadSettings();
+
+            //UI
+            Tab.init();
             WindowManager.init();
             Buttons.init();
-            Prefabs.Init();
 
+            //EFFECTS
+            Prefabs.Init();
             Effects.init();
+
+            //CREATURES
+            Units.init();
+            Invasions.init();
+
+            //GODS
             Group.init();
             Traits.init();
+            Items.init();
+
+            //POWERS
             NewProjectiles.init();
             NewTerraformOptions.init();
             NewEffects.init();
-            Items.init();
-            NewOpinions.init();
 
             //ai
             GodHunterBeh.init();
             SummonedOneBeh.init();
             CorruptedOneBeh.init();
+
+            //WORLD
+            NewOpinions.init();
             WorldBehaviours.init();
-            Units.init();
-            Tab.init();
-            Invasions.init();
-            instance = this;
+            
             //APPLY PATCHES
             _harmony = new Harmony("Com.Pantheon.Gods");
             _harmony.PatchAll();
@@ -96,12 +107,12 @@ namespace GodsAndPantheons
         }
         public static void modifyGodOption(string ID, string key, bool? active, int? value = null)
         {
-            savedSettings.Chances[ID][key].Set(value ?? savedSettings.Chances[ID][key].value, active ?? savedSettings.Chances[ID][key].active);
             if (active != null)
             {
                 PlayerConfig.dict[key].boolVal = (bool)active;
                 PowerButtonSelector.instance.checkToggleIcons();
             }
+            savedSettings[ID][key].Set(value ?? savedSettings[ID][key].value, active ?? savedSettings[ID][key].active);
             saveSettings();
         }
     }

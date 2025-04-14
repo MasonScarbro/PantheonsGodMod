@@ -1,5 +1,6 @@
 ﻿using ai.behaviours;
 using NeoModLoader.General;
+using System.Linq;
 using UnityEngine;
 using static GodsAndPantheons.BehFunctions;
 namespace GodsAndPantheons
@@ -14,13 +15,13 @@ namespace GodsAndPantheons
             GodHunt.addBeh(new GodHunterBeh());
             GodHunt.addBeh(new BehGoToTileTarget() { walkOnBlocks = true, walkOnWater = true });
             AssetManager.tasks_actor.add(GodHunt);
-            ActorJob GodHunterob = new ActorJob
+            ActorJob GodHunterJob = new ActorJob
             {
                 id = "GodHunter",
             };
-            GodHunterob.addTask("GodHunt");
+            GodHunterJob.addTask("GodHunt");
             LM.AddToCurrentLocale("Hunting Gods", "Hunting Gods......");
-            AssetManager.job_actor.add(GodHunterob);
+            AssetManager.job_actor.add(GodHunterJob);
         }
         public override BehResult execute(Actor pActor)
         {
@@ -33,7 +34,7 @@ namespace GodsAndPantheons
                 getrandomtile(ref pActor);
                 return FleeIfInDanger(pActor);
             }
-            Actor GodToHunt = Toolbox.getClosestActor(Traits.FindGods(pActor), pActor.current_tile);
+            Actor GodToHunt = Toolbox.getClosestActor(Traits.FindGods(pActor).ToList(), pActor.current_tile);
             if (GodToHunt == null)
             {
                 getrandomtile(ref pActor);

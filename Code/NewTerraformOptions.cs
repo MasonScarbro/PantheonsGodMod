@@ -37,7 +37,6 @@ namespace GodsAndPantheons
             lessercrablaser.damage = 80;
             lessercrablaser.shake_intensity = 0.2f;
             lessercrablaser.apply_force = false;
-            AssetManager.terraform.add(lessercrablaser);
 
             AssetManager.terraform.add(new TerraformOptions
                 {

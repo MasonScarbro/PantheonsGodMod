@@ -69,6 +69,7 @@ namespace GodsAndPantheons
             godHunter.hide_favorite_icon = false;
             godHunter.can_edit_traits = true;
             godHunter.can_be_killed_by_divine_light = true;
+            godHunter.icon = "godKiller";
             godHunter.ignored_by_infinity_coin = false;
             godHunter.actor_size = ActorSize.S13_Human;
             godHunter.base_stats[S.lifespan] = 10000f;
@@ -76,9 +77,9 @@ namespace GodsAndPantheons
             godHunter.base_stats[S.damage] = 35f;
             godHunter.base_stats[S.speed] = 75f;
             godHunter.base_stats[S.attack_speed] = 55f;
+            godHunter.base_stats[S.mass] = 10;
             godHunter.base_stats[S.critical_chance] = 0.25f;
             godHunter.base_stats[S.knockback] = 0.1f;
-            godHunter.base_stats[S.mass] = 0.1f;
             godHunter.base_stats[S.accuracy] = 8f;
             godHunter.base_stats[S.range] = 1f;
             godHunter.base_stats[S.targets] = 1f;
@@ -144,11 +145,10 @@ namespace GodsAndPantheons
             darkOne.base_stats[S.health] = 100;
             darkOne.base_stats[S.damage] = 25f;
             darkOne.base_stats[S.speed] = 35f;
-            darkOne.base_stats[S.armor] = 0f;
+            darkOne.base_stats[S.mass] = 20f;
             darkOne.base_stats[S.attack_speed] = 50f;
             darkOne.base_stats[S.critical_chance] = 0.1f;
             darkOne.base_stats[S.knockback] = 0.1f;
-            darkOne.base_stats[S.mass] = 0.1f;
             darkOne.base_stats[S.accuracy] = 8f;
             darkOne.base_stats[S.range] = 1f;
             darkOne.base_stats[S.targets] = 1f;

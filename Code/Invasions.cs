@@ -4,8 +4,7 @@ namespace GodsAndPantheons
     {
         public static void init()
         {
-            WorldLogAsset worldLog = AssetManager.world_log_library.add(new WorldLogAsset());
-            worldLog.id = "GodHunters";
+            WorldLogAsset worldLog = AssetManager.world_log_library.add(new WorldLogAsset() { id = "GodHunters"});
             worldLog.text_replacer = GetText;
             worldLog.path_icon = "ui/icons/godKiller";
             DisasterAsset hunterInvasion = AssetManager.disasters.add(new DisasterAsset());

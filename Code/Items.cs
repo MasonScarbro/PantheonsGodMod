@@ -20,8 +20,8 @@ namespace GodsAndPantheons
 
             ItemAsset spearOfLight = AssetManager.items.clone("SpearOfLight", "$melee");
             spearOfLight.id = "SpearOfLight";
-            spearOfLight.translation_key = "SpearOfLight";
-            spearOfLight.name_templates = List.Of<string>(new string[] { "Spear Of Divine Light" });
+            spearOfLight.translation_key = "Spear Of Divine Light";
+            spearOfLight.name_templates = List.Of<string>(new string[] { "sword_name" });
             spearOfLight.base_stats[S.lifespan] += 100f;
             spearOfLight.base_stats[S.attack_speed] = 15f;
             spearOfLight.base_stats[S.damage] += 15f;
@@ -51,15 +51,15 @@ namespace GodsAndPantheons
             spearOfLight.path_icon = "ui/weapon_icons/icon_SpearOfLight";
             spearOfLight.action_attack_target = new AttackAction(sunGodFuryStrikesAttack);
             AssetManager.items.list.AddItem(spearOfLight);
-            Localization.Add("SpearOfLight", "Spear Of Divine Light");
+            Localization.Add("Spear Of Divine Light", "Spear Of Divine Light");
             Localization.Add("SpearOfLight_description", "The Light of the Sun Flows through it!");
             addWeaponsSprite(spearOfLight.id);
 
 
             ItemAsset axeOfFury = AssetManager.items.clone("AxeOfFury", "$melee");
             axeOfFury.id = "AxeOfFury";
-            axeOfFury.translation_key = "AxeOfFury";
-            axeOfFury.name_templates = List.Of<string>(new string[] { "Spear Of Divine Light" });
+            axeOfFury.translation_key = "Axe Of War";
+            axeOfFury.name_templates = List.Of<string>(new string[] { "sword_name" });
             axeOfFury.base_stats[S.lifespan] += 100f;
             axeOfFury.base_stats[S.attack_speed] = 1f;
             axeOfFury.base_stats[S.damage] += 25f;
@@ -88,14 +88,14 @@ namespace GodsAndPantheons
             axeOfFury.name_class = "item_class_weapon";
             axeOfFury.path_icon = "ui/weapon_icons/icon_AxeOfFury";
 
-            Localization.Add("AxeOfFury", "Axe Of War");
+            Localization.Add("Axe Of War", "Axe Of War");
             Localization.Add("AxeOfFury_description", "The Sight of my blade trembles my enemies! (they dont care)"); ///idk
             addWeaponsSprite(axeOfFury.id);
 
             ItemAsset darkDagger = AssetManager.items.clone("DarkDagger", "$melee");
             darkDagger.id = "DarkDagger";
-            darkDagger.translation_key = "DarkDagger";
-            darkDagger.name_templates = List.Of<string>(new string[] { "Dagger Of Darkness" });
+            darkDagger.translation_key = "the Dark Dagger";
+            darkDagger.name_templates = List.Of<string>(new string[] { "sword_name" });
             darkDagger.base_stats[S.lifespan] += 100f;
             darkDagger.base_stats[S.attack_speed] = 3f;
             darkDagger.base_stats[S.damage] += 15f;
@@ -117,21 +117,21 @@ namespace GodsAndPantheons
             darkDagger.path_icon = "ui/weapon_icons/icon_DarkDagger";
             darkDagger.action_attack_target = new AttackAction(darkGodTeleportAttack);
             Localization.Add("DarkDagger_description", "The Daggers of darkness");
-            Localization.Add("DarkDagger", "Dagger Of Darkness");
+            Localization.Add("the Dark Dagger", "Dagger Of Darkness");
             addWeaponsSprite(darkDagger.id);
 
 
-            ItemAsset maceOfDestruction = AssetManager.items.clone("MaceOfDestruction", "$melee");
+            ItemAsset maceOfDestruction = AssetManager.items.clone("MaceOfDestruction", "$range");
             maceOfDestruction.id = "MaceOfDestruction";
-            maceOfDestruction.translation_key = "MaceOfDestruction";
-            maceOfDestruction.name_templates = List.Of<string>(new string[] { "Dagger Of Darkness" });
+            maceOfDestruction.translation_key = "Mace Of Destruction";
+            maceOfDestruction.name_templates = List.Of<string>(new string[] { "sword_name" });
             maceOfDestruction.base_stats[S.lifespan] += 100f;
             maceOfDestruction.base_stats[S.attack_speed] = 3f;
             maceOfDestruction.base_stats[S.damage] += 30;
             maceOfDestruction.base_stats[S.speed] += 1f;
             maceOfDestruction.base_stats[S.health] = 1;
             maceOfDestruction.base_stats[S.accuracy] = 1f;
-            maceOfDestruction.base_stats[S.range] = 1;
+            maceOfDestruction.base_stats[S.range] = 5;
             maceOfDestruction.base_stats[S.armor] = 1;
             maceOfDestruction.base_stats[S.targets] = 3f;
             maceOfDestruction.base_stats[S.mass] = 0.1f;
@@ -139,17 +139,20 @@ namespace GodsAndPantheons
             maceOfDestruction.path_slash_animation = "effects/slashes/slash_spear";
             maceOfDestruction.quality = Rarity.R3_Legendary;
             maceOfDestruction.equipment_type = EquipmentType.Weapon;
-            maceOfDestruction.action_attack_target = new AttackAction(UnleashFire);
+            maceOfDestruction.attack_type = WeaponType.Range;
+            maceOfDestruction.base_stats[S.projectiles] = 1;
+            maceOfDestruction.base_stats[S.damage_range] = 0.9f;
+            maceOfDestruction.projectile = "boneFire";
             maceOfDestruction.name_class = "item_class_weapon";
             maceOfDestruction.path_icon = "ui/weapon_icons/icon_MaceOfDestruction";
-            Localization.Add("MaceOfDestruction", "Mace Of Destruction");
+            Localization.Add("Mace Of Destruction", "Mace Of Destruction");
             Localization.Add("MaceOfDestruction_description", "Here Comes the Chaos!");
             addWeaponsSprite(maceOfDestruction.id);
             
             ItemAsset staffOfKnowledge = AssetManager.items.clone("StaffOfKnowledge", "$range");
             staffOfKnowledge.id = "StaffOfKnowledge";
-            staffOfKnowledge.translation_key = "StaffOfKnowledge";
-            staffOfKnowledge.name_templates = List.Of<string>(new string[] { "Staff Of Knowledge" });
+            staffOfKnowledge.translation_key = "Staff Of Knowledge";
+            staffOfKnowledge.name_templates = List.Of<string>(new string[] { "sword_name" });
             staffOfKnowledge.base_stats[S.lifespan] += 100f;
             staffOfKnowledge.base_stats[S.attack_speed] = 1f;
             staffOfKnowledge.base_stats[S.speed] += 1f;
@@ -172,13 +175,13 @@ namespace GodsAndPantheons
             staffOfKnowledge.base_stats[S.damage_range] = 0.9f;
             staffOfKnowledge.projectile = "wordsOfKnowledgeProjectile";
             Localization.Add("StaffOfKnowledge_description", "Knowledge is the true source of power -guy who is holding it");
-            Localization.Add("StaffOfKnowledge", "Staff Of Knowledge");
+            Localization.Add("Staff Of Knowledge", "Staff Of Knowledge");
             addWeaponsSprite(staffOfKnowledge.id);
             
             ItemAsset StaffOfLove = AssetManager.items.clone("StaffOfLove", "$range");
             StaffOfLove.id = "StaffOfLove";
-            StaffOfLove.translation_key = "StaffOfLove";
-            StaffOfLove.name_templates = List.Of<string>(new string[] { "Staff Of Love" });
+            StaffOfLove.translation_key = "Staff Of Love";
+            StaffOfLove.name_templates = List.Of<string>(new string[] { "sword_name" });
             StaffOfLove.base_stats[S.lifespan] += 100f;
             StaffOfLove.base_stats[S.attack_speed] = 1f;
             StaffOfLove.base_stats[S.speed] += 1f;
@@ -205,13 +208,13 @@ namespace GodsAndPantheons
             StaffOfLove.base_stats[S.damage_range] = 0.9f;
             StaffOfLove.projectile = "CorruptedHeart";
             Localization.Add("StaffOfLove_description", "You get some love, you get love, everyone gets loved! except me ):");
-            Localization.Add("StaffOfLove", "Staff Of Love");
+            Localization.Add("Staff Of Love", "Staff Of Love");
             addWeaponsSprite(StaffOfLove.id);
 
             ItemAsset FireGodStaff = AssetManager.items.clone("HellStaff", "evil_staff");
             FireGodStaff.id = "HellStaff";
-            FireGodStaff.translation_key = "HellStaff";
-            FireGodStaff.name_templates = List.Of<string>(new string[] { "The Staff of fire" });
+            FireGodStaff.translation_key = "The Staff Of Fire";
+            FireGodStaff.name_templates = List.Of<string>(new string[] { "sword_name" });
             FireGodStaff.base_stats[S.lifespan] += 100f;
             FireGodStaff.base_stats[S.attack_speed] = 1f;
             FireGodStaff.base_stats[S.speed] += 1f;
@@ -230,14 +233,14 @@ namespace GodsAndPantheons
             FireGodStaff.path_icon = "ui/weapon_icons/icon_HellStaf";
             FireGodStaff.action_attack_target = new AttackAction(UnleashHell);
             AssetManager.items.list.AddItem(FireGodStaff);
-            Localization.Add("HellStaff", "the Staff of fire");
+            Localization.Add("The Staff Of Fire", "the Staff of fire");
             Localization.Add("HellStaff_description", "You will taste the true power of the fire side?");
             addWeaponsSprite(FireGodStaff.id);
 
             ItemAsset cometScepter = AssetManager.items.clone("CometScepter", "$range");
             cometScepter.id = "CometScepter";
-            cometScepter.translation_key = "CometScepter";
-            cometScepter.name_templates = List.Of(new string[] { "Scepter Of The Stars" });
+            cometScepter.translation_key = "Scepter Of The Stars";
+            cometScepter.name_templates = List.Of(new string[] { "sword_name" });
             cometScepter.base_stats[S.offspring] += 100f;
             cometScepter.base_stats[S.attack_speed] = 1f;
             cometScepter.base_stats[S.damage] += 10;
@@ -264,13 +267,13 @@ namespace GodsAndPantheons
 
             AssetManager.items.list.AddItem(cometScepter);
             Localization.Add("CometScepter_description", "The power of the moon is incredible! right?");
-            Localization.Add("CometScepter", "Scepter Of The Stars");
+            Localization.Add("Scepter Of The Stars", "Scepter Of The Stars");
             addWeaponsSprite(cometScepter.id);
 
             ItemAsset hammerOfCreation = AssetManager.items.clone("HammerOfCreation", "$melee");
             hammerOfCreation.id = "HammerOfCreation";
-            hammerOfCreation.translation_key = "HammerOfCreation";
-            hammerOfCreation.name_templates = List.Of<string>(new string[] { "Hammer Of Creation" });
+            hammerOfCreation.translation_key = "Hammer Of Creation";
+            hammerOfCreation.name_templates = List.Of<string>(new string[] { "sword_name" });
             hammerOfCreation.base_stats[S.lifespan] += 100f;
             hammerOfCreation.base_stats[S.attack_speed] = 1f;
             hammerOfCreation.base_stats[S.damage] += 15;
@@ -292,13 +295,13 @@ namespace GodsAndPantheons
             hammerOfCreation.action_attack_target = (AttackAction)Delegate.Combine(hammerOfCreation.action_attack_target, new AttackAction(earthGodImpaleEnemy));
             AssetManager.items.list.AddItem(hammerOfCreation);
             Localization.Add("HammerOfCreation_description", "With this Hammer i hereby cast COOL SPIKES OUT OF GROUND!");
-            Localization.Add("HammerOfCreation", "Hammer Of Creation");
+            Localization.Add("Hammer Of Creation", "Hammer Of Creation");
             addWeaponsSprite(hammerOfCreation.id);
 
             ItemAsset lichGodsGreatSword = AssetManager.items.clone("LichGodsGreatSword", "$melee");
             lichGodsGreatSword.id = "LichGodsGreatSword";
-            lichGodsGreatSword.translation_key = "LichGodsGreatSword";
-            lichGodsGreatSword.name_templates = List.Of<string>(new string[] { "GreatSword Of The Lich" });
+            lichGodsGreatSword.translation_key = "Great Sword Of The Lich";
+            lichGodsGreatSword.name_templates = List.Of<string>(new string[] { "sword_name" });
             lichGodsGreatSword.base_stats[S.lifespan] += 100f;
             lichGodsGreatSword.base_stats[S.attack_speed] = 1f;
             lichGodsGreatSword.base_stats[S.damage] += 10;
@@ -321,13 +324,13 @@ namespace GodsAndPantheons
             
             AssetManager.items.list.AddItem(lichGodsGreatSword);
             Localization.Add("LichGodsGreatSword_description", "The Power of the Undead lies in this Great Sword!");
-            Localization.Add("LichGodsGreatSword", "Great Sword Of The Lich");
+            Localization.Add("Great Sword Of The Lich", "Great Sword Of The Lich");
             addWeaponsSprite(lichGodsGreatSword.id);
 
             ItemAsset godHuntersScythe = AssetManager.items.clone("GodHuntersScythe", "$melee");
             godHuntersScythe.id = "GodHuntersScythe";
-            godHuntersScythe.translation_key = "GodHuntersScythe";
-            godHuntersScythe.name_templates = List.Of<string>(new string[] { "God Hunters Scythe" });
+            godHuntersScythe.translation_key = "God Hunters Scythe";
+            godHuntersScythe.name_templates = List.Of<string>(new string[] { "sword_name" });
             godHuntersScythe.base_stats[S.attack_speed] += 18f;
             godHuntersScythe.base_stats[S.damage] += 26;
             godHuntersScythe.base_stats[S.speed] += 3f;
@@ -351,7 +354,7 @@ namespace GodsAndPantheons
 
             AssetManager.items.list.AddItem(godHuntersScythe);
             Localization.Add("GodHuntersScythe_description", "Why did the god hunters choose this weapon? it Deals 5x more damage to Gods AND it only costs 10.99!!!!!!");
-            Localization.Add("GodHuntersScythe", "The God Hunters Scythe");
+            Localization.Add("God Hunters Scythe", "The God Hunters Scythe");
             addWeaponsSprite(godHuntersScythe.id);
         }
 
@@ -401,43 +404,22 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        public static void MadStorm(Storm s) {
-            if (Vector3.Distance(s.transform.position, s.TileToGo.posV) < 10)
-            {
-                s.TileToGo = Toolbox.getRandomTileWithinDistance(s.tile, 120);
-            }
-            if (Randy.randomChance(0.4f))
-            {
-                for (int i = 0; i < Randy.randomInt(2, 5); i++)
-                    World.world.drop_manager.spawnParabolicDrop(s.tile, SB.corrupted_brain, 0, 2, 20, 20, 50);
-            }
-        }
-        static bool UnleashFire(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        static bool AxeMaestro(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Randy.randomChance(GetEnhancedChance("God Of Chaos", "BoneFire%")))
+            pSelf.a.data.get("MaelStrom", out bool MaelStorm, false);
+            if (!MaelStorm && Randy.randomChance(GetEnhancedChance("God Of War", "axemaelstrom%")))
             {
-                Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
-                float pDist = Vector2.Distance(pTarget.current_position, pos); // the distance between the target and the pTile
-                Vector3 newPoint = Toolbox.getNewPoint(pSelf.current_position.x, pSelf.current_position.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.current_position.x, pTarget.current_position.y, (float)pos.x, (float)pos.y, pTarget.stats[S.size], true);
-                World.world.projectiles.spawn(pSelf, pTarget, "boneFire", newPoint, newPoint2, 0.0f);
-                for (int i = 0; i < Randy.randomInt(3, 5); i++)
+                List<Actor> Targets = GetAlliesOfActor(Finder.getUnitsFromChunk(pSelf.current_tile, 1, 12), pTarget);
+                if(Targets.Count == 0)
                 {
-                    CreateStorm(pTile, 30f, 0.5f, MadStorm, new Color(0.7f, 1, 1, 0.9f), 0.2f).GetComponent<Storm>().TileToGo = Toolbox.getRandomTileWithinDistance(pTile, 100);
+                    return false;
+                }
+                for (int i = 0; i < Randy.randomInt(10, 21); i++)
+                {
+                    ShootCustomProjectile(pSelf, Targets[i % Targets.Count], "WarAxeProjectile1", 1);
                 }
             }
             return true;
-        }
-        static bool AxeMaestro(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
-        {
-            if (Randy.randomChance(GetEnhancedChance("God Of War", "axemaelstrom%")))
-            {
-                foreach (Actor actor in GetAlliesOfActor(Finder.getUnitsFromChunk(pSelf.current_tile, 1, 12), pTarget))
-                {
-                    ShootCustomProjectile(pSelf.a, actor, "WarAxeProjectile1", 1);
-                }
-            }
-            return false;
         }
 
         public static bool sunGodFuryStrikesAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -488,7 +470,7 @@ namespace GodsAndPantheons
         {
             if (!pSelf.hasStatus("Lassering") && Randy.randomChance(GetEnhancedChance("God Of Fire", "ChaosLaser%")))
             {
-                CreateLaserForActor(pSelf.a);
+                pSelf.addStatusEffect("Lassering", 10);
             }
             return true;
         }
