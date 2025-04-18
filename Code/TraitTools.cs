@@ -1,4 +1,5 @@
 ﻿using ai;
+using GodsAndPantheons.CustomEffects;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -23,10 +24,10 @@ namespace GodsAndPantheons
         }
         public static List<Sprite> LaserSprites;
         
-        public static GameObject CreateStorm(WorldTile pTile, float time, float TimeCooldown, StormAction? Action, Color? StormColor, float Size, BaseSimObject ByWho = null)
+        public static GameObject CreateStorm(WorldTile pTile, float time, float TimeCooldown, StormAction Action, Color? StormColor, float Size, BaseSimObject ByWho = null)
         {
             World.world.startShake(0.3f, 0.01f, 0.03f, false, true);
-            GameObject Storm = EffectsLibrary.spawn("fx_CloudOfDarkness", pTile, null, null, 0f, -1f, -1f).gameObject;
+            GameObject Storm = EffectsLibrary.spawn("fx_CloudOfDarkness", pTile).gameObject;
             Storm.GetComponent<Storm>().spawnOnTile(pTile);
             Storm.GetComponent<Storm>().Init(time, TimeCooldown, ByWho, Action);
             Storm.transform.localScale = new Vector3(Size, Size, 1);
@@ -53,7 +54,7 @@ namespace GodsAndPantheons
         {
             foreach (string autotrait in AutoTraits[trait])
             {
-                if (!mustbeinherited || Randy.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
+                if (!mustbeinherited || Randy.randomChance(Chance(trait, trait + "inherit%") * chancemult))
                 {
                    a.addTrait(autotrait);
                 }
@@ -144,12 +145,12 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        //returns the raw chance
-        public static float GetChance(string ID, string Key) => Main.savedSettings[ID][Key].active ? Main.savedSettings[ID][Key].value : 0;
-        //returns 2 if the trait's era is one, 1 if it is not, Default if the trait is not found
+        //returns the raw chance, if the trait is not found an exception WILL occur
+        public static float GetRawChance(string ID, string Key) => Main.savedSettings[ID][Key].active ? Main.savedSettings[ID][Key].value : 0;
+        //returns 2 if the trait's era is one, 1 if it is not
         public static float GetEraMultiplier(string trait) => World.world_era.id == TraitEras[trait].Key ? 2 : 1f;
         //returns the chance of the trait multiplied by its era multiplier devided by the devisor
-        public static float GetEnhancedChance(string trait, string chance, float devisor = 100) => GetChance(TraitToWindow(trait), chance) * GetEraMultiplier(trait) / devisor;
+        public static float Chance(string trait, string chance, float devisor = 100) => GetRawChance(TraitToWindow(trait), chance) * GetEraMultiplier(trait) / devisor;
         public static string TraitToWindow(string Trait) => Trait switch
             {
                 "God Of Chaos" => "ChaosGodWindow",
@@ -323,22 +324,24 @@ namespace GodsAndPantheons
             EffectsLibrary.spawn("fx_spawn", actor.current_tile, null, null, 0f, -1f, -1f);
             return actor;
         }
-        public static void MakeDemiGod(ListPool<string> godtraits, Actor DemiGod, float chancemmult = 1)
+        public static void MakeDemiGod(ListPool<string> godtraits, Actor DemiGod, float chancemult = 1)
         {
             DemiGod.addTrait("Demi God");
             foreach (string trait in godtraits)
             {
                 DemiGod.data.set("Demi" + trait, true);
-                foreach (KeyValuePair<string, float> kvp in TraitStats[trait])
-                {
-                  if (Randy.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemmult))
-                  {
-                    DemiGod.data.get("Demi" + kvp.Key, out float value);
-                    DemiGod.data.set("Demi" + kvp.Key, Random.Range(kvp.Value * 0.5f, kvp.Value * 0.75f) + value);
-                  }
-                }
+                InheritStats(DemiGod, trait, chancemult, 0.5f, 0.75f);
             }
             DemiGod.data.set("Demi"+S.lifespan, Random.Range(100, 200));
+        }
+        public static void InheritStats(Actor pActor, string trait, float chancemult, float MinRange = 0.75f, float MaxRange = 1)
+        {
+            foreach (KeyValuePair<string, float> kvp in TraitStats[trait])
+            {
+                pActor.data.get("Demi" + kvp.Key, out float value);
+                float Percent = Chance(trait, trait + "inherit%") * chancemult;
+                pActor.data.set("Demi" + kvp.Key, Mathf.Min(kvp.Value * Randy.randomFloat(Percent * MinRange, Percent * MaxRange), kvp.Value) + value);
+            }
         }
         public static void MakeLesserGod(ListPool<string> godtraits, Actor LesserGod, float chancemult = 1)
         {
@@ -347,19 +350,12 @@ namespace GodsAndPantheons
             foreach (string trait in godtraits)
             {
                 LesserGod.data.set("Demi" + trait, true);
-                foreach (KeyValuePair<string, float> kvp in TraitStats[trait])
-                {
-                    if (Randy.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
-                    {
-                        LesserGod.data.get("Demi" + kvp.Key, out float value);
-                        LesserGod.data.set("Demi" + kvp.Key, Random.Range(kvp.Value * 0.75f, kvp.Value) + value);
-                    }
-                }
+                InheritStats(LesserGod, trait, chancemult);
                 foreach (AttackAction ability in GodAbilities[trait])
                 {
-                    if (Randy.randomChance(GetEnhancedChance(trait, trait + "inherit%") * chancemult))
+                    if (Randy.randomChance(Chance(trait, trait + "inherit%") * chancemult))
                     {
-                        LesserGod.data.set("Demi" + ability.Method.Name, true);
+                        LesserGod.data.set("Lesser" + ability.Method.Name, true);
                     }
                 }
             }

@@ -2,6 +2,7 @@
 AUTHOR: MASON SCARBRO
 VERSION: 1.0.0
 */
+using GodsAndPantheons.CustomEffects;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -240,7 +241,6 @@ namespace GodsAndPantheons
             localizeStatus(warGodsCry.id, "WarGodsCry", warGodsCry.locale_description); // Localizes the status effect
             AssetManager.status.add(warGodsCry);
 
-            AssetManager.status.add(chaosgodsera);
             StatusAsset SlamDunk = new StatusAsset();
             SlamDunk.id = "War Gods Slam";
             SlamDunk.duration = 7000f;

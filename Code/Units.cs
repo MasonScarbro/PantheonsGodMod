@@ -1,5 +1,6 @@
 using NCMS.Utils;
 using ReflectionUtility;
+using UnityEngine;
 
 namespace GodsAndPantheons
 {
@@ -29,9 +30,8 @@ namespace GodsAndPantheons
             godHunter.has_advanced_textures = false;
             godHunter.check_flip = delegate { return true; };
             godHunter.name_template_sets = new string[] { "alien_set" };
-            godHunter.job = new string[] { "GodHunter" };
+            godHunter.job = new string[] { "random_move" };
             godHunter.kingdom_id_wild = "GodHunters";
-            godHunter.icon = "walk_0";
             godHunter.animation_swim = new string[] { "swim_0","swim_1","swim_2","swim_3" };
             godHunter.animation_walk = new string[] { "walk_0", "walk_1", "walk_2", "walk_3" };
             godHunter.texture_id = "GodHunter";
@@ -61,7 +61,7 @@ namespace GodsAndPantheons
             godHunter.can_turn_into_tumor = false;
             godHunter.can_turn_into_mush = false;
             godHunter.die_in_lava = false;
-            godHunter.die_on_blocks = false;
+            godHunter.die_on_blocks = true;
             godHunter.die_by_lightning = true;
             godHunter.damaged_by_ocean = false;
             godHunter.flying = false;
@@ -101,7 +101,7 @@ namespace GodsAndPantheons
             darkOne.name_template_sets = new string[] { "alien_set" };
             darkOne.job = new string[] { "random_move" };
             darkOne.kingdom_id_wild = "neutral";
-            darkOne.icon = "walk_0";
+            darkOne._cached_sprite = Resources.Load<Sprite>("actors/species/other/DarkOne/heads_male/walk_0");
             darkOne.animation_swim = new string[] { "swim_0", "swim_1", "swim_2", "swim_3" };
             darkOne.animation_walk = new string[] { "walk_0", "walk_1", "walk_2", "walk_3" };
             darkOne.texture_id = "DarkOne";

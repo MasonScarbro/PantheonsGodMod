@@ -8,7 +8,7 @@ namespace GodsAndPantheons
     [Serializable]
     public class SavedSettings
     {
-        public string settingVersion = "0.2.0";
+        public string settingVersion = "0.2.1";
         public Dictionary<string, InputOption> this[string ID] => Chances[ID]; 
        
         public Dictionary<string, Dictionary<string, InputOption>> Chances = new Dictionary<string, Dictionary<string, InputOption>>
@@ -27,7 +27,7 @@ namespace GodsAndPantheons
               {"UseForce%", new InputOption(true, 10, "[Special] allows the god to use telekinesis to pull enemies into the air and fling them around")},
               {"EnemySwap%", new InputOption(true, 20, "[Special] allows the god to predict when he is attacked, and swap places with a nearby enemy so they get hit instead")},
               {"CorruptEnemy%", new InputOption(true, 15, "[ITEM] allows the holder of the staff of knowledge to corrupt enemy's to make them their minions for a short time")},
-              {"God Of Knowledgeinherit%", new InputOption(true, 31, "the chance of a child of a god of knowledge to inherit a stat / ability / trait")}
+              {"God Of Knowledgeinherit%", new InputOption(true, 40, "the chance of a child of a god of knowledge to inherit a stat / ability / trait")}
              }   
             },
             {"LichGodWindow", 
@@ -36,9 +36,9 @@ namespace GodsAndPantheons
                 {"waveOfMutilation%", new InputOption(true, 20, "[ITEM] shoots a very powerfull wave of mutilation on the enemy")},
                 {"summonSkele%", new InputOption(true, 8, "summons skeletons")},
                 {"summonDead%", new InputOption(true, 9, "summons zombies")},
-                {"UndeadArmy%", new InputOption(true, 5, "[Special] Converts nearby enemies into zombies")},
+                {"UndeadArmy%", new InputOption(true, 5, "[Special] Converts nearby enemies into zombies to serve as his minions")},
                 {"rigorMortisHand%", new InputOption(true, 10, "pulls an undead hand from the ground to grab the enemy")},
-                {"God Of The Lichinherit%", new InputOption(true, 36, "the chance of a child of a god of Lich to inherit a stat / ability / trait")}
+                {"God Of The Lichinherit%", new InputOption(true, 54, "the chance of a child of a god of Lich to inherit a stat / ability / trait")}
               } 
             },
             //his children are terribly weak without his staff, so they need a high chance of inheriting
@@ -46,11 +46,12 @@ namespace GodsAndPantheons
                 new Dictionary<string, InputOption>
               {
                  {"FireStorm%", new InputOption(true, 4, "Can create a cloud of ash, fire tornados, or the FIRE STORM")},
+                 {"FireBreath%", new InputOption(true, 15, "Creates a fire breath") },
                  {"MorphIntoDragon%", new InputOption(true, 30, "[SPECIAL] the god of fire can morph into a dragon when sorrounded by enemies")},
                  {"Summoning%", new InputOption(true, 3, "Summons mages, fire skeletons and demons")},
-                 {"Magic%", new InputOption(true, 4, "creates explosions, lava and fire")},
+                 {"Explosions%", new InputOption(true, 4, "creates explosions, lava and fire")},
                  {"ChaosLaser%", new InputOption(true, 2, "[ITEM] allows the holder of the staff of fire to cast a super-deadly laster to annihilate the enemy")},
-                 {"God Of Fireinherit%", new InputOption(true, 55, "the chance of a child of a god of fire to inherit a stat / ability / trait")}
+                 {"God Of Fireinherit%", new InputOption(true, 60, "the chance of a child of a god of fire to inherit a stat / ability / trait")}
               }
             },
             {"MoonGodWindow",
@@ -61,7 +62,7 @@ namespace GodsAndPantheons
                  {"cometAzure%", new InputOption(true, 6, "Summons a Powerfull comet on the enemy")},
                  {"cometShower%", new InputOption(true, 8, "Summons a comet shower on the enemy")},
                  {"summonWolf%", new InputOption(true, 10, "Summons wolfs")},
-                 {"God Of the Starsinherit%", new InputOption(true, 24, "the chance of a child of a god of stars to inherit a stat / ability / trait")}
+                 {"God Of the Starsinherit%", new InputOption(true, 50, "the chance of a child of a god of stars to inherit a stat / ability / trait")}
               }
             },
             {"DarkGodWindow",
@@ -73,7 +74,7 @@ namespace GodsAndPantheons
                   {"darkDaggers%", new InputOption(true, 10, "throws dark daggers at enemies")},
                   {"smokeFlash%", new InputOption(true, 15, "creates a flash of smoke")},
                   {"summonDarkOne%", new InputOption(true, 15, "summons dark ones, minions of the gods of dark")},
-                  {"God Of the Nightinherit%", new InputOption(true, 44, "the chance of a child of a god of night to inherit a stat / ability / trait")}
+                  {"God Of the Nightinherit%", new InputOption(true, 55, "the chance of a child of a god of night to inherit a stat / ability / trait")}
               }
             },
             {"SunGodWindow",
@@ -83,7 +84,8 @@ namespace GodsAndPantheons
                   {"beamOfLight%", new InputOption(true, 8, "Creates a beam of light that lights the enemy \n on fire")},
                   {"speedOfLight%", new InputOption(true, 7, "makes the god of light go incredibly fast!")},
                   {"lightBallz%", new InputOption(true, 5, "shoots balls of light at the enemy")},
-                  {"God Of lightinherit%", new InputOption(true, 46, "the chance of a child of a god of sun to inherit a stat / ability / trait")}
+                  {"SunGodsSlashes%", new InputOption(true, 30, "Creates Light Slashes") },
+                  {"God Of lightinherit%", new InputOption(true, 50, "the chance of a child of a god of sun to inherit a stat / ability / trait")}
               }
             },
             //god of war is the strongest, but his strength comes from his stats and not his abilities, so he needs a high inheritence chance for his children to be strong
@@ -97,7 +99,7 @@ namespace GodsAndPantheons
                   {"axemaelstrom%", new InputOption(true, 1, "[ITEM] allows the holder of the Axe of fury to create a axe maelstrom, throwing many, many axes at enemies")},
                   {"BlockAttack%", new InputOption(true, 16, "[Special] lets the god of war block an attack")},
                   {"War Gods Leap%", new InputOption(true, 20, "[Special] allows the god of war to leap to the skies and crash down in a big explosion")},
-                  {"God Of Warinherit%", new InputOption(true, 40, "the chance of a child of a god of war to inherit a stat / ability / trait")}
+                  {"God Of Warinherit%", new InputOption(true, 60, "the chance of a child of a god of war to inherit a stat / ability / trait")}
               }
             },
             {"EarthGodWindow",
@@ -110,7 +112,7 @@ namespace GodsAndPantheons
                   {"SendMountain%", new InputOption(true, 10, "Sends a Mountain path towards the enemy")},
                   {"LiftRocks%", new InputOption(true, 15, "Lifts rocks out of the ground and shoots them at the enemy")},
                   {"SummonDruid%", new InputOption(true, 15, "summons druids")},
-                  {"God Of the Earthinherit%", new InputOption(true, 20, "the chance of a child of a earth god to inherit a stat / ability / trait")}
+                  {"God Of the Earthinherit%", new InputOption(true, 62, "the chance of a child of a earth god to inherit a stat / ability / trait")}
               }
             },
             {"ChaosGodWindow",
@@ -121,7 +123,7 @@ namespace GodsAndPantheons
                   {"ChaosBoulder%", new InputOption(true, 15, "summons a boulder on the enemy")},
                   {"BoneFire%", new InputOption(true, 10, "[ITEM] creates a bone fire that has orbs that create corrupted brains")},
                   {"WorldOfChaos%", new InputOption(true, 5, "Shakes the area, flinging everyone across the \n map")},
-                  {"God Of Chaosinherit%", new InputOption(true, 28, "the chance of a child of a god of chaos to inherit a stat / ability / trait")}
+                  {"God Of Chaosinherit%", new InputOption(true, 50, "the chance of a child of a god of chaos to inherit a stat / ability / trait")}
               }
             },
             {"LoveGodWindow",
@@ -133,7 +135,7 @@ namespace GodsAndPantheons
                   {"CastShields%", new InputOption(true, 15, "casts shields on nearby allies")},
                   {"CorruptEnemys%", new InputOption(true, 10, "blinds enemies")},
                   {"Petrification%", new InputOption(true, 20, "[ITEM] petrifies the enemy, making them forever unable to move or attack")},
-                  {"God Of Loveinherit%", new InputOption(true, 40, "the chance of a child of a god of love to inherit a stat / ability / trait")}
+                  {"God Of Loveinherit%", new InputOption(true, 50, "the chance of a child of a god of love to inherit a stat / ability / trait")}
               }
             }
         };

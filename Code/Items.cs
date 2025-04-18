@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using HarmonyLib;
 using NCMS.Utils;
 using static GodsAndPantheons.Traits;
+using GodsAndPantheons.CustomEffects;
 
 namespace GodsAndPantheons
 {
@@ -379,7 +380,7 @@ namespace GodsAndPantheons
         //doesnt work on gods, that would be too overpowered
         public static bool CorruptEnemy(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Randy.randomChance(GetEnhancedChance("God Of Knowledge", "CorruptEnemy%")))
+            if (Randy.randomChance(Chance("God Of Knowledge", "CorruptEnemy%")))
             {
                 foreach (Actor a in Finder.getUnitsFromChunk(pTile, 1, 8))
                 {
@@ -393,21 +394,16 @@ namespace GodsAndPantheons
         }
         static bool UnleashMoonFall(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Randy.randomChance(GetEnhancedChance("God Of the Stars", "summonMoonChunk%")))
+            if (Randy.randomChance(Chance("God Of the Stars", "summonMoonChunk%")))
             {
-                Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
-                float pDist = Vector2.Distance(pTarget.current_position, pos); // the distance between the target and the pTile
-                Vector3 newPoint = Toolbox.getNewPoint(pSelf.current_position.x + 35f, pSelf.current_position.y + 95f, (float)pos.x + 1f, (float)pos.y + 1f, pDist, true); // the Point of the projectile launcher 
-                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.current_position.x, pTarget.current_position.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
-                World.world.projectiles.spawn(pSelf, pTarget, "moonFall", newPoint, newPoint2, 0.0f);
-                pSelf.a.addStatusEffect("invincible", 2f);
+                float pDist = Vector2.Distance(pTarget.current_position, pTile.pos);
+                ShootProjectileSafe(pSelf, pTarget, "moonFall", 1, 0, Toolbox.getNewPoint(pSelf.current_position.x + 35f, pSelf.current_position.y + 95f, pTile.x + 1f, pTile.y + 1f, pDist));
             }
             return true;
         }
         static bool AxeMaestro(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            pSelf.a.data.get("MaelStrom", out bool MaelStorm, false);
-            if (!MaelStorm && Randy.randomChance(GetEnhancedChance("God Of War", "axemaelstrom%")))
+            if (Randy.randomChance(Chance("God Of War", "axemaelstrom%")))
             {
                 List<Actor> Targets = GetAlliesOfActor(Finder.getUnitsFromChunk(pSelf.current_tile, 1, 12), pTarget);
                 if(Targets.Count == 0)
@@ -416,7 +412,7 @@ namespace GodsAndPantheons
                 }
                 for (int i = 0; i < Randy.randomInt(10, 21); i++)
                 {
-                    ShootCustomProjectile(pSelf, Targets[i % Targets.Count], "WarAxeProjectile1", 1);
+                    ShootProjectileSafe(pSelf, Targets[i % Targets.Count], "WarAxeProjectile1", 1);
                 }
             }
             return true;
@@ -426,14 +422,9 @@ namespace GodsAndPantheons
         {
             if (pTarget != null)
             {
-                if (Randy.randomChance(0.9f))
+                if (Randy.randomChance(Chance("God Of light", "SunGodsSlashes%")))
                 {
-
-                    Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
-                    float pDist = Vector2.Distance(pTarget.current_position, pos); // the distance between the target and the pTile
-                    Vector3 newPoint = Toolbox.getNewPoint(pTarget.current_position.x, pTarget.current_position.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                    Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.current_position.x, pTarget.current_position.y, (float)pos.x, (float)pos.y, pTarget.stats[S.size], true);
-                    World.world.projectiles.spawn(pSelf, pTarget, "lightSlashesProjectile", newPoint, newPoint2, 0.0f);
+                    ShootProjectileSafe(pSelf, pTarget, "lightSlashesProjectile");
                 }
                 return true;
             }
@@ -444,7 +435,7 @@ namespace GodsAndPantheons
         {
             if (pTarget != null)
             {
-                if (Randy.randomChance(GetEnhancedChance("God Of the Night", "DarkDash%")))
+                if (Randy.randomChance(Chance("God Of the Night", "DarkDash%")))
                 {
                     PushActor(pSelf.a, pTarget.current_tile.pos, 4, 0.1f);
                     foreach(BaseSimObject enemy in Finder.getUnitsFromChunk(pTile, 1, 4)){
@@ -468,7 +459,7 @@ namespace GodsAndPantheons
 
         public static bool UnleashHell(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (!pSelf.hasStatus("Lassering") && Randy.randomChance(GetEnhancedChance("God Of Fire", "ChaosLaser%")))
+            if (!pSelf.hasStatus("Lassering") && Randy.randomChance(Chance("God Of Fire", "ChaosLaser%")))
             {
                 pSelf.addStatusEffect("Lassering", 10);
             }
@@ -481,24 +472,17 @@ namespace GodsAndPantheons
         {
             if (pTarget != null)
             {
-
-                if (Randy.randomChance(GetEnhancedChance("God Of The Lich", "waveOfMutilation%")))
+                if (Randy.randomChance(Chance("God Of The Lich", "waveOfMutilation%")))
                 {
-                    Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
-                    float pDist = Vector2.Distance(pTarget.current_position, pos); // the distance between the target and the pTile
-                    Vector3 newPoint = Toolbox.getNewPoint(pSelf.current_position.x, pSelf.current_position.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                    Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.current_position.x, pTarget.current_position.y, (float)pos.x, (float)pos.y, pTarget.a.stats[S.size], true);
-                    World.world.projectiles.spawn(pSelf, pTarget, "waveOfMutilationProjectile", newPoint, newPoint2, 0.0f);
+                    ShootProjectileSafe(pSelf, pTarget, "waveOfMutilationProjectile");
                 }
-
-
             }
             return true;
         }
 
             public static bool earthGodImpaleEnemy(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
             {   
-                if (Randy.randomChance(GetEnhancedChance("God Of the Earth", "StalagmitePath%")))
+                if (Randy.randomChance(Chance("God Of the Earth", "StalagmitePath%")))
                 {
                     CreateStalagmites(pTile, pSelf, pTarget);
                 }
