@@ -503,13 +503,18 @@ namespace GodsAndPantheons.Patches
         }
     }
     [HarmonyPatch(typeof(MapBox), "applyAttack")]
-    public class KnowledgeGodEnemySwap
+    public class CustomAttacks
     {
         static bool Prefix(AttackData pData, ref BaseSimObject pTargetToCheck, ref AttackDataResult __result)
         {
             if (pData.initiator == null)
             {
                 return true;
+            }
+            if(pData.is_projectile && pData.projectile_id == "Heart")
+            {
+                __result = AttackDataResult.Hit;
+                return false;
             }
             if (pData.initiator.isActor() && IsGod(pData.initiator.a))
             {
