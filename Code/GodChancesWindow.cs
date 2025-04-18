@@ -65,7 +65,7 @@ namespace GodsAndPantheons
             {
                 if (options.ContainsKey(kv.Key))
                 {
-                    NameInput input = NewUI.createInputOption(
+                    NameInput input = UI.createInputOption(
                         ID,
                         kv.Key,
                         kv.Key,
@@ -76,7 +76,7 @@ namespace GodsAndPantheons
                     );
                     input.inputField.characterValidation = InputField.CharacterValidation.Decimal;
                     input.inputField.onValueChanged.AddListener(delegate {
-                        int pValue = NewUI.checkStatInput(input);
+                        int pValue = UI.checkStatInput(input);
                         Main.modifyGodOption(ID, kv.Key, null, pValue);
                         input.setText($"{pValue}");
                     });

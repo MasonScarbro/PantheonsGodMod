@@ -240,7 +240,6 @@ namespace GodsAndPantheons
             localizeStatus(warGodsCry.id, "WarGodsCry", warGodsCry.locale_description); // Localizes the status effect
             AssetManager.status.add(warGodsCry);
 
-            AssetManager.status.add(chaosgodsera);
             StatusAsset SlamDunk = new StatusAsset();
             SlamDunk.id = "War Gods Slam";
             SlamDunk.duration = 7000f;

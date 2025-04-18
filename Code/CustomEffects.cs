@@ -109,13 +109,6 @@ namespace GodsAndPantheons
                 MapAction.damageWorld(tile, 4, AssetManager.terraform.get("LesserCrabLaser"), pSelf);
             }
         }
-        
-        public void InitPrefab(SpriteRenderer lasersprite, Transform laserPoint, Transform laser)
-        {
-            LaserSprite = lasersprite;
-            LaserPoint = laserPoint;
-            Laser = laser;
-        }
         public void updatelasersprite(float pElapsed)
         {
             timetochange -= pElapsed;
@@ -181,7 +174,7 @@ namespace GodsAndPantheons
         }
         public void CreateStalagmite()
         {
-            EffectsLibrary.spawnAtTile("Stalagmite", tiles[Current], 0.1f).GetComponent<SpriteRenderer>().color = tiles[Current].Type.color;
+            EffectsLibrary.spawnAtTile("Stalagmite", tiles[Current], 0.1f);
             World.world.applyForceOnTile(tiles[Current], 2, 0.1f, true, 70, null, ByWho);
         }
         public override void spawnOnTile(WorldTile pTile)

@@ -16,7 +16,7 @@ namespace GodsAndPantheons.Patches
         {
             if(pSelf.a.hasTrait("God Of Fire") && pAttackedBy != null)
             {
-                if (Randy.randomChance(GetEnhancedChance("God Of Fire", "MorphIntoDragon%", 25)))
+                if (Randy.randomChance(Chance("God Of Fire", "MorphIntoDragon%", 25)))
                 {
                     CreateFireExplosion(pSelf, pAttackedBy);
                 }
@@ -36,7 +36,7 @@ namespace GodsAndPantheons.Patches
     {
         static void Postfix(Actor __instance, ref bool __result)
         {
-            if(__instance.hasTrait("Earth Walker"))
+            if(__instance.hasTrait("Earth Walker") || __instance.hasTrait("God Hunter"))
             {
                 __result = true;
             }
@@ -132,13 +132,20 @@ namespace GodsAndPantheons.Patches
                 __result = "random_move";
                 return;
             }
-            if (pActor.hasTrait("Summoned One"))
-            {
-                __result = "SummonedJob";
-            }
             if (pActor.hasStatus("BrainWashed"))
             {
                 __result = "BrainWashedJob";
+                return;
+            }
+            if (pActor.hasTrait("Summoned One"))
+            {
+                __result = "SummonedJob";
+                return;
+            }
+            if(pActor.hasTrait("God Hunter"))
+            {
+                __result = "GodHunter";
+                return;
             }
         }
     }
@@ -185,7 +192,6 @@ namespace GodsAndPantheons.Patches
                 }
                 pKingdom.setKing(pNewKing, true);
                 WorldLog.logNewKing(pKingdom);
-                return false;
             }
             return true;
         }
@@ -261,6 +267,10 @@ namespace GodsAndPantheons.Patches
             }
             if (__instance.isActor())
             {
+                if(__instance.a.asset.unit_zombie && !__instance.kingdom.isCiv() && pTarget.isActor() && pTarget.a.hasTrait("God Of The Lich"))
+                {
+                    __result = false;
+                }
                 if(__instance.a.hasTrait("God Of Chaos") && pTarget.isBuilding() && pTarget.b.asset.id == "corrupted_brain")
                 {
                     __result = false;
@@ -279,9 +289,9 @@ namespace GodsAndPantheons.Patches
                         return;
                     }
                 }
-                if(__instance.a.asset.id == "GodHunter")
+                if(__instance.a.hasTrait("God Hunter"))
                 {
-                    if(pTarget.isActor() && pTarget.a.asset.id != "GodHunter" && IsGod(pTarget.a))
+                    if(pTarget.isActor() && pTarget.areFoes(__instance) && IsGod(pTarget.a))
                     {
                         __result = true;
                         return;
@@ -501,7 +511,7 @@ namespace GodsAndPantheons.Patches
             {
                 return true;
             }
-            if (pData.initiator.isActor() && pData.initiator.a.hasTrait("God Of War"))
+            if (pData.initiator.isActor() && IsGod(pData.initiator.a))
             {
                 pData.initiator.a.data.set("MaelStrom", pData.is_projectile);
             }
@@ -509,7 +519,7 @@ namespace GodsAndPantheons.Patches
             {
                 return true;
             }
-            if (pTargetToCheck.a.hasTrait("God Of War") && Randy.randomChance(GetEnhancedChance("God Of War", "BlockAttack%")))
+            if (pTargetToCheck.a.hasTrait("God Of War") && Randy.randomChance(Chance("God Of War", "BlockAttack%")))
             {
                 MusicBox.playSound(MB.HitSwordSword, pTargetToCheck.current_tile);
                 if (pData.is_projectile)
@@ -526,7 +536,7 @@ namespace GodsAndPantheons.Patches
                 __result = AttackDataResult.Block;
                 return false;
             }
-            if (pTargetToCheck.a.hasTrait("God Of Knowledge") && Randy.randomChance(GetEnhancedChance("God Of Knowledge", "EnemySwap%")))
+            if (pTargetToCheck.a.hasTrait("God Of Knowledge") && Randy.randomChance(Chance("God Of Knowledge", "EnemySwap%")))
             {
                 WorldTile tile = pTargetToCheck.current_tile;
                 List<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(tile, pTargetToCheck.kingdom, -1).list;

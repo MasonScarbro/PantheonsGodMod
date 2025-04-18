@@ -1,12 +1,7 @@
 using NCMS.Utils;
 using UnityEngine;
-using System;
-using static UnityEngine.GraphicsBuffer;
-using GodsAndPantheons.Patches;
 using UnityEngine.Events;
 using NeoModLoader.General;
-using UnityEngine.Windows;
-using YamlDotNet.Core.Tokens;
 
 namespace GodsAndPantheons
 {
@@ -15,7 +10,7 @@ namespace GodsAndPantheons
         public static void init()
         {
             
-            Tab.createTab("Button Tab_GodsAndPantheons", "Tab_GodsAndPantheons", "GodsAndPantheons", "Gods Here", -150);
+            UI.createTab("Button Tab_GodsAndPantheons", "Tab_GodsAndPantheons", "GodsAndPantheons", "Gods Here", -150);
             loadButtons();
         }
         static PowersTab tab;
@@ -315,7 +310,7 @@ namespace GodsAndPantheons
             {
                 foreach (AttackAction ability in Traits.GodAbilities[godtrait])
                 {
-                    pActor.data.get("Demi" + ability.Method.Name, out bool inherited);
+                    pActor.data.get("Lesser" + ability.Method.Name, out bool inherited);
                     if (inherited)
                     {
                         message += (message == "" ? "" : ", ") + ability.Method.Name;

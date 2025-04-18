@@ -3,13 +3,10 @@ AUTHOR: MASON SCARBRO
 VERSION: 1.0.0
 */
 using System.IO;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using NCMS;
-using NCMS.Utils;
 using UnityEngine;
-using ReflectionUtility;
 using Newtonsoft.Json;
 using HarmonyLib;
 using NeoModLoader.constants;
@@ -19,7 +16,7 @@ namespace GodsAndPantheons
     class Main : MonoBehaviour
     {
         
-        private const string correctSettingsVersion = "0.2.0";
+        private const string correctSettingsVersion = "0.2.1";
         public static SavedSettings savedSettings = new SavedSettings();
         public static SavedSettings defaultSettings = new SavedSettings();
         static Harmony _harmony;
@@ -29,7 +26,6 @@ namespace GodsAndPantheons
             loadSettings();
 
             //UI
-            Tab.init();
             WindowManager.init();
             Buttons.init();
 
@@ -42,7 +38,6 @@ namespace GodsAndPantheons
             Invasions.init();
 
             //GODS
-            Group.init();
             Traits.init();
             Items.init();
 

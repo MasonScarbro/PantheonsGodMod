@@ -64,19 +64,19 @@ namespace GodsAndPantheons
                     {
                         if (pTarget.kingdom.isEnemy(pSelf.kingdom))
                         {
-                            if (Randy.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%", 25)))
+                            if (Randy.randomChance(Traits.Chance("God Of Love", "Poisoning%", 25)))
                             {
                                 pTarget.addStatusEffect("ash_fever", 15);
                             }
-                            if (Randy.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%", 25)))
+                            if (Randy.randomChance(Traits.Chance("God Of Love", "Poisoning%", 25)))
                             {
                                 pTarget.addStatusEffect("poisoned", 30);
                             }
-                            if (Randy.randomChance(Traits.GetEnhancedChance("God Of Love", "Poisoning%", 25)))
+                            if (Randy.randomChance(Traits.Chance("God Of Love", "Poisoning%", 25)))
                             {
                                 pTarget.addStatusEffect("cough", 60);
                             }
-                            if(pTarget.isActor() && !Traits.IsGod(pTarget.a) && Randy.randomChance(Traits.GetEnhancedChance("God Of Love", "Petrification%")))
+                            if(pTarget.isActor() && !Traits.IsGod(pTarget.a) && Randy.randomChance(Traits.Chance("God Of Love", "Petrification%")))
                             {
                                 MusicBox.playSound("event:/SFX/DROPS/DropStone");
                                 pTarget.addStatusEffect("Petrified");
@@ -164,7 +164,7 @@ namespace GodsAndPantheons
                 
                 impact_actions = new AttackAction(delegate(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
                 {
-                    if(!Randy.randomChance(Traits.GetEnhancedChance("God Of Chaos", "BoneFire%")))
+                    if(!Randy.randomChance(Traits.Chance("God Of Chaos", "BoneFire%")))
                     {
                         return true;
                     }

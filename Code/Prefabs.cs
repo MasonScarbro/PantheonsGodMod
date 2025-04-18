@@ -114,7 +114,13 @@ namespace GodsAndPantheons
             crablaser.transform.parent = Prefab.transform;
             crablaser.transform.localPosition = new Vector3(-3f, 12f);
             crablaser.transform.localScale = new Vector3(0.3f, 0.25f);
-            Prefab.AddComponent<ChaosLaser>().InitPrefab(arm.laser, arm.laserPoint, arm.transform);
+            InitPrefab(Prefab.AddComponent<ChaosLaser>(), arm.laser, arm.laserPoint, arm.transform);
+            static void InitPrefab(ChaosLaser Laser, SpriteRenderer lasersprite, Transform laserPoint, Transform laser)
+            {
+                Laser.LaserSprite = lasersprite;
+                Laser.LaserPoint = laserPoint;
+                Laser.Laser = laser;
+            }
             Traits.LaserSprites = new List<Sprite>(arm.laserSprites);
             arm.DestroyImmediateIfNotNull();
             ResourcesPatch.PatchResource("effects/prefabs/ChaosLaser", Prefab);

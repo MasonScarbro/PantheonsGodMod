@@ -3,9 +3,6 @@ AUTHOR: MASON SCARBRO
 VERSION: 1.0.0
 */
 using UnityEngine;
-using NeoModLoader.utils;
-using SleekRender;
-
 namespace GodsAndPantheons
 {
     class NewEffects : MonoBehaviour
@@ -198,7 +195,12 @@ namespace GodsAndPantheons
                 use_basic_prefab = true,
                 sorting_layer_id = "EffectsTop",
                 sprite_path = "effects/fx_Stalagmite",
-                time_between_frames = 0.05f
+                time_between_frames = 0.05f,
+                spawn_action = (BaseEffect pEffect, WorldTile pTile, string _, string __, float ___, Actor ____) =>
+                {
+                    pEffect.GetComponent<SpriteRenderer>().color = pTile.Type.color;
+                    return null;
+                }
             });
 
             AssetManager.effects_library.add(new EffectAsset
@@ -225,6 +227,25 @@ namespace GodsAndPantheons
             EffectAsset FireBomb = AssetManager.effects_library.clone("FireGodsExplsion", "fx_firebomb_explosion");
             FireBomb.sprite_path = "effects/FireExplosion";
             FireBomb.time_between_frames = 0.1f;
+
+            AssetManager.effects_library.add(new EffectAsset
+            {
+                id = "FireBreath",
+                use_basic_prefab = true,
+                sprite_path = "effects/fx_FireBreath",
+                sorting_layer_id = "EffectsBack",
+                draw_light_area = true,
+                draw_light_size = 4,
+                spawn_action = (BaseEffect pEffect, WorldTile pTile, string _, string __, float ___, Actor pActor) =>
+                {
+                    float Angle = Mathf.Atan2(pTile.y - pActor.current_position.y, pTile.x - pActor.current_position.x) * Mathf.Rad2Deg;
+                    bool flip = Angle <= -90 || Angle >= 90;
+                    pEffect.transform.localScale = new Vector2(0.1f, flip ? -0.1f : 0.1f);
+                    pEffect.transform.rotation = Quaternion.AngleAxis(Angle, Vector3.forward);
+                    return null;
+                },
+                sound_launch = "event:/SFX/UNITS/dragon/fire_breath"
+            });
         }
     }
 }
