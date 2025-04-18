@@ -424,7 +424,7 @@ namespace GodsAndPantheons
             if (pTarget != null)
             {
                 pSelf.a.data.get("MaelStrom", out bool MaelStorm, false);
-                if (!MaelStorm && Randy.randomChance(Chance("God Of light", "SunGodsSlashes")))
+                if (!MaelStorm && Randy.randomChance(Chance("God Of light", "SunGodsSlashes%")))
                 {
                     ShootCustomProjectile(pSelf, pTarget, "lightSlashesProjectile");
                 }
