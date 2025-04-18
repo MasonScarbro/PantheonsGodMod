@@ -518,7 +518,7 @@ namespace GodsAndPantheons.Patches
             }
             if (pData.initiator.isActor() && IsGod(pData.initiator.a))
             {
-                pData.initiator.a.data.set("MaelStrom", pData.is_projectile);
+                pData.initiator.a.data.set("AttackFromProjectile", pData.is_projectile);
             }
             if (!pTargetToCheck.isActor())
             {

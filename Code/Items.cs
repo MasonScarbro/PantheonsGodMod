@@ -393,18 +393,16 @@ namespace GodsAndPantheons
         }
         static bool UnleashMoonFall(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            pSelf.a.data.get("MaelStrom", out bool MaelStorm, false);
-            if (!MaelStorm && Randy.randomChance(Chance("God Of the Stars", "summonMoonChunk%")))
+            if (Randy.randomChance(Chance("God Of the Stars", "summonMoonChunk%")))
             {
                 float pDist = Vector2.Distance(pTarget.current_position, pTile.pos);
-                ShootCustomProjectile(pSelf, pTarget, "moonFall", 1, 0, Toolbox.getNewPoint(pSelf.current_position.x + 35f, pSelf.current_position.y + 95f, pTile.x + 1f, pTile.y + 1f, pDist));
+                ShootProjectileSafe(pSelf, pTarget, "moonFall", 1, 0, Toolbox.getNewPoint(pSelf.current_position.x + 35f, pSelf.current_position.y + 95f, pTile.x + 1f, pTile.y + 1f, pDist));
             }
             return true;
         }
         static bool AxeMaestro(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            pSelf.a.data.get("MaelStrom", out bool MaelStorm, false);
-            if (!MaelStorm && Randy.randomChance(Chance("God Of War", "axemaelstrom%")))
+            if (Randy.randomChance(Chance("God Of War", "axemaelstrom%")))
             {
                 List<Actor> Targets = GetAlliesOfActor(Finder.getUnitsFromChunk(pSelf.current_tile, 1, 12), pTarget);
                 if(Targets.Count == 0)
@@ -413,7 +411,7 @@ namespace GodsAndPantheons
                 }
                 for (int i = 0; i < Randy.randomInt(10, 21); i++)
                 {
-                    ShootCustomProjectile(pSelf, Targets[i % Targets.Count], "WarAxeProjectile1", 1);
+                    ShootProjectileSafe(pSelf, Targets[i % Targets.Count], "WarAxeProjectile1", 1);
                 }
             }
             return true;
@@ -423,10 +421,9 @@ namespace GodsAndPantheons
         {
             if (pTarget != null)
             {
-                pSelf.a.data.get("MaelStrom", out bool MaelStorm, false);
-                if (!MaelStorm && Randy.randomChance(Chance("God Of light", "SunGodsSlashes%")))
+                if (Randy.randomChance(Chance("God Of light", "SunGodsSlashes%")))
                 {
-                    ShootCustomProjectile(pSelf, pTarget, "lightSlashesProjectile");
+                    ShootProjectileSafe(pSelf, pTarget, "lightSlashesProjectile");
                 }
                 return true;
             }
@@ -474,10 +471,9 @@ namespace GodsAndPantheons
         {
             if (pTarget != null)
             {
-                pSelf.a.data.get("MaelStrom", out bool MaelStorm, false);
-                if (!MaelStorm && Randy.randomChance(Chance("God Of The Lich", "waveOfMutilation%")))
+                if (Randy.randomChance(Chance("God Of The Lich", "waveOfMutilation%")))
                 {
-                    ShootCustomProjectile(pSelf, pTarget, "waveOfMutilationProjectile");
+                    ShootProjectileSafe(pSelf, pTarget, "waveOfMutilationProjectile");
                 }
             }
             return true;

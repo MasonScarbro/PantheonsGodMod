@@ -857,7 +857,7 @@ namespace GodsAndPantheons
         {
             if (Randy.randomChance(Chance("God Of Chaos", "FireBall%")))
             {
-                ShootCustomProjectile(pSelf, pTarget, "fireBallX");
+                ShootProjectileSafe(pSelf, pTarget, "fireBallX");
             }
             return true;
         }
@@ -977,7 +977,7 @@ namespace GodsAndPantheons
         {
             if (Randy.randomChance(Chance("God Of Knowledge", "PagesOfKnowledge%")))
             {
-                ShootCustomProjectile(pSelf, pTarget, "PagesOfKnowledge");
+                ShootProjectileSafe(pSelf, pTarget, "PagesOfKnowledge");
             }
             return true;
         }
@@ -1025,7 +1025,7 @@ namespace GodsAndPantheons
         {
             if (Randy.randomChance(Chance("God Of the Night", "darkDaggers%")))
             {
-                ShootCustomProjectile(pSelf, pTarget, "SunGodsSlashes");
+                ShootProjectileSafe(pSelf, pTarget, "DarkDaggersProjectiles");
             }
             return true;
         }
@@ -1113,7 +1113,7 @@ namespace GodsAndPantheons
         {
             if (Randy.randomChance(Chance("God Of light", "lightBallz%")))
             {
-                ShootCustomProjectile(pSelf, pTarget, "lightBallzProjectiles");
+                ShootProjectileSafe(pSelf, pTarget, "lightBallzProjectiles");
             }
             return true;
         }
@@ -1239,7 +1239,7 @@ namespace GodsAndPantheons
         {
             if (Randy.randomChance(Chance("God Of War", "axeThrow%")))
             {
-                ShootCustomProjectile(pSelf.a, pTarget, "WarAxeProjectile1", 1);
+                ShootProjectileSafe(pSelf.a, pTarget, "WarAxeProjectile1", 1);
 
             }
             return true;
@@ -1403,7 +1403,7 @@ namespace GodsAndPantheons
                 {
                     if(a.kingdom == pSelf.kingdom && a.data.health < a.getMaxHealth())
                     {
-                        ShootCustomProjectile(pSelf.a, a, "Heart", 2);
+                        ShootProjectileSafe(pSelf.a, a, "Heart", 2);
                     }
                 }
             }
@@ -1628,7 +1628,7 @@ namespace GodsAndPantheons
         }
         public static void ShootCustomProjectile(BaseSimObject pSelf, BaseSimObject pTarget, string projectile, int amount = 1, float pZ = 0.25f, Vector2 Pos = default)
         {
-            if(pSelf.kingdom == null)
+            if (pSelf.kingdom == null)
             {
                 return;
             }
@@ -1645,6 +1645,16 @@ namespace GodsAndPantheons
                 tTargetPos.y += Randy.randomFloat(-pTarget.stats["size"], pTarget.stats["size"]);
                 World.world.projectiles.spawn(pSelf, pTarget, projectile, Start, tTargetPos, tZ, pZ);
             }
+        }
+        //prevents chain reactions in which god projectiles create more projectiles
+        public static void ShootProjectileSafe(BaseSimObject pSelf, BaseSimObject pTarget, string projectile, int amount = 1, float pZ = 0.25f, Vector2 Pos = default)
+        {
+            pSelf.getData().get("AttackFromProjectile", out bool AttackFromProjectile);
+            if (AttackFromProjectile)
+            {
+                return;
+            }
+            ShootCustomProjectile(pSelf, pTarget, projectile, amount, pZ, Pos);
         }
         public static bool FireBreath(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {

@@ -229,7 +229,7 @@ namespace GodsAndPantheons
                 List<Actor> enemies = GetEnemiesOfActor(Finder.getUnitsFromChunk(tile, 1, 8), Actor);
                 if(enemies.Count > 0)
                 {
-                    ShootCustomProjectile(Actor, enemies.GetRandom(), "EarthShardProjectile", 1, 1, tile.pos);
+                    ShootProjectileSafe(Actor, enemies.GetRandom(), "EarthShardProjectile", 1, 1, tile.pos);
                 }
             }
         }
@@ -384,7 +384,7 @@ namespace GodsAndPantheons
                     Target = Actor.findEnemyObjectTarget();
                 }
                 if (Target != null) {
-                    ShootCustomProjectile(Actor, Target, "moonFallSlow", 1, 0.25f, tile.pos);
+                    ShootProjectileSafe(Actor, Target, "moonFallSlow", 1, 0.25f, tile.pos);
                 }
                 else
                 {
