@@ -4,7 +4,7 @@ VERSION: 1.0.0
 */
 using System.Collections.Generic;
 using UnityEngine;
-
+using GodsAndPantheons.CustomEffects;
 namespace GodsAndPantheons 
 {
     class NewProjectiles : MonoBehaviour

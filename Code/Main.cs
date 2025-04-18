@@ -10,6 +10,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using HarmonyLib;
 using NeoModLoader.constants;
+using GodsAndPantheons.AI;
 namespace GodsAndPantheons
 {
     [ModEntry]

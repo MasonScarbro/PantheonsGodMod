@@ -1,7 +1,7 @@
 ﻿using static GodsAndPantheons.Traits;
 using UnityEngine;
 using System.Collections.Generic;
-namespace GodsAndPantheons
+namespace GodsAndPantheons.CustomEffects
 {
     public class FireTornado : TornadoEffect
     {

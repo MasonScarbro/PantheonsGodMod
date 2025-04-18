@@ -5,6 +5,8 @@ VERSION: 1.0.0
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using GodsAndPantheons.CustomEffects;
+using GodsAndPantheons.AI;
 namespace GodsAndPantheons
 {
     //Contains the traits and their abilities & Stats
@@ -1560,7 +1562,7 @@ namespace GodsAndPantheons
                     //FIRESTORM
                     case 9:
                         {
-                            CreateStorm(pTile, 30f, 0.8f, FireStorm, Color.red, 0.8f).GetComponent<Storm>().TileToGo = Toolbox.getRandomTileWithinDistance(pTile, 100);
+                            CreateStorm(pTile, 30f, 0.8f, FireStorm, Color.red, 0.8f, pSelf).GetComponent<Storm>().TileToGo = Toolbox.getRandomTileWithinDistance(pTile, 100);
                             World.world.startShake(0.3f, 0.1f, 1);
                             break;
                         }
@@ -1570,7 +1572,7 @@ namespace GodsAndPantheons
         }
         public static bool Summoning(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Randy.randomChance(Chance("God Of Fire", "Summoning%")))
+            if (Randy.randomChance(Chance("God Of Fire", "Summoning%")) && pSelf.isActor())
             {
                 switch (Randy.randomInt(1, 4))
                 {
@@ -1624,6 +1626,10 @@ namespace GodsAndPantheons
         {
             EffectsLibrary.spawnAtTile("FireGodsExplsion", pTarget.current_tile, Randy.randomFloat(0.1f, 0.3f));
             GodAttack(ByWho, pTarget, pTarget.current_tile, "God Of Fire");
+            if (ByWho.isActor())
+            {
+                ByWho.a.attackTargetActions(pTarget, pTarget.current_tile);
+            }
             MapAction.damageWorld(pTarget.current_tile, 4, AssetManager.terraform.get("bomb"), ByWho);
         }
         public static void ShootCustomProjectile(BaseSimObject pSelf, BaseSimObject pTarget, string projectile, int amount = 1, float pZ = 0.25f, Vector2 Pos = default)
@@ -1664,7 +1670,7 @@ namespace GodsAndPantheons
             }
             if (Randy.randomChance(Chance("God Of Fire", "FireBreath%")))
             {
-                EffectsLibrary.spawn("FireBreath", pTile, null, null, 0, pSelf.current_position.x, pSelf.current_position.y, pSelf.a);
+                EffectsLibrary.spawn("FireBreath", pTile, null, null, 0, pSelf.current_position.x, pSelf.current_position.y, pSelf.isActor() ? pSelf.a : null);
             }
             MapAction.damageWorld(pTile, 5, AssetManager.terraform.get("dragon_attack"), pSelf);
             return true;

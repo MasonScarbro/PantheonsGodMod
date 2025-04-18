@@ -3,6 +3,7 @@ AUTHOR: MASON SCARBRO
 VERSION: 1.0.0
 */
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 namespace GodsAndPantheons
 {
     class NewEffects : MonoBehaviour
@@ -233,11 +234,15 @@ namespace GodsAndPantheons
                 id = "FireBreath",
                 use_basic_prefab = true,
                 sprite_path = "effects/fx_FireBreath",
-                sorting_layer_id = "EffectsBack",
+                sorting_layer_id = "EffectsTop",
                 draw_light_area = true,
                 draw_light_size = 4,
                 spawn_action = (BaseEffect pEffect, WorldTile pTile, string _, string __, float ___, Actor pActor) =>
                 {
+                    if(pActor == null)
+                    {
+                        return EffectsLibrary.spawn("fx_napalm_flash", pTile);
+                    }
                     float Angle = Mathf.Atan2(pTile.y - pActor.current_position.y, pTile.x - pActor.current_position.x) * Mathf.Rad2Deg;
                     bool flip = Angle <= -90 || Angle >= 90;
                     pEffect.transform.localScale = new Vector2(0.1f, flip ? -0.1f : 0.1f);

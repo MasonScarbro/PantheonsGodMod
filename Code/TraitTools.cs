@@ -1,4 +1,5 @@
 ﻿using ai;
+using GodsAndPantheons.CustomEffects;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -23,7 +24,7 @@ namespace GodsAndPantheons
         }
         public static List<Sprite> LaserSprites;
         
-        public static GameObject CreateStorm(WorldTile pTile, float time, float TimeCooldown, StormAction? Action, Color? StormColor, float Size, BaseSimObject ByWho = null)
+        public static GameObject CreateStorm(WorldTile pTile, float time, float TimeCooldown, StormAction Action, Color? StormColor, float Size, BaseSimObject ByWho = null)
         {
             World.world.startShake(0.3f, 0.01f, 0.03f, false, true);
             GameObject Storm = EffectsLibrary.spawn("fx_CloudOfDarkness", pTile).gameObject;

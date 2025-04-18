@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using HarmonyLib;
 using NCMS.Utils;
 using static GodsAndPantheons.Traits;
+using GodsAndPantheons.CustomEffects;
 
 namespace GodsAndPantheons
 {

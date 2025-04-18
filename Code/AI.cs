@@ -3,8 +3,8 @@ using NeoModLoader.General;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static GodsAndPantheons.BehFunctions;
-namespace GodsAndPantheons
+using static GodsAndPantheons.AI.BehFunctions;
+namespace GodsAndPantheons.AI
 {
     public class GodHunterBeh : BehaviourActionActor
     {

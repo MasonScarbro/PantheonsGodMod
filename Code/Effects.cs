@@ -2,6 +2,7 @@
 AUTHOR: MASON SCARBRO
 VERSION: 1.0.0
 */
+using GodsAndPantheons.CustomEffects;
 using System.Collections.Generic;
 using UnityEngine;
 
