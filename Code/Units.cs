@@ -101,7 +101,7 @@ namespace GodsAndPantheons
             darkOne.name_template_sets = new string[] { "alien_set" };
             darkOne.job = new string[] { "random_move" };
             darkOne.kingdom_id_wild = "neutral";
-            darkOne.cached_sprite = Resources.Load<Sprite>("actors/species/other/DarkOne/heads_male/walk_0");
+            darkOne._cached_sprite = Resources.Load<Sprite>("actors/species/other/DarkOne/heads_male/walk_0");
             darkOne.animation_swim = new string[] { "swim_0", "swim_1", "swim_2", "swim_3" };
             darkOne.animation_walk = new string[] { "walk_0", "walk_1", "walk_2", "walk_3" };
             darkOne.texture_id = "DarkOne";
