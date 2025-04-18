@@ -126,7 +126,7 @@ namespace GodsAndPantheons
                 pActor?.clearBeh();
                 return BehResult.Stop;
             }
-            return BehFunctions.Minion(pActor, Master);
+            return Minion(pActor, Master);
         }
     }
     //basically the same as summoned one but checkstatus is different
@@ -164,7 +164,7 @@ namespace GodsAndPantheons
                 pActor.clearBeh();
                 return BehResult.Stop;
             }
-            return BehFunctions.Minion(pActor, Master);
+            return Minion(pActor, Master);
         }
     }
     public class BehFunctions
