@@ -1,5 +1,7 @@
 ﻿using ai;
 using GodsAndPantheons.CustomEffects;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,12 +9,12 @@ using UnityEngine;
 namespace GodsAndPantheons
 {
     //contains tools for working with the traits
-    partial class Traits
+    static partial class Traits
     {
         public static PowerLibrary pb = AssetManager.powers;
-
+        public static Dictionary<Actor, DemiGodData> CachedDemiGodData = new Dictionary<Actor, DemiGodData> ();
         //returns null if unable to find master
-        public static Actor FindMaster(Actor Minion)
+        public static Actor FindMaster(this Actor Minion)
         {
             if (Minion.hasStatus("BrainWashed"))
             {
@@ -54,7 +56,7 @@ namespace GodsAndPantheons
         {
             foreach (string autotrait in AutoTraits[trait])
             {
-                if (!mustbeinherited || Randy.randomChance(Chance(trait, trait + "inherit%") * chancemult))
+                if (!mustbeinherited || CanUseAbility(trait, trait + "inherit%", 100/chancemult))
                 {
                    a.addTrait(autotrait);
                 }
@@ -91,7 +93,27 @@ namespace GodsAndPantheons
                 }
             }
         }
-        public static IEnumerable<Actor> GetMinions(Actor a)
+        public static void ShootCustomProjectile(BaseSimObject pSelf, BaseSimObject pTarget, string projectile, int amount = 1, float pZ = 0.25f, Vector2 Pos = default)
+        {
+            if (pSelf.kingdom == null)
+            {
+                return;
+            }
+            Vector3 Start = Pos == default ? pSelf.current_position : Pos;
+            float tZ = 0f;
+            if (pTarget.isInAir())
+            {
+                tZ = pTarget.getHeight();
+            }
+            for (int i = 0; i < amount; i++)
+            {
+                Vector3 tTargetPos = pTarget.current_tile.posV3;
+                tTargetPos.x += Randy.randomFloat(-(pTarget.stats["size"] + 1f), pTarget.stats["size"] + 1f);
+                tTargetPos.y += Randy.randomFloat(-pTarget.stats["size"], pTarget.stats["size"]);
+                World.world.projectiles.spawn(pSelf, pTarget, projectile, Start, tTargetPos, tZ, pZ);
+            }
+        }
+        public static IEnumerable<Actor> GetMinions(this Actor a)
         {
             foreach (Actor actor in World.world.units)
             {
@@ -107,13 +129,13 @@ namespace GodsAndPantheons
                }
             }
         }
-        public static bool IsGod(Actor a)
-            => GetGodTraits(a).ToList().Count > 0
+        public static bool IsGod(this Actor a, bool IncludeDemigods = false, bool IncludeLesserGods = false)
+            => GetGodTraits(a.traits, IncludeDemigods, IncludeLesserGods).ToList().Count > 0
             || a.asset.id == SA.crabzilla //crabzilla is obviously a god, duhh
             || a.asset.id == SA.god_finger; //its in the name
 
-        public static bool IsGodTrait(ActorTrait a) => GodAbilities.Keys.Contains(a.id);
-        public static IEnumerable<string> GetGodTraits(Actor a) => GetGodTraits(a.traits);
+        public static bool IsGodTrait(this ActorTrait a) => GodAbilities.Keys.Contains(a.id);
+        public static IEnumerable<string> GetGodTraits(this Actor a) => GetGodTraits(a.traits);
         public static IEnumerable<string> GetGodTraits(HashSet<ActorTrait> pTraits, bool includedemigods = false, bool includesubgods = false)
         {
             foreach (ActorTrait trait in pTraits)
@@ -151,6 +173,7 @@ namespace GodsAndPantheons
         public static float GetEraMultiplier(string trait) => World.world_era.id == TraitEras[trait].Key ? 2 : 1f;
         //returns the chance of the trait multiplied by its era multiplier devided by the devisor
         public static float Chance(string trait, string chance, float devisor = 100) => GetRawChance(TraitToWindow(trait), chance) * GetEraMultiplier(trait) / devisor;
+        public static bool CanUseAbility(string trait, string chance, float devisor = 100) => Randy.randomChance(Chance(trait, chance, devisor));
         public static string TraitToWindow(string Trait) => Trait switch
             {
                 "God Of Chaos" => "ChaosGodWindow",
@@ -165,47 +188,9 @@ namespace GodsAndPantheons
                 "God Of Love" => "LoveGodWindow",
                 _ => "",
             };
-        public static BaseStats GetDemiStats(ActorData pData)
+        public static BaseStats GetDemiStats(this Actor pActor)
         {
-            pData.get("Demi" + S.speed, out float speed);
-            pData.get("Demi" + S.health, out float health);
-            pData.get("Demi" + S.critical_chance, out float crit);
-            pData.get("Demi" + S.damage, out float damage);
-            pData.get("Demi" + S.armor, out float armor);
-            pData.get("Demi" + S.attack_speed, out float attackSpeed);
-            pData.get("Demi" + S.accuracy, out float accuracy);
-            pData.get("Demi" + S.mana, out float Mana);
-            pData.get("Demi" + S.range, out float range);
-            pData.get("Demi" + S.scale, out float scale);
-            pData.get("Demi" + S.intelligence, out float intell);
-            pData.get("Demi" + S.mass, out float mass);
-            pData.get("Demi" + S.warfare, out float warfare);
-            pData.get("Demi" + S.offspring, out float offpsring);
-            pData.get("Demi" + S.max_nutrition, out float maxNutrition);
-            pData.get("Demi" + S.diplomacy, out float diplomacy);
-            pData.get("Demi" + S.loyalty_traits, out float loyalty);
-            pData.get("Demi" + S.lifespan, out int lifespan); //special
-            BaseStats temp_base_stats = new BaseStats();
-            temp_base_stats[S.speed] = speed;
-            temp_base_stats[S.mana] = Mana;
-            temp_base_stats[S.critical_chance] = crit;
-            temp_base_stats[S.health] = health;
-            temp_base_stats[S.damage] = damage;      
-            temp_base_stats[S.armor] = armor;
-            temp_base_stats[S.attack_speed] = attackSpeed;
-            temp_base_stats[S.accuracy] = accuracy;
-            temp_base_stats[S.range] = range;
-            temp_base_stats[S.scale] = scale;
-            temp_base_stats[S.intelligence] = intell;
-            temp_base_stats[S.mass] = mass;
-            temp_base_stats[S.warfare] = warfare;
-            temp_base_stats[S.offspring] = offpsring;
-            temp_base_stats[S.diplomacy] = diplomacy;
-            temp_base_stats[S.loyalty_traits] = loyalty;
-            temp_base_stats[S.max_nutrition] = (int)maxNutrition;
-            //special
-            temp_base_stats[S.lifespan] = lifespan;
-            return temp_base_stats;
+            return pActor.DemiData().BaseStats;
         }
         public static Actor GetTargetToCrashLand(Actor actor)
         {
@@ -228,7 +213,7 @@ namespace GodsAndPantheons
             List<Actor> allies = new List<Actor>();
             foreach (Actor a in actors)
             {
-                if (a.kingdom == actor.kingdom)
+                if (!a.areFoes(actor))
                 {
                     allies.Add(a);
                 }
@@ -239,17 +224,21 @@ namespace GodsAndPantheons
             }
             return allies;
         }
-        public static List<Actor> GetEnemiesOfActor(IEnumerable<BaseSimObject> actors, BaseSimObject actor)
+        public static List<Actor> GetEnemiesOfActor(IEnumerable<Actor> actors, BaseSimObject actor)
         {
-            List<Actor> allies = new List<Actor>();
+            List<Actor> enemies = new List<Actor>();
             foreach (Actor a in actors)
             {
-                if (a.kingdom != actor.kingdom)
+                if (!a.isAlive())
                 {
-                    allies.Add(a);
+                    continue;
+                }
+                if (a.areFoes(actor))
+                {
+                    enemies.Add(a);
                 }
             }
-            return allies;
+            return enemies;
         }
         public static Actor CopyActor(Actor pActor, string ActorID)
         {
@@ -267,13 +256,23 @@ namespace GodsAndPantheons
             ActorTool.copyUnitToOtherUnit(pActor, actor, true);
             return actor;
         }
-        public static bool HasMorphed(Actor pActor)
+        public static bool HasMorphed(this Actor pActor)
         {
             pActor.data.get("morphedinto", out string morphed, "");
             pActor.data.get("oldself", out string oldself, "");
             return morphed != oldself;
         }
-        public static Actor Morph(Actor pActor, string morphid, bool Log = true, bool destroyWeapon = true)
+        public static ActorAsset GetTrueAsset(this Actor pActor)
+        {
+            pActor.data.get("morphedinto", out string morphed, "");
+            pActor.data.get("oldself", out string oldself, "");
+            if (morphed == oldself)
+            {
+                return pActor.asset;
+            }
+            return AssetManager.actor_library.get(oldself);
+        }
+        public static Actor Morph(this Actor pActor, string morphid, bool Log = true, bool destroyWeapon = true)
         {
             if (pActor == null)
             {
@@ -308,7 +307,7 @@ namespace GodsAndPantheons
                 actor.data.set("morphedinto", morphid);
                 actor.data.set("oldself", pActor.asset.id);
             }
-            foreach (Actor minion in GetMinions(pActor))
+            foreach (Actor minion in pActor.GetMinions())
             {
                 minion.data.set("Master", actor.data.id);
             }
@@ -327,55 +326,70 @@ namespace GodsAndPantheons
         public static void MakeDemiGod(ListPool<string> godtraits, Actor DemiGod, float chancemult = 1)
         {
             DemiGod.addTrait("Demi God");
+            DemiGodData Data = new DemiGodData();
             foreach (string trait in godtraits)
             {
-                DemiGod.data.set("Demi" + trait, true);
-                InheritStats(DemiGod, trait, chancemult, 0.5f, 0.75f);
+                Data.InheritTrait(trait);
+                InheritStats(Data, trait, chancemult, 0.5f, 0.75f);
             }
-            DemiGod.data.set("Demi"+S.lifespan, Random.Range(100, 200));
+            Data.AddBaseStat(S.lifespan, Random.Range(100, 201));
+            DemiGod.SetDemiData(Data);
         }
-        public static void InheritStats(Actor pActor, string trait, float chancemult, float MinRange = 0.75f, float MaxRange = 1)
+        public static void SetDemiData(this Actor DemiGod, DemiGodData data)
+        {
+            DemiGod.data.set("DemiData", JsonConvert.SerializeObject(JObject.FromObject(data)));
+        }
+        public static DemiGodData DemiData(this Actor DemiGod) {
+            if (CachedDemiGodData.TryGetValue(DemiGod, out DemiGodData data))
+            {
+                return data;
+            }
+            DemiGod.data.get("DemiData", out string DemiData);
+            if(DemiData == null)
+            {
+                return null;
+            }
+            DemiGodData Data = JsonConvert.DeserializeObject<JObject>(DemiData).ToObject<DemiGodData>();
+            CachedDemiGodData.Add(DemiGod, Data);
+            return Data;
+        }
+        public static void InheritStats(DemiGodData data, string trait, float chancemult, float MinRange = 0.75f, float MaxRange = 1)
         {
             foreach (KeyValuePair<string, float> kvp in TraitStats[trait])
             {
-                pActor.data.get("Demi" + kvp.Key, out float value);
-                float Percent = Chance(trait, trait + "inherit%") * chancemult;
-                pActor.data.set("Demi" + kvp.Key, Mathf.Min(kvp.Value * Randy.randomFloat(Percent * MinRange, Percent * MaxRange), kvp.Value) + value);
+                if(CanUseAbility(trait, trait + "inherit%", 50/chancemult))
+                {
+                    data.AddBaseStat(kvp.Key, Random.Range(kvp.Value * MinRange, kvp.Value * MaxRange));
+                }
             }
         }
         public static void MakeLesserGod(ListPool<string> godtraits, Actor LesserGod, float chancemult = 1)
         {
             LesserGod.addTrait("Lesser God");
             LesserGod.addTrait("immortal"); // lesser gods immortal or very long lived? havent decided yet
+            DemiGodData demiGodData = new DemiGodData();
             foreach (string trait in godtraits)
             {
-                LesserGod.data.set("Demi" + trait, true);
-                InheritStats(LesserGod, trait, chancemult);
-                foreach (AttackAction ability in GodAbilities[trait])
+                demiGodData.InheritTrait(trait);
+                InheritStats(demiGodData, trait, chancemult);
+                for (int i = 0; i < GodAbilities[trait].Count; i++)
                 {
-                    if (Randy.randomChance(Chance(trait, trait + "inherit%") * chancemult))
+                    if (CanUseAbility(trait, trait + "inherit%", 100/chancemult))
                     {
-                        LesserGod.data.set("Lesser" + ability.Method.Name, true);
+                        demiGodData.AddAbility(trait, i);
                     }
                 }
             }
+            LesserGod.SetDemiData(demiGodData);
         }
         //gets god traits which are stored in the data of lesser gods / demigods
-        public static IEnumerable<string> Getinheritedgodtraits(ActorData pData)
+        public static List<string> Getinheritedgodtraits(Actor pActor)
         {
-            foreach (string key in GodAbilities.Keys)
-            {
-                pData.get("Demi" + key, out bool inherited);
-                if (inherited)
-                {
-                    yield return key;
-                }
-            }
+            return pActor.DemiData()?.InheritedGodTraits.ToList();
         }
-        public static bool InheritedTrait(Actor a, string trait)
+        public static bool InheritedTrait(this Actor a, string trait)
         {
-            a.data.get("Demi" + trait, out bool inherited);
-            return inherited;
+            return a.DemiData()?.InheritedGodTraits.Contains(trait) ?? false;
         }
         public static bool EraStatus(Actor Master, Actor Me)
         {
@@ -401,7 +415,7 @@ namespace GodsAndPantheons
         {
             foreach (Actor a in pKingdom.units)
             {
-                if (IsGod(a))
+                if (a.IsGod())
                 {
                     return true;
                 }
@@ -409,10 +423,10 @@ namespace GodsAndPantheons
             return false;
         }
         //returns god traits which no one in the world have
-        public static List<string> getavailblegodtraits(MapBox instance)
+        public static List<string> getavailblegodtraits()
         {
             List<string> list = new List<string>(GodAbilities.Keys);
-            foreach (Actor a in instance.units)
+            foreach (Actor a in World.world.units)
             {
                 foreach (string godtrait in GetGodTraits(a))
                 {

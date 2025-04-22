@@ -2,6 +2,7 @@
 AUTHOR: MASON SCARBRO
 VERSION: 1.0.0
 */
+using GodsAndPantheons.CustomEffects;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 namespace GodsAndPantheons
@@ -251,6 +252,26 @@ namespace GodsAndPantheons
                 },
                 sound_launch = "event:/SFX/UNITS/dragon/fire_breath"
             });
+
+            AssetManager.effects_library.add(new EffectAsset
+            {
+                id = "SunGodsOrb",
+                use_basic_prefab = false,
+                prefab_id = "effects/prefabs/SunGodsOrb",
+                show_on_mini_map = true,
+                draw_light_area = true,
+                draw_light_size = 10,
+                spawn_action = (BaseEffect pEffect, WorldTile pTile, string _, string __, float pFloatParam1, Actor pActor) =>
+                {
+                    if (pActor == null)
+                    {
+                        return EffectsLibrary.spawn("fx_napalm_flash", pTile);
+                    }
+                    ((LightGodsOrb)pEffect).Init(pActor, pTile, pFloatParam1);
+                    return null;
+                }
+            }
+            );
         }
     }
 }

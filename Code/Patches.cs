@@ -16,19 +16,20 @@ namespace GodsAndPantheons.Patches
         {
             if(pSelf.a.hasTrait("God Of Fire") && pAttackedBy != null)
             {
-                if (Randy.randomChance(Chance("God Of Fire", "MorphIntoDragon%", 25)))
+                if (CanUseAbility("God Of Fire", "MorphIntoDragon%", 25))
                 {
                     CreateFireExplosion(pSelf, pAttackedBy);
                 }
             }
         }
     }
+
     [HarmonyPatch(typeof(Actor), nameof(Actor.makeStunned))]
     public class GodsImmuneToStuns
     {
         static bool Prefix(Actor __instance)
         {
-            return !IsGod(__instance);
+            return !__instance.IsGod();
         }
     }
     [HarmonyPatch(typeof(Actor), nameof(Actor.ignoresBlocks))]
@@ -36,7 +37,7 @@ namespace GodsAndPantheons.Patches
     {
         static void Postfix(Actor __instance, ref bool __result)
         {
-            if(__instance.hasTrait("Earth Walker") || __instance.hasTrait("God Hunter"))
+            if(__instance.hasTrait("Earth Walker") || __instance.hasTrait("God Hunter") || __instance.hasStatus("At The Speed Of Light"))
             {
                 __result = true;
             }
@@ -57,11 +58,22 @@ namespace GodsAndPantheons.Patches
     {
         static bool Prefix(Actor pActor)
         {
-            if (HasMorphed(pActor))
+            if (pActor.HasMorphed())
             {
                 return false;
             }
             return true;
+        }
+    }
+    [HarmonyPatch(typeof(Kingdom), nameof(Kingdom.getActorAsset))]
+    public class fixbannererror
+    {
+        static void Postfix(Kingdom __instance, ref ActorAsset __result)
+        {
+            if (__instance.hasKing())
+            {
+                __result = __instance.king.GetTrueAsset();
+            }
         }
     }
     [HarmonyPatch(typeof(PowerLibrary), "spawnUnit")]
@@ -122,14 +134,14 @@ namespace GodsAndPantheons.Patches
     {
         static void Postfix(ref string __result, Actor pActor)
         {
-            if (HasMorphed(pActor) && pActor.asset.job.Length != 0)
-            {
-                __result = pActor.asset.job.GetRandom();
-                return;
-            }
             if (pActor.hasStatus("Blinded"))
             {
                 __result = "random_move";
+                return;
+            }
+            if (pActor.hasStatus("At The Speed Of Light"))
+            {
+                __result = "AtTheSpeedOfLight";
                 return;
             }
             if (pActor.hasStatus("BrainWashed"))
@@ -147,6 +159,11 @@ namespace GodsAndPantheons.Patches
                 __result = "GodHunter";
                 return;
             }
+            if (pActor.HasMorphed() && pActor.asset.job.Length != 0)
+            {
+                __result = pActor.asset.job.GetRandom();
+                return;
+            }
         }
     }
     [HarmonyPatch(typeof(KingdomBehCheckKing), nameof(KingdomBehCheckKing.execute))]
@@ -161,7 +178,7 @@ namespace GodsAndPantheons.Patches
             List<Actor> list = new List<Actor>();
             foreach(Actor a in pKingdom.units)
             {
-                if (IsGod(a))
+                if (a.IsGod())
                 {
                     list.Add(a);
                 }
@@ -209,7 +226,7 @@ namespace GodsAndPantheons.Patches
             {
                 return 1;
             }
-            if (IsGod(Actor))
+            if (Actor.IsGod())
             {
                 return Randy.randomFloat(0.1f, 0.2f);
             }
@@ -231,7 +248,11 @@ namespace GodsAndPantheons.Patches
         {
             if((trait.id == "Demi God" || trait.id == "Lesser God") && SelectedUnit.unit != null)
             {
-                return new BaseStats[] { GetDemiStats(SelectedUnit.unit.data) };
+                DemiGodData Data = SelectedUnit.unit.DemiData();
+                if (Data != null)
+                {
+                    return new BaseStats[] { Data.BaseStats };
+                }
             }
             return null;
         }
@@ -255,7 +276,7 @@ namespace GodsAndPantheons.Patches
     {
         static void Postfix(BaseSimObject __instance, BaseSimObject pTarget, ref bool __result)
         {
-            if (__instance.hasStatus("Blinded"))
+            if (__instance.hasStatus("Blinded") || __instance.hasStatus("At The Speed Of Light"))
             {
                 __result = false;
                 return;
@@ -277,7 +298,7 @@ namespace GodsAndPantheons.Patches
                 }
                 if(__instance.hasStatus("BrainWashed") || __instance.a.hasTrait("Summoned One"))
                 {
-                    Actor Master = FindMaster(__instance.a);
+                    Actor Master = __instance.a.FindMaster();
                     if (Master != null)
                     {
                         if (Master == pTarget)
@@ -291,7 +312,7 @@ namespace GodsAndPantheons.Patches
                 }
                 if(__instance.a.hasTrait("God Hunter"))
                 {
-                    if(pTarget.isActor() && pTarget.areFoes(__instance) && IsGod(pTarget.a))
+                    if(pTarget.isActor() && pTarget.areFoes(__instance) && pTarget.a.IsGod())
                     {
                         __result = true;
                         return;
@@ -318,7 +339,7 @@ namespace GodsAndPantheons.Patches
         static void Prefix(Actor __instance, Actor pDeadUnit)
         {
             if(pDeadUnit == null) return;
-            bool isgod = IsGod(pDeadUnit);
+            bool isgod = pDeadUnit.IsGod();
             if(__instance.hasTrait("NecroMancer") && !isgod)
             {
                 Actor actor = CopyActor(pDeadUnit, pDeadUnit.asset.zombie_id);
@@ -370,16 +391,16 @@ namespace GodsAndPantheons.Patches
         public static void inheritgodtraits(Actor child, Actor pParent1, Actor pParent2, Clan GreatClan)
         {
             int parents = pParent2 != null ? 2 : 1;
-            float godparents = IsGod(pParent1) ? 1 : 0;
+            float godparents = pParent1.IsGod() ? 1 : 0;
             float demiparents = pParent1.hasTrait("Demi God") ? 1 : 0;
             float lesserparents = pParent1.hasTrait("Lesser God") ? 1 : 0;
-            using ListPool<string> godtraits = new ListPool<string>(GetGodTraits(pParent1));
-            AddRange(godtraits, Getinheritedgodtraits(pParent1.data));
+            using ListPool<string> godtraits = new ListPool<string>(pParent1.GetGodTraits());
+            AddRange(godtraits, Getinheritedgodtraits(pParent1));
             if (parents == 2)
             {
-                AddRange(godtraits, GetGodTraits(pParent2));
-                AddRange(godtraits, Getinheritedgodtraits(pParent2.data));
-                godparents += IsGod(pParent2) ? 1 : 0;
+                AddRange(godtraits, pParent2.GetGodTraits());
+                AddRange(godtraits, Getinheritedgodtraits(pParent2));
+                godparents += pParent2.IsGod() ? 1 : 0;
                 demiparents += pParent2.hasTrait("Demi God") ? 1 : 0;
                 lesserparents += pParent2.hasTrait("Lesser God") ? 1 : 0;
             }
@@ -395,7 +416,7 @@ namespace GodsAndPantheons.Patches
             AutoTrait(child, godtraits, true, chancemult);
             if (chief != null)
             {
-                if (IsGod(chief))
+                if (chief.IsGod())
                 {
                     MakeLesserGod(godtraits, child, chancemult);
                     return;
@@ -414,6 +435,10 @@ namespace GodsAndPantheons.Patches
         }
         static void AddRange(ListPool<string> list, IEnumerable<string> range)
         {
+            if(range == null)
+            {
+                return;
+            }
             foreach (string s in range)
             {
                 if (!list.Contains(s))
@@ -457,16 +482,12 @@ namespace GodsAndPantheons.Patches
     {
         static void Prefix(Actor __instance, BaseSimObject pAttacker, ref float pDamage)
         {
-            if(pAttacker == null || !pAttacker.isActor() || pAttacker.a.equipment == null || __instance == null)
-            {
-                return;
-            }
-            if(__instance?.asset == null)
+            if(pAttacker == null || !pAttacker.isActor() || pAttacker.a.equipment == null)
             {
                 return;
             }
             ItemAsset Weapon = pAttacker.a.getWeaponAsset();
-            if (IsGod(__instance) && Weapon.id == "GodHuntersScythe")
+            if (__instance.IsGod() && Weapon.id == "GodHuntersScythe")
             {
                 pDamage *= 5;
             }
@@ -494,7 +515,7 @@ namespace GodsAndPantheons.Patches
         {
             if (__instance.hasTrait("Demi God") || __instance.hasTrait("Lesser God"))
             {
-                __instance.stats.mergeStats(GetDemiStats(__instance.data));
+                __instance.stats.mergeStats(__instance.GetDemiStats());
             }
             if(__instance.hasTrait("God Of Fire") && __instance.asset.id == SA.dragon)
             {
@@ -507,6 +528,11 @@ namespace GodsAndPantheons.Patches
     {
         static bool Prefix(AttackData pData, ref BaseSimObject pTargetToCheck, ref AttackDataResult __result)
         {
+            if (pTargetToCheck.hasStatus("At The Speed Of Light"))
+            {
+                __result = AttackDataResult.Miss;
+                return false;
+            }
             if (pData.initiator == null)
             {
                 return true;
@@ -516,7 +542,7 @@ namespace GodsAndPantheons.Patches
                 __result = AttackDataResult.Hit;
                 return false;
             }
-            if (pData.initiator.isActor() && IsGod(pData.initiator.a))
+            if (pData.initiator.isActor() && pData.initiator.a.IsGod(false, true))
             {
                 pData.initiator.a.data.set("AttackFromProjectile", pData.is_projectile);
             }
@@ -524,7 +550,7 @@ namespace GodsAndPantheons.Patches
             {
                 return true;
             }
-            if (pTargetToCheck.a.hasTrait("God Of War") && Randy.randomChance(Chance("God Of War", "BlockAttack%")))
+            if (pTargetToCheck.a.hasTrait("God Of War") && CanUseAbility("God Of War", "BlockAttack%"))
             {
                 MusicBox.playSound(MB.HitSwordSword, pTargetToCheck.current_tile);
                 if (pData.is_projectile)
@@ -541,7 +567,7 @@ namespace GodsAndPantheons.Patches
                 __result = AttackDataResult.Block;
                 return false;
             }
-            if (pTargetToCheck.a.hasTrait("God Of Knowledge") && Randy.randomChance(Chance("God Of Knowledge", "EnemySwap%")))
+            if (pTargetToCheck.a.hasTrait("God Of Knowledge") && CanUseAbility("God Of Knowledge", "EnemySwap%"))
             {
                 WorldTile tile = pTargetToCheck.current_tile;
                 List<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(tile, pTargetToCheck.kingdom, -1).list;

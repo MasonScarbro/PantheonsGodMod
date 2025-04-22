@@ -45,11 +45,11 @@ namespace GodsAndPantheons
                 return 0;
             }
             Actor myking = Self.king;
-            if (!IsGod(myking))
+            if (!myking.IsGod())
             {
                 return 0;
             }
-            foreach(string trait in GetGodTraits(myking))
+            foreach(string trait in myking.GetGodTraits())
             {
                 if (World.world_era.id == TraitEras[trait].Key)
                 {
@@ -68,7 +68,7 @@ namespace GodsAndPantheons
             {
                 return 0;
             }
-            foreach(string trait in GetGodTraits(Self.king))
+            foreach(string trait in Self.king.GetGodTraits())
             {
                 if (Target.king.hasTrait(trait))
                 {
@@ -89,7 +89,7 @@ namespace GodsAndPantheons
             }
             Actor myking = Self.king;
             Actor enemyking = Target.king;
-            if (!IsGod(myking) || !IsGod(enemyking))
+            if (!myking.IsGod() || !enemyking.IsGod())
             {
                 return 0;
             }
@@ -118,7 +118,7 @@ namespace GodsAndPantheons
             {
                 return 0;
             }
-            if(IsGod(Self.king) && !IsGod(Target.king))
+            if(Self.king.IsGod() && !Target.king.IsGod())
             {
                 return -20;
             }

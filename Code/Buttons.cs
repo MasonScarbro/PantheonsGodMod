@@ -2,6 +2,7 @@ using NCMS.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 using NeoModLoader.General;
+using System.Collections.Generic;
 
 namespace GodsAndPantheons
 {
@@ -284,7 +285,7 @@ namespace GodsAndPantheons
                return "no Lesser God or Demi God found!";
             }
             string message = "";
-            foreach (string trait in Traits.Getinheritedgodtraits(pActor.data))
+            foreach (string trait in Traits.Getinheritedgodtraits(pActor))
             {
                 message += (message == "" ? "" : ", ") + trait;
             }
@@ -306,15 +307,11 @@ namespace GodsAndPantheons
                 return "no Lesser God found!";
             }
             string message = "";
-            foreach (string godtrait in Traits.Getinheritedgodtraits(pActor.data))
+            foreach(KeyValuePair<string, List<int>> Ability in pActor.DemiData().GodsAndAbilities)
             {
-                foreach (AttackAction ability in Traits.GodAbilities[godtrait])
+                foreach (int i in Ability.Value)
                 {
-                    pActor.data.get("Lesser" + ability.Method.Name, out bool inherited);
-                    if (inherited)
-                    {
-                        message += (message == "" ? "" : ", ") + ability.Method.Name;
-                    }
+                    message += (message == "" ? "" : ", ") + Traits.GodAbilities[Ability.Key][i].Method.Name;
                 }
             }
             if(message == "")
@@ -361,7 +358,7 @@ namespace GodsAndPantheons
         }
         public static void CreateDivineMiracle()
         {
-            if (!WorldBehaviours.DivineMiracle(World.world))
+            if (!WorldBehaviours.DivineMiracle())
             {
                 WorldTip.instance.showToolbarText("Could Not Create A Divine Miracle! there can only be a miracle if there is a kingdom with no gods");
             }

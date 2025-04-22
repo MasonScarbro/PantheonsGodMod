@@ -380,11 +380,11 @@ namespace GodsAndPantheons
         //doesnt work on gods, that would be too overpowered
         public static bool CorruptEnemy(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Randy.randomChance(Chance("God Of Knowledge", "CorruptEnemy%")))
+            if (CanUseAbility("God Of Knowledge", "CorruptEnemy%"))
             {
                 foreach (Actor a in Finder.getUnitsFromChunk(pTile, 1, 8))
                 {
-                    if(IsGod(a) || a.kingdom == pSelf.kingdom) continue;
+                    if(a.IsGod() || !a.areFoes(pSelf)) continue;
                     CorruptActor(a, pSelf.a);
                 }
                 MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionForce", pTile, false, false);
@@ -394,7 +394,7 @@ namespace GodsAndPantheons
         }
         static bool UnleashMoonFall(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Randy.randomChance(Chance("God Of the Stars", "summonMoonChunk%")))
+            if (CanUseAbility("God Of the Stars", "summonMoonChunk%"))
             {
                 float pDist = Vector2.Distance(pTarget.current_position, pTile.pos);
                 ShootProjectileSafe(pSelf, pTarget, "moonFall", 1, 0, Toolbox.getNewPoint(pSelf.current_position.x + 35f, pSelf.current_position.y + 95f, pTile.x + 1f, pTile.y + 1f, pDist));
@@ -403,7 +403,7 @@ namespace GodsAndPantheons
         }
         static bool AxeMaestro(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (Randy.randomChance(Chance("God Of War", "axemaelstrom%")))
+            if (CanUseAbility("God Of War", "axemaelstrom%"))
             {
                 List<Actor> Targets = GetAlliesOfActor(Finder.getUnitsFromChunk(pSelf.current_tile, 1, 12), pTarget);
                 if(Targets.Count == 0)
@@ -422,9 +422,12 @@ namespace GodsAndPantheons
         {
             if (pTarget != null)
             {
-                if (Randy.randomChance(Chance("God Of light", "SunGodsSlashes%")))
+                if (CanUseAbility("God Of light", "LightOrbs%"))
                 {
-                    ShootProjectileSafe(pSelf, pTarget, "lightSlashesProjectile");
+                    for(int i = 0; i < 3; i++)
+                    {
+                        EffectsLibrary.spawn("SunGodsOrb", pTarget.current_tile, null, null, -1, -1, -1, pSelf.a);
+                    }
                 }
                 return true;
             }
@@ -435,7 +438,7 @@ namespace GodsAndPantheons
         {
             if (pTarget != null)
             {
-                if (Randy.randomChance(Chance("God Of the Night", "DarkDash%")))
+                if (CanUseAbility("God Of the Night", "DarkDash%"))
                 {
                     PushActor(pSelf.a, pTarget.current_tile.pos, 4, 0.1f);
                     foreach(BaseSimObject enemy in Finder.getUnitsFromChunk(pTile, 1, 4)){
@@ -459,7 +462,7 @@ namespace GodsAndPantheons
 
         public static bool UnleashHell(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (!pSelf.hasStatus("Lassering") && Randy.randomChance(Chance("God Of Fire", "ChaosLaser%")))
+            if (!pSelf.hasStatus("Lassering") && CanUseAbility("God Of Fire", "ChaosLaser%"))
             {
                 pSelf.addStatusEffect("Lassering", 10);
             }
@@ -472,7 +475,7 @@ namespace GodsAndPantheons
         {
             if (pTarget != null)
             {
-                if (Randy.randomChance(Chance("God Of The Lich", "waveOfMutilation%")))
+                if (CanUseAbility("God Of The Lich", "waveOfMutilation%"))
                 {
                     ShootProjectileSafe(pSelf, pTarget, "waveOfMutilationProjectile");
                 }
@@ -482,7 +485,7 @@ namespace GodsAndPantheons
 
             public static bool earthGodImpaleEnemy(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
             {   
-                if (Randy.randomChance(Chance("God Of the Earth", "StalagmitePath%")))
+                if (CanUseAbility("God Of the Earth", "StalagmitePath%"))
                 {
                     CreateStalagmites(pTile, pSelf, pTarget);
                 }

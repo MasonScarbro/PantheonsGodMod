@@ -17,7 +17,7 @@ namespace GodsAndPantheons
     class Main : MonoBehaviour
     {
         
-        private const string correctSettingsVersion = "0.2.1";
+        private const string correctSettingsVersion = "0.2.2";
         public static SavedSettings savedSettings = new SavedSettings();
         public static SavedSettings defaultSettings = new SavedSettings();
         static Harmony _harmony;
@@ -51,6 +51,7 @@ namespace GodsAndPantheons
             GodHunterBeh.init();
             SummonedOneBeh.init();
             CorruptedOneBeh.init();
+            AtTheSpeedOfLight.init();
 
             //WORLD
             NewOpinions.init();
