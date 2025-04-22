@@ -52,12 +52,12 @@ namespace GodsAndPantheons
             {
                 return;
             }
-            DivineMiracle(instance);
+            DivineMiracle();
         }
-        public static bool DivineMiracle(MapBox instance)
+        public static bool DivineMiracle()
         {
             List<Kingdom> list = World.world.kingdoms.list;
-            List<string> availabletraits = getavailblegodtraits(instance);
+            List<string> availabletraits = getavailblegodtraits();
             if (availabletraits.Count == 0)
             {
                 return false;

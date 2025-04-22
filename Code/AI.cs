@@ -6,6 +6,24 @@ using UnityEngine;
 using static GodsAndPantheons.AI.BehFunctions;
 namespace GodsAndPantheons.AI
 {
+    public class AtTheSpeedOfLight
+    {
+        public static void init()
+        {
+            BehaviourTaskActor Behaviour = new BehaviourTaskActor();
+            Behaviour.id = "AtTheSpeedOfLight";
+            Behaviour.locale_key = "Looking for victims";
+            Behaviour.ignore_fight_check = true;
+            AssetManager.tasks_actor.add(Behaviour);
+            ActorJob SpeedJob = new ActorJob
+            {
+                id = "AtTheSpeedOfLight",
+            };
+            SpeedJob.addTask("AtTheSpeedOfLight");
+            LM.AddToCurrentLocale("Looking for victims", "Looking for victims");
+            AssetManager.job_actor.add(SpeedJob);
+        }
+    }
     public class GodHunterBeh : BehaviourActionActor
     {
         public static void init()
@@ -101,7 +119,7 @@ namespace GodsAndPantheons.AI
         }
         public bool CheckStatus(Actor pActor, out Actor Master)
         {
-            Master = Traits.FindMaster(pActor);
+            Master = pActor.FindMaster();
             if (pActor.hasTrait("madness"))
             {
                 pActor.data.setName("Corrupted One");
@@ -149,7 +167,7 @@ namespace GodsAndPantheons.AI
         }
         public bool CheckStatus(Actor pActor, out Actor Master)
         {
-            Master = Traits.FindMaster(pActor);
+            Master = pActor.FindMaster();
             if (pActor.hasTrait("madness") || Master == null)
             {
                 return false;

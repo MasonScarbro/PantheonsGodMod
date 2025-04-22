@@ -14,11 +14,13 @@ namespace GodsAndPantheons
             GameObject BlackHolePrefab = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
             BlackHolePrefab.transform.position = new Vector3(-99999, -99999, 0);
             DestroyImmediate(BlackHolePrefab.GetComponent<BaseEffect>());
-            SpriteAnimation component = BlackHolePrefab.GetComponent<SpriteAnimation>();
-            component.timeBetweenFrames = 0.08f;
-            component.returnToPool = false;
-            component.frames = Resources.LoadAll<Sprite>("effects/projectiles/blackHoleProjectile");
-            component.spriteRenderer.sortingLayerName = "EffectsBack";
+            {
+                SpriteAnimation component = BlackHolePrefab.GetComponent<SpriteAnimation>();
+                component.timeBetweenFrames = 0.08f;
+                component.returnToPool = false;
+                component.frames = Resources.LoadAll<Sprite>("effects/projectiles/blackHoleProjectile");
+                component.spriteRenderer.sortingLayerName = "EffectsBack";
+            }
             BlackHolePrefab.AddComponent<BlackHoleFlash>();
             ResourcesPatch.PatchResource("effects/prefabs/BlackHole", BlackHolePrefab);
 
@@ -124,6 +126,19 @@ namespace GodsAndPantheons
             Traits.LaserSprites = new List<Sprite>(arm.laserSprites);
             arm.DestroyImmediateIfNotNull();
             ResourcesPatch.PatchResource("effects/prefabs/ChaosLaser", Prefab);
+
+            GameObject SunGodsOrb = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
+            SunGodsOrb.transform.position = new Vector3(-99999, -99999, 0);
+            DestroyImmediate(SunGodsOrb.GetComponent<BaseEffect>());
+            {
+                SpriteAnimation component = SunGodsOrb.GetComponent<SpriteAnimation>();
+                component.timeBetweenFrames = 0.08f;
+                component.returnToPool = false;
+                component.frames = Resources.LoadAll<Sprite>("effects/SunGodsOrb");
+                component.spriteRenderer.sortingLayerName = "EffectsTop";
+            }
+            SunGodsOrb.AddComponent<LightGodsOrb>();
+            ResourcesPatch.PatchResource("effects/prefabs/SunGodsOrb", SunGodsOrb);
         }
     }
 }

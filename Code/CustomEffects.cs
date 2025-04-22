@@ -1,8 +1,95 @@
 ﻿using static GodsAndPantheons.Traits;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 namespace GodsAndPantheons.CustomEffects
 {
+    public class LightGodsOrb : BaseEffect
+    {
+        public BaseSimObject ByWho;
+        public BaseSimObject Target;
+        public float TimeLeft;
+        public WorldTile TargetTile;
+        public float Speed;
+        public float Timer;
+        public void Init(BaseSimObject pByWho, WorldTile pTile, float pTimeLeft = -1)
+        {
+            if(pTimeLeft == -1)
+            {
+                pTimeLeft = Randy.randomInt(5, 10);
+            }
+            TimeLeft = pTimeLeft;
+            Speed = Randy.randomFloat(9, 18);
+            TargetTile = null;
+            ByWho = pByWho;
+            Timer = 0.5f;
+            Target = null;
+            pTile ??= pByWho.current_tile;
+            spawnOnTile(pTile);
+        }
+        public override void update(float pElapsed)
+        {
+            base.update(pElapsed);
+            if (TimeLeft <= 0)
+            {
+                setScale(scale *= 0.8f);
+                if(scale <= 0.005f)
+                {
+                    kill();
+                }
+                return;
+            }
+            TimeLeft -= pElapsed;
+            tile = World.world.GetTileSimple((int)transform.position.x, (int)transform.position.y);
+            if (tile == null || ByWho == null)
+            {
+                TimeLeft = 0;
+                return;
+            }
+            Target ??= GetTarget();
+            if(Target == null || !Target.isAlive())
+            {
+                if (SwitchTile())
+                {
+                    TargetTile = Toolbox.getRandomTileWithinDistance(tile, 5);
+                }
+            }
+            else if(SwitchTile())
+            {
+                TargetTile = Target.current_tile;
+            }
+            if (TargetTile != null)
+            {
+                Vector3 tDirection = (TargetTile.posV3 - transform.position).normalized;
+                transform.position += tDirection * Speed * pElapsed;
+            }
+            Timer -= pElapsed;
+            if(Timer <= 0)
+            {
+                Timer = 0.5f;
+                MapAction.damageWorld(tile, 3, AssetManager.terraform.get("LesserCrabLaser"), ByWho);
+            }
+        }
+        public Actor GetTarget()
+        {
+            List<Actor> enemies = GetEnemiesOfActor(Finder.getUnitsFromChunk(tile, 1, 8), ByWho);
+            if (enemies.Count > 0)
+            {
+                return enemies.GetRandom();
+            }
+            return null;
+        }
+        public bool SwitchTile()
+        {
+            return tile == TargetTile || TargetTile == null;
+        }
+        public override void spawnOnTile(WorldTile pTile)
+        {
+            tile = pTile;
+            prepare(pTile, 0.03f);
+            sprite_animation.resetAnim(0);
+        }
+    }
     public class FireTornado : TornadoEffect
     {
         float FireTimer = 0.8f;
@@ -37,9 +124,7 @@ namespace GodsAndPantheons.CustomEffects
         public SpriteRenderer LaserSprite;
         public Transform LaserPoint;
         public Transform Laser;
-        public override void Awake()
-        {
-        }
+        public override void Awake() {}
         public void UpdateTransform()
         {
             transform.localScale = pSelf.current_scale;
@@ -388,7 +473,9 @@ namespace GodsAndPantheons.CustomEffects
                 }
                 else
                 {
+                    Actor.addStatusEffect("invincible");
                     MapAction.damageWorld(tile, 5, AssetManager.terraform.get("moonFalling"), Actor);
+                    Actor.finishStatusEffect("invincible");
                 }
                 deactivate();
                 return;
@@ -444,7 +531,9 @@ namespace GodsAndPantheons.CustomEffects
             }
             if(scale >= 0.5)
             {
+                byWho.addStatusEffect("invincible");
                 MapAction.damageWorld(tile, 4, AssetManager.terraform.get("BlackHole"), byWho);
+                byWho.finishStatusEffect("invincible");
                 kill();
                 return;
             }

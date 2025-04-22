@@ -2,9 +2,12 @@
 AUTHOR: MASON SCARBRO
 VERSION: 1.0.0
 */
+using GodsAndPantheons.AI;
 using GodsAndPantheons.CustomEffects;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 namespace GodsAndPantheons
 {
@@ -187,7 +190,7 @@ namespace GodsAndPantheons
             Invisible.locale_description = "you cant see me";
             Invisible.base_stats[S.speed] += 60;
             Invisible.base_stats[S.mass] -= 5;
-            Invisible.action_interval = 0.5f;
+            Invisible.action_interval = 0.001f;
             Invisible.action = new WorldAction(InvisibleEffect);
             Invisible.action_finish = FinishInvisibility;
             localizeStatus(Invisible.id, "Invisible", Invisible.locale_description); // Localizes the status effect
@@ -315,26 +318,59 @@ namespace GodsAndPantheons
             localizeStatus(Levitating.id, "Levitating", Levitating.locale_description); // Localizes the status effect
             AssetManager.status.add(Levitating);
 
-
-            /*
-            ProjectileAsset Test = new ProjectileAsset();
-            Usoppball.id = "Test";
-		    Usoppball.texture = "effects/projectiles/Test";
-		    Usoppball.trailEffect_enabled = false;
-		    Usoppball.look_at_target = true;
-            Usoppball.parabolic = false;
-            Usoppball.hitShake = true;
-		    Usoppball.looped = false;
-		    Usoppball.speed = 1f;
-            Usoppball.startScale = 0.1f;
-            Usoppball.targetScale = 0.1f;
-            AssetManager.projectiles.add(Usoppball);
-
-
-            
-
-            */
-
+            StatusAsset AtTheSpeedOfLight = new StatusAsset();
+            AtTheSpeedOfLight.id = "At The Speed Of Light";
+            AtTheSpeedOfLight.duration = 7000f;
+            AtTheSpeedOfLight.base_stats[S.armor] += 30;
+            AtTheSpeedOfLight.base_stats[S.speed] += 500;
+            AtTheSpeedOfLight.base_stats[S.multiplier_speed] += 1;
+            AtTheSpeedOfLight.path_icon = "ui/icons/lightGod";
+            AtTheSpeedOfLight.locale_description = "HERE COMES THE GOD OF LIGHT!";
+            AtTheSpeedOfLight.locale_id = "At The Speed Of Light";
+            AtTheSpeedOfLight.action_interval = 0.000001f;
+            AtTheSpeedOfLight.action_on_receive = (BaseSimObject Actor, WorldTile _) =>
+            {
+                Actor.a.cancelAllBeh();
+                return true;
+            };
+            AtTheSpeedOfLight.action = new WorldAction(AtTheSpeedOfLightEffect);
+            localizeStatus(AtTheSpeedOfLight.id, "At The Speed Of Light", AtTheSpeedOfLight.locale_description); // Localizes the status effect
+            AssetManager.status.add(AtTheSpeedOfLight);
+        }
+        public static bool AtTheSpeedOfLightEffect(BaseSimObject baseSimObject, WorldTile Tile)
+        {
+            Actor actor = baseSimObject.a.beh_actor_target?.a;
+            if (actor == null || !actor.isAlive())
+            {
+                actor = Toolbox.getClosestActor(Traits.GetEnemiesOfActor(Finder.getUnitsFromChunk(Tile, 3, 48), baseSimObject), Tile);
+                if (actor != null)
+                {
+                    baseSimObject.a.beh_tile_target = actor.current_tile;
+                    ActorMove.goTo(baseSimObject.a, baseSimObject.a.beh_tile_target, true, true);
+                }
+                else
+                {
+                    if (baseSimObject.a.beh_tile_target == null || Toolbox.DistTile(baseSimObject.a.beh_tile_target, baseSimObject.current_tile) < 2)
+                    {
+                        BehFunctions.getrandomtile(ref baseSimObject.a);
+                        ActorMove.goTo(baseSimObject.a, baseSimObject.a.beh_tile_target, true, true);
+                    }
+                    return true;
+                }
+            }
+            if (Toolbox.DistTile(actor.current_tile, baseSimObject.current_tile) < 3)
+            {
+                actor.getHit(696, true, AttackType.Explosion, baseSimObject, false);
+                MusicBox.playSound("GodOfLightRam", Tile);
+                if (actor == null || !actor.isAlive())
+                {
+                    for (int i = 0; i < 8; i++)
+                    {
+                        World.world.drop_manager.spawnParabolicDrop(actor.current_tile, "blood_rain", 0f, 0.1f, 5f, 0.5f, 4f, 0.15f);
+                    }
+                }
+            }
+            return true;
         }
         public static bool CreateLaserForActor(BaseSimObject baseSimObject, WorldTile Tile)
         {
@@ -407,10 +443,9 @@ namespace GodsAndPantheons
         public static bool InvisibleEffect(BaseSimObject pTarget, WorldTile pTile)
         {
             Color mycolor = pTarget.a.color;
-                if (mycolor.r != 0.8)
+                if (mycolor.a != 0.4f)
                 {
-                    pTarget.a.restoreHealth(pTarget.a.getMaxHealth());
-                    pTarget.a.color = new Color(0.8f, mycolor.g, mycolor.b, 0.4f);
+                    pTarget.a.color = new Color(Randy.randomFloat(0.6f, 0.81f), mycolor.g, mycolor.b, 0.4f);
                 }
             return true;
         }
