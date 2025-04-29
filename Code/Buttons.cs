@@ -252,7 +252,7 @@ namespace GodsAndPantheons
                     "Inspect God Traits Inherited",
                     Resources.Load<Sprite>("ui/Icons/IconDemi"),
                     "Inspect God Traits Inherited",
-                    "use this to inspect which god traits a lessergod/demi god inherited",
+                    "use this to inspect which god traits a lessergod/demi god/ god killer inherited",
                     new Vector2(496, 18),
                     ButtonType.GodPower,
                     tab.transform,
@@ -262,7 +262,7 @@ namespace GodsAndPantheons
                    "Inspect Abilities Inherited",
                    Resources.Load<Sprite>("ui/Icons/subGod"),
                    "Inspect Abilities Inherited",
-                   "use this to inspect which god abiltiies a lessergod inherited",
+                   "use this to inspect which god abiltiies a lessergod/god killer inherited",
                    new Vector2(496, -18),
                    ButtonType.GodPower,
                    tab.transform,
@@ -274,7 +274,7 @@ namespace GodsAndPantheons
             Actor pActor = null;
             foreach (Actor a in Finder.getUnitsFromChunk(pTile, 1, 2))
             {
-                if (a.hasTrait("Lesser God") || a.hasTrait("Demi God"))
+                if (a.hasTrait("Lesser God") || a.hasTrait("Demi God") || a.hasTrait("God Killer"))
                 {
                     pActor = a;
                     break;
@@ -282,10 +282,10 @@ namespace GodsAndPantheons
             }
             if (pActor == null)
             {
-               return "no Lesser God or Demi God found!";
+               return "no Lesser God, Demi God or God Killer found!";
             }
             string message = "";
-            foreach (string trait in Traits.Getinheritedgodtraits(pActor))
+            foreach (string trait in pActor.Getinheritedgodtraits())
             {
                 message += (message == "" ? "" : ", ") + trait;
             }
@@ -296,7 +296,7 @@ namespace GodsAndPantheons
             Actor pActor = null;
             foreach (Actor a in Finder.getUnitsFromChunk(pTile, 1, 2))
             {
-                if (a.hasTrait("Lesser God"))
+                if (a.hasTrait("Lesser God") || a.hasTrait("God Killer"))
                 {
                     pActor = a;
                     break;
@@ -304,10 +304,10 @@ namespace GodsAndPantheons
             }
             if (pActor == null)
             {
-                return "no Lesser God found!";
+                return "no Lesser God or God Killer found!";
             }
             string message = "";
-            foreach(KeyValuePair<string, List<int>> Ability in pActor.DemiData().GodsAndAbilities)
+            foreach(KeyValuePair<string, HashSet<int>> Ability in pActor.DemiData().GodsAndAbilities)
             {
                 foreach (int i in Ability.Value)
                 {

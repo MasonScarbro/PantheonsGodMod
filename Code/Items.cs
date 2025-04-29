@@ -261,7 +261,7 @@ namespace GodsAndPantheons
             cometScepter.attack_type = WeaponType.Range;
             cometScepter.name_class = "item_class_weapon";
             cometScepter.path_icon = "ui/weapon_icons/icon_CometScepter";
-            cometScepter.action_attack_target = new AttackAction(UnleashMoonFall);
+            cometScepter.action_attack_target = new AttackAction(CreateMoonOrbit);
             cometScepter.base_stats[S.projectiles] = 4f;
             cometScepter.base_stats[S.damage_range] = 0.9f;
             cometScepter.projectile = "starShowerProjectile";
@@ -392,12 +392,13 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        static bool UnleashMoonFall(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        private static bool CreateMoonOrbit(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (CanUseAbility("God Of the Stars", "summonMoonChunk%"))
+            if (CanUseAbility("God Of the Stars", "MoonOrbit%"))
             {
-                float pDist = Vector2.Distance(pTarget.current_position, pTile.pos);
-                ShootProjectileSafe(pSelf, pTarget, "moonFall", 1, 0, Toolbox.getNewPoint(pSelf.current_position.x + 35f, pSelf.current_position.y + 95f, pTile.x + 1f, pTile.y + 1f, pDist));
+                (EffectsLibrary.spawn("fx_Moon_Orbit", pTile, null, null, 0f, -1f, -1f) as MoonOrbit)?.Init(pSelf.a, pSelf.current_tile, Randy.randomFloat(5, 11));
+                (EffectsLibrary.spawn("fx_Moon_Orbit", pTile, null, null, 0f, -1f, -1f) as MoonOrbit)?.Init(pSelf.a, pSelf.current_tile, Randy.randomFloat(5, 11), 70);
+                (EffectsLibrary.spawn("fx_Moon_Orbit", pTile, null, null, 0f, -1f, -1f) as MoonOrbit)?.Init(pSelf.a, pSelf.current_tile, Randy.randomFloat(5, 11), 140);
             }
             return true;
         }

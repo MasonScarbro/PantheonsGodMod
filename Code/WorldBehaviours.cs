@@ -91,14 +91,13 @@ namespace GodsAndPantheons
             LuckyOne.addTrait(godtrait);
             LuckyOnee = LuckyOne;
             blessingtime = 10;
-            WorldLogMessage worldLogMessage = new WorldLogMessage(DevineMiracle, LuckyOne.kingdom.name)
+            new WorldLogMessage(DevineMiracle, LuckyOne.kingdom.name)
             {
                 unit = LuckyOne,
                 location = LuckyOne.current_position,
                 color_special1 = LuckyOne.kingdom.kingdomColor.getColorText(),
                 color_special2 = LuckyOne.kingdom.kingdomColor.getColor32Main()
-            };
-            worldLogMessage.add();
+            }.add();
         }
         public static void GetText(WorldLogMessage log, ref string s)
         {

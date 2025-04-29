@@ -1,8 +1,11 @@
 ﻿using ai;
 using GodsAndPantheons.CustomEffects;
+using HarmonyLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 
@@ -12,7 +15,11 @@ namespace GodsAndPantheons
     static partial class Traits
     {
         public static PowerLibrary pb = AssetManager.powers;
-        public static Dictionary<Actor, DemiGodData> CachedDemiGodData = new Dictionary<Actor, DemiGodData> ();
+        public static ConcurrentDictionary<Actor, DemiGodData> CachedDemiGodData = new ConcurrentDictionary<Actor, DemiGodData>();
+        public static bool CanDieInLava(this Actor actor)
+        {
+            return actor.asset.die_in_lava && !actor.hasTrait("Lava Walker");
+        }
         //returns null if unable to find master
         public static Actor FindMaster(this Actor Minion)
         {
@@ -24,9 +31,17 @@ namespace GodsAndPantheons
             Minion.data.get("Master", out long master, -1);
             return World.world.units.get(master);
         }
-        public static List<Sprite> LaserSprites;
-        
-        public static GameObject CreateStorm(WorldTile pTile, float time, float TimeCooldown, StormAction Action, Color? StormColor, float Size, BaseSimObject ByWho = null)
+        public static IEnumerable<City> GetAllCitiesWithinRadius(WorldTile tile, int radius)
+        {
+            foreach (City city in World.world.cities)
+            {
+                if (Vector3.Distance(city.city_center, tile.posV) <= radius)
+                {
+                    yield return city;
+                }
+            }
+        }
+        public static Storm CreateStorm(WorldTile pTile, float time, float TimeCooldown, StormAction Action, Color? StormColor, float Size, BaseSimObject ByWho = null)
         {
             World.world.startShake(0.3f, 0.01f, 0.03f, false, true);
             GameObject Storm = EffectsLibrary.spawn("fx_CloudOfDarkness", pTile).gameObject;
@@ -34,7 +49,7 @@ namespace GodsAndPantheons
             Storm.GetComponent<Storm>().Init(time, TimeCooldown, ByWho, Action);
             Storm.transform.localScale = new Vector3(Size, Size, 1);
             Storm.GetComponent<SpriteRenderer>().color = StormColor ?? Color.white;
-            return Storm;
+            return Storm.GetComponent<Storm>();
         }
         public static void AddTrait(ActorTrait Trait, string disc, int InheritRate = 0)
         {
@@ -62,7 +77,7 @@ namespace GodsAndPantheons
                 }
             }
         }
-        public static void AutoTrait(Actor pTarget, ListPool<string> traits, bool MustBeInherited = false, float chancemult = 1)
+        public static void AutoTrait(Actor pTarget, IEnumerable<string> traits, bool MustBeInherited = false, float chancemult = 1)
         {
             if (!Main.savedSettings.AutoTraits)
             {
@@ -129,18 +144,18 @@ namespace GodsAndPantheons
                }
             }
         }
-        public static bool IsGod(this Actor a, bool IncludeDemigods = false, bool IncludeLesserGods = false)
-            => GetGodTraits(a.traits, IncludeDemigods, IncludeLesserGods).ToList().Count > 0
+        public static bool IsGod(this Actor a, bool IncludeDemigods = false, bool IncludeLesserGods = false, bool IncludeGodKillers = false)
+            => GetGodTraits(a.traits, IncludeDemigods, IncludeLesserGods, IncludeGodKillers).ToList().Count > 0
             || a.asset.id == SA.crabzilla //crabzilla is obviously a god, duhh
             || a.asset.id == SA.god_finger; //its in the name
 
         public static bool IsGodTrait(this ActorTrait a) => GodAbilities.Keys.Contains(a.id);
         public static IEnumerable<string> GetGodTraits(this Actor a) => GetGodTraits(a.traits);
-        public static IEnumerable<string> GetGodTraits(HashSet<ActorTrait> pTraits, bool includedemigods = false, bool includesubgods = false)
+        public static IEnumerable<string> GetGodTraits(HashSet<ActorTrait> pTraits, bool includedemigods = false, bool includesubgods = false, bool IncludeGodKillers = false)
         {
             foreach (ActorTrait trait in pTraits)
             {
-                if (IsGodTrait(trait) || (trait.Equals("Demi God") && includedemigods) || (trait.Equals("Lesser God") && includesubgods))
+                if (IsGodTrait(trait) || (trait.Equals("Demi God") && includedemigods) || (trait.Equals("Lesser God") && includesubgods) || (trait.Equals("God Killer") && IncludeGodKillers))
                 {
                     yield return trait.id;
                 }
@@ -224,6 +239,23 @@ namespace GodsAndPantheons
             }
             return allies;
         }
+        public static IEnumerable<BaseSimObject> GetEnemiesOfKingdom(IEnumerable<BaseSimObject> Objects, Kingdom kingdom)
+        {
+            foreach(BaseSimObject Object in Objects)
+            {
+                if (Object.kingdom.isEnemy(kingdom)){
+                    yield return Object;
+                }
+            }
+        }
+        public static void CreateBlindess(WorldTile pTile, int radius, float length, Kingdom kingdom = null)
+        {
+            foreach (Actor victim in Finder.getUnitsFromChunk(pTile, 2, radius))
+            {
+                if ((kingdom != null && victim.kingdom == kingdom) || IsGod(victim)) continue;
+                victim.addStatusEffect("Blinded", length);
+            }
+        }
         public static List<Actor> GetEnemiesOfActor(IEnumerable<Actor> actors, BaseSimObject actor)
         {
             List<Actor> enemies = new List<Actor>();
@@ -284,7 +316,7 @@ namespace GodsAndPantheons
             }
             if (pActor.asset.id == morphid)
             {
-                return null;
+                return pActor;
             }
             if (destroyWeapon)
             {
@@ -338,6 +370,9 @@ namespace GodsAndPantheons
         public static void SetDemiData(this Actor DemiGod, DemiGodData data)
         {
             DemiGod.data.set("DemiData", JsonConvert.SerializeObject(JObject.FromObject(data)));
+            if(CachedDemiGodData.ContainsKey(DemiGod)){
+                CachedDemiGodData[DemiGod] = data;
+            }
         }
         public static DemiGodData DemiData(this Actor DemiGod) {
             if (CachedDemiGodData.TryGetValue(DemiGod, out DemiGodData data))
@@ -350,16 +385,30 @@ namespace GodsAndPantheons
                 return null;
             }
             DemiGodData Data = JsonConvert.DeserializeObject<JObject>(DemiData).ToObject<DemiGodData>();
-            CachedDemiGodData.Add(DemiGod, Data);
+            if(Data == null)
+            {
+                return null;
+            }
+            CachedDemiGodData.TryAdd(DemiGod, Data);
             return Data;
         }
-        public static void InheritStats(DemiGodData data, string trait, float chancemult, float MinRange = 0.75f, float MaxRange = 1)
+        public static void InheritStats(this DemiGodData data, string trait, float chancemult, float MinRange = 0.75f, float MaxRange = 1)
         {
             foreach (KeyValuePair<string, float> kvp in TraitStats[trait])
             {
                 if(CanUseAbility(trait, trait + "inherit%", 50/chancemult))
                 {
                     data.AddBaseStat(kvp.Key, Random.Range(kvp.Value * MinRange, kvp.Value * MaxRange));
+                }
+            }
+        }
+        public static void InheritAbilities(this DemiGodData data, string trait, float chancemult)
+        {
+            for (int i = 0; i < GodAbilities[trait].Count; i++)
+            {
+                if (CanUseAbility(trait, trait + "inherit%", 100 / chancemult))
+                {
+                    data.AddAbility(trait, i);
                 }
             }
         }
@@ -372,20 +421,28 @@ namespace GodsAndPantheons
             {
                 demiGodData.InheritTrait(trait);
                 InheritStats(demiGodData, trait, chancemult);
-                for (int i = 0; i < GodAbilities[trait].Count; i++)
-                {
-                    if (CanUseAbility(trait, trait + "inherit%", 100/chancemult))
-                    {
-                        demiGodData.AddAbility(trait, i);
-                    }
-                }
+                InheritAbilities(demiGodData, trait, chancemult);
             }
             LesserGod.SetDemiData(demiGodData);
         }
-        //gets god traits which are stored in the data of lesser gods / demigods
-        public static List<string> Getinheritedgodtraits(Actor pActor)
+        public static void CreateGodKiller(Actor GodKiller, IEnumerable<string> godtraits)
         {
-            return pActor.DemiData()?.InheritedGodTraits.ToList();
+            GodKiller.addTrait("God Killer");
+            GodKiller.addTrait("immortal");
+            AutoTrait(GodKiller, godtraits, true, 2);
+            DemiGodData GodKillerData = new DemiGodData();
+            foreach (string trait in godtraits)
+            {
+                GodKillerData.InheritTrait(trait);
+                GodKillerData.InheritStats(trait, 2);
+                GodKillerData.InheritAbilities(trait, 2);
+            }
+            GodKiller.SetDemiData(GodKillerData);
+        }
+        //gets god traits which are stored in the data of lesser gods / demigods
+        public static IEnumerable<string> Getinheritedgodtraits(this Actor pActor)
+        {
+            return pActor.DemiData()?.InheritedGodTraits;
         }
         public static bool InheritedTrait(this Actor a, string trait)
         {

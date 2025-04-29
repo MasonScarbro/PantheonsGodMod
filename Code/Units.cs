@@ -69,7 +69,7 @@ namespace GodsAndPantheons
             godHunter.hide_favorite_icon = false;
             godHunter.can_edit_traits = true;
             godHunter.can_be_killed_by_divine_light = true;
-            godHunter.icon = "godKiller";
+            godHunter._cached_sprite = Resources.Load<Sprite>("actors/species/other/GodHunter/heads_male/walk_0");
             godHunter.ignored_by_infinity_coin = false;
             godHunter.actor_size = ActorSize.S13_Human;
             godHunter.base_stats[S.lifespan] = 10000f;

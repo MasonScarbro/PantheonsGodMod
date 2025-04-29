@@ -11,13 +11,15 @@ using Newtonsoft.Json;
 using HarmonyLib;
 using NeoModLoader.constants;
 using GodsAndPantheons.AI;
+using GodsAndPantheons.Patches;
+using ai.behaviours;
 namespace GodsAndPantheons
 {
     [ModEntry]
     class Main : MonoBehaviour
     {
         
-        private const string correctSettingsVersion = "0.2.2";
+        private const string correctSettingsVersion = "0.2.3";
         public static SavedSettings savedSettings = new SavedSettings();
         public static SavedSettings defaultSettings = new SavedSettings();
         static Harmony _harmony;
@@ -56,9 +58,24 @@ namespace GodsAndPantheons
             //WORLD
             NewOpinions.init();
             WorldBehaviours.init();
-            
+
             //APPLY PATCHES
+            Patch();
+        }
+        public static void Patch()
+        {
             _harmony = new Harmony("Com.Pantheon.Gods");
+
+             MethodInfo Transpiler = AccessTools.Method(typeof(LavaWalkers), nameof(LavaWalkers.Transpiler));
+            _harmony.Patch(AccessTools.Method(typeof(Actor), nameof(Actor.findCurrentTile)), null, null, new HarmonyMethod(Transpiler));
+            _harmony.Patch(AccessTools.Method(typeof(Actor), nameof(Actor.isInStablePlace)), null, null, new HarmonyMethod(Transpiler));
+            _harmony.Patch(AccessTools.Method(typeof(Actor), nameof(Actor.u5_curTileAction)), null, null, new HarmonyMethod(Transpiler));
+            _harmony.Patch(AccessTools.Method(typeof(Actor), nameof(Actor.updatePathMovement)), null, null, new HarmonyMethod(Transpiler));
+            _harmony.Patch(AccessTools.Method(typeof(ActorMove), nameof(ActorMove.goTo)), null, null, new HarmonyMethod(Transpiler));
+            _harmony.Patch(AccessTools.Method(typeof(BehMoveAwayFromBlock), nameof(BehMoveAwayFromBlock.isGoodTileRegion)), null, null, new HarmonyMethod(Transpiler));
+            _harmony.Patch(AccessTools.Method(typeof(Dragon), nameof(Dragon.canLand)), null, null, new HarmonyMethod(Transpiler));
+            _harmony.Patch(AccessTools.Method(typeof(TileIsland), nameof(TileIsland.isGoodIslandForActor)), null, null, new HarmonyMethod(Transpiler));
+
             _harmony.PatchAll();
         }
         //??
@@ -94,7 +111,7 @@ namespace GodsAndPantheons
                 saveSettings();
                 return false;
             }
-            if (loadedData.settingVersion != correctSettingsVersion)
+            if (loadedData == null || loadedData.settingVersion != correctSettingsVersion)
             {
                 saveSettings();
                 return false;

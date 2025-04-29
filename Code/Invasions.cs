@@ -1,3 +1,5 @@
+using NeoModLoader.General;
+
 namespace GodsAndPantheons
 {
     class Invasions
@@ -14,6 +16,7 @@ namespace GodsAndPantheons
             hunterInvasion.min_world_cities = 9;
             hunterInvasion.max_existing_units = 2;
             hunterInvasion.world_log = "GodHunters";
+            LM.AddToCurrentLocale("GodHunters", "GodHunters");
             hunterInvasion.min_world_population = 0;
             hunterInvasion.spawn_asset_unit = "GodHunter";
             hunterInvasion.units_min = 2;

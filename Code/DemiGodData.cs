@@ -11,9 +11,9 @@ namespace GodsAndPantheons
         {
             BaseStats[stat] += Num;
         }
-        public void InheritTrait(string trait)
+        public bool InheritTrait(string trait)
         {
-            GodsAndAbilities.TryAdd(trait, new List<int>());
+            return GodsAndAbilities.TryAdd(trait, new HashSet<int>());
         }
         public void AddAbility(string God, int Index)
         {
@@ -26,6 +26,6 @@ namespace GodsAndPantheons
                 return GodsAndAbilities.Keys;
             }
         }
-        public Dictionary<string, List<int>> GodsAndAbilities = new Dictionary<string, List<int>>();
+        public Dictionary<string, HashSet<int>> GodsAndAbilities = new Dictionary<string, HashSet<int>>();
     }
 }

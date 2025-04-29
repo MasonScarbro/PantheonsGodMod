@@ -248,7 +248,7 @@ namespace GodsAndPantheons
                     bool flip = Angle <= -90 || Angle >= 90;
                     pEffect.transform.localScale = new Vector2(0.1f, flip ? -0.1f : 0.1f);
                     pEffect.transform.rotation = Quaternion.AngleAxis(Angle, Vector3.forward);
-                    return null;
+                    return pEffect;
                 },
                 sound_launch = "event:/SFX/UNITS/dragon/fire_breath"
             });
@@ -268,10 +268,30 @@ namespace GodsAndPantheons
                         return EffectsLibrary.spawn("fx_napalm_flash", pTile);
                     }
                     ((LightGodsOrb)pEffect).Init(pActor, pTile, pFloatParam1);
-                    return null;
+                    return pEffect;
                 }
             }
             );
+            AssetManager.effects_library.add(new EffectAsset
+            {
+                id = "BloodMoon",
+                use_basic_prefab = false,
+                prefab_id = "effects/prefabs/BloodMoon",
+                show_on_mini_map = true,
+                draw_light_area = true,
+                draw_light_size = 10,
+                limit = 1,
+                spawn_action = (BaseEffect pEffect, WorldTile pTile, string _, string __, float pFloatParam1, Actor pActor) =>
+                {
+                    if (pActor == null)
+                    {
+                        return EffectsLibrary.spawn("fx_napalm_flash", pTile);
+                    }
+                    ((BloodMoon)pEffect).Init(pActor, pTile, pFloatParam1);
+                    return pEffect;
+                }
+            }
+            ) ;
         }
     }
 }

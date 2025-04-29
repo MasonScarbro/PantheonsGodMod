@@ -69,7 +69,18 @@ namespace GodsAndPantheons
 
                 });
 
-                AssetManager.terraform.add(new TerraformOptions
+            AssetManager.terraform.add(new TerraformOptions
+            {
+                id = "MoonFallSlow",
+                add_burned = true,
+                apply_force = true,
+                force_power = .3f,
+                damage_buildings = true,
+                setFire = true,
+                damage = 30
+            });
+
+            AssetManager.terraform.add(new TerraformOptions
                 {
                     id = "lightBallz",
                     flash = true,
@@ -156,7 +167,20 @@ namespace GodsAndPantheons
                     attack_type = AttackType.Poison,
                     damage = 50,
                 });
-
+            AssetManager.terraform.add(new TerraformOptions
+            {
+                id = "PassiveDamage",
+                flash = true,
+                explode_tile = false,
+                transform_to_wasteland = false,
+                destroy_buildings = true,
+                remove_trees_fully = true,
+                shake = false,
+                apply_force = true,
+                force_power = .0001f,
+                attack_type = AttackType.Other,
+                damage = 60,
+            });
         }
 
     }
