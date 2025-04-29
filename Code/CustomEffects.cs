@@ -1,9 +1,95 @@
 ﻿using static GodsAndPantheons.Traits;
 using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
 namespace GodsAndPantheons.CustomEffects
 {
+    public class BloodMoon : BaseEffect
+    {
+        public static bool BloodMoonPresent = false;
+        Actor ByWho;
+        Kingdom kingdom;
+        float TimeLeft;
+        public void Init(Actor who, WorldTile Tile, float Time)
+        {
+            BloodMoonPresent = true;
+            ByWho = who;
+            kingdom = ByWho.kingdom;
+            spawnOnTile(Tile);
+            if(Time == -1) {
+                Time = Randy.randomFloat(15, 25);
+            }
+            TimeLeft = Time;
+        }
+        public override void update(float pElapsed)
+        {
+            base.update(pElapsed);
+            TimeLeft -= pElapsed;
+            if(ByWho == null && kingdom == null)
+            {
+                TimeLeft = 0;
+            }
+            if(TimeLeft <= 0)
+            {
+                sprite_animation.playType = AnimPlayType.Backward;
+                return;
+            }
+            if (sprite_animation.currentFrameIndex == 9)
+            {
+                sprite_animation.playType = AnimPlayType.Backward;
+                CorruptEnviornment();
+            }
+            else if(sprite_animation.currentFrameIndex == 5)
+            {
+                sprite_animation.playType = AnimPlayType.Forward;
+            }
+        }
+        public override void kill()
+        {
+            base.kill();
+            BloodMoonPresent = false;
+        }
+        public void CorruptEnviornment()
+        {
+            foreach (BaseSimObject enemy in GetEnemiesOfKingdom(Finder.getUnitsFromChunk(tile, 4, 56), kingdom??ByWho.kingdom))
+            {
+                if (Randy.randomChance(0.5f) && !enemy.a.hasTrait("madness"))
+                {
+                    DropsLibrary.action_madness(tile);
+                    DropsLibrary.action_madness(Toolbox.getRandomTileWithinDistance(tile, 8));
+                    continue;
+                }
+                if (Randy.randomChance(0.2f))
+                {
+                    MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionForce", enemy.current_tile, true);
+                    World.world.applyForceOnTile(enemy.current_tile, 6, 3f, true, 0, null, ByWho, null);
+                    EffectsLibrary.spawnExplosionWave(enemy.current_position, 6f);
+                    continue;
+                }
+                if (Randy.randomChance(0.1f))
+                {
+                    MapBox.spawnLightningBig(enemy.current_tile, 0.2f, ByWho);
+                    continue;
+                }
+                if (enemy.a.IsGod())
+                {
+                    UnleashMoonFall(ByWho, enemy, enemy.current_tile);
+                    continue;
+                }
+                Actor actor = enemy.a.Morph(SA.demon, false);
+                if(actor != null)
+                {
+                    TurnActorIntoSummonedOne(actor, ByWho, 130);
+                }
+            }
+        }
+
+        public override void spawnOnTile(WorldTile pTile)
+        {
+            tile = pTile;
+            prepare(pTile, 0.5f);
+            sprite_animation.resetAnim(0);
+        }
+    }
     public class LightGodsOrb : BaseEffect
     {
         public BaseSimObject ByWho;
@@ -12,6 +98,7 @@ namespace GodsAndPantheons.CustomEffects
         public WorldTile TargetTile;
         public float Speed;
         public float Timer;
+        public float TrailCooldown = 0.1f;
         public void Init(BaseSimObject pByWho, WorldTile pTile, float pTimeLeft = -1)
         {
             if(pTimeLeft == -1)
@@ -27,9 +114,20 @@ namespace GodsAndPantheons.CustomEffects
             pTile ??= pByWho.current_tile;
             spawnOnTile(pTile);
         }
+        private void updateTrailEffect(float pElapsed)
+        {
+            if (TrailCooldown > 0f)
+            {
+                TrailCooldown -= pElapsed;
+                return;
+            }
+            EffectsLibrary.spawnAt("fx_plasma_trail", transform.position, 0.1f);
+            TrailCooldown = 0.1f;
+        }
         public override void update(float pElapsed)
         {
             base.update(pElapsed);
+            updateTrailEffect(pElapsed);
             if (TimeLeft <= 0)
             {
                 setScale(scale *= 0.8f);
@@ -67,7 +165,7 @@ namespace GodsAndPantheons.CustomEffects
             if(Timer <= 0)
             {
                 Timer = 0.5f;
-                MapAction.damageWorld(tile, 3, AssetManager.terraform.get("LesserCrabLaser"), ByWho);
+                MapAction.damageWorld(tile, 3, AssetManager.terraform.get("PassiveDamage"), ByWho);
             }
         }
         public Actor GetTarget()
@@ -86,7 +184,7 @@ namespace GodsAndPantheons.CustomEffects
         public override void spawnOnTile(WorldTile pTile)
         {
             tile = pTile;
-            prepare(pTile, 0.03f);
+            prepare(pTile, 0.02f);
             sprite_animation.resetAnim(0);
         }
     }
@@ -124,6 +222,7 @@ namespace GodsAndPantheons.CustomEffects
         public SpriteRenderer LaserSprite;
         public Transform LaserPoint;
         public Transform Laser;
+        public static List<Sprite> LaserSprites;
         public override void Awake() {}
         public void UpdateTransform()
         {
@@ -469,13 +568,11 @@ namespace GodsAndPantheons.CustomEffects
                     Target = Actor.findEnemyObjectTarget();
                 }
                 if (Target != null) {
-                    ShootProjectileSafe(Actor, Target, "moonFallSlow", 1, 0.25f, tile.pos);
+                    ShootProjectileSafe(Actor, Target, "moonFallSlow", 1, 0.25f, tile.pos, "starShowerProjectile");
                 }
                 else
                 {
-                    Actor.addStatusEffect("invincible");
-                    MapAction.damageWorld(tile, 5, AssetManager.terraform.get("moonFalling"), Actor);
-                    Actor.finishStatusEffect("invincible");
+                    MapAction.damageWorld(tile, 5, AssetManager.terraform.get("MoonFallSlow"), Actor);
                 }
                 deactivate();
                 return;
@@ -606,10 +703,8 @@ namespace GodsAndPantheons.CustomEffects
             this.StormAction = StormAction;
             this.TimeCooldown = TimeCooldown;
             timeleft = TimeCooldown;
-            StormAnimation = GetComponent<SpriteAnimation>();
             Speed = Randy.randomFloat(4f, 10f);
         }
-        public SpriteAnimation StormAnimation;
         public override void update(float Elapsed)
         {
             base.update(Elapsed);
@@ -619,13 +714,13 @@ namespace GodsAndPantheons.CustomEffects
             {
                 return;
             }
-            if (StormAnimation.currentFrameIndex > 6)
+            if (sprite_animation.currentFrameIndex > 6)
             {
-                StormAnimation.playType = AnimPlayType.Backward;
+                sprite_animation.playType = AnimPlayType.Backward;
             }
-            if (StormAnimation.currentFrameIndex < 3)
+            if (sprite_animation.currentFrameIndex < 3)
             {
-                StormAnimation.playType = AnimPlayType.Forward;
+                sprite_animation.playType = AnimPlayType.Forward;
             }
             timeleft -= Elapsed;
             //fire god stuff

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GodsAndPantheons.CustomEffects;
 using GodsAndPantheons.AI;
+using System.Linq;
 namespace GodsAndPantheons
 {
     //Contains the traits and their abilities & Stats
@@ -130,20 +131,6 @@ namespace GodsAndPantheons
                 {S.offspring, 60},
              }
             },
-            //NEW_GOD_TRAIT_STATS
-            {"God Killer", new Dictionary<string, float>(){
-                {S.damage, 10f},
-                {S.health, 100f},
-                {S.attack_speed, 15f},
-                {S.mana, 100 },
-                {S.mass, 0.1f},
-                {S.accuracy, 10},
-                {S.scale, 0.01f},
-                {S.range, 4f},
-                {S.warfare, 4f},
-                {S.max_nutrition, 20}
-             }
-            },
             {"God Of Fire", new Dictionary<string, float>(){
                 {S.damage, 25},
                 {S.health, 700f},
@@ -199,7 +186,9 @@ namespace GodsAndPantheons
                 "immortal",
                 "regeneration",
                 "immune",
-                "strong_minded"
+                "strong_minded",
+                "Lava Walker",
+                "hotheaded"
              }
             },
             {"God Of Love", new List<string>()
@@ -336,13 +325,6 @@ namespace GodsAndPantheons
                 "strong_minded",
                 "NecroMancer"
              }
-            },
-            {"God Killer", new List<string>()
-             {
-                "blessed",
-                "strong",
-                "tough",
-             }
             }
         };
         // *********************************************************************************************** //
@@ -385,12 +367,17 @@ namespace GodsAndPantheons
             {"God Of the Stars", new List<AttackAction>(){
                 new AttackAction(CometShower),
                 new AttackAction(cometAzure),
-                new AttackAction(SummonWolf)
+                new AttackAction(SummonWolf),
+                new AttackAction(UnleashMoonFall)
              }
             },
             {"God Of Knowledge", new List<AttackAction>(){
-                new AttackAction(CreateElements),
-                new AttackAction(trydefendself),
+                new AttackAction(UnleashFireAndAcid),
+                new AttackAction(SummonLightning),
+                new AttackAction(FreezeEnemy),
+                new AttackAction(TeleportEnemy),
+                new AttackAction(CreateShield),
+                new AttackAction(CastCurses),
                 new AttackAction(SummonMeteor),
                 new AttackAction(PagesOfKnowledge)
              }
@@ -399,7 +386,8 @@ namespace GodsAndPantheons
                 new AttackAction(CloudOfDarkness),
                 new AttackAction(darkdaggers),
                 new AttackAction(smokeflash),
-                new AttackAction(summondarkones)
+                new AttackAction(summondarkones),
+                new AttackAction(BlackHole)
              }
             },
             {"God Of light", new List<AttackAction>(){
@@ -503,11 +491,10 @@ namespace GodsAndPantheons
             chaosGod.id = "God Of Chaos";
             chaosGod.path_icon = "ui/icons/chaosGod";
             chaosGod.action_on_add = (WorldActionTrait)Delegate.Combine(new WorldActionTrait(AutoTrait), new WorldActionTrait(godGiveWeapon));
-            chaosGod.action_attack_target = new AttackAction(ActionLibrary.addBurningEffectOnTarget);
             chaosGod.action_attack_target = new AttackAction(chaosGodAttack);
             //chaosGod.action_death = new WorldAction(ActionLibrary.turnIntoDemon);
             chaosGod.action_death = (WorldAction)Delegate.Combine(chaosGod.action_death, new WorldAction(chaosGodsTrick));
-            chaosGod.action_special_effect = (WorldAction)Delegate.Combine(chaosGod.action_special_effect, new WorldAction(chaosgoderastatus));
+            chaosGod.action_special_effect = (WorldAction)Delegate.Combine(new WorldAction(GodOfMadness), new WorldAction(chaosgoderastatus));
             chaosGod.group_id = "GodTraits";
             chaosGod.rarity = Rarity.R3_Legendary;
             AddTrait(chaosGod, "Tis's The God Of Chaos!");
@@ -549,7 +536,7 @@ namespace GodsAndPantheons
             starsGod.id = "God Of the Stars";
             starsGod.path_icon = "ui/icons/starsGod";
             starsGod.action_death = (WorldAction)Delegate.Combine(starsGod.action_death, new WorldAction(starsGodsDeath));
-            starsGod.action_attack_target = (AttackAction)Delegate.Combine(new AttackAction(starsGodAttack), new AttackAction(CreateMoonOrbit));
+            starsGod.action_attack_target = (AttackAction)Delegate.Combine(new AttackAction(starsGodAttack), new AttackAction(NightOfTheBloodMoon));
             starsGod.action_special_effect = (WorldAction)Delegate.Combine(starsGod.action_special_effect, new WorldAction(stargoderastatus));
             starsGod.group_id = "GodTraits";
             starsGod.rarity = Rarity.R3_Legendary;
@@ -566,16 +553,6 @@ namespace GodsAndPantheons
             earthGod.action_on_add = (WorldActionTrait)Delegate.Combine(new WorldActionTrait(AutoTrait), new WorldActionTrait(godGiveWeapon));
             earthGod.action_special_effect = (WorldAction)Delegate.Combine(earthGod.action_special_effect, new WorldAction(earthgoderastatus));
             AddTrait(earthGod, "God of the Natural Enviornment, The titan of creation");
-
-            ActorTrait subGod = new ActorTrait();
-            subGod.id = "Lesser God";
-            subGod.rarity = Rarity.R3_Legendary;
-            subGod.path_icon = "ui/icons/subGod";
-            subGod.group_id = S_TraitGroup.special;
-            subGod.can_be_given = false;
-            subGod.action_attack_target = new AttackAction(LesserAttack);
-            subGod.action_special_effect = new WorldAction(LesserEraStatus);
-            AddTrait(subGod, "like the demigod, but can also inherit abilities! all children in a gods clan are lessergods");
 
             ActorTrait warGod = new ActorTrait();
             warGod.id = "God Of War";
@@ -598,8 +575,6 @@ namespace GodsAndPantheons
             lichGod.action_special_effect = (WorldAction)Delegate.Combine(lichGod.action_special_effect, new WorldAction(lichgoderastatus));
             lichGod.group_id = "GodTraits";
             AddTrait(lichGod, "God of Dead Souls, Corruption, and Rot, Many spheres of domain lie with him");
-
-            //NEW_GOD_INIT
 
             ActorTrait GodOfLove = new ActorTrait();
             GodOfLove.id = "God Of Love";
@@ -637,6 +612,8 @@ namespace GodsAndPantheons
             SummonedOne.action_special_effect = (WorldAction)Delegate.Combine(new WorldAction(SummonedBeing), new WorldAction(SummonedOneEraStatus));
             AddTrait(SummonedOne, "A creature summoned by God himself in order to aid them in battle");
 
+            //GENEOLOGY
+
             ActorTrait DemiGod = new ActorTrait();
             DemiGod.id = "Demi God";
             DemiGod.path_icon = "ui/icons/IconDemi";
@@ -645,8 +622,18 @@ namespace GodsAndPantheons
             DemiGod.can_be_given = false;
             AddTrait(DemiGod, "The Demi God, offspring of Gods and Mortals, the stat's of this trait are determined by the stats of his parents");
 
+            ActorTrait subGod = new ActorTrait();
+            subGod.id = "Lesser God";
+            subGod.rarity = Rarity.R3_Legendary;
+            subGod.path_icon = "ui/icons/subGod";
+            subGod.group_id = S_TraitGroup.special;
+            subGod.can_be_given = false;
+            subGod.action_attack_target = new AttackAction(LesserAttack);
+            subGod.action_special_effect = new WorldAction(LesserEraStatus);
+            AddTrait(subGod, "like the demigod, but can also inherit abilities! all children in a gods clan are lessergods");
+
             //NON GOD TRAITS
-            
+
             ActorTrait EarthWalker = new ActorTrait();
             EarthWalker.id = "Earth Walker";
             EarthWalker.path_icon = "ui/icons/earthGod";
@@ -663,12 +650,21 @@ namespace GodsAndPantheons
             NecroMancer.can_be_given = true;
             AddTrait(NecroMancer, "When he kills a mortal, they transform into his undead minion", 2);
 
+            ActorTrait LavaWalker = new ActorTrait();
+            LavaWalker.id = "Lava Walker";
+            LavaWalker.rarity = Rarity.R2_Epic;
+            LavaWalker.path_icon = "ui/icons/GodOfFire";
+            LavaWalker.group_id = "NonGodTraits";
+            LavaWalker.can_be_given = true;
+            AddTrait(LavaWalker, "He Can Walk On Lava!", 8);
+
             ActorTrait godKiller = new ActorTrait();
             godKiller.id = "God Killer";
             godKiller.rarity = Rarity.R2_Epic;
+            godKiller.action_attack_target = LesserAttack;
             godKiller.path_icon = "ui/icons/godKiller";
-            godKiller.action_on_add = new WorldActionTrait(AutoTrait);
-            godKiller.group_id = "NonGodTraits";
+            godKiller.can_be_given = false;
+            godKiller.group_id = S_TraitGroup.special;
             AddTrait(godKiller, "To Kill a God is nearly to become one");
 
             ActorTrait godHunter = new ActorTrait();
@@ -737,7 +733,7 @@ namespace GodsAndPantheons
         // The Main Attack Function to set up a new attack
         public static bool GodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile, string godid)
         {
-            if (GodAbilities.ContainsKey(godid) && pTarget != null)
+            if (pTarget != null)
             {
                 foreach (AttackAction ability in GodAbilities[godid])
                 {
@@ -749,7 +745,7 @@ namespace GodsAndPantheons
         }
         public static bool LesserAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            foreach(KeyValuePair<string, List<int>> Ability in pSelf.a.DemiData().GodsAndAbilities)
+            foreach(KeyValuePair<string, HashSet<int>> Ability in pSelf.a.DemiData().GodsAndAbilities)
             {
                 foreach (int i in Ability.Value)
                 {
@@ -858,8 +854,9 @@ namespace GodsAndPantheons
             if (CanUseAbility("God Of Chaos", "FireBall%"))
             {
                 ShootProjectileSafe(pSelf, pTarget, "fireBallX");
+                return true;
             }
-            return true;
+            return false;
         }
 
         public static bool UnleachChaos(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -868,14 +865,37 @@ namespace GodsAndPantheons
             {
                 foreach (Actor a in Finder.getUnitsFromChunk(pTile, 1, 16))
                 {
-                    if (a != pSelf.a && !IsGod(a))
+                    if (a != pSelf.a)
                     {
                         a.addTrait("madness");
                     }
                 }
                 pb.spawnCloudRage(pTile, null);
+                return true;
             }
-            return true;
+            return false;
+        }
+        public static bool GodOfMadness(BaseSimObject pSelf, WorldTile pTile)
+        {
+            if (CanUseAbility("God Of Chaos", "LordOfMadness%"))
+            {
+                List<City> cities = GetAllCitiesWithinRadius(pTile, Randy.randomInt(0, 80)).ToList();
+                if(cities == null || cities.Count == 0)
+                {
+                    return false;
+                }
+                City Target = cities.GetRandom();
+                foreach (Actor tUnit in Target.units.LoopRandom<Actor>())
+                {
+                    if (CanUseAbility("God Of Chaos", "LordOfMadness%", 30))
+                    {
+                        tUnit.addTrait("madness");
+                    }
+                }
+                pb.spawnCloudRage(Target._city_tile, null);
+                return true;
+            }
+            return false;
         }
 
         public static bool ChaosBoulder(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -883,8 +903,9 @@ namespace GodsAndPantheons
             if (CanUseAbility("God Of Chaos", "ChaosBoulder%"))
             {
                 pb.prepareBoulder(pTarget.current_tile, null);
+                return true;
             }
-            return true;
+            return false;
         }
 
         public static bool chaosGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile) => GodAttack(pSelf, pTarget, pTile, "God Of Chaos");
@@ -897,16 +918,16 @@ namespace GodsAndPantheons
         {
             if (!CanUseAbility("God Of Knowledge", "UseForce%"))
             {
-                return true;
+                return false;
             }
             var Enemies = EnemiesFinder.findEnemiesFrom(pTile, pActor.kingdom, 3).list;
             if(Enemies == null)
             {
-                return true;
+                return false;
             }
             if(Enemies.Count < 6)
             {
-                return true;
+                return false;
             }
             SpawnCustomWave(pTile.posV3, 0.025f, 0.05f, 2);
             MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionForce", pTile, false, false);
@@ -920,7 +941,7 @@ namespace GodsAndPantheons
             }
             return true;
         }
-        public static bool CreateElements(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        public static bool UnleashFireAndAcid(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (CanUseAbility("God Of Knowledge", "UnleashFireAndAcid%"))
             {
@@ -928,27 +949,52 @@ namespace GodsAndPantheons
                 MapBox.instance.drop_manager.spawn(pTile, "fire", 5f, -1f);
                 MapBox.instance.drop_manager.spawn(pTile, "acid", 5f, -1f);
                 MapBox.instance.drop_manager.spawn(pTile, "fire", 5f, -1f); // Drops fire from distance 5 with scale of one at current tile
+                return true;
             }
-            if (CanUseAbility("God Of Knowledge", "Freeze%"))
-            {
-                ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null); // freezezz the target
-            }
+            return false;
+        }
+        public static bool SummonLightning(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
             if (CanUseAbility("God Of Knowledge", "SummonLightning%"))
             {
                 ActionLibrary.castLightning(pSelf, pTarget, null); // Casts Lightning on the target
+                return true;
             }
-            return true;
+            return false;
         }
-
-        public static bool trydefendself(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        public static bool FreezeEnemy(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (CanUseAbility("God Of Knowledge", "Freeze%"))
+            {
+                ActionLibrary.addFrozenEffectOnTarget(null, pTarget, null); // freezezz the target
+                return true;
+            }
+            return false;
+        }
+        public static bool CreateShield(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (CanUseAbility("God Of Knowledge", "CreateShield%"))
             {
                 pSelf.addStatusEffect("shield", 10);
+                return true;
             }
+            return false;
+        }
+        public static bool CastCurses(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (pTarget.isActor() && CanUseAbility("God Of Knowledge", "CastCurses%"))
+            {
+                CastCurse(pTarget.a); // casts curses
+                return true;
+            }
+            return false;
+        }
+
+        public static bool TeleportEnemy(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
             if (!pTarget.isActor())
             {
-                return true;
+                return false;
             }
             if (CanUseAbility("God Of Knowledge", "TeleprtTarget%"))
             {
@@ -956,12 +1002,9 @@ namespace GodsAndPantheons
                 {
                     ActionLibrary.teleportRandom(null, pTarget, null); // flee
                 }
+                return true;
             }
-            if (CanUseAbility("God Of Knowledge", "CastCurses%"))
-            {
-                CastCurse(pTarget.a); // casts curses
-            }
-            return true;
+            return false;
         }
         public static bool SummonMeteor(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -1010,24 +1053,29 @@ namespace GodsAndPantheons
             if (CanUseAbility("God Of the Night", "cloudOfDarkness%"))
             {
                 CreateStorm(pTile, 30f, 0.4f, CloudOfDark, new Color(1, 1, 1, 0.75f), 4f, pSelf);
+                return true;
             }
+            return false;
+        }
+        public static bool BlackHole(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
             if (CanUseAbility("God Of the Night", "blackHole%"))
             {
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.current_position, pos); // the distance between the target and the pTile
-                Vector3 newPoint = Toolbox.getNewPoint(pTarget.current_position.x, pTarget.current_position.y, (float)pos.x, (float)pos.y, pDist, true); // the Point of the projectile launcher 
-                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.current_position.x, pTarget.current_position.y, (float)pos.x, (float)pos.y, pTarget.stats[S.size], true);
                 EffectsLibrary.spawn("fx_BlackHole", pTile)?.gameObject.GetComponent<BlackHoleFlash>().Init(pSelf, pTile);
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool darkdaggers(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (CanUseAbility("God Of the Night", "darkDaggers%"))
             {
                 ShootProjectileSafe(pSelf, pTarget, "DarkDaggersProjectiles");
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool smokeflash(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -1037,24 +1085,27 @@ namespace GodsAndPantheons
                 MapAction.damageWorld(pTarget.current_tile, 5, AssetManager.terraform.get("lightning_power"), null);
                 MapAction.damageWorld(pTarget.current_tile, 8, AssetManager.terraform.get("smokeFlash"), null);
                 World.world.applyForceOnTile(pTarget.current_tile, 2, 0.4f, true, 20, null, pSelf);
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool summondarkones(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (CanUseAbility("God Of the Night", "summonDarkOne%"))
             {
                 Summon("DarkOne", 4, pSelf, pTile);
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool GodOfTheShadows(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if(CanUseAbility("God Of the Night", "GodOfTheShadows%"))
             {
                 pSelf.addStatusEffect("Invisible", 10);
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool darkGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile) => GodAttack(pSelf, pTarget, pTile, "God Of the Night");
         #endregion
@@ -1064,8 +1115,9 @@ namespace GodsAndPantheons
             if (CanUseAbility("God Of light", "SunGodsSlashes%"))
             {
                 ShootProjectileSafe(pSelf, pTarget, "lightSlashesProjectile");
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool FlashOfLight(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -1074,8 +1126,9 @@ namespace GodsAndPantheons
                 pb.divineLightFX(pTarget.current_tile, null);
                 (EffectsLibrary.spawn("fx_napalm_flash", pTarget.current_tile, null, null, 0f, -1f, -1f) as NapalmFlash).bombSpawned = true;
                 CreateBlindess(pTile, 10, 5f, pSelf.kingdom);
+                return true;
             }
-            if (Randy.randomChance(0 / 100))
+            if (false)
             {
                 //EffectsLibrary.spawnAtTile("fx_multiFlash_dej", pTile, 0.01f);
                 //not finushed?
@@ -1106,38 +1159,26 @@ namespace GodsAndPantheons
                 }
                 pSelf.a.addStatusEffect("invincible", 1f);
             }
-            return true;
+            return false;
         }
         public static bool AtTheSpeedOfLight(BaseSimObject pActor, WorldTile pTile)
         {
-            if (!pActor.isActor())
-            {
-                return true;
-            }
             if (!CanUseAbility("God Of light", "AtTheSpeedOfLight%"))
             {
-                return true;
+                return false;
             }
             var Enemies = EnemiesFinder.findEnemiesFrom(pTile, pActor.kingdom, 3).list;
             if (Enemies == null)
             {
-                return true;
+                return false;
             }
             if (Enemies.Count < 6)
             {
-                return true;
+                return false;
             }
             SpawnCustomWave(pTile.posV3, 0.025f, 0.05f, 2);
             pActor.addStatusEffect("At The Speed Of Light", 10);
             return true;
-        }
-        public static void CreateBlindess(WorldTile pTile, int radius, float length, Kingdom kingdom = null)
-        {
-            foreach (Actor victim in Finder.getUnitsFromChunk(pTile, 2, radius))
-            {
-                if ((kingdom != null && victim.kingdom == kingdom) || IsGod(victim)) continue;
-                victim.addStatusEffect("Blinded", length);
-            }
         }
         public static bool BeamOfLight(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -1145,16 +1186,18 @@ namespace GodsAndPantheons
             {
                 pb.divineLightFX(pTarget.current_tile, null);
                 pTarget.addStatusEffect("burning", 1f);
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool LightBallz(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (CanUseAbility("God Of light", "lightBallz%"))
             {
                 ShootProjectileSafe(pSelf, pTarget, "lightBallzProjectiles");
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool SpeedOfLight(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -1167,8 +1210,9 @@ namespace GodsAndPantheons
                 }
                 pSelf.a.addStatusEffect("caffeinated", 10f);
                 pTarget.addStatusEffect("slowness", 10f);
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool sunGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile) => GodAttack(pSelf, pTarget, pTile, "God Of light");
         #endregion
@@ -1184,18 +1228,18 @@ namespace GodsAndPantheons
                 MapAction.damageWorld(pTarget.current_tile.neighbours[1], 8, AssetManager.terraform.get("cometAzureDownDamage"), null);
                 World.world.applyForceOnTile(pTarget.current_tile.neighbours[0], 4, 0.4f, true, 200, null, pSelf);
                 pSelf.a.addStatusEffect("invincible", 1f);
+                return true;
             }
-            return true;
+            return false;
         }
-        private static bool CreateMoonOrbit(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        private static bool NightOfTheBloodMoon(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
-            if (CanUseAbility("God Of the Stars", "MoonOrbit%"))
+            if (CanUseAbility("God Of the Stars", "NightOfTheBloodMoon%"))
             {
-                (EffectsLibrary.spawn("fx_Moon_Orbit", pTile, null, null, 0f, -1f, -1f) as MoonOrbit)?.Init(pSelf.a, pSelf.current_tile, Randy.randomFloat(5, 11));
-                (EffectsLibrary.spawn("fx_Moon_Orbit", pTile, null, null, 0f, -1f, -1f) as MoonOrbit)?.Init(pSelf.a, pSelf.current_tile, Randy.randomFloat(5, 11), 70);
-                (EffectsLibrary.spawn("fx_Moon_Orbit", pTile, null, null, 0f, -1f, -1f) as MoonOrbit)?.Init(pSelf.a, pSelf.current_tile, Randy.randomFloat(5, 11), 140);
+                EffectsLibrary.spawn("BloodMoon", pTile, null, null, -1, -1f, -1f, pSelf.a);
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool CometShower(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -1217,8 +1261,9 @@ namespace GodsAndPantheons
                 MapAction.applyTileDamage(pTarget.current_tile.neighbours[0].neighbours[0].neighbours[0], 2f, AssetManager.terraform.get("cometRain"));
                 World.world.applyForceOnTile(pTarget.current_tile.neighbours[3].neighbours[3].neighbours[2].neighbours[2], 2, 0.4f, true, 20, null, pSelf);
                 World.world.applyForceOnTile(pTarget.current_tile.neighbours[3].neighbours[3].neighbours[3].neighbours[3], 2, 0.4f, true, 20, null, pSelf);
+                return true;
             }
-            return true;
+            return false;
         }
 
         public static bool SummonWolf(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -1226,8 +1271,20 @@ namespace GodsAndPantheons
             if (CanUseAbility("God Of the Stars", "summonWolf%"))
             {
                 Summon(SA.wolf, 3, pSelf, pTile);
+                return true;
             }
-            return true;
+            return false;
+        }
+
+        public static bool UnleashMoonFall(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
+        {
+            if (CanUseAbility("God Of the Stars", "summonMoonChunk%"))
+            {
+                float pDist = Vector2.Distance(pTarget.current_position, pTile.pos);
+                ShootProjectileSafe(pSelf, pTarget, "moonFall", 1, 0, Toolbox.getNewPoint(pSelf.current_position.x + 35f, pSelf.current_position.y + 95f, pTile.x + 1f, pTile.y + 1f, pDist));
+                return true;
+            }
+            return false;
         }
 
         public static bool starsGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile) => GodAttack(pSelf, pTarget, pTile, "God Of the Stars");
@@ -1256,8 +1313,9 @@ namespace GodsAndPantheons
                     World.world.startShake(0.3f, 0.01f, 2f, true, true);
                 }
                 MapAction.damageWorld(pSelf.current_tile, 2, AssetManager.terraform.get("crab_step"), pSelf);
+                return true;
             }
-            return true;
+            return false;
         }
 
         public static bool SlamDunk(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -1271,17 +1329,18 @@ namespace GodsAndPantheons
                         PushActorTowardsTile(pTarget.current_tile.pos, pSelf.a, 3);
                     }
                 }
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool WarGodThrow(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (CanUseAbility("God Of War", "axeThrow%"))
             {
                 ShootProjectileSafe(pSelf.a, pTarget, "WarAxeProjectile1", 1);
-
+                return true;
             }
-            return true;
+            return false;
 
         }
         public static bool StunEnemy(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -1290,8 +1349,9 @@ namespace GodsAndPantheons
             {
                 MusicBox.playSound(MB.ExplosionLightningStrike, pTile);
                 pTarget.a.addStatusEffect("Blinded", Randy.randomFloat(1f, 3f));
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool SeedsOfWar(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -1300,8 +1360,9 @@ namespace GodsAndPantheons
                 MapBox.instance.drop_manager.spawn(pTarget.current_tile, S_Drop.madness, 5f, -1f);
                 MapBox.instance.drop_manager.spawn(Toolbox.getRandomTileWithinDistance(pTarget.current_tile, 5), S_Drop.madness, 5f, -1f);
                 MapBox.instance.drop_manager.spawn(Toolbox.getRandomTileWithinDistance(pTarget.current_tile, 5), S_Drop.madness, 5f, -1f);
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool warGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile) => GodAttack(pSelf, pTarget, pTile, "God Of War");
         #endregion
@@ -1312,38 +1373,43 @@ namespace GodsAndPantheons
             if (CanUseAbility("God Of the Earth", "earthquake%"))
             {
                 pb.spawnEarthquake(pTarget.current_tile, null);
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool buildMountainPath(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (CanUseAbility("God Of the Earth", "SendMountain%"))
             {
                 (EffectsLibrary.spawn("fx_Build_Path", pTile) as TerraformPath)?.Init(pSelf.current_tile, pTarget.current_tile, true, 0.1f, 1, true, pSelf, true);
+                return true;
             }
-            return true;
+            return false;
         }
 
         public static bool MakeItRain(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (CanUseAbility("God Of the Earth", "makeItRain%"))
             {
-                pb.spawnCloudRain(pTarget.current_tile, null);
+                pb.spawnCloudSnow(pTarget.current_tile, null);
+                return true;
             }
             if (CanUseAbility("God Of the Earth", "makeItRain%"))
             {
-                pb.spawnCloudSnow(pTarget.current_tile, null);
+                pb.spawnCloudRain(pTarget.current_tile, null);
+                return true;
             }
-            return true;
+            return false;
         }
         private static bool PullRocks(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (CanUseAbility("God Of the Earth", "LiftRocks%"))
             {
                 (EffectsLibrary.spawn("fx_Pull_Rock", pTile) as PulledRock)?.Init(Toolbox.getRandomTileWithinDistance(pTile, 6), pSelf.a);
+                return true;
             }
 
-            return true;
+            return false;
         }
         public static readonly List<string> earthgodminionautotraits = new List<string>() { "fire_proof", "freeze_proof", "regeneration" };
 
@@ -1352,8 +1418,9 @@ namespace GodsAndPantheons
             if (CanUseAbility("God Of the Earth", "SummonDruid%"))
             {
                 Summon(SA.druid, 2, pSelf, pTile, 61, earthgodminionautotraits);
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool EarthGodAttack(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile) => GodAttack(pSelf, pTarget, pTile, "God Of the Earth");
         #endregion
@@ -1363,12 +1430,12 @@ namespace GodsAndPantheons
         public static bool lichGodsUndeadArmy(BaseSimObject pTarget, WorldTile pTile)
         {
             if(!CanUseAbility("God Of The Lich", "UndeadArmy%")){
-                return true;
+                return false;
             }
             List<Actor> Enemies = GetEnemiesOfActor(Finder.getUnitsFromChunk(pTile, 1, 6), pTarget);
             if(Enemies.Count < 5)
             {
-                return true;
+                return false;
             }
             MusicBox.playSound("event:/SFX/EXPLOSIONS/ExplosionForce", pTile, false, false);
             SpawnCustomWave(pTile.posV3, 0.025f, -0.05f, 2);
@@ -1393,8 +1460,9 @@ namespace GodsAndPantheons
             {
                 //Lich God Summons Skeletons
                 Summon(SA.skeleton, 8, pSelf, pTile);
+                return true;
             }
-            return true;
+            return false;
         }
 
         public static bool SummonDead(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -1403,8 +1471,9 @@ namespace GodsAndPantheons
             {
                 //Lich God Summons Zombie
                 Summon(SA.zombie, 2, pSelf, pTile);
+                return true;
             }
-            return true;
+            return false;
         }
 
         public static bool SummonHand(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
@@ -1418,13 +1487,13 @@ namespace GodsAndPantheons
                     pTarget.addStatusEffect("slowness");
                     pTarget.addStatusEffect("poisoned");
                 }
+                return true;
             }
-            return true;
+            return false;
         }
 
         #endregion
 
-        //NEW_GOD_ATTACK_FUNC
         #region GodOfLoveStuff
         public static bool GodOfLoveDeath(BaseSimObject pSelf, WorldTile pTile)
         {
@@ -1445,8 +1514,9 @@ namespace GodsAndPantheons
                         ShootProjectileSafe(pSelf.a, a, "Heart", 2);
                     }
                 }
+                return true;
             }
-            return true;
+            return false;
         }
         public static void CreateHeartExplosion(WorldTile pTile, float pRadius, bool corrupted = false, float pSpeed = 1f)
         {
@@ -1472,8 +1542,9 @@ namespace GodsAndPantheons
                         CastCurse(a);
                     }
                 }
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool HealAllies(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -1487,8 +1558,9 @@ namespace GodsAndPantheons
                         SuperRegeneration(a, 100f, 20f);
                     }
                 }
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool CastShields(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -1502,21 +1574,19 @@ namespace GodsAndPantheons
                         a.addStatusEffect("shield", 15f);
                     }
                 }
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool CorruptEnemy(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
             if (CanUseAbility("God Of Love", "CorruptEnemys%"))
             {
-                if (!pTarget.isActor())
-                {
-                    return false;
-                }
                 CreateHeartExplosion(pTile, 80f, true);
                 CreateBlindess(pTile, 8, 15f, pSelf.kingdom);
+                return true;
             }
-            return true;
+            return false;
         }
         private static bool PoisonEnemys(BaseSimObject pSelf, BaseSimObject useless, WorldTile pTile)
         {
@@ -1571,7 +1641,7 @@ namespace GodsAndPantheons
                 }
             }
             if (Randy.randomChance(0.8f)){
-                MapAction.damageWorld(s.tile, 10, AssetManager.terraform.get("LesserCrabLaser"), s.ByWho);
+                MapAction.damageWorld(s.tile, 10, AssetManager.terraform.get("PassiveDamage"), s.ByWho);
             }
             if (Randy.randomChance(0.3f))
             {
@@ -1606,13 +1676,14 @@ namespace GodsAndPantheons
                     //FIRESTORM
                     case 9:
                         {
-                            CreateStorm(pTile, 30f, 0.8f, FireStorm, Color.red, 0.8f, pSelf).GetComponent<Storm>().TileToGo = Toolbox.getRandomTileWithinDistance(pTile, 100);
+                            CreateStorm(pTile, 30f, 0.8f, FireStorm, Color.red, 0.8f, pSelf).TileToGo = Toolbox.getRandomTileWithinDistance(pTile, 100);
                             World.world.startShake(0.3f, 0.1f, 1);
                             break;
                         }
                 }
+                return true;
             }
-            return true;
+            return false;
         }
         public static bool Summoning(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -1624,8 +1695,9 @@ namespace GodsAndPantheons
                     case 2: Summon(SA.evil_mage, 1, pSelf, pTile); break;
                     case 3: Summon(SA.fire_skull, 3, pSelf, pTile); break;
                 }
+                return true;
             }
-            return true;
+            return false;
         }
 
         public static bool MorphIntoDragon(BaseSimObject pSelf, WorldTile pTile)
@@ -1677,10 +1749,10 @@ namespace GodsAndPantheons
             MapAction.damageWorld(pTarget.current_tile, 4, AssetManager.terraform.get("bomb"), ByWho);
         }
         //prevents chain reactions in which god projectiles create more projectiles
-        public static void ShootProjectileSafe(BaseSimObject pSelf, BaseSimObject pTarget, string projectile, int amount = 1, float pZ = 0.25f, Vector2 Pos = default)
+        public static void ShootProjectileSafe(BaseSimObject pSelf, BaseSimObject pTarget, string projectile, int amount = 1, float pZ = 0.25f, Vector2 Pos = default, string ProjectileAllowed = null)
         {
-            pSelf.getData().get("AttackFromProjectile", out bool AttackFromProjectile);
-            if (AttackFromProjectile)
+            pSelf.getData().get("AttackFromProjectile", out string AttackFromProjectile);
+            if (AttackFromProjectile != ProjectileAllowed)
             {
                 return;
             }
@@ -1690,14 +1762,15 @@ namespace GodsAndPantheons
         {
             if(Toolbox.DistTile(pTarget.current_tile, pSelf.current_tile) > 10)
             {
-                return true;
+                return false;
             }
             if (CanUseAbility("God Of Fire", "FireBreath%"))
             {
                 EffectsLibrary.spawn("FireBreath", pTile, null, null, 0, pSelf.current_position.x, pSelf.current_position.y, pSelf.isActor() ? pSelf.a : null);
+                MapAction.damageWorld(pTile, 5, AssetManager.terraform.get("dragon_attack"), pSelf);
+                return true;
             }
-            MapAction.damageWorld(pTile, 5, AssetManager.terraform.get("dragon_attack"), pSelf);
-            return true;
+            return false;
         }
         public static bool Magic(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile)
         {
@@ -1712,8 +1785,9 @@ namespace GodsAndPantheons
 
                     case 3: for (int i = 0; i < Randy.randomInt(5, 21); i++){ World.world.drop_manager.spawnParabolicDrop(pTile, "lava", 0, 0.15f, 1.5f, 1, 5); } break;
                 }
+                return true;
             }
-            return true;
+            return false;
         }
         #endregion
 
@@ -1795,7 +1869,7 @@ namespace GodsAndPantheons
             {
                 return false;
             }
-            foreach(string trait in Getinheritedgodtraits(pSelf.a))
+            foreach(string trait in pSelf.a.Getinheritedgodtraits())
             {
                 EraStatus(pSelf.a, trait);
             }
@@ -1819,19 +1893,16 @@ namespace GodsAndPantheons
         }
         private static bool SummonedOneEraStatus(BaseSimObject pSelf, WorldTile pTile)
         {
-            if (pSelf.a != null)
+            Actor master = pSelf.a.FindMaster();
+            if (master != null)
             {
-                Actor master = pSelf.a.FindMaster();
-                if(master != null)
+                if (EraStatus(master, pSelf.a))
                 {
-                    if(EraStatus(master, pSelf.a))
-                    {
-                        pSelf.a.data.set("lifespanincreased", true);
-                    }
-                    else
-                    {
-                        pSelf.a.data.set("lifespanincreased", false);
-                    }
+                    pSelf.a.data.set("lifespanincreased", true);
+                }
+                else
+                {
+                    pSelf.a.data.set("lifespanincreased", false);
                 }
             }
             return true;

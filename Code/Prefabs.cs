@@ -123,7 +123,7 @@ namespace GodsAndPantheons
                 Laser.LaserPoint = laserPoint;
                 Laser.Laser = laser;
             }
-            Traits.LaserSprites = new List<Sprite>(arm.laserSprites);
+            ChaosLaser.LaserSprites = new List<Sprite>(arm.laserSprites);
             arm.DestroyImmediateIfNotNull();
             ResourcesPatch.PatchResource("effects/prefabs/ChaosLaser", Prefab);
 
@@ -139,6 +139,19 @@ namespace GodsAndPantheons
             }
             SunGodsOrb.AddComponent<LightGodsOrb>();
             ResourcesPatch.PatchResource("effects/prefabs/SunGodsOrb", SunGodsOrb);
+
+            GameObject BloodMoon = Instantiate(Resources.Load<GameObject>("effects/prefabs/PrefabEffectBasic"));
+            BloodMoon.transform.position = new Vector3(-99999, -99999, 0);
+            DestroyImmediate(BloodMoon.GetComponent<BaseEffect>());
+            {
+                SpriteAnimation component = BloodMoon.GetComponent<SpriteAnimation>();
+                component.timeBetweenFrames = 0.1f;
+                component.returnToPool = true;
+                component.frames = Resources.LoadAll<Sprite>("effects/BloodMoon");
+                component.spriteRenderer.sortingLayerName = "EffectsTop";
+            }
+            BloodMoon.AddComponent<BloodMoon>();
+            ResourcesPatch.PatchResource("effects/prefabs/BloodMoon", BloodMoon);
         }
     }
 }

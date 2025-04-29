@@ -1,4 +1,5 @@
 ﻿using ai.behaviours;
+using GodsAndPantheons.CustomEffects;
 using HarmonyLib;
 using SleekRender;
 using System;
@@ -9,6 +10,72 @@ using static GodsAndPantheons.Traits;
 //Harmony Patches
 namespace GodsAndPantheons.Patches
 {
+    public class LavaWalkers
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[]
+            {
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(Actor), nameof(Actor.asset))),
+                new CodeMatch(OpCodes.Ldfld, AccessTools.Field(typeof(ActorAsset), nameof(ActorAsset.die_in_lava)))
+            });
+            Matcher.RemoveInstructions(2);
+            Matcher.Insert(new CodeInstruction[]
+            {
+              new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Traits), nameof(Traits.CanDieInLava)))
+            });
+            return Matcher.Instructions();
+        }
+    }
+    [HarmonyPatch(typeof(WorldAgeManager), nameof(WorldAgeManager.updateEffects))]
+    public class BloodMoonDarkenWorld
+    {
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[]
+            {
+                new CodeMatch(OpCodes.Ldarg_0),
+                new CodeMatch(OpCodes.Ldfld),
+                new CodeMatch(OpCodes.Ldfld)
+            });
+            Matcher.Advance(1);
+            Matcher.RemoveInstructions(2);
+            Matcher.Insert(new CodeInstruction[]
+            {
+              new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(BloodMoonDarkenWorld), nameof(BloodMoonDarkenWorld.MakeWorldDark)))
+            });
+            return Matcher.Instructions();
+        }
+        public static bool MakeWorldDark(WorldAgeManager manager)
+        {
+            return manager._current_age.overlay_darkness || BloodMoon.BloodMoonPresent;
+        }
+    }
+    [HarmonyPatch(typeof(Actor), nameof(Actor.isAffectedByLiquid))]
+    public class LavaWalkerWalkOnLava
+    {
+        static void Postfix(Actor __instance, ref bool __result)
+        {
+            if(__instance.hasTrait("Lava Walker") && __instance.current_tile.Type.lava)
+            {
+                __result = false;
+            }
+        }
+    }
+    [HarmonyPatch(typeof(Actor), nameof(Actor.isWaterCreature))]
+    public class LavaWalkerDontDrowinInlava
+    {
+        static void Postfix(Actor __instance, ref bool __result)
+        {
+            if (__instance.hasTrait("Lava Walker") && __instance.current_tile.Type.lava)
+            {
+                __result = true;
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(Dragon), nameof(Dragon.getHit))]
     public class FireGodExplodeEnemy
     {
@@ -246,7 +313,7 @@ namespace GodsAndPantheons.Patches
     {
         static BaseStats[] getdemistats(ActorTrait trait)
         {
-            if((trait.id == "Demi God" || trait.id == "Lesser God") && SelectedUnit.unit != null)
+            if((trait.id == "Demi God" || trait.id == "Lesser God" || trait.id == "God Killer") && SelectedUnit.unit != null)
             {
                 DemiGodData Data = SelectedUnit.unit.DemiData();
                 if (Data != null)
@@ -350,7 +417,7 @@ namespace GodsAndPantheons.Patches
             }
             if (isgod)
             {
-                __instance.addTrait("God Killer");
+                CreateGodKiller(__instance, pDeadUnit.GetGodTraits());
             }
             if(__instance.hasTrait("God Hunter"))
             {
@@ -395,11 +462,11 @@ namespace GodsAndPantheons.Patches
             float demiparents = pParent1.hasTrait("Demi God") ? 1 : 0;
             float lesserparents = pParent1.hasTrait("Lesser God") ? 1 : 0;
             using ListPool<string> godtraits = new ListPool<string>(pParent1.GetGodTraits());
-            AddRange(godtraits, Getinheritedgodtraits(pParent1));
+            AddRange(godtraits, pParent1.Getinheritedgodtraits());
             if (parents == 2)
             {
                 AddRange(godtraits, pParent2.GetGodTraits());
-                AddRange(godtraits, Getinheritedgodtraits(pParent2));
+                AddRange(godtraits, pParent2.Getinheritedgodtraits());
                 godparents += pParent2.IsGod() ? 1 : 0;
                 demiparents += pParent2.hasTrait("Demi God") ? 1 : 0;
                 lesserparents += pParent2.hasTrait("Lesser God") ? 1 : 0;
@@ -470,7 +537,15 @@ namespace GodsAndPantheons.Patches
         public static float GetCustomSpeedModifier(Actor actor)
         {
             float Speed = 1;
+            if (actor.asset.ignore_tile_speed_multiplier)
+            {
+                return Speed;
+            }
             if(actor.hasTrait("Earth Walker") && !actor.current_tile.Type.liquid)
+            {
+                Speed /= actor.current_tile.Type.walk_multiplier;
+            }
+            if(actor.hasTrait("Lava Swimmer") && actor.current_tile.Type.lava)
             {
                 Speed /= actor.current_tile.Type.walk_multiplier;
             }
@@ -480,9 +555,9 @@ namespace GodsAndPantheons.Patches
     [HarmonyPatch(typeof(Actor), nameof(Actor.getHit))]
     public class GetHitMore
     {
-        static void Prefix(Actor __instance, BaseSimObject pAttacker, ref float pDamage)
+        static void Prefix(Actor __instance, BaseSimObject pAttacker, AttackType pAttackType, ref float pDamage)
         {
-            if(pAttacker == null || !pAttacker.isActor() || pAttacker.a.equipment == null)
+            if(pAttackType != AttackType.Weapon || pAttacker == null || !pAttacker.isActor() || pAttacker.a.equipment == null)
             {
                 return;
             }
@@ -513,7 +588,7 @@ namespace GodsAndPantheons.Patches
         }
         static void MergeCustomStats(Actor __instance)
         {
-            if (__instance.hasTrait("Demi God") || __instance.hasTrait("Lesser God"))
+            if (__instance.hasTrait("Demi God") || __instance.hasTrait("Lesser God") || __instance.hasTrait("God Killer"))
             {
                 __instance.stats.mergeStats(__instance.GetDemiStats());
             }
@@ -542,9 +617,9 @@ namespace GodsAndPantheons.Patches
                 __result = AttackDataResult.Hit;
                 return false;
             }
-            if (pData.initiator.isActor() && pData.initiator.a.IsGod(false, true))
+            if (pData.initiator.isActor() && pData.initiator.a.IsGod(false, true, true))
             {
-                pData.initiator.a.data.set("AttackFromProjectile", pData.is_projectile);
+                pData.initiator.a.data.set("AttackFromProjectile", pData.projectile_id);
             }
             if (!pTargetToCheck.isActor())
             {

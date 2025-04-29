@@ -4,11 +4,8 @@ VERSION: 1.0.0
 */
 using GodsAndPantheons.AI;
 using GodsAndPantheons.CustomEffects;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
-
 namespace GodsAndPantheons
 {
     class Effects
