@@ -379,11 +379,6 @@ namespace GodsAndPantheons.Patches
                 }
                 if(__instance.a.hasTrait("God Hunter"))
                 {
-                    if(pTarget.isActor() && pTarget.areFoes(__instance) && pTarget.a.IsGod())
-                    {
-                        __result = true;
-                        return;
-                    }
                     if (__instance.hasStatus("Invisible"))
                     {
                         __result = false;

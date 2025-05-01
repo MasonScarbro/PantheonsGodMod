@@ -167,7 +167,7 @@ namespace GodsAndPantheons
             {
                 if (actor.a != a || includeself)
                 {
-                    if (IsGod(actor.a) && (!CanAttack || a.canAttackTarget(actor)))
+                    if (IsGod(actor.a) && (!CanAttack || a.areFoes(actor)))
                     {
                         yield return actor.a;
                     }
