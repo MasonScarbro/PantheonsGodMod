@@ -428,6 +428,8 @@ namespace GodsAndPantheons
         public static void CreateGodKiller(Actor GodKiller, IEnumerable<string> godtraits)
         {
             GodKiller.addTrait("God Killer");
+            GodKiller.removeTrait("Lesser God");
+            GodKiller.removeTrait("Demi God");
             GodKiller.addTrait("immortal");
             AutoTrait(GodKiller, godtraits, true, 2);
             DemiGodData GodKillerData = GodKiller.DemiData() ?? new DemiGodData();

@@ -321,7 +321,7 @@ namespace GodsAndPantheons.Patches
                     return new BaseStats[] { Data.BaseStats };
                 }
             }
-            return null;
+            return Array.Empty<BaseStats>();
         }
         
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
