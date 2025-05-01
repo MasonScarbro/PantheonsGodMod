@@ -430,7 +430,7 @@ namespace GodsAndPantheons
             GodKiller.addTrait("God Killer");
             GodKiller.addTrait("immortal");
             AutoTrait(GodKiller, godtraits, true, 2);
-            DemiGodData GodKillerData = new DemiGodData();
+            DemiGodData GodKillerData = GodKiller.DemiData() ?? new DemiGodData();
             foreach (string trait in godtraits)
             {
                 GodKillerData.InheritTrait(trait);
