@@ -64,17 +64,6 @@ namespace GodsAndPantheons.Patches
             }
         }
     }
-    [HarmonyPatch(typeof(Actor), nameof(Actor.isWaterCreature))]
-    public class LavaWalkerDontDrowinInlava
-    {
-        static void Postfix(Actor __instance, ref bool __result)
-        {
-            if (__instance.hasTrait("Lava Walker") && __instance.current_tile.Type.lava)
-            {
-                __result = true;
-            }
-        }
-    }
 
     [HarmonyPatch(typeof(Dragon), nameof(Dragon.getHit))]
     public class FireGodExplodeEnemy
@@ -99,15 +88,22 @@ namespace GodsAndPantheons.Patches
             return !__instance.IsGod();
         }
     }
-    [HarmonyPatch(typeof(Actor), nameof(Actor.ignoresBlocks))]
+    [HarmonyPatch(typeof(Actor), nameof(Actor.u5_curTileAction))]
     public class EarthGodNotAffectedByMountains
     {
-        static void Postfix(Actor __instance, ref bool __result)
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            if(__instance.hasTrait("Earth Walker") || __instance.hasTrait("God Hunter") || __instance.hasStatus("At The Speed Of Light"))
+            CodeMatcher Matcher = new CodeMatcher(instructions);
+            Matcher.MatchForward(false, new CodeMatch[]
             {
-                __result = true;
-            }
+                new CodeMatch(OpCodes.Call, AccessTools.Field(typeof(Actor), nameof(Actor.ignoresBlocks)))
+            });
+            Matcher.RemoveInstruction();
+            Matcher.Insert(new CodeInstruction[]
+            {
+              new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Traits), nameof(Traits.IgnoresBlocks)))
+            });
+            return Matcher.Instructions();
         }
     }
     [HarmonyPatch(typeof(Actor), nameof(Actor.goTo))]

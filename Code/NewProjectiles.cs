@@ -168,7 +168,6 @@ namespace GodsAndPantheons
                     {
                         return false;
                     }
-                    Debug.Log(Traits.Chance("God Of Chaos", "BoneFire%"));
                     for (int i = 0; i < Randy.randomInt(3, 5); i++)
                     {
                         Traits.CreateStorm(pTile, 30f, 0.5f, MadStorm, new Color(0.7f, 1, 1, 0.9f), 0.2f).TileToGo = Toolbox.getRandomTileWithinDistance(pTile, 100);
