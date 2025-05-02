@@ -321,7 +321,7 @@ namespace GodsAndPantheons.Patches
                     return new BaseStats[] { Data.BaseStats };
                 }
             }
-            return null;
+            return Array.Empty<BaseStats>();
         }
         
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -379,11 +379,6 @@ namespace GodsAndPantheons.Patches
                 }
                 if(__instance.a.hasTrait("God Hunter"))
                 {
-                    if(pTarget.isActor() && pTarget.areFoes(__instance) && pTarget.a.IsGod())
-                    {
-                        __result = true;
-                        return;
-                    }
                     if (__instance.hasStatus("Invisible"))
                     {
                         __result = false;

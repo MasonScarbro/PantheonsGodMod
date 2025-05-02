@@ -167,7 +167,7 @@ namespace GodsAndPantheons
             {
                 if (actor.a != a || includeself)
                 {
-                    if (IsGod(actor.a) && (!CanAttack || a.canAttackTarget(actor)))
+                    if (IsGod(actor.a) && (!CanAttack || a.areFoes(actor)))
                     {
                         yield return actor.a;
                     }
@@ -428,9 +428,11 @@ namespace GodsAndPantheons
         public static void CreateGodKiller(Actor GodKiller, IEnumerable<string> godtraits)
         {
             GodKiller.addTrait("God Killer");
+            GodKiller.removeTrait("Lesser God");
+            GodKiller.removeTrait("Demi God");
             GodKiller.addTrait("immortal");
             AutoTrait(GodKiller, godtraits, true, 2);
-            DemiGodData GodKillerData = new DemiGodData();
+            DemiGodData GodKillerData = GodKiller.DemiData() ?? new DemiGodData();
             foreach (string trait in godtraits)
             {
                 GodKillerData.InheritTrait(trait);
