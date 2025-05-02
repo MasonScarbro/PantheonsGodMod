@@ -20,6 +20,10 @@ namespace GodsAndPantheons
         {
             return actor.asset.die_in_lava && !actor.hasTrait("Lava Walker");
         }
+        public static bool IgnoresBlocks(this Actor actor)
+        {
+            return actor.ignoresBlocks() || actor.hasTrait("Earth Walker") || actor.hasTrait("God Hunter") || actor.hasStatus("At The Speed Of Light");
+        }
         //returns null if unable to find master
         public static Actor FindMaster(this Actor Minion)
         {
