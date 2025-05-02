@@ -70,7 +70,6 @@ namespace GodsAndPantheons
             _harmony.Patch(AccessTools.Method(typeof(Actor), nameof(Actor.findCurrentTile)), null, null, new HarmonyMethod(Transpiler));
             _harmony.Patch(AccessTools.Method(typeof(Actor), nameof(Actor.u5_curTileAction)), null, null, new HarmonyMethod(Transpiler));
             _harmony.Patch(AccessTools.Method(typeof(Actor), nameof(Actor.updatePathMovement)), null, null, new HarmonyMethod(Transpiler));
-            _harmony.Patch(AccessTools.Method(typeof(Actor), nameof(Actor.updatePathMovement)), null, null, new HarmonyMethod(AccessTools.Method(typeof(EarthGodNotAffectedByMountains), nameof(EarthGodNotAffectedByMountains.Transpiler))));
             _harmony.Patch(AccessTools.Method(typeof(Dragon), nameof(Dragon.canLand)), null, null, new HarmonyMethod(Transpiler));
 
             _harmony.PatchAll();
