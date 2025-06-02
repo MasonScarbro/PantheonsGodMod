@@ -58,6 +58,7 @@ namespace GodsAndPantheons
             //WORLD
             NewOpinions.init();
             WorldBehaviours.init();
+            GodProceduralGenerator.Init();
 
             //APPLY PATCHES
             Patch();

@@ -122,6 +122,16 @@ namespace GodsAndPantheons
                     Main.savedSettings.DevineMiracles
               );
             PowerButtons.CreateButton(
+                    "Generate God",
+                    Resources.Load<Sprite>("ui/Icons/actor_traits/iconNightchild"),
+                    "Create a God",
+                    "Press this to generate a god",
+                    new Vector2(244, -18),
+                    ButtonType.Click,
+                    tab.transform,
+                    CreateGeneratedGod
+              );
+              PowerButtons.CreateButton(
                     "Create a Divine Miracle",
                     Resources.Load<Sprite>("ui/Icons/actor_traits/iconNightchild"),
                     "Create a Divine Miracle",
@@ -218,11 +228,21 @@ namespace GodsAndPantheons
                     tab.transform,
                     WindowManager.windows["WarGodWindow"].openWindow
               );
+              PowerButtons.CreateButton(
+                    "RemoveGeneratedGods",
+                    Resources.Load<Sprite>("ui/Icons/iconNightchild"),
+                    "Chance Modfier",
+                    "Remove All Generated Gods",
+                    new Vector2(532, -18),
+                    ButtonType.Click,
+                    tab.transform,
+                    RemoveGeneratedGods
+              );
             PowerButtons.CreateButton(
                     "EarthGodWindow",
                     Resources.Load<Sprite>("ui/Icons/earthGod"),
                     "Chance Modfier",
-                    "Manage The Gods Powers",
+                    "Remove Generated Gods",
                     new Vector2(316, 18),
                     ButtonType.Click,
                     tab.transform,
@@ -362,6 +382,14 @@ namespace GodsAndPantheons
             {
                 WorldTip.instance.showToolbarText("Could Not Create A Divine Miracle! there can only be a miracle if there is a kingdom with no gods");
             }
+        }
+        public static void CreateGeneratedGod()
+        {
+            GodProceduralGenerator.GenerateGod();
+        }
+        public static void RemoveGeneratedGods()
+        {
+            GodProceduralGenerator.ClearAllGeneratedGods();
         }
         public static void CreateToggleButton(string ID, Sprite sprite, string name, string Description, Vector2 pos, UnityAction toggleAction, bool Enabled)
         {
