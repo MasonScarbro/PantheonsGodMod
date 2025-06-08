@@ -29,6 +29,7 @@ namespace GodsAndPantheons
             loadSettings();
 
             //UI
+            ProceduralAssetGenerator.Init();
             WindowManager.init();
             Buttons.init();
 

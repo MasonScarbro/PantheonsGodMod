@@ -1,0 +1,344 @@
+{
+  "settingVersion": "0.2.3",
+  "Chances": {
+    "KnowledgeGodWindow": {
+      "UnleashFireAndAcid%": {
+        "active": true,
+        "value": 20
+      },
+      "CastCurses%": {
+        "active": true,
+        "value": 5
+      },
+      "Freeze%": {
+        "active": true,
+        "value": 20
+      },
+      "CreateShield%": {
+        "active": true,
+        "value": 3
+      },
+      "TeleprtTarget%": {
+        "active": true,
+        "value": 5
+      },
+      "SummonLightning%": {
+        "active": true,
+        "value": 9
+      },
+      "SummonMeteor%": {
+        "active": true,
+        "value": 3
+      },
+      "PagesOfKnowledge%": {
+        "active": true,
+        "value": 3
+      },
+      "UseForce%": {
+        "active": true,
+        "value": 10
+      },
+      "EnemySwap%": {
+        "active": true,
+        "value": 20
+      },
+      "CorruptEnemy%": {
+        "active": true,
+        "value": 15
+      },
+      "God Of Knowledgeinherit%": {
+        "active": true,
+        "value": 31
+      }
+    },
+    "LichGodWindow": {
+      "waveOfMutilation%": {
+        "active": true,
+        "value": 20
+      },
+      "summonSkele%": {
+        "active": true,
+        "value": 8
+      },
+      "summonDead%": {
+        "active": true,
+        "value": 9
+      },
+      "UndeadArmy%": {
+        "active": true,
+        "value": 5
+      },
+      "rigorMortisHand%": {
+        "active": true,
+        "value": 10
+      },
+      "God Of The Lichinherit%": {
+        "active": true,
+        "value": 36
+      }
+    },
+    "GodOfFireWindow": {
+      "FireStorm%": {
+        "active": true,
+        "value": 4
+      },
+      "FireBreath%": {
+        "active": true,
+        "value": 15
+      },
+      "MorphIntoDragon%": {
+        "active": true,
+        "value": 30
+      },
+      "Summoning%": {
+        "active": true,
+        "value": 3
+      },
+      "Explosions%": {
+        "active": true,
+        "value": 4
+      },
+      "ChaosLaser%": {
+        "active": true,
+        "value": 2
+      },
+      "God Of Fireinherit%": {
+        "active": true,
+        "value": 44
+      }
+    },
+    "MoonGodWindow": {
+      "summonMoonChunk%": {
+        "active": true,
+        "value": 10
+      },
+      "MoonOrbit%": {
+        "active": true,
+        "value": 10
+      },
+      "NightOfTheBloodMoon%": {
+        "active": true,
+        "value": 3
+      },
+      "cometAzure%": {
+        "active": true,
+        "value": 6
+      },
+      "cometShower%": {
+        "active": true,
+        "value": 8
+      },
+      "summonWolf%": {
+        "active": true,
+        "value": 10
+      },
+      "God Of the Starsinherit%": {
+        "active": true,
+        "value": 30
+      }
+    },
+    "DarkGodWindow": {
+      "DarkDash%": {
+        "active": true,
+        "value": 30
+      },
+      "cloudOfDarkness%": {
+        "active": true,
+        "value": 1
+      },
+      "blackHole%": {
+        "active": true,
+        "value": 6
+      },
+      "darkDaggers%": {
+        "active": true,
+        "value": 10
+      },
+      "GodOfTheShadows%": {
+        "active": true,
+        "value": 8
+      },
+      "smokeFlash%": {
+        "active": true,
+        "value": 15
+      },
+      "summonDarkOne%": {
+        "active": true,
+        "value": 15
+      },
+      "God Of the Nightinherit%": {
+        "active": true,
+        "value": 40
+      }
+    },
+    "SunGodWindow": {
+      "flashOfLight%": {
+        "active": true,
+        "value": 15
+      },
+      "beamOfLight%": {
+        "active": true,
+        "value": 8
+      },
+      "speedOfLight%": {
+        "active": true,
+        "value": 7
+      },
+      "lightBallz%": {
+        "active": true,
+        "value": 8
+      },
+      "AtTheSpeedOfLight%": {
+        "active": true,
+        "value": 10
+      },
+      "LightOrbs%": {
+        "active": true,
+        "value": 5
+      },
+      "SunGodsSlashes%": {
+        "active": true,
+        "value": 20
+      },
+      "God Of lightinherit%": {
+        "active": true,
+        "value": 42
+      }
+    },
+    "WarGodWindow": {
+      "warGodsCry%": {
+        "active": true,
+        "value": 5
+      },
+      "axeThrow%": {
+        "active": true,
+        "value": 29
+      },
+      "seedsOfWar%": {
+        "active": true,
+        "value": 8
+      },
+      "StunEnemy%": {
+        "active": true,
+        "value": 20
+      },
+      "axemaelstrom%": {
+        "active": true,
+        "value": 1
+      },
+      "BlockAttack%": {
+        "active": true,
+        "value": 16
+      },
+      "War Gods Leap%": {
+        "active": true,
+        "value": 20
+      },
+      "God Of Warinherit%": {
+        "active": true,
+        "value": 35
+      }
+    },
+    "EarthGodWindow": {
+      "earthquake%": {
+        "active": true,
+        "value": 10
+      },
+      "makeItRain%": {
+        "active": true,
+        "value": 20
+      },
+      "buildWorld%": {
+        "active": true,
+        "value": 20
+      },
+      "StalagmitePath%": {
+        "active": true,
+        "value": 20
+      },
+      "SendMountain%": {
+        "active": true,
+        "value": 10
+      },
+      "LiftRocks%": {
+        "active": true,
+        "value": 15
+      },
+      "SummonDruid%": {
+        "active": true,
+        "value": 15
+      },
+      "God Of the Earthinherit%": {
+        "active": true,
+        "value": 26
+      }
+    },
+    "ChaosGodWindow": {
+      "FireBall%": {
+        "active": true,
+        "value": 28
+      },
+      "UnleashChaos%": {
+        "active": true,
+        "value": 40
+      },
+      "ChaosBoulder%": {
+        "active": true,
+        "value": 15
+      },
+      "BoneFire%": {
+        "active": true,
+        "value": 3
+      },
+      "LordOfMadness%": {
+        "active": true,
+        "value": 4
+      },
+      "WorldOfChaos%": {
+        "active": true,
+        "value": 7
+      },
+      "God Of Chaosinherit%": {
+        "active": true,
+        "value": 36
+      }
+    },
+    "LoveGodWindow": {
+      "Poisoning%": {
+        "active": true,
+        "value": 13
+      },
+      "healAllies%": {
+        "active": true,
+        "value": 40
+      },
+      "blessAllies%": {
+        "active": true,
+        "value": 5
+      },
+      "CastShields%": {
+        "active": true,
+        "value": 15
+      },
+      "CorruptEnemys%": {
+        "active": true,
+        "value": 10
+      },
+      "Petrification%": {
+        "active": true,
+        "value": 20
+      },
+      "God Of Loveinherit%": {
+        "active": true,
+        "value": 40
+      }
+    }
+  },
+  "deathera": true,
+  "HunterAssasins": true,
+  "DevineMiracles": false,
+  "GodKings": true,
+  "MakeSummoned": false,
+  "DiplomacyChanges": true,
+  "AutoTraits": true
+}
