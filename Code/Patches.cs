@@ -583,9 +583,9 @@ namespace GodsAndPantheons.Patches
             {
                 __instance.stats.mergeStats(__instance.GetDemiStats());
             }
-            if(__instance.hasTrait("God Of Fire") && __instance.asset.id == SA.dragon)
+            if(__instance.hasTrait("God Of Fire") && __instance.asset.id == "dragon")
             {
-                __instance.stats[S.multiplier_health] += 5;
+                __instance.stats["multiplier_health"] += 5;
             }
         }
     }
@@ -653,8 +653,8 @@ namespace GodsAndPantheons.Patches
                 if (enemytoswap != null)
                 {
                     enemytoswap.cancelAllBeh();
-                    EffectsLibrary.spawnAt("fx_teleport_blue", tile.posV3, enemytoswap.stats[S.scale]);
-                    EffectsLibrary.spawnAt("fx_teleport_blue", enemytoswap.current_tile.posV3, pTargetToCheck.stats[S.scale]);
+                    EffectsLibrary.spawnAt("fx_teleport_blue", tile.posV3, enemytoswap.stats["scale"]);
+                    EffectsLibrary.spawnAt("fx_teleport_blue", enemytoswap.current_tile.posV3, pTargetToCheck.stats["scale"]);
                     pTargetToCheck.a.spawnOn(enemytoswap.current_tile);
                     enemytoswap.spawnOn(tile);
                     pTargetToCheck = enemytoswap;

@@ -107,20 +107,20 @@ namespace GodsAndPantheons
         {
             var stats = new Dictionary<string, float>
             {
-                { S.damage, 30f + random.Next(0, 30) },
-                { S.health, 400f + random.Next(0, 300) },
-                { S.mana, 250f + random.Next(0, 150) },
-                { S.attack_speed, 10f + random.Next(0, 15) },
-                { S.accuracy, 25f + random.Next(0, 20) },
-                { S.armor, 15f + random.Next(0, 25) },
-                { S.critical_chance, 0.03f + (float)(random.NextDouble() * 0.07) },
-                { S.range, 6f + random.Next(0, 6) },
-                { S.scale, 0.06f + (float)(random.NextDouble() * 0.04) },
-                { S.max_nutrition, 50f + random.Next(0, 30) },
-                { S.offspring, 50f + random.Next(0, 40) }
+                { "damage", 30f + random.Next(0, 30) },
+                { "health", 400f + random.Next(0, 300) },
+                { "mana", 250f + random.Next(0, 150) },
+                { "attack_speed", 10f + random.Next(0, 15) },
+                { "accuracy", 25f + random.Next(0, 20) },
+                { "armor", 15f + random.Next(0, 25) },
+                { "critical_chance", 0.03f + (float)(random.NextDouble() * 0.07) },
+                { "range", 6f + random.Next(0, 6) },
+                { "scale", 0.06f + (float)(random.NextDouble() * 0.04) },
+                { "max_nutrition", 50f + random.Next(0, 30) },
+                { "offspring", 50f + random.Next(0, 40) }
             };
 
-            Debug.Log($"Generated stats - Health: {stats[S.health]}, Damage: {stats[S.damage]}");
+            Debug.Log($"Generated stats - Health: {stats["health"]}, Damage: {stats["damage"]}");
             return stats;
         }
 

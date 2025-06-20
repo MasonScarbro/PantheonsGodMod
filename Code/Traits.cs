@@ -19,152 +19,152 @@ namespace GodsAndPantheons
         public static Dictionary<string, Dictionary<string, float>> TraitStats = new Dictionary<string, Dictionary<string, float>>()
         {
             {"God Of Chaos", new Dictionary<string, float>(){
-                {S.damage, 40f},
-                {S.health, 500},
-                {S.mana, 300 },
-                {S.attack_speed, 15f},
-                {S.accuracy, 30},
-                {S.armor, 20 },
-                {S.critical_chance, 0.05f},
-                {S.range, 8f},
-                {S.scale, 0.08f},
-                {S.max_nutrition, 60},
-                {S.offspring, 60}
+                {"damage", 40f},
+                {"health", 500},
+                {"mana", 300 },
+                {"attack_speed", 15f},
+                {"accuracy", 30},
+                {"armor", 20 },
+                {"critical_chance", 0.05f},
+                {"range", 8f},
+                {"scale", 0.08f},
+                {"max_nutrition", 60},
+                {"offspring", 60}
              }
             },
             {"God Of light", new Dictionary<string, float>(){
-                {S.damage, 20f},
-                {S.mana, 300 },
-                {S.health, 500f},
-                {S.accuracy, 30},
-                {S.attack_speed, 100f},
-                {S.critical_chance, 0.05f},
-                {S.range, 5f},
-                {S.speed, 90f},
-                {S.max_nutrition, 30},
-                {S.offspring, 80},
+                {"damage", 20f},
+                {"mana", 300 },
+                {"health", 500f},
+                {"accuracy", 30},
+                {"attack_speed", 100f},
+                {"critical_chance", 0.05f},
+                {"range", 5f},
+                {"speed", 90f},
+                {"max_nutrition", 30},
+                {"offspring", 80},
              }
             },
             {"God Of the Night", new Dictionary<string, float>(){
-                {S.damage, 20f},
-                {S.health, 550f},
-                {S.mana, 300 },
-                {S.accuracy, 30},
-                {S.attack_speed, 3f},
-                {S.critical_chance, 0.25f},
-                {S.range, 6f},
-                {S.scale, 0.02f},
-                {S.max_nutrition, 30},
-                {S.offspring, 60},
+                {"damage", 20f},
+                {"health", 550f},
+                {"mana", 300 },
+                {"accuracy", 30},
+                {"attack_speed", 3f},
+                {"critical_chance", 0.25f},
+                {"range", 6f},
+                {"scale", 0.02f},
+                {"max_nutrition", 30},
+                {"offspring", 60},
              }
             },
             {"God Of Knowledge", new Dictionary<string, float>(){
-                {S.damage, 5f},
-                {S.health, 300},
-                {S.mana, 300 },
-                {S.accuracy, 30},
-                {S.attack_speed, 1f},
-                {S.critical_chance, 0.25f},
-                {S.range, 15f},
-                {S.scale, 0.01f},
-                {S.intelligence, 35f},
-                {S.max_nutrition, 20},
-                {S.offspring, 60}
+                {"damage", 5f},
+                {"health", 300},
+                {"mana", 300 },
+                {"accuracy", 30},
+                {"attack_speed", 1f},
+                {"critical_chance", 0.25f},
+                {"range", 15f},
+                {"scale", 0.01f},
+                {"intelligence", 35f},
+                {"max_nutrition", 20},
+                {"offspring", 60}
              }
             },
             {"God Of the Stars", new Dictionary<string, float>(){
-                {S.damage, 40},
-                {S.mana, 300 },
-                {S.health, 500f},
-                {S.accuracy, 30},
-                {S.attack_speed, 1f},
-                {S.critical_chance, 0.05f},
-                {S.range, 15f},
-                {S.scale, 0.02f},
-                {S.intelligence, 3f},
-                {S.max_nutrition, 20},
-                {S.offspring, 70}
+                {"damage", 40},
+                {"mana", 300 },
+                {"health", 500f},
+                {"accuracy", 30},
+                {"attack_speed", 1f},
+                {"critical_chance", 0.05f},
+                {"range", 15f},
+                {"scale", 0.02f},
+                {"intelligence", 3f},
+                {"max_nutrition", 20},
+                {"offspring", 70}
              }
             },
             {"God Of the Earth", new Dictionary<string, float>(){
-                {S.damage, 60f},
-                {S.health, 800f},
-                {S.attack_speed, 1f},
-                {S.mana, 300 },
-                {S.accuracy, 30},
-                {S.armor, 50f},
-                {S.mass, 30f },
-                {S.scale, 0.1f},
-                {S.range, 10f},
-                {S.intelligence, 3f},
-                {S.max_nutrition, 30},
-                {S.offspring, 80},
+                {"damage", 60f},
+                {"health", 800f},
+                {"attack_speed", 1f},
+                {"mana", 300 },
+                {"accuracy", 30},
+                {"armor", 50f},
+                {"mass", 30f },
+                {"scale", 0.1f},
+                {"range", 10f},
+                {"intelligence", 3f},
+                {"max_nutrition", 30},
+                {"offspring", 80},
              }
             },
             {"God Of War", new Dictionary<string, float>(){
-                {S.damage, 100f},
-                {S.health, 700f},
-                {S.attack_speed, 35f},
-                {S.armor, 35f},
-                {S.mass, 0.05f},
-                {S.mana, 300 },
-                {S.accuracy, 30},
-                {S.scale, 0.03f},
-                {S.range, 8f},
-                {S.warfare, 40f},
-                {S.max_nutrition, 30},
-                {S.offspring, 50},
+                {"damage", 100f},
+                {"health", 700f},
+                {"attack_speed", 35f},
+                {"armor", 35f},
+                {"mass", 0.05f},
+                {"mana", 300 },
+                {"accuracy", 30},
+                {"scale", 0.03f},
+                {"range", 8f},
+                {"warfare", 40f},
+                {"max_nutrition", 30},
+                {"offspring", 50},
              }
             },
             {"God Of The Lich", new Dictionary<string, float>(){
-                {S.damage, 100f},
-                {S.health, 750f},
-                {S.attack_speed, 35f},
-                {S.armor, 25f},
-                {S.mass, 0.05f},
-                {S.scale, 0.03f},
-                {S.accuracy, 30},
-                {S.mana, 300 },
-                {S.range, 8f},
-                {S.warfare, 40f},
-                {S.max_nutrition, 20},
-                {S.offspring, 60},
+                {"damage", 100f},
+                {"health", 750f},
+                {"attack_speed", 35f},
+                {"armor", 25f},
+                {"mass", 0.05f},
+                {"scale", 0.03f},
+                {"accuracy", 30},
+                {"mana", 300 },
+                {"range", 8f},
+                {"warfare", 40f},
+                {"max_nutrition", 20},
+                {"offspring", 60},
              }
             },
             {"God Of Fire", new Dictionary<string, float>(){
-                {S.damage, 25},
-                {S.health, 700f},
-                {S.attack_speed, 12f},
-                {S.critical_chance, 0.5f},
-                {S.mana, 300 },
-                {S.armor, 30f},
-                {S.accuracy, 30},
-                {S.scale, 0.075f},
-                {S.range, 20f},
-                {S.speed, 30f},
-                {S.max_nutrition, 30},
-                {S.offspring, 60},
+                {"damage", 25},
+                {"health", 700f},
+                {"attack_speed", 12f},
+                {"critical_chance", 0.5f},
+                {"mana", 300 },
+                {"armor", 30f},
+                {"accuracy", 30},
+                {"scale", 0.075f},
+                {"range", 20f},
+                {"speed", 30f},
+                {"max_nutrition", 30},
+                {"offspring", 60},
              }
             },
             {"God Of Love", new Dictionary<string, float>(){
-                {S.health, 700},
-                {S.intelligence, 10f },
-                {S.speed, 15f},
-                {S.mass, 0.05f},
-                {S.mana, 300 },
-                {S.accuracy, 30},
-                {S.offspring, 100},
-                {S.loyalty_traits, 10f },
-                {S.max_nutrition, 60},
-                {S.diplomacy, 15 }
+                {"health", 700},
+                {"intelligence", 10f },
+                {"speed", 15f},
+                {"mass", 0.05f},
+                {"mana", 300 },
+                {"accuracy", 30},
+                {"offspring", 100},
+                {"loyalty_traits", 10f },
+                {"max_nutrition", 60},
+                {"diplomacy", 15 }
              }
             },
             {"Summoned One", new Dictionary<string, float>(){
-                {S.damage, 10f},
-                {S.health, 20f},
-                {S.armor, 10f},
-                {S.speed, 15},
-                {S.mass, 1},
+                {"damage", 10f},
+                {"health", 20f},
+                {"armor", 10f},
+                {"speed", 15},
+                {"mass", 1},
              }
             }
         };
@@ -338,11 +338,11 @@ namespace GodsAndPantheons
             {"God Of the Stars", new KeyValuePair<string, string>("age_moon", "Stars_Prevail") },
             {"God Of the Night", new KeyValuePair<string, string>("age_dark", "Nights_Prevail") },
             {"God Of Knowledge", new KeyValuePair<string, string>("age_wonders", "Knowledge_Prevail") },
-            {"God Of Chaos", new KeyValuePair<string, string>(S.age_chaos, "Chaos Prevails") },
-            {"God Of The Lich", new KeyValuePair<string, string>(S.age_tears, "Sorrow Prevails") },
-            {"God Of War", new KeyValuePair<string, string>(S.age_despair, "Despair Prevails") },
-            {"God Of the Earth", new KeyValuePair<string, string>(S.age_ash, "Earth Prevails") },
-            {"God Of Love", new KeyValuePair<string, string>(S.age_hope, "Love Prevails") },
+            {"God Of Chaos", new KeyValuePair<string, string>("age_chaos", "Chaos Prevails") },
+            {"God Of The Lich", new KeyValuePair<string, string>("age_tears", "Sorrow Prevails") },
+            {"God Of War", new KeyValuePair<string, string>("age_despair", "Despair Prevails") },
+            {"God Of the Earth", new KeyValuePair<string, string>("age_ash", "Earth Prevails") },
+            {"God Of Love", new KeyValuePair<string, string>("age_hope", "Love Prevails") },
         };
         #endregion
 
@@ -606,7 +606,7 @@ namespace GodsAndPantheons
             ActorTrait SummonedOne = new ActorTrait();
             SummonedOne.id = "Summoned One";
             SummonedOne.path_icon = "ui/icons/SummonedOne";
-            SummonedOne.group_id = S_TraitGroup.special;
+            SummonedOne.group_id = "special";
             SummonedOne.default_for_actor_assets = new List<ActorAsset>() { AssetManager.actor_library.get("DarkOne") };
             SummonedOne.can_be_given = false;
             SummonedOne.action_special_effect = (WorldAction)Delegate.Combine(new WorldAction(SummonedBeing), new WorldAction(SummonedOneEraStatus));
@@ -618,7 +618,7 @@ namespace GodsAndPantheons
             DemiGod.id = "Demi God";
             DemiGod.path_icon = "ui/icons/IconDemi";
             DemiGod.rarity = Rarity.R2_Epic;
-            DemiGod.group_id = S_TraitGroup.special;
+            DemiGod.group_id = "special";
             DemiGod.can_be_given = false;
             AddTrait(DemiGod, "The Demi God, offspring of Gods and Mortals, the stat's of this trait are determined by the stats of his parents");
 
@@ -626,7 +626,7 @@ namespace GodsAndPantheons
             subGod.id = "Lesser God";
             subGod.rarity = Rarity.R3_Legendary;
             subGod.path_icon = "ui/icons/subGod";
-            subGod.group_id = S_TraitGroup.special;
+            subGod.group_id = "special";
             subGod.can_be_given = false;
             subGod.action_attack_target = new AttackAction(LesserAttack);
             subGod.action_special_effect = new WorldAction(LesserEraStatus);
@@ -664,7 +664,7 @@ namespace GodsAndPantheons
             godKiller.action_attack_target = LesserAttack;
             godKiller.path_icon = "ui/icons/godKiller";
             godKiller.can_be_given = false;
-            godKiller.group_id = S_TraitGroup.special;
+            godKiller.group_id = "special";
             AddTrait(godKiller, "To Kill a God is nearly to become one");
 
             ActorTrait godHunter = new ActorTrait();
@@ -1136,7 +1136,7 @@ namespace GodsAndPantheons
                 int count = 0;
                 Vector2Int pos = pTile.pos; // Position of the Ptile as a Vector 2
                 float pDist = Vector2.Distance(pTarget.current_position, pos);
-                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.current_position.x, pTarget.current_position.y, (float)pos.x, (float)pos.y, pTarget.stats[S.size], true);
+                Vector3 newPoint2 = Toolbox.getNewPoint(pTarget.current_position.x, pTarget.current_position.y, (float)pos.x, (float)pos.y, pTarget.stats["size"], true);
 
                 EffectsLibrary.spawn("fx_napalm_flash", pTarget.current_tile.neighbours[2].neighbours[2].neighbours[1].neighbours[1].neighbours[2], null, null, 0f, -1f, -1f);
                 count++;
@@ -1270,7 +1270,7 @@ namespace GodsAndPantheons
         {
             if (CanUseAbility("God Of the Stars", "summonWolf%"))
             {
-                Summon(SA.wolf, 3, pSelf, pTile);
+                Summon("wolf", 3, pSelf, pTile);
                 return true;
             }
             return false;
@@ -1357,9 +1357,9 @@ namespace GodsAndPantheons
         {
             if (CanUseAbility("God Of War", "seedsOfWar%"))
             {
-                MapBox.instance.drop_manager.spawn(pTarget.current_tile, S_Drop.madness, 5f, -1f);
-                MapBox.instance.drop_manager.spawn(Toolbox.getRandomTileWithinDistance(pTarget.current_tile, 5), S_Drop.madness, 5f, -1f);
-                MapBox.instance.drop_manager.spawn(Toolbox.getRandomTileWithinDistance(pTarget.current_tile, 5), S_Drop.madness, 5f, -1f);
+                MapBox.instance.drop_manager.spawn(pTarget.current_tile, "madness", 5f, -1f);
+                MapBox.instance.drop_manager.spawn(Toolbox.getRandomTileWithinDistance(pTarget.current_tile, 5), "madness", 5f, -1f);
+                MapBox.instance.drop_manager.spawn(Toolbox.getRandomTileWithinDistance(pTarget.current_tile, 5), "madness", 5f, -1f);
                 return true;
             }
             return false;
@@ -1417,7 +1417,7 @@ namespace GodsAndPantheons
         {
             if (CanUseAbility("God Of the Earth", "SummonDruid%"))
             {
-                Summon(SA.druid, 2, pSelf, pTile, 61, earthgodminionautotraits);
+                Summon("druid", 2, pSelf, pTile, 61, earthgodminionautotraits);
                 return true;
             }
             return false;
@@ -1459,7 +1459,7 @@ namespace GodsAndPantheons
             if (CanUseAbility("God Of The Lich", "summonSkele%"))
             {
                 //Lich God Summons Skeletons
-                Summon(SA.skeleton, 8, pSelf, pTile);
+                Summon("skeleton", 8, pSelf, pTile);
                 return true;
             }
             return false;
@@ -1470,7 +1470,7 @@ namespace GodsAndPantheons
             if (CanUseAbility("God Of The Lich", "summonDead%"))
             {
                 //Lich God Summons Zombie
-                Summon(SA.zombie, 2, pSelf, pTile);
+                Summon("zombie", 2, pSelf, pTile);
                 return true;
             }
             return false;
@@ -1499,7 +1499,7 @@ namespace GodsAndPantheons
         {
             if (Main.savedSettings.deathera)
             {
-                World.world.era_manager.setCurrentAge(AssetManager.era_library.get(S.age_despair));
+                World.world.era_manager.setCurrentAge(AssetManager.era_library.get("age_despair"));
             }
             return true;
         }
@@ -1691,9 +1691,9 @@ namespace GodsAndPantheons
             {
                 switch (Randy.randomInt(1, 4))
                 {
-                    case 1: Summon(SA.demon, 2, pSelf, pTile); break;
-                    case 2: Summon(SA.evil_mage, 1, pSelf, pTile); break;
-                    case 3: Summon(SA.fire_skull, 3, pSelf, pTile); break;
+                    case 1: Summon("demon", 2, pSelf, pTile); break;
+                    case 2: Summon("evil_mage", 1, pSelf, pTile); break;
+                    case 3: Summon("fire_skull", 3, pSelf, pTile); break;
                 }
                 return true;
             }
@@ -1702,7 +1702,7 @@ namespace GodsAndPantheons
 
         public static bool MorphIntoDragon(BaseSimObject pSelf, WorldTile pTile)
         {
-            bool IsDragon = pSelf.a.asset.id == SA.dragon;
+            bool IsDragon = pSelf.a.asset.id == "dragon";
             if (CanUseAbility("God Of Fire", "MorphIntoDragon%") || IsDragon)
             {
                 List<BaseSimObject> enemies = EnemiesFinder.findEnemiesFrom(pTile, pSelf.kingdom, 3).list;
@@ -1710,7 +1710,7 @@ namespace GodsAndPantheons
                 {
                     if (enemies?.Count > 10)
                     {
-                        pSelf.a.Morph(SA.dragon);
+                        pSelf.a.Morph("dragon");
                     }
                 }
                 else {
@@ -1731,7 +1731,7 @@ namespace GodsAndPantheons
                     }
                     else
                     {
-                        pSelf.a.data.get("oldself", out string oldself, SA.dragon);
+                        pSelf.a.data.get("oldself", out string oldself, "dragon");
                         pSelf.a.Morph(oldself);
                     }
                 }
@@ -1796,7 +1796,7 @@ namespace GodsAndPantheons
         {
             if (Main.savedSettings.deathera)
             {
-               World.world.era_manager.setCurrentAge(AssetManager.era_library.get(S.age_ice), true);
+               World.world.era_manager.setCurrentAge(AssetManager.era_library.get("age_ice"), true);
             }
             EffectsLibrary.spawn("fx_napalm_flash", pself.current_tile, null, null, 0f, -1f, -1f);
             for (int i = 0; i < Randy.randomInt(5, 10); i++)
@@ -1807,7 +1807,7 @@ namespace GodsAndPantheons
         {
             Actor pActor = (Actor)pSelf;
             if (Main.savedSettings.deathera)
-                World.world.era_manager.setCurrentAge(AssetManager.era_library.get(S.age_chaos), true);
+                World.world.era_manager.setCurrentAge(AssetManager.era_library.get("age_chaos"), true);
             pActor.removeTrait("God Of Chaos");
             return true;
         }
@@ -1816,7 +1816,7 @@ namespace GodsAndPantheons
         public static bool sunGodsDeath(BaseSimObject pTarget, WorldTile pTile = null)
         {
             if (Main.savedSettings.deathera)
-                World.world.era_manager.setCurrentAge(AssetManager.era_library.get(S.age_dark), true);
+                World.world.era_manager.setCurrentAge(AssetManager.era_library.get("age_dark"), true);
             return true;
 
         }
@@ -1824,14 +1824,14 @@ namespace GodsAndPantheons
         public static bool starsGodsDeath(BaseSimObject pTarget, WorldTile pTile = null)
         {
             if (Main.savedSettings.deathera)
-                World.world.era_manager.setCurrentAge(AssetManager.era_library.get(S.age_moon), true);
+                World.world.era_manager.setCurrentAge(AssetManager.era_library.get("age_moon"), true);
             return true;
         }
 
         public static bool darkGodsDeath(BaseSimObject pTarget, WorldTile pTile = null)
         {
             if (Main.savedSettings.deathera)
-                World.world.era_manager.setCurrentAge(AssetManager.era_library.get(S.age_sun), true);
+                World.world.era_manager.setCurrentAge(AssetManager.era_library.get("age_sun"), true);
             return true;
         }
         #endregion

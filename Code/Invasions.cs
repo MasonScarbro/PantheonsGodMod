@@ -21,7 +21,7 @@ namespace GodsAndPantheons
             hunterInvasion.spawn_asset_unit = "GodHunter";
             hunterInvasion.units_min = 2;
             hunterInvasion.units_max = 5;
-            hunterInvasion.ages_forbid.Add(S.age_hope);
+            hunterInvasion.ages_forbid.Add("age_hope");
             hunterInvasion.action = new DisasterAction(AssetManager.disasters.simpleUnitAssetSpawnUsingIslands);
         }
         public static void GetText(WorldLogMessage log, ref string s)

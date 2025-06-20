@@ -75,7 +75,7 @@ namespace GodsAndPantheons.CustomEffects
                     UnleashMoonFall(ByWho, enemy, enemy.current_tile);
                     continue;
                 }
-                Actor actor = enemy.a.Morph(SA.demon, false);
+                Actor actor = enemy.a.Morph("demon", false);
                 if(actor != null)
                 {
                     TurnActorIntoSummonedOne(actor, ByWho, 130);

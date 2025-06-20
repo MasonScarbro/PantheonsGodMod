@@ -150,8 +150,8 @@ namespace GodsAndPantheons
         }
         public static bool IsGod(this Actor a, bool IncludeDemigods = false, bool IncludeLesserGods = false, bool IncludeGodKillers = false)
             => GetGodTraits(a.traits, IncludeDemigods, IncludeLesserGods, IncludeGodKillers).ToList().Count > 0
-            || a.asset.id == SA.crabzilla //crabzilla is obviously a god, duhh
-            || a.asset.id == SA.god_finger; //its in the name
+            || a.asset.id == "crabzilla" //crabzilla is obviously a god, duhh
+            || a.asset.id == "god_finger"; //its in the name
 
         public static bool IsGodTrait(this ActorTrait a) => GodAbilities.Keys.Contains(a.id);
         public static IEnumerable<string> GetGodTraits(this Actor a) => GetGodTraits(a.traits);
@@ -368,7 +368,7 @@ namespace GodsAndPantheons
                 Data.InheritTrait(trait);
                 InheritStats(Data, trait, chancemult, 0.5f, 0.75f);
             }
-            Data.AddBaseStat(S.lifespan, Random.Range(100, 201));
+            Data.AddBaseStat("lifespan", Random.Range(100, 201));
             DemiGod.SetDemiData(Data);
         }
         public static void SetDemiData(this Actor DemiGod, DemiGodData data)

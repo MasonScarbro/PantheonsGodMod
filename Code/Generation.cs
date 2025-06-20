@@ -97,11 +97,7 @@ namespace GodsAndPantheons
                 detailsPath = "C:/Program Files (x86)/Steam/steamapps/common/worldbox/Mods/Pantheon Mod/GameResources/effects/details";
                 outputPath = "C:/Program Files (x86)/Steam/steamapps/common/worldbox/Mods/Pantheon Mod/GameResources/effects/gened";
 
-                // Create directories if they don't exist... The paths need to exist they have the assets in them
-                // CreateDirectoryIfNotExists(shapesPath);
-                // CreateDirectoryIfNotExists(motifsPath);
-                // CreateDirectoryIfNotExists(detailsPath);
-                // CreateDirectoryIfNotExists(outputPath);
+                
 
                 // Load settings
                 LoadSettings();
