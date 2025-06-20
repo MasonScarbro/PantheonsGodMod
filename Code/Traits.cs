@@ -464,7 +464,7 @@ namespace GodsAndPantheons
                 Actor pActor = (Actor)pTarget;
                 if (pActor.asset.use_items)
                 {
-                    pActor.equipment.weapon?.throwOutItem();
+                    pActor.equipment.weapon?.takeAwayItem();
                     Item Item = World.world.items.generateItem(AssetManager.items.get(GetId(asset.id)), pActor.kingdom, pActor.name, 1, pActor);
                     Item.data.name = Item.asset.translation_key;
                     Item.addMod("divine_rune");
@@ -702,7 +702,7 @@ namespace GodsAndPantheons
             a.data.set("life", life + 1);
             if (life + 1 > (increased ? lifespan * 2 : lifespan))
             {
-                a.die(false, AttackType.Age, false, true, true);
+                a.die(false, AttackType.Age, true, true);
             }
             return true;
         }

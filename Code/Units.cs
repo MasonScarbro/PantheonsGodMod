@@ -14,8 +14,8 @@ namespace GodsAndPantheons
             ghk.default_kingdom_color = new ColorAsset("#AAAAAA");
             ghk.addTag("GodHunters");
             ghk.addFriendlyTag("GodHunters");
-            ghk.addFriendlyTag(SK.dragons);
-            ghk.addFriendlyTag(SK.undead);
+            ghk.addFriendlyTag("dragons");
+            ghk.addFriendlyTag("undead");
             AssetManager.kingdoms.add(ghk);
             World.world.kingdoms_wild.newWildKingdom(ghk);
             loadAssets();

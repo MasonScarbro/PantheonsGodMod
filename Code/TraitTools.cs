@@ -324,7 +324,7 @@ namespace GodsAndPantheons
             }
             if (destroyWeapon)
             {
-                pActor.equipment?.weapon?.throwOutItem();
+                pActor.equipment?.weapon?.takeAwayItem();
             }
             Actor actor = CopyActor(pActor, morphid);
             if (actor == null)
@@ -333,7 +333,7 @@ namespace GodsAndPantheons
             }
             if (!actor.asset.use_items && pActor.asset.use_items)
             {
-                pActor.city?.takeAllItemsFromActorOnDeath(pActor);
+                //pActor.city?.takeAllItemsFromActorOnDeath(pActor); potential bug but this just isnt a function anymore
             }
             actor.setKingdom(pActor.kingdom);
             actor.setCity(pActor.city);

@@ -21,7 +21,7 @@ namespace GodsAndPantheons
             {
                 s.TileToGo = Toolbox.getRandomTileWithinDistance(s.tile, 120);
                   for (int i = 0; i < 3; i++)
-                    World.world.drop_manager.spawnParabolicDrop(s.tile, SB.corrupted_brain, 0, 2, 20, 20, 50);
+                    World.world.drop_manager.spawnParabolicDrop(s.tile, "corrupted_brain", 0, 2, 20, 20, 50);
             }
         }
         private static void loadProjectiles()

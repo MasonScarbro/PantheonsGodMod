@@ -60,7 +60,7 @@ namespace GodsAndPantheons
                     explode_and_set_random_fire = true,
                     explode_strength = 10,
                     damage_buildings = true,
-                    setFire = true,
+                    set_fire = true,
                     damage = 20,
                     shake = true,
                     shake_intensity = 1f,
@@ -76,7 +76,7 @@ namespace GodsAndPantheons
                 apply_force = true,
                 force_power = .3f,
                 damage_buildings = true,
-                setFire = true,
+                set_fire = true,
                 damage = 30
             });
 
