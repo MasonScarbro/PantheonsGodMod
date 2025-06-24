@@ -54,7 +54,7 @@ namespace GodsAndPantheons
             AssetManager.items.list.AddItem(spearOfLight);
             Localization.Add("Spear Of Divine Light", "Spear Of Divine Light");
             Localization.Add("SpearOfLight_description", "The Light of the Sun Flows through it!");
-            addWeaponsSprite(spearOfLight.id);
+            addWeaponsSprite(spearOfLight);
 
 
             ItemAsset axeOfFury = AssetManager.items.clone("AxeOfFury", "$melee");
@@ -91,7 +91,7 @@ namespace GodsAndPantheons
 
             Localization.Add("Axe Of War", "Axe Of War");
             Localization.Add("AxeOfFury_description", "The Sight of my blade trembles my enemies! (they dont care)"); ///idk
-            addWeaponsSprite(axeOfFury.id);
+            addWeaponsSprite(axeOfFury);
 
             ItemAsset darkDagger = AssetManager.items.clone("DarkDagger", "$melee");
             darkDagger.id = "DarkDagger";
@@ -119,7 +119,7 @@ namespace GodsAndPantheons
             darkDagger.action_attack_target = new AttackAction(darkGodTeleportAttack);
             Localization.Add("DarkDagger_description", "The Daggers of darkness");
             Localization.Add("the Dark Dagger", "Dagger Of Darkness");
-            addWeaponsSprite(darkDagger.id);
+            addWeaponsSprite(darkDagger);
 
 
             ItemAsset maceOfDestruction = AssetManager.items.clone("MaceOfDestruction", "$range");
@@ -148,8 +148,8 @@ namespace GodsAndPantheons
             maceOfDestruction.path_icon = "ui/weapon_icons/icon_MaceOfDestruction";
             Localization.Add("Mace Of Destruction", "Mace Of Destruction");
             Localization.Add("MaceOfDestruction_description", "Here Comes the Chaos!");
-            addWeaponsSprite(maceOfDestruction.id);
-            
+            addWeaponsSprite(maceOfDestruction);
+
             ItemAsset staffOfKnowledge = AssetManager.items.clone("StaffOfKnowledge", "$range");
             staffOfKnowledge.id = "StaffOfKnowledge";
             staffOfKnowledge.translation_key = "Staff Of Knowledge";
@@ -177,8 +177,8 @@ namespace GodsAndPantheons
             staffOfKnowledge.projectile = "wordsOfKnowledgeProjectile";
             Localization.Add("StaffOfKnowledge_description", "Knowledge is the true source of power -guy who is holding it");
             Localization.Add("Staff Of Knowledge", "Staff Of Knowledge");
-            addWeaponsSprite(staffOfKnowledge.id);
-            
+            addWeaponsSprite(staffOfKnowledge);
+
             ItemAsset StaffOfLove = AssetManager.items.clone("StaffOfLove", "$range");
             StaffOfLove.id = "StaffOfLove";
             StaffOfLove.translation_key = "Staff Of Love";
@@ -210,33 +210,9 @@ namespace GodsAndPantheons
             StaffOfLove.projectile = "CorruptedHeart";
             Localization.Add("StaffOfLove_description", "You get some love, you get love, everyone gets loved! except me ):");
             Localization.Add("Staff Of Love", "Staff Of Love");
-            addWeaponsSprite(StaffOfLove.id);
+            addWeaponsSprite(StaffOfLove);
 
-            ItemAsset FireGodStaff = AssetManager.items.clone("HellStaff", "evil_staff");
-            FireGodStaff.id = "HellStaff";
-            FireGodStaff.translation_key = "The Staff Of Fire";
-            FireGodStaff.name_templates = List.Of<string>(new string[] { "sword_name" });
-            FireGodStaff.base_stats.set("lifespan", 100f);
-            FireGodStaff.base_stats.set("attack_speed", 1f);
-            FireGodStaff.base_stats.set("speed", 1f);
-            FireGodStaff.base_stats.set("damage", 15);
-            FireGodStaff.base_stats.set("range", 1);
-            FireGodStaff.base_stats.set("armor", 1);
-            FireGodStaff.base_stats.set("targets", 3f);
-            FireGodStaff.base_stats.set("critical_chance", 0.1f);
-            FireGodStaff.base_stats.set("knockback", 0.0f);
-            FireGodStaff.base_stats.set("mass", 0.1f);
-            FireGodStaff.base_stats.set("intelligence", 15f);
-            FireGodStaff.base_stats.set("projectiles", 10);
-            FireGodStaff.equipment_value = 3300;
-            FireGodStaff.quality = Rarity.R3_Legendary;
-            FireGodStaff.name_class = "item_class_weapon";
-            FireGodStaff.path_icon = "ui/weapon_icons/icon_HellStaf";
-            FireGodStaff.action_attack_target = new AttackAction(UnleashHell);
-            AssetManager.items.list.AddItem(FireGodStaff);
-            Localization.Add("The Staff Of Fire", "the Staff of fire");
-            Localization.Add("HellStaff_description", "You will taste the true power of the fire side?");
-            addWeaponsSprite(FireGodStaff.id);
+
 
             ItemAsset cometScepter = AssetManager.items.clone("CometScepter", "$range");
             cometScepter.id = "CometScepter";
@@ -269,7 +245,7 @@ namespace GodsAndPantheons
             AssetManager.items.list.AddItem(cometScepter);
             Localization.Add("CometScepter_description", "The power of the moon is incredible! right?");
             Localization.Add("Scepter Of The Stars", "Scepter Of The Stars");
-            addWeaponsSprite(cometScepter.id);
+            addWeaponsSprite(cometScepter);
 
             ItemAsset hammerOfCreation = AssetManager.items.clone("HammerOfCreation", "$melee");
             hammerOfCreation.id = "HammerOfCreation";
@@ -297,7 +273,7 @@ namespace GodsAndPantheons
             AssetManager.items.list.AddItem(hammerOfCreation);
             Localization.Add("HammerOfCreation_description", "With this Hammer i hereby cast COOL SPIKES OUT OF GROUND!");
             Localization.Add("Hammer Of Creation", "Hammer Of Creation");
-            addWeaponsSprite(hammerOfCreation.id);
+            addWeaponsSprite(hammerOfCreation);
 
             ItemAsset lichGodsGreatSword = AssetManager.items.clone("LichGodsGreatSword", "$melee");
             lichGodsGreatSword.id = "LichGodsGreatSword";
@@ -322,11 +298,11 @@ namespace GodsAndPantheons
             lichGodsGreatSword.action_attack_target = new AttackAction(LichGodAttack);
             lichGodsGreatSword.name_class = "item_class_weapon";
             lichGodsGreatSword.path_icon = "ui/weapon_icons/icon_LichGodsGreatSword";
-            
+
             AssetManager.items.list.AddItem(lichGodsGreatSword);
             Localization.Add("LichGodsGreatSword_description", "The Power of the Undead lies in this Great Sword!");
             Localization.Add("Great Sword Of The Lich", "Great Sword Of The Lich");
-            addWeaponsSprite(lichGodsGreatSword.id);
+            addWeaponsSprite(lichGodsGreatSword);
 
             ItemAsset godHuntersScythe = AssetManager.items.clone("GodHuntersScythe", "$melee");
             godHuntersScythe.id = "GodHuntersScythe";
@@ -356,7 +332,33 @@ namespace GodsAndPantheons
             AssetManager.items.list.AddItem(godHuntersScythe);
             Localization.Add("GodHuntersScythe_description", "Why did the god hunters choose this weapon? it Deals 5x more damage to Gods AND it only costs 10.99!!!!!!");
             Localization.Add("God Hunters Scythe", "The God Hunters Scythe");
-            addWeaponsSprite(godHuntersScythe.id);
+            addWeaponsSprite(godHuntersScythe);
+            
+            ItemAsset FireGodStaff = AssetManager.items.clone("HellStaff", "evil_staff");
+            FireGodStaff.id = "HellStaff";
+            FireGodStaff.translation_key = "The Staff Of Fire";
+            FireGodStaff.name_templates = List.Of<string>(new string[] { "sword_name" });
+            FireGodStaff.base_stats.set("lifespan", 100f);
+            FireGodStaff.base_stats.set("attack_speed", 1f);
+            FireGodStaff.base_stats.set("speed", 1f);
+            FireGodStaff.base_stats.set("damage", 15);
+            FireGodStaff.base_stats.set("range", 1);
+            FireGodStaff.base_stats.set("armor", 1);
+            FireGodStaff.base_stats.set("targets", 3f);
+            FireGodStaff.base_stats.set("critical_chance", 0.1f);
+            FireGodStaff.base_stats.set("knockback", 0.0f);
+            FireGodStaff.base_stats.set("mass", 0.1f);
+            FireGodStaff.base_stats.set("intelligence", 15f);
+            FireGodStaff.base_stats.set("projectiles", 10);
+            FireGodStaff.equipment_value = 3300;
+            FireGodStaff.quality = Rarity.R3_Legendary;
+            FireGodStaff.name_class = "item_class_weapon";
+            FireGodStaff.path_icon = "ui/weapon_icons/icon_HellStaf";
+            FireGodStaff.action_attack_target = new AttackAction(UnleashHell);
+            AssetManager.items.list.AddItem(FireGodStaff);
+            Localization.Add("The Staff Of Fire", "the Staff of fire");
+            Localization.Add("HellStaff_description", "You will taste the true power of the fire side?");
+            addWeaponsSprite(FireGodStaff);
         }
 
         static bool Flame(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile = null)
@@ -501,11 +503,9 @@ namespace GodsAndPantheons
         }
 
 
-        static void addWeaponsSprite(string id)
+        static void addWeaponsSprite(ItemAsset itemAsset)
         {
-            var dictItems = ActorAnimationLoader._dict_items;
-            var sprite = Resources.Load<Sprite>("weapons/"+id);
-            dictItems.Add("w_"+id, new List<Sprite>() { sprite });
+            itemAsset.path_gameplay_sprite = "weapons/" + itemAsset.id;
         }
     }
 }

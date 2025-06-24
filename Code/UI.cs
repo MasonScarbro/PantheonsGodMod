@@ -1,6 +1,9 @@
 using System.Globalization;
 using NCMS.Utils;
 using ReflectionUtility;
+using System.Reflection;
+using System.Collections.Generic;
+using HarmonyLib;
 using SleekRender;
 using UnityEngine;
 using UnityEngine.Events;
@@ -41,47 +44,76 @@ namespace GodsAndPantheons
                 newTabButton.transform.Find("Icon").GetComponent<Image>().sprite = spriteForTab;
 
 
-                GameObject OtherTab = GameObjects.FindEvenInactive("Tab_Other");
-                foreach (Transform child in OtherTab.transform)
+                GameObject OtherTab = FindAllGameObjectsCreditToNikonForThisFunctionBTW("other");
+                if (OtherTab == null)
                 {
-                    child.gameObject.SetActive(false);
+                    Debug.LogError("Tab_Other not found, cannot create new tab.");
+                    return;
                 }
-
-                GameObject additionalPowersTab = GameObject.Instantiate(OtherTab);
-
-                foreach (Transform child in additionalPowersTab.transform)
+                else
                 {
-                    if (child.gameObject.name == "tabBackButton" || child.gameObject.name == "-space")
+                    foreach (Transform child in OtherTab.transform)
                     {
-                        child.gameObject.SetActive(true);
-                        continue;
+                        child.gameObject.SetActive(false);
                     }
 
-                    GameObject.Destroy(child.gameObject);
+                    GameObject additionalPowersTab = GameObject.Instantiate(OtherTab);
+
+                    foreach (Transform child in additionalPowersTab.transform)
+                    {
+                        if (child.gameObject.name == "tabBackButton" || child.gameObject.name == "-space")
+                        {
+                            child.gameObject.SetActive(true);
+                            continue;
+                        }
+
+                        GameObject.Destroy(child.gameObject);
+                    }
+
+                    foreach (Transform child in OtherTab.transform)
+                    {
+                        child.gameObject.SetActive(true);
+                    }
+                    additionalPowersTab.transform.SetParent(OtherTab.transform.parent);
+                    PowersTab powersTabComponent = additionalPowersTab.GetComponent<PowersTab>();
+                    powersTabComponent.powerButton = buttonComponent;
+                    Reflection.SetField<List<PowerButton>>(powersTabComponent, "_power_buttons", new List<PowerButton>());
+
+
+
+                    additionalPowersTab.name = tabID;
+                    powersTabComponent.powerButton.onClick = new Button.ButtonClickedEvent();
+                    powersTabComponent.powerButton.onClick.AddListener(() => tabOnClick(tabID));
+                    Reflection.SetField<GameObject>(powersTabComponent, "parentObj", OtherTab.transform.parent.parent.gameObject);
+
+                    additionalPowersTab.SetActive(true);
+                    powersTabComponent.powerButton.gameObject.SetActive(true);
+                    var asset = new PowerTabAsset
+                    {
+                        id = tabID,
+                        locale_key = tabID,
+                        tab_type_main = true,
+                        get_power_tab = () => powersTabComponent
+                    };
+                    AssetManager.power_tab_library.add(asset);
+                    powersTabComponent._asset = asset;
                 }
+                
 
-                foreach (Transform child in OtherTab.transform)
-                {
-                    child.gameObject.SetActive(true);
-                }
-
-
-                additionalPowersTab.transform.SetParent(OtherTab.transform.parent);
-                PowersTab powersTabComponent = additionalPowersTab.GetComponent<PowersTab>();
-                powersTabComponent.powerButton = buttonComponent;
-                powersTabComponent.powerButtons.Clear();
-
-
-                additionalPowersTab.name = tabID;
-                powersTabComponent.powerButton.onClick = new Button.ButtonClickedEvent();
-                powersTabComponent.powerButton.onClick.AddListener(() => tabOnClick(tabID));
-                Reflection.SetField<GameObject>(powersTabComponent, "parentObj", OtherTab.transform.parent.parent.gameObject);
-
-                additionalPowersTab.SetActive(true);
-                powersTabComponent.powerButton.gameObject.SetActive(true);
+                
             }
         }
 
+        public static GameObject FindAllGameObjectsCreditToNikonForThisFunctionBTW(string Name)
+        {
+            GameObject[] objectsOfTypeAll = Resources.FindObjectsOfTypeAll<GameObject>();
+            for (int index = 0; index < objectsOfTypeAll.Length; ++index)
+            {
+                if (objectsOfTypeAll[index].gameObject.gameObject.name == Name)
+                    return objectsOfTypeAll[index];
+            }
+            return (GameObject)null;
+        }
         public static void tabOnClick(string tabID)
         {
             GameObject AdditionalTab = GameObjects.FindEvenInactive(tabID);

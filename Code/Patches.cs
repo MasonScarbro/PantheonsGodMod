@@ -5,6 +5,7 @@ using SleekRender;
 using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using System.Reflection;
 using UnityEngine;
 using static GodsAndPantheons.Traits;
 //Harmony Patches
@@ -305,11 +306,13 @@ namespace GodsAndPantheons.Patches
         }
     }
     [HarmonyPatch(typeof(TooltipLibrary), "showTrait")]
+    [HarmonyPatch(MethodType.Normal)]
+    [HarmonyPatch(new Type[] { typeof(Tooltip), typeof(string), typeof(TooltipData) })]
     public class showdemistats
     {
         static BaseStats[] getdemistats(ActorTrait trait)
         {
-            if((trait.id == "Demi God" || trait.id == "Lesser God" || trait.id == "God Killer") && SelectedUnit.unit != null)
+            if ((trait.id == "Demi God" || trait.id == "Lesser God" || trait.id == "God Killer") && SelectedUnit.unit != null)
             {
                 DemiGodData Data = SelectedUnit.unit.DemiData();
                 if (Data != null)
@@ -319,19 +322,35 @@ namespace GodsAndPantheons.Patches
             }
             return Array.Empty<BaseStats>();
         }
-        
+
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            CodeMatcher Matcher = new CodeMatcher(instructions);
-            Matcher.MatchForward(false, new CodeMatch[]
+            var codes = new List<CodeInstruction>(instructions);
+        
+            for (int i = 0; i < codes.Count; i++)
             {
-                new CodeMatch(OpCodes.Call, AccessTools.Field(typeof(Array), nameof(Array.Empty)))
-            });
-            Matcher.RemoveInstruction();
-            Matcher.Insert(new CodeInstruction[] {
-                new CodeInstruction(OpCodes.Ldloc_0),
-                new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(showdemistats), nameof(getdemistats))) });
-            return Matcher.Instructions();
+                // Look for Array.Empty<BaseStats>() call
+                if (codes[i].opcode == OpCodes.Call && 
+                    codes[i].operand is MethodInfo method &&
+                    method.Name == "Empty" && 
+                    method.DeclaringType == typeof(Array) &&
+                    method.IsGenericMethod &&
+                    method.GetGenericArguments().Length == 1 &&
+                    method.GetGenericArguments()[0] == typeof(BaseStats))
+                {
+                    // Replace the Array.Empty<BaseStats>() call with our custom method
+                    // First, we need to load the trait parameter (should be in a local variable)
+                    codes.Insert(i, new CodeInstruction(OpCodes.Ldloc_0)); // Load trait from local variable 0
+                    i++; // Adjust index after insertion
+                    
+                    // Replace the Array.Empty call with our method call
+                    codes[i] = new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(showdemistats), nameof(getdemistats)));
+                    
+                    break; // We found and replaced it, so we're done
+                }
+            }
+            
+            return codes;
         }
     }
     [HarmonyPatch(typeof(BaseSimObject), nameof(BaseSimObject.canAttackTarget))]
