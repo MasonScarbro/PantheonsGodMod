@@ -405,8 +405,9 @@ namespace GodsAndPantheons
                     PowerButtonSelector.instance.checkToggleIcons();
                 }
             });
-            LM.AddToCurrentLocale(power.name, power.name);
-            LM.AddToCurrentLocale(power.name + " Description", Description);
+            Debug.Log($"Creating Toggle Button: {ID} and Name: {power.name}");
+            Localization.AddOrSet(WindowManager.ToSnakeCase(power.name), power.name);
+            Localization.AddOrSet(WindowManager.ToSnakeCase(power.name) + "_description", Description);
             PlayerConfig.dict.Add(ID, new PlayerOptionData(ID));
             var Button = PowerButtonCreator.CreateToggleButton(
                 ID,

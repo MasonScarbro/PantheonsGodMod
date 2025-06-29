@@ -88,7 +88,7 @@ namespace GodsAndPantheons
             axeOfFury.equipment_type = EquipmentType.Weapon;
             axeOfFury.name_class = "item_class_weapon";
             axeOfFury.path_icon = "ui/weapon_icons/icon_AxeOfFury";
-
+            AssetManager.items.list.AddItem(axeOfFury);
             Localization.Add("Axe Of War", "Axe Of War");
             Localization.Add("AxeOfFury_description", "The Sight of my blade trembles my enemies! (they dont care)"); ///idk
             addWeaponsSprite(axeOfFury);
@@ -117,6 +117,7 @@ namespace GodsAndPantheons
             darkDagger.name_class = "item_class_weapon";
             darkDagger.path_icon = "ui/weapon_icons/icon_DarkDagger";
             darkDagger.action_attack_target = new AttackAction(darkGodTeleportAttack);
+            AssetManager.items.list.AddItem(darkDagger);
             Localization.Add("DarkDagger_description", "The Daggers of darkness");
             Localization.Add("the Dark Dagger", "Dagger Of Darkness");
             addWeaponsSprite(darkDagger);
@@ -146,6 +147,7 @@ namespace GodsAndPantheons
             maceOfDestruction.projectile = "boneFire";
             maceOfDestruction.name_class = "item_class_weapon";
             maceOfDestruction.path_icon = "ui/weapon_icons/icon_MaceOfDestruction";
+            AssetManager.items.list.AddItem(maceOfDestruction);
             Localization.Add("Mace Of Destruction", "Mace Of Destruction");
             Localization.Add("MaceOfDestruction_description", "Here Comes the Chaos!");
             addWeaponsSprite(maceOfDestruction);
@@ -175,6 +177,7 @@ namespace GodsAndPantheons
             staffOfKnowledge.base_stats.set("projectiles", 12f);
             staffOfKnowledge.base_stats.set("damage_range", 0.9f);
             staffOfKnowledge.projectile = "wordsOfKnowledgeProjectile";
+            AssetManager.items.list.AddItem(staffOfKnowledge);
             Localization.Add("StaffOfKnowledge_description", "Knowledge is the true source of power -guy who is holding it");
             Localization.Add("Staff Of Knowledge", "Staff Of Knowledge");
             addWeaponsSprite(staffOfKnowledge);
@@ -208,6 +211,7 @@ namespace GodsAndPantheons
             StaffOfLove.base_stats.set("projectiles", 1);
             StaffOfLove.base_stats.set("damage_range", 0.9f);
             StaffOfLove.projectile = "CorruptedHeart";
+            AssetManager.items.list.AddItem(StaffOfLove);
             Localization.Add("StaffOfLove_description", "You get some love, you get love, everyone gets loved! except me ):");
             Localization.Add("Staff Of Love", "Staff Of Love");
             addWeaponsSprite(StaffOfLove);
@@ -241,7 +245,6 @@ namespace GodsAndPantheons
             cometScepter.base_stats.set("projectiles", 4f);
             cometScepter.base_stats.set("damage_range", 0.9f);
             cometScepter.projectile = "starShowerProjectile";
-
             AssetManager.items.list.AddItem(cometScepter);
             Localization.Add("CometScepter_description", "The power of the moon is incredible! right?");
             Localization.Add("Scepter Of The Stars", "Scepter Of The Stars");
@@ -304,6 +307,34 @@ namespace GodsAndPantheons
             Localization.Add("Great Sword Of The Lich", "Great Sword Of The Lich");
             addWeaponsSprite(lichGodsGreatSword);
 
+            //Fire God Staff
+            ItemAsset FireGodStaff = AssetManager.items.clone("HellStaff", "evil_staff");
+            FireGodStaff.id = "HellStaff";
+            FireGodStaff.translation_key = "The Staff Of Fire";
+            FireGodStaff.name_templates = List.Of<string>(new string[] { "sword_name" });
+            FireGodStaff.base_stats.set("lifespan", 100f);
+            FireGodStaff.base_stats.set("attack_speed", 1f);
+            FireGodStaff.base_stats.set("speed", 1f);
+            FireGodStaff.base_stats.set("damage", 15);
+            FireGodStaff.base_stats.set("range", 1);
+            FireGodStaff.base_stats.set("armor", 1);
+            FireGodStaff.base_stats.set("targets", 3f);
+            FireGodStaff.base_stats.set("critical_chance", 0.1f);
+            FireGodStaff.base_stats.set("knockback", 0.0f);
+            FireGodStaff.base_stats.set("mass", 0.1f);
+            FireGodStaff.base_stats.set("intelligence", 15f);
+            FireGodStaff.base_stats.set("projectiles", 10);
+            FireGodStaff.equipment_value = 3300;
+            FireGodStaff.quality = Rarity.R3_Legendary;
+            FireGodStaff.name_class = "item_class_weapon";
+            FireGodStaff.path_icon = "ui/weapon_icons/icon_HellStaf";
+            FireGodStaff.action_attack_target = new AttackAction(UnleashHell);
+            AssetManager.items.list.AddItem(FireGodStaff);
+            Localization.Add("The Staff Of Fire", "the Staff of fire");
+            Localization.Add("HellStaff_description", "You will taste the true power of the fire side?");
+            addWeaponsSprite(FireGodStaff); // Weapon texture missing?????
+            
+
             ItemAsset godHuntersScythe = AssetManager.items.clone("GodHuntersScythe", "$melee");
             godHuntersScythe.id = "GodHuntersScythe";
             godHuntersScythe.translation_key = "God Hunters Scythe";
@@ -334,31 +365,7 @@ namespace GodsAndPantheons
             Localization.Add("God Hunters Scythe", "The God Hunters Scythe");
             addWeaponsSprite(godHuntersScythe);
             
-            ItemAsset FireGodStaff = AssetManager.items.clone("HellStaff", "evil_staff");
-            FireGodStaff.id = "HellStaff";
-            FireGodStaff.translation_key = "The Staff Of Fire";
-            FireGodStaff.name_templates = List.Of<string>(new string[] { "sword_name" });
-            FireGodStaff.base_stats.set("lifespan", 100f);
-            FireGodStaff.base_stats.set("attack_speed", 1f);
-            FireGodStaff.base_stats.set("speed", 1f);
-            FireGodStaff.base_stats.set("damage", 15);
-            FireGodStaff.base_stats.set("range", 1);
-            FireGodStaff.base_stats.set("armor", 1);
-            FireGodStaff.base_stats.set("targets", 3f);
-            FireGodStaff.base_stats.set("critical_chance", 0.1f);
-            FireGodStaff.base_stats.set("knockback", 0.0f);
-            FireGodStaff.base_stats.set("mass", 0.1f);
-            FireGodStaff.base_stats.set("intelligence", 15f);
-            FireGodStaff.base_stats.set("projectiles", 10);
-            FireGodStaff.equipment_value = 3300;
-            FireGodStaff.quality = Rarity.R3_Legendary;
-            FireGodStaff.name_class = "item_class_weapon";
-            FireGodStaff.path_icon = "ui/weapon_icons/icon_HellStaf";
-            FireGodStaff.action_attack_target = new AttackAction(UnleashHell);
-            AssetManager.items.list.AddItem(FireGodStaff);
-            Localization.Add("The Staff Of Fire", "the Staff of fire");
-            Localization.Add("HellStaff_description", "You will taste the true power of the fire side?");
-            addWeaponsSprite(FireGodStaff);
+            
         }
 
         static bool Flame(BaseSimObject pSelf, BaseSimObject pTarget, WorldTile pTile = null)
@@ -505,7 +512,49 @@ namespace GodsAndPantheons
 
         static void addWeaponsSprite(ItemAsset itemAsset)
         {
-            itemAsset.path_gameplay_sprite = "weapons/" + itemAsset.id;
+            string basePath = "weapons/" + itemAsset.id;
+
+            Sprite[] sprites;
+
+            if (itemAsset.animated)
+            {
+                // Try LoadAll first for animations
+                sprites = Resources.LoadAll<Sprite>(basePath);
+
+                // Fallback: try loading individual frames
+                if (sprites == null || sprites.Length == 0)
+                {
+                    List<Sprite> frameList = new List<Sprite>();
+                    int i = 0;
+                    while (true)
+                    {
+                        Sprite s = Resources.Load<Sprite>($"{basePath}_{i}");
+                        if (s == null) break;
+                        frameList.Add(s);
+                        i++;
+
+                        if (i > 20) break; // avoid infinite loop
+                    }
+                    sprites = frameList.ToArray();
+                }
+            }
+            else
+            {
+                Sprite s = Resources.Load<Sprite>(basePath);
+                sprites = s != null ? new Sprite[] { s } : Array.Empty<Sprite>();
+            }
+
+            itemAsset.path_gameplay_sprite = basePath;
+            itemAsset.gameplay_sprites = sprites;
+
+            if (sprites.Length == 0)
+            {
+                Debug.LogWarning($"[addWeaponsSprite] No sprites found for {itemAsset.id}");
+            }
+            else
+            {
+                Debug.Log($"[addWeaponsSprite] Loaded {sprites.Length} sprite(s) for {itemAsset.id}");
+            }
         }
     }
 }

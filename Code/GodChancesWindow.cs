@@ -4,6 +4,7 @@ using NeoModLoader.General;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 namespace GodsAndPantheons
 {
     class GodWindow : MonoBehaviour
@@ -90,8 +91,8 @@ namespace GodsAndPantheons
                             Main.modifyGodOption(ID, kv.Key, !Main.savedSettings[ID][kv.Key].active);
                         }
                     });
-                    LM.AddToCurrentLocale(power.name, power.name);
-                    LM.AddToCurrentLocale(power.name + " Description", "Toggle the option");
+                    Localization.AddOrSet(WindowManager.ToSnakeCase(power.name), power.name);
+                    Localization.AddOrSet(WindowManager.ToSnakeCase(power.name) + "_description", "Toggle the option");
                     PlayerConfig.dict.Add(kv.Key, new PlayerOptionData(kv.Key));
                     PowerButton activeButton = PowerButtonCreator.CreateToggleButton(
                         $"{kv.Key}",
