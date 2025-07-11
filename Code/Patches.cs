@@ -419,7 +419,7 @@ namespace GodsAndPantheons.Patches
             bool isgod = pDeadUnit.IsGod();
             if(__instance.hasTrait("NecroMancer") && !isgod)
             {
-                Actor actor = CopyActor(pDeadUnit, pDeadUnit.asset.zombie_id);
+                Actor actor = CopyActor(pDeadUnit, pDeadUnit.asset.zombie_id_internal);
                 if (actor != null)
                 {
                     TurnActorIntoSummonedOne(actor, __instance, 101);
