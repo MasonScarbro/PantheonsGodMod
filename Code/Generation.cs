@@ -32,45 +32,489 @@ namespace GodsAndPantheons
             public float motifChance = 0.5f;
             public float detailChance = 0.4f;
             public float proceduralMotifChance = 0.3f;
+            public int maxLayers = 5;
+            public float layerSpacing = 0.618f; // Golden ratio spacing
             
         }
 
+        [System.Serializable]
+        public class LayerInfo
+        {
+            public Rect bounds;
+            public Vector2 center;
+            public LayerType type;
+            public string elementName;
+            public Color dominantColor;
+            public bool[,] pixelMask;
+            public int layerIndex;
+            public float influence; // How much this layer affects placement of others
+            
+            public LayerInfo(Rect bounds, Vector2 center, LayerType type, string name, Color color, bool[,] mask, int layer)
+            {
+                this.bounds = bounds;
+                this.center = center;
+                this.type = type;
+                this.elementName = name;
+                this.dominantColor = color;
+                this.pixelMask = mask;
+                this.layerIndex = layer;
+                this.influence = CalculateInfluence(type);
+            }
+            
+            private float CalculateInfluence(LayerType type)
+            {
+                switch (type)
+                {
+                    case LayerType.Shape: return 1.0f;
+                    case LayerType.Detail: return 0.8f;
+                    case LayerType.Motif: return 0.6f;
+                    case LayerType.ProceduralMotif: return 0.4f;
+                    default: return 0.5f;
+                }
+            }
+        }
+
+        public enum LayerType
+        {
+            Shape,
+            Detail,
+            Motif,
+            ProceduralMotif,
+            Background
+        }
+
+        public enum PlacementBehavior
+        {
+            Around,      // Place around the reference layer
+            Behind,      // Place behind (draw first)
+            Following,   // Follow the contours/edges
+            Radiating,   // Radiate outward from center
+            Orbiting,    // Circular placement around center
+            Complementary // Use golden ratio complementary positioning
+        }
+
+        [System.Serializable]
+        public class ElementRule
+        {
+            public string elementName;
+            public LayerType preferredLayer;
+            public PlacementBehavior behavior;
+            public float minDistance;
+            public float maxDistance;
+            public bool canOverlap;
+            public LayerType[] avoidLayers;
+            public LayerType[] attractToLayers;
+            public float scaleWithDistance; // Scale based on distance from attracted layers
+        }
+
+        private static ElementRule[] elementRules = new ElementRule[]
+        {
+            new ElementRule { 
+                elementName = "cloud", 
+                preferredLayer = LayerType.Detail,
+                behavior = PlacementBehavior.Behind,
+                minDistance = 2f,
+                maxDistance = 8f,
+                canOverlap = false,
+                avoidLayers = new LayerType[] { LayerType.Shape },
+                attractToLayers = new LayerType[] { },
+                scaleWithDistance = 0.1f
+            },
+            new ElementRule { 
+                elementName = "star", 
+                preferredLayer = LayerType.Detail,
+                behavior = PlacementBehavior.Radiating,
+                minDistance = 8f,
+                maxDistance = 16f,
+                canOverlap = true,
+                avoidLayers = new LayerType[] { },
+                attractToLayers = new LayerType[] { LayerType.Shape },
+                scaleWithDistance = -0.05f
+            },
+            new ElementRule { 
+                elementName = "burst", 
+                preferredLayer = LayerType.ProceduralMotif,
+                behavior = PlacementBehavior.Radiating,
+                minDistance = 4f,
+                maxDistance = 12f,
+                canOverlap = true,
+                avoidLayers = new LayerType[] { },
+                attractToLayers = new LayerType[] { LayerType.Shape },
+                scaleWithDistance = 0f
+            }
+        };
+
+        public class CompositionPlanner
+        {
+            public List<LayerInfo> layers = new List<LayerInfo>();
+            public Texture2D canvas;
+            public ColorPalette palette;
+            public int canvasSize;
+            
+            public CompositionPlanner(int size, ColorPalette colorPalette)
+            {
+                canvasSize = size;
+                palette = colorPalette;
+                canvas = new Texture2D(size, size, TextureFormat.RGBA32, false);
+                ClearCanvas();
+            }
+            
+            private void ClearCanvas()
+            {
+                Color[] pixels = new Color[canvasSize * canvasSize];
+                for (int i = 0; i < pixels.Length; i++)
+                    pixels[i] = Color.clear;
+                canvas.SetPixels(pixels);
+            }
+            
+            public Vector2 FindOptimalPlacement(LayerType type, Vector2 preferredSize, PlacementBehavior behavior, LayerType[] attractTo, LayerType[] avoid)
+            {
+                List<Vector2> candidates = new List<Vector2>();
+                
+                // Generate candidate positions based on behavior
+                switch (behavior)
+                {
+                    case PlacementBehavior.Around:
+                        candidates.AddRange(GenerateAroundPositions(attractTo, preferredSize));
+                        break;
+                    case PlacementBehavior.Radiating:
+                        candidates.AddRange(GenerateRadiatingPositions(attractTo, preferredSize));
+                        break;
+                    case PlacementBehavior.Orbiting:
+                        candidates.AddRange(GenerateOrbitingPositions(attractTo, preferredSize));
+                        break;
+                    case PlacementBehavior.Complementary:
+                        candidates.AddRange(GenerateComplementaryPositions(preferredSize));
+                        break;
+                    case PlacementBehavior.Following:
+                        candidates.AddRange(GenerateFollowingPositions(attractTo, preferredSize));
+                        break;
+                    default:
+                        candidates.AddRange(GenerateRandomPositions(preferredSize, 20));
+                        break;
+                }
+                
+                // Score each candidate position
+                Vector2 bestPosition = Vector2.zero;
+                float bestScore = float.MinValue;
+                
+                foreach (Vector2 candidate in candidates)
+                {
+                    float score = EvaluatePosition(candidate, preferredSize, attractTo, avoid);
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        bestPosition = candidate;
+                    }
+                }
+                
+                return bestPosition;
+            }
+            
+            private List<Vector2> GenerateAroundPositions(LayerType[] attractTo, Vector2 size)
+            {
+                List<Vector2> positions = new List<Vector2>();
+                
+                foreach (LayerInfo layer in layers)
+                {
+                    if (Array.IndexOf(attractTo, layer.type) >= 0)
+                    {
+                        // Generate positions around this layer
+                        int ringCount = 3;
+                        for (int ring = 1; ring <= ringCount; ring++)
+                        {
+                            float radius = Mathf.Max(layer.bounds.width, layer.bounds.height) * 0.5f + ring * settings.layerSpacing * canvasSize;
+                            int pointsInRing = Mathf.Max(6, ring * 4);
+                            
+                            for (int i = 0; i < pointsInRing; i++)
+                            {
+                                float angle = (float)i / pointsInRing * 2f * Mathf.PI;
+                                Vector2 offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+                                Vector2 position = layer.center + offset - size * 0.5f;
+                                
+                                if (IsValidPosition(position, size))
+                                    positions.Add(position);
+                            }
+                        }
+                    }
+                }
+                
+                return positions;
+            }
+            
+            private List<Vector2> GenerateRadiatingPositions(LayerType[] attractTo, Vector2 size)
+            {
+                List<Vector2> positions = new List<Vector2>();
+                
+                foreach (LayerInfo layer in layers)
+                {
+                    if (Array.IndexOf(attractTo, layer.type) >= 0)
+                    {
+                        // Generate radial positions from layer center
+                        int rayCount = UnityEngine.Random.Range(6, 12);
+                        for (int ray = 0; ray < rayCount; ray++)
+                        {
+                            float angle = (float)ray / rayCount * 2f * Mathf.PI;
+                            Vector2 direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+                            
+                            // Multiple distances along each ray
+                            for (int dist = 1; dist <= 3; dist++)
+                            {
+                                float distance = (layer.bounds.width + layer.bounds.height) * 0.25f + dist * settings.layerSpacing * canvasSize;
+                                Vector2 position = layer.center + direction * distance - size * 0.5f;
+                                
+                                if (IsValidPosition(position, size))
+                                    positions.Add(position);
+                            }
+                        }
+                    }
+                }
+                
+                return positions;
+            }
+            
+            private List<Vector2> GenerateOrbitingPositions(LayerType[] attractTo, Vector2 size)
+            {
+                List<Vector2> positions = new List<Vector2>();
+                
+                foreach (LayerInfo layer in layers)
+                {
+                    if (Array.IndexOf(attractTo, layer.type) >= 0)
+                    {
+                        // Generate orbital positions
+                        float orbitRadius = Mathf.Max(layer.bounds.width, layer.bounds.height) * 0.5f + settings.layerSpacing * canvasSize;
+                        int orbitPoints = UnityEngine.Random.Range(3, 8);
+                        
+                        for (int i = 0; i < orbitPoints; i++)
+                        {
+                            float angle = (float)i / orbitPoints * 2f * Mathf.PI;
+                            Vector2 position = layer.center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * orbitRadius - size * 0.5f;
+                            
+                            if (IsValidPosition(position, size))
+                                positions.Add(position);
+                        }
+                    }
+                }
+                
+                return positions;
+            }
+            
+            private List<Vector2> GenerateComplementaryPositions(Vector2 size)
+            {
+                List<Vector2> positions = new List<Vector2>();
+                
+                // Use golden ratio and rule of thirds
+                for (int i = 0; i < 9; i++)
+                {
+                    Vector2 goldenPoint = GoldenRatio.GetRuleOfThirdsPoint(canvasSize, i) - size * 0.5f;
+                    if (IsValidPosition(goldenPoint, size))
+                        positions.Add(goldenPoint);
+                }
+                
+                // Add golden ratio points
+                for (int quad = 0; quad < 4; quad++)
+                {
+                    Vector2 goldenPoint = GoldenRatio.GetGoldenPoint(canvasSize, quad) - size * 0.5f;
+                    if (IsValidPosition(goldenPoint, size))
+                        positions.Add(goldenPoint);
+                }
+                
+                return positions;
+            }
+            
+            private List<Vector2> GenerateFollowingPositions(LayerType[] attractTo, Vector2 size)
+            {
+                List<Vector2> positions = new List<Vector2>();
+                
+                foreach (LayerInfo layer in layers)
+                {
+                    if (Array.IndexOf(attractTo, layer.type) >= 0)
+                    {
+                        // Generate positions that follow the contour of the layer
+                        Rect bounds = layer.bounds;
+                        
+                        // Top and bottom edges
+                        for (float x = bounds.xMin; x <= bounds.xMax; x += size.x * 0.5f)
+                        {
+                            positions.Add(new Vector2(x, bounds.yMax + size.y * 0.1f));
+                            positions.Add(new Vector2(x, bounds.yMin - size.y * 1.1f));
+                        }
+                        
+                        // Left and right edges
+                        for (float y = bounds.yMin; y <= bounds.yMax; y += size.y * 0.5f)
+                        {
+                            positions.Add(new Vector2(bounds.xMax + size.x * 0.1f, y));
+                            positions.Add(new Vector2(bounds.xMin - size.x * 1.1f, y));
+                        }
+                    }
+                }
+                
+                return positions;
+            }
+            
+            private List<Vector2> GenerateRandomPositions(Vector2 size, int count)
+            {
+                List<Vector2> positions = new List<Vector2>();
+                
+                for (int i = 0; i < count; i++)
+                {
+                    Vector2 position = new Vector2(
+                        UnityEngine.Random.Range(0, canvasSize - size.x),
+                        UnityEngine.Random.Range(0, canvasSize - size.y)
+                    );
+                    positions.Add(position);
+                }
+                
+                return positions;
+            }
+            
+            private float EvaluatePosition(Vector2 position, Vector2 size, LayerType[] attractTo, LayerType[] avoid)
+            {
+                float score = 0f;
+                Rect testRect = new Rect(position.x, position.y, size.x, size.y);
+                
+                foreach (LayerInfo layer in layers)
+                {
+                    float distance = Vector2.Distance(position + size * 0.5f, layer.center);
+                    
+                    // Attraction score
+                    if (Array.IndexOf(attractTo, layer.type) >= 0)
+                    {
+                        // Closer to attracted layers is better, but not too close
+                        float minDistance = Mathf.Max(layer.bounds.width, layer.bounds.height) * 0.6f;
+                        if (distance < minDistance)
+                            score -= 100f; // Too close penalty
+                        else
+                            score += 50f / (1f + distance * 0.1f); // Closer is better
+                    }
+                    
+                    // Avoidance score
+                    if (Array.IndexOf(avoid, layer.type) >= 0)
+                    {
+                        if (testRect.Overlaps(layer.bounds))
+                            score -= 200f; // Overlap penalty
+                        else
+                            score += distance * 2f; // Further is better
+                    }
+                    
+                    // General overlap penalty
+                    if (testRect.Overlaps(layer.bounds))
+                        score -= layer.influence * 50f;
+                }
+                
+                // Golden ratio bonus
+                Vector2 center = position + size * 0.5f;
+                Vector2 goldenPoint = GoldenRatio.GetGoldenPoint(canvasSize);
+                float goldenDistance = Vector2.Distance(center, goldenPoint);
+                score += 20f / (1f + goldenDistance * 0.1f);
+                
+                // Edge avoidance
+                float edgeDistance = Mathf.Min(
+                    Mathf.Min(position.x, position.y),
+                    Mathf.Min(canvasSize - (position.x + size.x), canvasSize - (position.y + size.y))
+                );
+                if (edgeDistance < 2f)
+                    score -= 50f;
+                
+                return score;
+            }
+            
+            private bool IsValidPosition(Vector2 position, Vector2 size)
+            {
+                return position.x >= 0 && position.y >= 0 && 
+                       position.x + size.x <= canvasSize && position.y + size.y <= canvasSize;
+            }
+            
+            public LayerInfo AddElement(LayerType type, string elementName, Texture2D texture, Vector2 position, Color dominantColor)
+            {
+                // Create pixel mask
+                bool[,] mask = new bool[canvasSize, canvasSize];
+                Color[] pixels = texture.GetPixels();
+                
+                for (int y = 0; y < texture.height; y++)
+                {
+                    for (int x = 0; x < texture.width; x++)
+                    {
+                        int canvasX = (int)position.x + x;
+                        int canvasY = (int)position.y + y;
+                        
+                        if (canvasX >= 0 && canvasX < canvasSize && canvasY >= 0 && canvasY < canvasSize)
+                        {
+                            Color pixel = pixels[y * texture.width + x];
+                            if (pixel.a > 0.1f)
+                                mask[canvasX, canvasY] = true;
+                        }
+                    }
+                }
+                
+                // Create layer info
+                Rect bounds = new Rect(position.x, position.y, texture.width, texture.height);
+                Vector2 center = new Vector2(position.x + texture.width * 0.5f, position.y + texture.height * 0.5f);
+                LayerInfo layer = new LayerInfo(bounds, center, type, elementName, dominantColor, mask, layers.Count);
+                
+                layers.Add(layer);
+                
+                // Composite to canvas
+                CompositeTexture(canvas, texture, (int)position.x, (int)position.y);
+                
+                return layer;
+            }
+            
+            public void AddProceduralElement(LayerType type, string elementName, Vector2 position, Vector2 size, Color color, System.Action<Texture2D, Color> drawAction)
+            {
+                // Create temporary texture for procedural element
+                Texture2D tempTexture = new Texture2D((int)size.x, (int)size.y, TextureFormat.RGBA32, false);
+                Color[] pixels = new Color[(int)(size.x * size.y)];
+                for (int i = 0; i < pixels.Length; i++)
+                    pixels[i] = Color.clear;
+                tempTexture.SetPixels(pixels);
+                
+                // Draw the procedural element
+                drawAction(tempTexture, color);
+                tempTexture.Apply();
+                
+                // Add as layer
+                AddElement(type, elementName, tempTexture, position, color);
+                
+                UnityEngine.Object.DestroyImmediate(tempTexture);
+            }
+        }
         private static ColorPalette[] colorsByGod = new ColorPalette[]
         {
-            new ColorPalette("Moon", new Color[] { 
-                new Color(170/255f, 204/255f, 1f), 
-                Color.white, 
-                new Color(100/255f, 150/255f, 1f) 
+            new ColorPalette("Moon", new Color[] {
+                new Color(170/255f, 204/255f, 1f),
+                Color.white,
+                new Color(100/255f, 150/255f, 1f)
             }),
-            new ColorPalette("Lich", new Color[] { 
-                new Color(80/255f, 80/255f, 80/255f), 
-                new Color(180/255f, 1f, 190/255f), 
-                new Color(0f, 1f, 180/255f) 
+            new ColorPalette("Lich", new Color[] {
+                new Color(80/255f, 80/255f, 80/255f),
+                new Color(180/255f, 1f, 190/255f),
+                new Color(0f, 1f, 180/255f)
             }),
-            new ColorPalette("Love", new Color[] { 
-                new Color(1f, 100/255f, 150/255f), 
-                new Color(1f, 180/255f, 200/255f), 
-                new Color(200/255f, 50/255f, 120/255f) 
+            new ColorPalette("Love", new Color[] {
+                new Color(1f, 100/255f, 150/255f),
+                new Color(1f, 180/255f, 200/255f),
+                new Color(200/255f, 50/255f, 120/255f)
             }),
-            new ColorPalette("Earth", new Color[] { 
-                new Color(80/255f, 50/255f, 20/255f), 
-                new Color(120/255f, 90/255f, 40/255f), 
-                new Color(160/255f, 130/255f, 70/255f) 
+            new ColorPalette("Earth", new Color[] {
+                new Color(80/255f, 50/255f, 20/255f),
+                new Color(120/255f, 90/255f, 40/255f),
+                new Color(160/255f, 130/255f, 70/255f)
             }),
-            new ColorPalette("Light", new Color[] { 
-                new Color(1f, 1f, 200/255f), 
-                new Color(1f, 1f, 150/255f), 
-                new Color(1f, 220/255f, 100/255f) 
+            new ColorPalette("Light", new Color[] {
+                new Color(1f, 1f, 200/255f),
+                new Color(1f, 1f, 150/255f),
+                new Color(1f, 220/255f, 100/255f)
             }),
-            new ColorPalette("Night", new Color[] { 
-                new Color(50/255f, 50/255f, 100/255f), 
-                new Color(30/255f, 30/255f, 60/255f), 
-                new Color(100/255f, 80/255f, 120/255f) 
+            new ColorPalette("Night", new Color[] {
+                new Color(50/255f, 50/255f, 100/255f),
+                new Color(30/255f, 30/255f, 60/255f),
+                new Color(100/255f, 80/255f, 120/255f)
             }),
-            new ColorPalette("Knowledge", new Color[] { 
-                new Color(150/255f, 1f, 1f), 
-                new Color(100/255f, 180/255f, 200/255f), 
-                new Color(50/255f, 100/255f, 150/255f) 
+            new ColorPalette("Knowledge", new Color[] {
+                new Color(150/255f, 1f, 1f),
+                new Color(100/255f, 180/255f, 200/255f),
+                new Color(50/255f, 100/255f, 150/255f)
             })
         };
         // Special handling rules for different detail types
@@ -152,11 +596,10 @@ namespace GodsAndPantheons
         public static class GoldenRatio
         {
             public const float PHI = 1.618033988749f;
-            public const float INV_PHI = 0.618033988749f; // 1/φ
+            public const float INV_PHI = 0.618033988749f;
 
             public static Vector2 GetGoldenPoint(int canvasSize, int quadrant = -1)
             {
-                // If no quadrant specified, choose randomly
                 if (quadrant == -1) quadrant = UnityEngine.Random.Range(0, 4);
 
                 float goldenX = canvasSize * INV_PHI;
@@ -164,31 +607,14 @@ namespace GodsAndPantheons
 
                 switch (quadrant)
                 {
-                    case 0: return new Vector2(goldenX, goldenY); // Bottom-right golden point
-                    case 1: return new Vector2(canvasSize - goldenX, goldenY); // Bottom-left
-                    case 2: return new Vector2(canvasSize - goldenX, canvasSize - goldenY); // Top-left
-                    case 3: return new Vector2(goldenX, canvasSize - goldenY); // Top-right
+                    case 0: return new Vector2(goldenX, goldenY);
+                    case 1: return new Vector2(canvasSize - goldenX, goldenY);
+                    case 2: return new Vector2(canvasSize - goldenX, canvasSize - goldenY);
+                    case 3: return new Vector2(goldenX, canvasSize - goldenY);
                 }
-                return new Vector2(canvasSize * 0.5f, canvasSize * 0.5f); // Fallback to center
+                return new Vector2(canvasSize * 0.5f, canvasSize * 0.5f);
             }
 
-            public static Vector2 GetComplementaryPoint(Vector2 primaryPoint, int canvasSize)
-            {
-                // Get the opposite golden ratio point
-                return new Vector2(canvasSize - primaryPoint.x, canvasSize - primaryPoint.y);
-            }
-
-            public static Vector2 GetSpiralPoint(int canvasSize, float t, float radius = -1)
-            {
-                if (radius < 0) radius = canvasSize * 0.3f;
-
-                // Golden spiral equation
-                float angle = t * 2 * Mathf.PI;
-                float r = radius * Mathf.Pow(PHI, angle / (2 * Mathf.PI));
-
-                Vector2 center = new Vector2(canvasSize * 0.5f, canvasSize * 0.5f);
-                return center + new Vector2(Mathf.Cos(angle) * r, Mathf.Sin(angle) * r);
-            }
             public static Vector2 GetRuleOfThirdsPoint(int canvasSize, int position)
             {
                 float third = canvasSize / 3f;
@@ -204,6 +630,15 @@ namespace GodsAndPantheons
                     case 7: return new Vector2(third * 1.5f, third * 2.5f);
                     default: return new Vector2(third * 1.5f, third * 1.5f);
                 }
+            }
+
+            public static Vector2 GetSpiralPoint(int canvasSize, float t, float radius = -1)
+            {
+                if (radius < 0) radius = canvasSize * 0.3f;
+                float angle = t * 2 * Mathf.PI;
+                float r = radius * Mathf.Pow(PHI, angle / (2 * Mathf.PI));
+                Vector2 center = new Vector2(canvasSize * 0.5f, canvasSize * 0.5f);
+                return center + new Vector2(Mathf.Cos(angle) * r, Mathf.Sin(angle) * r);
             }
         }
 
@@ -370,97 +805,170 @@ namespace GodsAndPantheons
         {
             // Choose random god type and palette
             ColorPalette selectedPalette = colorsByGod[UnityEngine.Random.Range(0, colorsByGod.Length)];
-            Color[] palette = selectedPalette.colors;
+            CompositionPlanner planner = new CompositionPlanner(settings.canvasSize, selectedPalette);
 
-            // Create base canvas
-            Texture2D canvas = new Texture2D(settings.canvasSize, settings.canvasSize, TextureFormat.RGBA32, false);
-            Color[] pixels = new Color[settings.canvasSize * settings.canvasSize];
-            for (int i = 0; i < pixels.Length; i++)
-                pixels[i] = Color.clear;
-            canvas.SetPixels(pixels);
+            PlacePrimaryShape(planner);
 
-            // Track filled pixels for overlap detection
-            bool[,] mask = new bool[settings.canvasSize, settings.canvasSize];
-
-            // Add shapes
-            Texture2D shapeTexture = shapeTextures[UnityEngine.Random.Range(0, shapeTextures.Length)];
-            Texture2D coloredShape = ApplyPalette(shapeTexture, palette);
-
-            int maxClones = UnityEngine.Random.Range(1, 4);
-            int clonesAdded = 0;
-            int attempts = 0;
-
-            while (clonesAdded < maxClones && attempts < 20)
+            // Step 2: Add elements based on rules and chances
+            int maxElements = UnityEngine.Random.Range(2, settings.maxLayers);
+            
+            for (int i = 1; i < maxElements; i++)
             {
-                int x = UnityEngine.Random.Range(0, settings.canvasSize - coloredShape.width + 1);
-                int y = UnityEngine.Random.Range(0, settings.canvasSize - coloredShape.height + 1);
-
-                if (!CheckOverlap(mask, x, y, coloredShape))
-                {
-                    CompositeTexture(canvas, coloredShape, x, y);
-                    UpdateMask(mask, x, y, coloredShape);
-                    clonesAdded++;
-                }
-                attempts++;
-            }
-
-            string selectedDetailType = "";
-            DetailRule activeRule = null;
-
-            if (detailTextures.Length > 0 && UnityEngine.Random.value < settings.detailChance)
-            {
-                Texture2D selectedDetail = detailTextures[UnityEngine.Random.Range(0, detailTextures.Length)];
-                selectedDetailType = selectedDetail.name.ToLower();
+                float roll = UnityEngine.Random.value;
                 
-                // Find matching rule
-                foreach (var rule in detailRules)
+                if (roll < settings.detailChance && ShouldAddDetail(planner))
                 {
-                    if (selectedDetailType.Contains(rule.detailName))
-                    {
-                        activeRule = rule;
-                        break;
-                    }
+                    PlaceDetail(planner);
+                }
+                else if (roll < settings.motifChance && ShouldAddMotif(planner))
+                {
+                    if (UnityEngine.Random.value < settings.proceduralMotifChance)
+                        PlaceProceduralMotif(planner);
+                    else
+                        PlaceMotif(planner);
                 }
             }
 
-            bool shouldAddMotif = motifTextures.Length > 0 && UnityEngine.Random.value < settings.motifChance;
-            if (activeRule != null && !activeRule.allowMotifs)
-                shouldAddMotif = false;
-
-            if (shouldAddMotif)
-            {
-                
-                // Chance for procedural motif instead of texture-based
-                if (UnityEngine.Random.value < settings.proceduralMotifChance)
-                {
-                    AddProceduralMotif(canvas, palette, selectedPalette.godType);
-                }
-                else
-                {
-                    AddMotif(canvas, palette);
-                }
-            }
-            if (detailTextures.Length > 0 && UnityEngine.Random.value < settings.detailChance)
-            {
-                if (activeRule != null && activeRule.useSpreadPattern)
-                {
-                    AddSpreadDetails(canvas, palette, activeRule);
-                }
-                else
-                {
-                    AddDetail(canvas, palette);
-                }
-            }
-
-            canvas.Apply();
-            byte[] pngData = canvas.EncodeToPNG();
+            // Save the result
+            planner.canvas.Apply();
+            byte[] pngData = planner.canvas.EncodeToPNG();
             string filename = $"{selectedPalette.godType.ToLower()}_power_{index}.png";
             File.WriteAllBytes(Path.Combine(outputPath, filename), pngData);
 
-            UnityEngine.Object.DestroyImmediate(canvas);
+            UnityEngine.Object.DestroyImmediate(planner.canvas);
+        }
+
+        private static void PlacePrimaryShape(CompositionPlanner planner)
+        {
+            if (shapeTextures.Length == 0) return;
+
+            Texture2D shapeTexture = shapeTextures[UnityEngine.Random.Range(0, shapeTextures.Length)];
+            Texture2D coloredShape = ApplyPalette(shapeTexture, planner.palette.colors);
+
+            // Primary shape uses golden ratio positioning
+            Vector2 position = GoldenRatio.GetGoldenPoint(planner.canvasSize) - new Vector2(coloredShape.width, coloredShape.height) * 0.5f;
+            position.x = Mathf.Clamp(position.x, 0, planner.canvasSize - coloredShape.width);
+            position.y = Mathf.Clamp(position.y, 0, planner.canvasSize - coloredShape.height);
+
+            Color dominantColor = planner.palette.colors[UnityEngine.Random.Range(0, planner.palette.colors.Length)];
+            planner.AddElement(LayerType.Shape, "primary_shape", coloredShape, position, dominantColor);
+
             UnityEngine.Object.DestroyImmediate(coloredShape);
         }
 
+        private static bool ShouldAddDetail(CompositionPlanner planner)
+        {
+            return detailTextures.Length > 0 && planner.layers.Count < settings.maxLayers;
+        }
+
+        private static bool ShouldAddMotif(CompositionPlanner planner)
+        {
+            return (motifTextures.Length > 0 || settings.proceduralMotifChance > 0) && planner.layers.Count < settings.maxLayers;
+        }
+
+        private static void PlaceDetail(CompositionPlanner planner)
+        {
+            if (detailTextures.Length == 0) return;
+
+            Texture2D detail = detailTextures[UnityEngine.Random.Range(0, detailTextures.Length)];
+            Texture2D coloredDetail = ApplyPalette(detail, planner.palette.colors);
+
+            // Find rule for this detail
+            ElementRule rule = FindElementRule(detail.name.ToLower());
+            PlacementBehavior behavior = rule?.behavior ?? PlacementBehavior.Around;
+            LayerType[] attractTo = rule?.attractToLayers ?? new LayerType[] { LayerType.Shape };
+            LayerType[] avoid = rule?.avoidLayers ?? new LayerType[] { };
+
+            Vector2 size = new Vector2(coloredDetail.width, coloredDetail.height);
+            Vector2 position = planner.FindOptimalPlacement(LayerType.Detail, size, behavior, attractTo, avoid);
+
+            Color dominantColor = planner.palette.colors[UnityEngine.Random.Range(0, planner.palette.colors.Length)];
+            planner.AddElement(LayerType.Detail, detail.name, coloredDetail, position, dominantColor);
+
+            UnityEngine.Object.DestroyImmediate(coloredDetail);
+        }
+
+        private static void PlaceMotif(CompositionPlanner planner)
+        {
+            if (motifTextures.Length == 0) return;
+
+            Texture2D motif = motifTextures[UnityEngine.Random.Range(0, motifTextures.Length)];
+            Texture2D coloredMotif = ApplyPalette(motif, planner.palette.colors);
+
+            // Apply random rotation
+            int rotations = UnityEngine.Random.Range(0, 4);
+            for (int i = 0; i < rotations; i++)
+            {
+                Texture2D rotated = RotateTexture90(coloredMotif);
+                UnityEngine.Object.DestroyImmediate(coloredMotif);
+                coloredMotif = rotated;
+            }
+
+            // Apply scaling
+            float scale = UnityEngine.Random.Range(0.4f, 0.8f);
+            int newWidth = Mathf.RoundToInt(coloredMotif.width * scale);
+            int newHeight = Mathf.RoundToInt(coloredMotif.height * scale);
+            Texture2D scaledMotif = ResizeTexture(coloredMotif, newWidth, newHeight);
+            UnityEngine.Object.DestroyImmediate(coloredMotif);
+            coloredMotif = scaledMotif;
+
+            Vector2 size = new Vector2(coloredMotif.width, coloredMotif.height);
+            Vector2 position = planner.FindOptimalPlacement(
+                LayerType.Motif, 
+                size, 
+                PlacementBehavior.Complementary, 
+                new LayerType[] { LayerType.Shape }, 
+                new LayerType[] { }
+            );
+
+            Color dominantColor = planner.palette.colors[UnityEngine.Random.Range(0, planner.palette.colors.Length)];
+            planner.AddElement(LayerType.Motif, motif.name, coloredMotif, position, dominantColor);
+
+            UnityEngine.Object.DestroyImmediate(coloredMotif);
+        }
+        private static void PlaceProceduralMotif(CompositionPlanner planner)
+        {
+            Vector2 size = new Vector2(
+                UnityEngine.Random.Range(8, 16), 
+                UnityEngine.Random.Range(8, 16)
+            );
+            
+            Vector2 position = planner.FindOptimalPlacement(
+                LayerType.ProceduralMotif, 
+                size, 
+                PlacementBehavior.Radiating, 
+                new LayerType[] { LayerType.Shape }, 
+                new LayerType[] { }
+            );
+
+            Color motifColor = planner.palette.colors[UnityEngine.Random.Range(0, planner.palette.colors.Length)];
+            
+            // Choose procedural pattern based on god type
+            System.Action<Texture2D, Color> drawAction = GetProceduralDrawAction(planner.palette.godType);
+            
+            planner.AddProceduralElement(LayerType.ProceduralMotif, "procedural_motif", position, size, motifColor, drawAction);
+        }
+
+        private static System.Action<Texture2D, Color> GetProceduralDrawAction(string godType)
+        {
+            switch (godType.ToLower())
+            {
+                case "light":
+                    return (texture, color) => DrawRadialBurstOnTexture(texture, color);
+                case "night":
+                    return (texture, color) => DrawStarTrailOnTexture(texture, color);
+                case "moon":
+                    return (texture, color) => DrawCrescentTrailOnTexture(texture, color);
+                case "earth":
+                    return (texture, color) => DrawRootNetworkOnTexture(texture, color);
+                case "love":
+                    return (texture, color) => DrawHeartPulseOnTexture(texture, color);
+                case "lich":
+                    return (texture, color) => DrawNecroticWebOnTexture(texture, color);
+                default:
+                    return (texture, color) => DrawSpiralEnergyOnTexture(texture, color);
+            }
+        }
         private static Texture2D ApplyPalette(Texture2D source, Color[] palette)
         {
             Texture2D result = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false);
@@ -474,7 +982,7 @@ namespace GodsAndPantheons
                 float brightness = (pixel.r + pixel.g + pixel.b) / 3f;
                 int index = Mathf.FloorToInt(brightness * (palette.Length - 1));
                 index = Mathf.Clamp(index, 0, palette.Length - 1);
-                
+
                 Color newColor = palette[index];
                 pixels[i] = new Color(newColor.r, newColor.g, newColor.b, pixel.a);
             }
@@ -483,217 +991,170 @@ namespace GodsAndPantheons
             result.Apply();
             return result;
         }
-        private static void AddProceduralMotif(Texture2D canvas, Color[] palette, string godType)
+        
+
+        private static ElementRule FindElementRule(string elementName)
         {
-            Color motifColor = palette[UnityEngine.Random.Range(0, palette.Length)];
-            
-            // Different procedural patterns based on god type
-            switch (godType.ToLower())
+            foreach (ElementRule rule in elementRules)
             {
-                case "light":
-                    DrawRadialBurst(canvas, motifColor);
-                    break;
-                case "night":
-                    DrawStarTrail(canvas, motifColor);
-                    break;
-                case "moon":
-                    DrawCrescentTrail(canvas, motifColor);
-                    break;
-                case "earth":
-                    DrawRootNetwork(canvas, motifColor);
-                    break;
-                case "love":
-                    DrawHeartPulse(canvas, motifColor);
-                    break;
-                case "lich":
-                    DrawNecroticWeb(canvas, motifColor);
-                    break;
-                default:
-                    DrawSpiralEnergy(canvas, motifColor);
-                    break;
+                if (rule.elementName.Equals(elementName, System.StringComparison.OrdinalIgnoreCase))
+                    return rule;
             }
+            return null;
         }
-
-        private static void AddSpreadDetails(Texture2D canvas, Color[] palette, DetailRule rule)
+        
+        private static void DrawRadialBurstOnTexture(Texture2D texture, Color color)
         {
-            Texture2D detail = detailTextures[UnityEngine.Random.Range(0, detailTextures.Length)];
-            if (!detail.name.ToLower().Contains(rule.detailName))
-                return; // Safety check
-
-            detail = ApplyPalette(detail, palette);
-            int count = UnityEngine.Random.Range(rule.minSpread, rule.maxSpread + 1);
-
-            switch (rule.spreadType)
-            {
-                case "rain":
-                    SpreadRainPattern(canvas, detail, count, rule.allowRotation);
-                    break;
-                case "scatter":
-                    SpreadScatterPattern(canvas, detail, count, rule.allowRotation);
-                    break;
-                case "cluster":
-                    SpreadClusterPattern(canvas, detail, count, rule.allowRotation);
-                    break;
-                case "spiral":
-                    SpreadSpiralPattern(canvas, detail, count, rule.allowRotation);
-                    break;
-            }
-
-            UnityEngine.Object.DestroyImmediate(detail);
-        }
-
-
-        private static void DrawRadialBurst(Texture2D canvas, Color color)
-        {
-            int centerX = settings.canvasSize / 2;
-            int centerY = settings.canvasSize / 2;
+            int centerX = texture.width / 2;
+            int centerY = texture.height / 2;
             int rays = UnityEngine.Random.Range(6, 12);
             
             for (int i = 0; i < rays; i++)
             {
                 float angle = (float)i / rays * 2f * Mathf.PI;
-                int length = UnityEngine.Random.Range(6, 12);
-                DrawLine(canvas, centerX, centerY, 
+                int length = UnityEngine.Random.Range(3, Mathf.Min(texture.width, texture.height) / 2);
+                DrawLineOnTexture(texture, centerX, centerY, 
                         centerX + (int)(Mathf.Cos(angle) * length),
                         centerY + (int)(Mathf.Sin(angle) * length), color);
             }
+            texture.Apply();
         }
 
-        private static void DrawStarTrail(Texture2D canvas, Color color)
+        private static void DrawStarTrailOnTexture(Texture2D texture, Color color)
         {
-            int points = UnityEngine.Random.Range(8, 16);
+            int points = UnityEngine.Random.Range(4, 8);
             for (int i = 0; i < points; i++)
             {
-                int x = UnityEngine.Random.Range(2, settings.canvasSize - 2);
-                int y = UnityEngine.Random.Range(2, settings.canvasSize - 2);
+                int x = UnityEngine.Random.Range(2, texture.width - 2);
+                int y = UnityEngine.Random.Range(2, texture.height - 2);
                 
                 // Create small star shape
-                canvas.SetPixel(x, y, color);
-                canvas.SetPixel(x-1, y, Color.Lerp(color, Color.clear, 0.5f));
-                canvas.SetPixel(x+1, y, Color.Lerp(color, Color.clear, 0.5f));
-                canvas.SetPixel(x, y-1, Color.Lerp(color, Color.clear, 0.5f));
-                canvas.SetPixel(x, y+1, Color.Lerp(color, Color.clear, 0.5f));
+                texture.SetPixel(x, y, color);
+                if (x > 0) texture.SetPixel(x-1, y, Color.Lerp(color, Color.clear, 0.5f));
+                if (x < texture.width-1) texture.SetPixel(x+1, y, Color.Lerp(color, Color.clear, 0.5f));
+                if (y > 0) texture.SetPixel(x, y-1, Color.Lerp(color, Color.clear, 0.5f));
+                if (y < texture.height-1) texture.SetPixel(x, y+1, Color.Lerp(color, Color.clear, 0.5f));
             }
+            texture.Apply();
         }
-
-        private static void DrawCrescentTrail(Texture2D canvas, Color color)
+        private static void DrawCrescentTrailOnTexture(Texture2D texture, Color color)
         {
-            int centerX = settings.canvasSize / 2;
-            int centerY = settings.canvasSize / 2;
-            int radius = UnityEngine.Random.Range(4, 8);
+            int centerX = texture.width / 2;
+            int centerY = texture.height / 2;
+            int radius = Mathf.Min(texture.width, texture.height) / 3;
             
-            // Draw crescent arc
-            for (float angle = -Mathf.PI/3; angle < Mathf.PI/3; angle += 0.2f)
+            for (float angle = -Mathf.PI/3; angle < Mathf.PI/3; angle += 0.3f)
             {
                 int x = centerX + (int)(Mathf.Cos(angle) * radius);
                 int y = centerY + (int)(Mathf.Sin(angle) * radius);
-                if (x >= 0 && x < settings.canvasSize && y >= 0 && y < settings.canvasSize)
-                    canvas.SetPixel(x, y, color);
+                if (x >= 0 && x < texture.width && y >= 0 && y < texture.height)
+                    texture.SetPixel(x, y, color);
             }
+            texture.Apply();
         }
 
-        private static void DrawRootNetwork(Texture2D canvas, Color color)
+        private static void DrawRootNetworkOnTexture(Texture2D texture, Color color)
         {
-            int startX = settings.canvasSize / 2;
-            int startY = settings.canvasSize - 1;
-            
-            // Recursive branching roots
-            DrawBranch(canvas, startX, startY, -Mathf.PI/2, 6, color, 0);
+            int startX = texture.width / 2;
+            int startY = texture.height - 1;
+            DrawBranchOnTexture(texture, startX, startY, -Mathf.PI/2, texture.height/3, color, 0);
+            texture.Apply();
         }
 
-        private static void DrawBranch(Texture2D canvas, int x, int y, float angle, int length, Color color, int depth)
+        private static void DrawNecroticWebOnTexture(Texture2D texture, Color color)
         {
-            if (depth > 3 || length < 2) return;
-            
-            int endX = x + (int)(Mathf.Cos(angle) * length);
-            int endY = y + (int)(Mathf.Sin(angle) * length);
-            
-            DrawLine(canvas, x, y, endX, endY, Color.Lerp(color, Color.clear, depth * 0.2f));
-            
-            // Branch
-            if (UnityEngine.Random.value < 0.7f)
-            {
-                float leftAngle = angle - UnityEngine.Random.Range(0.3f, 0.8f);
-                float rightAngle = angle + UnityEngine.Random.Range(0.3f, 0.8f);
-                int newLength = length - UnityEngine.Random.Range(1, 3);
-                
-                DrawBranch(canvas, endX, endY, leftAngle, newLength, color, depth + 1);
-                DrawBranch(canvas, endX, endY, rightAngle, newLength, color, depth + 1);
-            }
-        }
-
-        private static void DrawHeartPulse(Texture2D canvas, Color color)
-        {
-            int centerX = settings.canvasSize / 2;
-            int centerY = settings.canvasSize / 2;
-            int rings = UnityEngine.Random.Range(2, 4);
-            
-            for (int ring = 0; ring < rings; ring++)
-            {
-                int radius = (ring + 1) * 3;
-                Color ringColor = Color.Lerp(color, Color.clear, (float)ring / rings);
-                
-                // Draw circle
-                for (float angle = 0; angle < 2 * Mathf.PI; angle += 0.3f)
-                {
-                    int x = centerX + (int)(Mathf.Cos(angle) * radius);
-                    int y = centerY + (int)(Mathf.Sin(angle) * radius);
-                    if (x >= 0 && x < settings.canvasSize && y >= 0 && y < settings.canvasSize)
-                        canvas.SetPixel(x, y, ringColor);
-                }
-            }
-        }
-
-        private static void DrawNecroticWeb(Texture2D canvas, Color color)
-        {
-            int nodes = UnityEngine.Random.Range(4, 8);
+            int nodes = UnityEngine.Random.Range(3, 6);
             Vector2[] nodePositions = new Vector2[nodes];
             
-            // Place nodes
             for (int i = 0; i < nodes; i++)
             {
                 nodePositions[i] = new Vector2(
-                    UnityEngine.Random.Range(4, settings.canvasSize - 4),
-                    UnityEngine.Random.Range(4, settings.canvasSize - 4)
+                    UnityEngine.Random.Range(2, texture.width - 2),
+                    UnityEngine.Random.Range(2, texture.height - 2)
                 );
             }
             
-            // Connect nearby nodes
             for (int i = 0; i < nodes; i++)
             {
                 for (int j = i + 1; j < nodes; j++)
                 {
                     float distance = Vector2.Distance(nodePositions[i], nodePositions[j]);
-                    if (distance < 12 && UnityEngine.Random.value < 0.6f)
+                    if (distance < texture.width * 0.7f && UnityEngine.Random.value < 0.6f)
                     {
-                        DrawLine(canvas, 
-                               (int)nodePositions[i].x, (int)nodePositions[i].y,
-                               (int)nodePositions[j].x, (int)nodePositions[j].y, 
-                               Color.Lerp(color, Color.clear, distance / 20f));
+                        DrawLineOnTexture(texture, 
+                            (int)nodePositions[i].x, (int)nodePositions[i].y,
+                            (int)nodePositions[j].x, (int)nodePositions[j].y, 
+                            Color.Lerp(color, Color.clear, distance / (texture.width * 0.7f)));
                     }
                 }
             }
+            texture.Apply();
         }
 
-        private static void DrawSpiralEnergy(Texture2D canvas, Color color)
+        private static void DrawHeartPulseOnTexture(Texture2D texture, Color color)
         {
-            int centerX = settings.canvasSize / 2;
-            int centerY = settings.canvasSize / 2;
-            float maxRadius = settings.canvasSize / 3;
+            int centerX = texture.width / 2;
+            int centerY = texture.height / 2;
+            int rings = UnityEngine.Random.Range(2, 4);
+            int maxRadius = Mathf.Min(texture.width, texture.height) / 4;
             
-            for (float t = 0; t < 4 * Mathf.PI; t += 0.2f)
+            for (int ring = 0; ring < rings; ring++)
             {
-                float radius = (t / (4 * Mathf.PI)) * maxRadius;
+                int radius = (ring + 1) * maxRadius / rings;
+                Color ringColor = Color.Lerp(color, Color.clear, (float)ring / rings);
+                
+                for (float angle = 0; angle < 2 * Mathf.PI; angle += 0.5f)
+                {
+                    int x = centerX + (int)(Mathf.Cos(angle) * radius);
+                    int y = centerY + (int)(Mathf.Sin(angle) * radius);
+                    if (x >= 0 && x < texture.width && y >= 0 && y < texture.height)
+                        texture.SetPixel(x, y, ringColor);
+                }
+            }
+            texture.Apply();
+        }
+
+        private static void DrawSpiralEnergyOnTexture(Texture2D texture, Color color)
+        {
+            int centerX = texture.width / 2;
+            int centerY = texture.height / 2;
+            float maxRadius = Mathf.Min(texture.width, texture.height) / 3;
+            
+            for (float t = 0; t < 3 * Mathf.PI; t += 0.3f)
+            {
+                float radius = (t / (3 * Mathf.PI)) * maxRadius;
                 int x = centerX + (int)(Mathf.Cos(t) * radius);
                 int y = centerY + (int)(Mathf.Sin(t) * radius);
                 
-                if (x >= 0 && x < settings.canvasSize && y >= 0 && y < settings.canvasSize)
+                if (x >= 0 && x < texture.width && y >= 0 && y < texture.height)
                 {
                     Color fadeColor = Color.Lerp(color, Color.clear, radius / maxRadius);
-                    canvas.SetPixel(x, y, fadeColor);
+                    texture.SetPixel(x, y, fadeColor);
                 }
             }
+            texture.Apply();
         }
+
+        private static void DrawBranchOnTexture(Texture2D texture, int x, int y, float angle, int length, Color color, int depth)
+        {
+            if (depth > 2 || length < 2) return;
+            
+            int endX = x + (int)(Mathf.Cos(angle) * length);
+            int endY = y + (int)(Mathf.Sin(angle) * length);
+            
+            DrawLineOnTexture(texture, x, y, endX, endY, Color.Lerp(color, Color.clear, depth * 0.3f));
+            
+            if (UnityEngine.Random.value < 0.6f)
+            {
+                float leftAngle = angle - UnityEngine.Random.Range(0.3f, 0.8f);
+                float rightAngle = angle + UnityEngine.Random.Range(0.3f, 0.8f);
+                int newLength = length - UnityEngine.Random.Range(1, 2);
+                
+                DrawBranchOnTexture(texture, endX, endY, leftAngle, newLength, color, depth + 1);
+                DrawBranchOnTexture(texture, endX, endY, rightAngle, newLength, color, depth + 1);
+            }
+        }
+
 
         // Spread pattern methods
         private static void SpreadRainPattern(Texture2D canvas, Texture2D detail, int count, bool allowRotation)
@@ -732,97 +1193,29 @@ namespace GodsAndPantheons
             }
         }
 
-        private static void SpreadClusterPattern(Texture2D canvas, Texture2D detail, int count, bool allowRotation)
+
+        private static void DrawLineOnTexture(Texture2D texture, int x0, int y0, int x1, int y1, Color color)
         {
-            int clusters = UnityEngine.Random.Range(2, 4);
-            int itemsPerCluster = count / clusters;
-            
-            for (int c = 0; c < clusters; c++)
+            int dx = Mathf.Abs(x1 - x0);
+            int dy = Mathf.Abs(y1 - y0);
+            int sx = x0 < x1 ? 1 : -1;
+            int sy = y0 < y1 ? 1 : -1;
+            int err = dx - dy;
+
+            while (true)
             {
-                int clusterX = UnityEngine.Random.Range(detail.width, settings.canvasSize - detail.width);
-                int clusterY = UnityEngine.Random.Range(detail.height, settings.canvasSize - detail.height);
-                int clusterRadius = UnityEngine.Random.Range(3, 7);
+                if (x0 >= 0 && x0 < texture.width && y0 >= 0 && y0 < texture.height)
+                    texture.SetPixel(x0, y0, color);
+
+                if (x0 == x1 && y0 == y1) break;
                 
-                for (int i = 0; i < itemsPerCluster; i++)
-                {
-                    float angle = UnityEngine.Random.Range(0f, 2f * Mathf.PI);
-                    float distance = UnityEngine.Random.Range(0f, clusterRadius);
-                    
-                    int x = clusterX + (int)(Mathf.Cos(angle) * distance) - detail.width / 2;
-                    int y = clusterY + (int)(Mathf.Sin(angle) * distance) - detail.height / 2;
-                    
-                    x = Mathf.Clamp(x, 0, settings.canvasSize - detail.width);
-                    y = Mathf.Clamp(y, 0, settings.canvasSize - detail.height);
-                    
-                    CompositeTexture(canvas, detail, x, y);
-                }
+                int e2 = 2 * err;
+                if (e2 > -dy) { err -= dy; x0 += sx; }
+                if (e2 < dx) { err += dx; y0 += sy; }
             }
         }
+        
 
-        private static void SpreadSpiralPattern(Texture2D canvas, Texture2D detail, int count, bool allowRotation)
-        {
-            int centerX = settings.canvasSize / 2;
-            int centerY = settings.canvasSize / 2;
-            float maxRadius = (settings.canvasSize / 2) - detail.width;
-            
-            for (int i = 0; i < count; i++)
-            {
-                float t = (float)i / count;
-                float angle = t * 4 * Mathf.PI;
-                float radius = t * maxRadius;
-                
-                int x = centerX + (int)(Mathf.Cos(angle) * radius) - detail.width / 2;
-                int y = centerY + (int)(Mathf.Sin(angle) * radius) - detail.height / 2;
-                
-                x = Mathf.Clamp(x, 0, settings.canvasSize - detail.width);
-                y = Mathf.Clamp(y, 0, settings.canvasSize - detail.height);
-                
-                CompositeTexture(canvas, detail, x, y);
-            }
-        }
-
-        private static bool CheckOverlap(bool[,] mask, int x, int y, Texture2D texture)
-        {
-            Color[] pixels = texture.GetPixels();
-
-            for (int py = 0; py < texture.height; py++)
-            {
-                for (int px = 0; px < texture.width; px++)
-                {
-                    int maskX = x + px;
-                    int maskY = y + py;
-
-                    if (maskX >= 0 && maskX < settings.canvasSize && maskY >= 0 && maskY < settings.canvasSize)
-                    {
-                        Color pixel = pixels[py * texture.width + px];
-                        if (pixel.a > 0 && mask[maskX, maskY])
-                            return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        private static void UpdateMask(bool[,] mask, int x, int y, Texture2D texture)
-        {
-            Color[] pixels = texture.GetPixels();
-            
-            for (int py = 0; py < texture.height; py++)
-            {
-                for (int px = 0; px < texture.width; px++)
-                {
-                    int maskX = x + px;
-                    int maskY = y + py;
-                    
-                    if (maskX >= 0 && maskX < settings.canvasSize && maskY >= 0 && maskY < settings.canvasSize)
-                    {
-                        Color pixel = pixels[py * texture.width + px];
-                        if (pixel.a > 0)
-                            mask[maskX, maskY] = true;
-                    }
-                }
-            }
-        }
 
         private static void CompositeTexture(Texture2D canvas, Texture2D overlay, int x, int y)
         {
@@ -854,184 +1247,8 @@ namespace GodsAndPantheons
             canvas.SetPixels(canvasPixels);
         }
 
-        private static void AddMotif(Texture2D canvas, Color[] palette)
-        {
-            Texture2D motif = motifTextures[UnityEngine.Random.Range(0, motifTextures.Length)];
-            motif = ApplyPalette(motif, palette);
-
-            // Rotation
-            int rotations = UnityEngine.Random.Range(0, 4);
-            for (int i = 0; i < rotations; i++)
-            {
-                Texture2D rotated = RotateTexture90(motif);
-                if (motif != motifTextures[0])
-                    UnityEngine.Object.DestroyImmediate(motif);
-                motif = rotated;
-            }
-
-            // IMPROVED: Better scaling logic for 32x32 canvas
-            float maxScaleX = (float)(settings.canvasSize - 4) / motif.width; // Leave 2px margin each side
-            float maxScaleY = (float)(settings.canvasSize - 4) / motif.height;
-            float maxScale = Mathf.Min(0.9f, maxScaleX, maxScaleY); // Max 90% of available space
-            float scale = UnityEngine.Random.Range(0.4f, maxScale);
-            
-            int newWidth = Mathf.RoundToInt(motif.width * scale);
-            int newHeight = Mathf.RoundToInt(motif.height * scale);
-            Texture2D resized = ResizeTexture(motif, newWidth, newHeight);
-            UnityEngine.Object.DestroyImmediate(motif);
-            motif = resized;
-
-            // IMPROVED: Better placement logic
-            string[] modes = { "golden_ratio", "complementary_golden", "rule_of_thirds", "golden_spiral", "centered_offset" };
-            string mode = modes[UnityEngine.Random.Range(0, modes.Length)];
-
-
-            switch (mode)
-            {
-                case "golden_ratio":
-                    Vector2 goldenPoint = GoldenRatio.GetGoldenPoint(settings.canvasSize);
-                    int gx = Mathf.RoundToInt(goldenPoint.x) - motif.width / 2;
-                    int gy = Mathf.RoundToInt(goldenPoint.y) - motif.height / 2;
-                    gx = Mathf.Clamp(gx, 0, settings.canvasSize - motif.width);
-                    gy = Mathf.Clamp(gy, 0, settings.canvasSize - motif.height);
-                    CompositeTexture(canvas, motif, gx, gy);
-                    break;
-
-                case "complementary_golden":
-                    Vector2 primary = GoldenRatio.GetGoldenPoint(settings.canvasSize, 0);
-                    Vector2 complement = GoldenRatio.GetComplementaryPoint(primary, settings.canvasSize);
-                    
-                    // Place at primary
-                    int px = Mathf.RoundToInt(primary.x) - motif.width / 2;
-                    int py = Mathf.RoundToInt(primary.y) - motif.height / 2;
-                    px = Mathf.Clamp(px, 0, settings.canvasSize - motif.width);
-                    py = Mathf.Clamp(py, 0, settings.canvasSize - motif.height);
-                    CompositeTexture(canvas, motif, px, py);
-                    
-                    // 50% chance to also place at complement
-                    if (UnityEngine.Random.value < 0.5f)
-                    {
-                        int cx = Mathf.RoundToInt(complement.x) - motif.width / 2;
-                        int cy = Mathf.RoundToInt(complement.y) - motif.height / 2;
-                        cx = Mathf.Clamp(cx, 0, settings.canvasSize - motif.width);
-                        cy = Mathf.Clamp(cy, 0, settings.canvasSize - motif.height);
-                        CompositeTexture(canvas, motif, cx, cy);
-                    }
-                    break;
-
-                case "rule_of_thirds":
-                    Vector2 rulePoint = GoldenRatio.GetRuleOfThirdsPoint(settings.canvasSize, UnityEngine.Random.Range(0, 9));
-                    int rx = Mathf.RoundToInt(rulePoint.x) - motif.width / 2;
-                    int ry = Mathf.RoundToInt(rulePoint.y) - motif.height / 2;
-                    rx = Mathf.Clamp(rx, 0, settings.canvasSize - motif.width);
-                    ry = Mathf.Clamp(ry, 0, settings.canvasSize - motif.height);
-                    CompositeTexture(canvas, motif, rx, ry);
-                    break;
-
-                case "golden_spiral":
-                    int spiralSteps = UnityEngine.Random.Range(3, 6);
-                    for (int step = 0; step < spiralSteps; step++)
-                    {
-                        float t = (float)step / spiralSteps;
-                        Vector2 spiralPoint = GoldenRatio.GetSpiralPoint(settings.canvasSize, t);
-                        int sx = Mathf.RoundToInt(spiralPoint.x) - motif.width / 2;
-                        int sy = Mathf.RoundToInt(spiralPoint.y) - motif.height / 2;
-                        sx = Mathf.Clamp(sx, 0, settings.canvasSize - motif.width);
-                        sy = Mathf.Clamp(sy, 0, settings.canvasSize - motif.height);
-                        
-                        if (sx >= 0 && sy >= 0)
-                            CompositeTexture(canvas, motif, sx, sy);
-                    }
-                    break;
-
-                case "centered_offset":
-                    // Slight offset from center using golden ratio
-                    int centerX = settings.canvasSize / 2;
-                    int centerY = settings.canvasSize / 2;
-                    float offsetAmount = settings.canvasSize * (1 - GoldenRatio.INV_PHI) * 0.3f;
-                    int offsetX = centerX - motif.width / 2 + UnityEngine.Random.Range(-(int)offsetAmount, (int)offsetAmount + 1);
-                    int offsetY = centerY - motif.height / 2 + UnityEngine.Random.Range(-(int)offsetAmount, (int)offsetAmount + 1);
-                    offsetX = Mathf.Clamp(offsetX, 0, settings.canvasSize - motif.width);
-                    offsetY = Mathf.Clamp(offsetY, 0, settings.canvasSize - motif.height);
-                    CompositeTexture(canvas, motif, offsetX, offsetY);
-                    break;
-            }
-
-            UnityEngine.Object.DestroyImmediate(motif);
-        }
-
-        private static void DrawLine(Texture2D canvas, int x0, int y0, int x1, int y1, Color color)
-        {
-            int dx = Mathf.Abs(x1 - x0);
-            int dy = Mathf.Abs(y1 - y0);
-            int sx = x0 < x1 ? 1 : -1;
-            int sy = y0 < y1 ? 1 : -1;
-            int err = dx - dy;
-
-            while (true)
-            {
-                if (x0 >= 0 && x0 < settings.canvasSize && y0 >= 0 && y0 < settings.canvasSize)
-                    canvas.SetPixel(x0, y0, color);
-
-                if (x0 == x1 && y0 == y1) break;
-                
-                int e2 = 2 * err;
-                if (e2 > -dy) { err -= dy; x0 += sx; }
-                if (e2 < dx) { err += dx; y0 += sy; }
-            }
-        }
-
-        private static void AddDetail(Texture2D canvas, Color[] palette)
-        {
-            Texture2D detail = detailTextures[UnityEngine.Random.Range(0, detailTextures.Length)];
-            string detailName = detail.name.ToLower();
-            detail = ApplyPalette(detail, palette);
-
-            // Don't rotate clouds or vines
-
-
-            if (!detailName.Contains("cloud") && !detailName.Contains("vine"))
-            {
-                Debug.Log($"GodsAndPantheons: detail wasnt cloud: '{detailName}' rotating");
-                int rotations = UnityEngine.Random.Range(0, 4);
-                for (int i = 0; i < rotations; i++)
-                {
-                    Texture2D rotated = RotateTexture90(detail);
-                    if (detail != detailTextures[0]) // Don't destroy original
-                        UnityEngine.Object.DestroyImmediate(detail);
-                    detail = rotated;
-                }
-            }
-
-            int maxX = Mathf.Max(0, settings.canvasSize - detail.width);
-            int maxY = Mathf.Max(0, settings.canvasSize - detail.height);
-
-
-            if (maxX < 0 || maxY < 0)
-            {
-                // Detail is too large, scale it down
-                float scaleX = (float)settings.canvasSize / detail.width;
-                float scaleY = (float)settings.canvasSize / detail.height;
-                float scale = Mathf.Min(scaleX, scaleY) * 0.8f; // 80% of max to leave margin
-                
-                int newWidth = Mathf.RoundToInt(detail.width * scale);
-                int newHeight = Mathf.RoundToInt(detail.height * scale);
-                
-                Texture2D resized = ResizeTexture(detail, newWidth, newHeight);
-                UnityEngine.Object.DestroyImmediate(detail);
-                detail = resized;
-                
-                maxX = settings.canvasSize - detail.width;
-                maxY = settings.canvasSize - detail.height;
-            }
-
-            int x = UnityEngine.Random.Range(0, maxX + 1);
-            int y = UnityEngine.Random.Range(0, maxY + 1);
-            CompositeTexture(canvas, detail, x, y);
-
-            UnityEngine.Object.DestroyImmediate(detail);
-        }
-
+        
+    
         private static Texture2D RotateTexture90(Texture2D source)
         {
             Texture2D result = new Texture2D(source.height, source.width, TextureFormat.RGBA32, false);
