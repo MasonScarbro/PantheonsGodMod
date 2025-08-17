@@ -34,6 +34,8 @@ namespace GodsAndPantheons
             public float proceduralMotifChance = 0.3f;
             public int maxLayers = 5;
             public float layerSpacing = 0.618f; // Golden ratio spacing
+            public float multipleProjectileChance = 0.25f;
+            public int maxProjectileCount = 4;
             
         }
 
@@ -72,6 +74,14 @@ namespace GodsAndPantheons
                     default: return 0.5f;
                 }
             }
+        }
+
+        public enum CompositionStyle
+        {
+            SingleFocus,        // Traditional single main element
+            MultipleProjectiles, // Multiple shapes spread out, minimal details
+            ElementalCluster,   // Grouped magical elements
+            CosmicArray        // Celestial arrangement
         }
 
         public enum LayerType
@@ -515,7 +525,8 @@ namespace GodsAndPantheons
                 new Color(150/255f, 1f, 1f),
                 new Color(100/255f, 180/255f, 200/255f),
                 new Color(50/255f, 100/255f, 150/255f)
-            })
+            }),
+            
         };
         // Special handling rules for different detail types
         [System.Serializable]
@@ -807,26 +818,38 @@ namespace GodsAndPantheons
             ColorPalette selectedPalette = colorsByGod[UnityEngine.Random.Range(0, colorsByGod.Length)];
             CompositionPlanner planner = new CompositionPlanner(settings.canvasSize, selectedPalette);
 
-            PlacePrimaryShape(planner);
-
-            // Step 2: Add elements based on rules and chances
-            int maxElements = UnityEngine.Random.Range(2, settings.maxLayers);
+            // Determine composition style
+            CompositionStyle style = DetermineCompositionStyle();
             
-            for (int i = 1; i < maxElements; i++)
+            switch (style)
             {
-                float roll = UnityEngine.Random.value;
-                
-                if (roll < settings.detailChance && ShouldAddDetail(planner))
-                {
-                    PlaceDetail(planner);
-                }
-                else if (roll < settings.motifChance && ShouldAddMotif(planner))
-                {
-                    if (UnityEngine.Random.value < settings.proceduralMotifChance)
-                        PlaceProceduralMotif(planner);
-                    else
-                        PlaceMotif(planner);
-                }
+                case CompositionStyle.MultipleProjectiles:
+                    PlaceMultipleProjectiles(planner);
+                    break;
+                case CompositionStyle.ElementalCluster:
+                    PlaceElementalCluster(planner);
+                    break;
+                case CompositionStyle.CosmicArray:
+                    PlaceCosmicArray(planner);
+                    break;
+                default:
+                    PlacePrimaryShape(planner);
+                    // Add traditional details and motifs
+                    int maxElements = UnityEngine.Random.Range(2, settings.maxLayers);
+                    for (int i = 1; i < maxElements; i++)
+                    {
+                        float roll = UnityEngine.Random.value;
+                        if (roll < settings.detailChance && ShouldAddDetail(planner))
+                            PlaceDetail(planner);
+                        else if (roll < settings.motifChance && ShouldAddMotif(planner))
+                        {
+                            if (UnityEngine.Random.value < settings.proceduralMotifChance)
+                                PlaceProceduralMotif(planner);
+                            else
+                                PlaceMotif(planner);
+                        }
+                    }
+                    break;
             }
 
             // Save the result
@@ -836,6 +859,211 @@ namespace GodsAndPantheons
             File.WriteAllBytes(Path.Combine(outputPath, filename), pngData);
 
             UnityEngine.Object.DestroyImmediate(planner.canvas);
+        }
+
+        private static CompositionStyle DetermineCompositionStyle()
+        {
+            float roll = UnityEngine.Random.value;
+            if (roll < settings.multipleProjectileChance)
+                return CompositionStyle.MultipleProjectiles;
+            else if (roll < settings.multipleProjectileChance + 0.15f)
+                return CompositionStyle.ElementalCluster;
+            else if (roll < settings.multipleProjectileChance + 0.25f)
+                return CompositionStyle.CosmicArray;
+            return CompositionStyle.SingleFocus;
+        }
+
+
+        private static void PlaceMultipleProjectiles(CompositionPlanner planner)
+        {
+            if (shapeTextures.Length == 0) return;
+
+            int projectileCount = UnityEngine.Random.Range(2, settings.maxProjectileCount + 1);
+            Texture2D baseShape = shapeTextures[UnityEngine.Random.Range(0, shapeTextures.Length)];
+            
+            // Generate spread positions - avoid center clustering
+            Vector2[] positions = GenerateProjectilePositions(projectileCount, baseShape.width, baseShape.height);
+            
+            for (int i = 0; i < positions.Length; i++)
+            {
+                Texture2D projectile = ApplyPalette(baseShape, planner.palette.colors);
+                
+                // Apply slight size variation
+                float sizeVariation = UnityEngine.Random.Range(0.8f, 1.2f);
+                if (sizeVariation != 1.0f)
+                {
+                    int newWidth = Mathf.RoundToInt(projectile.width * sizeVariation);
+                    int newHeight = Mathf.RoundToInt(projectile.height * sizeVariation);
+                    Texture2D resized = ResizeTexture(projectile, newWidth, newHeight);
+                    UnityEngine.Object.DestroyImmediate(projectile);
+                    projectile = resized;
+                }
+                
+                Color dominantColor = planner.palette.colors[UnityEngine.Random.Range(0, planner.palette.colors.Length)];
+                planner.AddElement(LayerType.Shape, $"projectile_{i}", projectile, positions[i], dominantColor);
+                
+                UnityEngine.Object.DestroyImmediate(projectile);
+            }
+            
+            // Add minimal motifs only (no details)
+            if (UnityEngine.Random.value < 0.3f) // Reduced chance
+            {
+                PlaceMotif(planner);
+            }
+        }
+
+        private static Vector2[] GenerateProjectilePositions(int count, int shapeWidth, int shapeHeight)
+        {
+            List<Vector2> positions = new List<Vector2>();
+            int attempts = 0;
+            
+            while (positions.Count < count && attempts < 50)
+            {
+                Vector2 candidate;
+                
+                if (positions.Count == 0)
+                {
+                    // First projectile can be anywhere reasonable
+                    candidate = new Vector2(
+                        UnityEngine.Random.Range(shapeWidth, settings.canvasSize - shapeWidth * 2),
+                        UnityEngine.Random.Range(shapeHeight, settings.canvasSize - shapeHeight * 2)
+                    );
+                }
+                else
+                {
+                    // Subsequent projectiles should be spread out
+                    candidate = new Vector2(
+                        UnityEngine.Random.Range(0, settings.canvasSize - shapeWidth),
+                        UnityEngine.Random.Range(0, settings.canvasSize - shapeHeight)
+                    );
+                }
+                
+                // Check minimum distance from existing projectiles
+                bool validPosition = true;
+                float minDistance = settings.canvasSize * 0.25f; // Minimum 25% canvas size apart
+                
+                foreach (Vector2 existing in positions)
+                {
+                    if (Vector2.Distance(candidate, existing) < minDistance)
+                    {
+                        validPosition = false;
+                        break;
+                    }
+                }
+                
+                if (validPosition)
+                    positions.Add(candidate);
+                
+                attempts++;
+            }
+            
+            return positions.ToArray();
+        }
+
+        private static void PlaceElementalCluster(CompositionPlanner planner)
+        {
+            // Create a cluster of small magical elements
+            Vector2 clusterCenter = GoldenRatio.GetGoldenPoint(settings.canvasSize);
+            int elementCount = UnityEngine.Random.Range(3, 6);
+            float clusterRadius = settings.canvasSize * 0.2f;
+            
+            for (int i = 0; i < elementCount; i++)
+            {
+                float angle = (float)i / elementCount * 2f * Mathf.PI;
+                float distance = UnityEngine.Random.Range(clusterRadius * 0.3f, clusterRadius);
+                Vector2 position = clusterCenter + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * distance;
+                
+                // Use procedural elements for magical effects
+                Vector2 size = new Vector2(
+                    UnityEngine.Random.Range(6, 12),
+                    UnityEngine.Random.Range(6, 12)
+                );
+                
+                Color elementColor = planner.palette.colors[UnityEngine.Random.Range(0, planner.palette.colors.Length)];
+                System.Action<Texture2D, Color> drawAction = GetMagicalElementDrawAction(planner.palette.godType, i);
+                
+                planner.AddProceduralElement(LayerType.ProceduralMotif, $"elemental_{i}", position, size, elementColor, drawAction);
+            }
+        }
+        
+        private static System.Action<Texture2D, Color> GetMagicalElementDrawAction(string godType, int elementIndex)
+        {
+            // Return different magical elements based on god type and element index
+            string[] elementTypes = GetMagicalElementTypes(godType);
+            string elementType = elementTypes[elementIndex % elementTypes.Length];
+            
+            switch (elementType)
+            {
+                case "crystal":
+                    return (texture, color) => DrawCrystalOnTexture(texture, color);
+                case "flame":
+                    return (texture, color) => DrawFlameOnTexture(texture, color);
+                case "frost":
+                    return (texture, color) => DrawFrostOnTexture(texture, color);
+                case "lightning":
+                    return (texture, color) => DrawLightningOnTexture(texture, color);
+                case "vortex":
+                    return (texture, color) => DrawVortexOnTexture(texture, color);
+                default:
+                    return (texture, color) => DrawRadialBurstOnTexture(texture, color);
+            }
+        }
+
+        private static string[] GetMagicalElementTypes(string godType)
+        {
+            switch (godType.ToLower())
+            {
+                case "frost":
+                    return new string[] { "frost", "crystal", "vortex" };
+                case "lightning":
+                    return new string[] { "lightning", "vortex", "crystal" };
+                case "shadow":
+                    return new string[] { "vortex", "flame", "crystal" };
+                case "void":
+                    return new string[] { "vortex", "crystal", "lightning" };
+                case "light":
+                    return new string[] { "crystal", "flame", "lightning" };
+                default:
+                    return new string[] { "crystal", "flame", "vortex" };
+            }
+        }
+
+        private static void PlaceCosmicArray(CompositionPlanner planner)
+        {
+            // Arrange elements in cosmic patterns (constellation-like)
+            if (shapeTextures.Length == 0) return;
+
+            Texture2D baseShape = shapeTextures[UnityEngine.Random.Range(0, shapeTextures.Length)];
+            int starCount = UnityEngine.Random.Range(4, 7);
+
+            // Create constellation pattern
+            for (int i = 0; i < starCount; i++)
+            {
+                Vector2 position = GoldenRatio.GetSpiralPoint(settings.canvasSize, (float)i / starCount);
+                position -= new Vector2(baseShape.width, baseShape.height) * 0.5f;
+
+                // Clamp to canvas bounds
+                position.x = Mathf.Clamp(position.x, 0, settings.canvasSize - baseShape.width);
+                position.y = Mathf.Clamp(position.y, 0, settings.canvasSize - baseShape.height);
+
+                Texture2D cosmicElement = ApplyPalette(baseShape, planner.palette.colors);
+
+                // Scale based on position in spiral
+                float scale = 1.0f - (float)i / starCount * 0.5f;
+                if (scale != 1.0f)
+                {
+                    int newWidth = Mathf.RoundToInt(cosmicElement.width * scale);
+                    int newHeight = Mathf.RoundToInt(cosmicElement.height * scale);
+                    Texture2D scaled = ResizeTexture(cosmicElement, newWidth, newHeight);
+                    UnityEngine.Object.DestroyImmediate(cosmicElement);
+                    cosmicElement = scaled;
+                }
+
+                Color dominantColor = planner.palette.colors[UnityEngine.Random.Range(0, planner.palette.colors.Length)];
+                planner.AddElement(LayerType.Shape, $"cosmic_{i}", cosmicElement, position, dominantColor);
+
+                UnityEngine.Object.DestroyImmediate(cosmicElement);
+            }
         }
 
         private static void PlacePrimaryShape(CompositionPlanner planner)
@@ -1003,17 +1231,158 @@ namespace GodsAndPantheons
             return null;
         }
         
+        private static void DrawCrystalOnTexture(Texture2D texture, Color color)
+        {
+            int centerX = texture.width / 2;
+            int centerY = texture.height / 2;
+            int sides = UnityEngine.Random.Range(4, 8);
+            int radius = Mathf.Min(texture.width, texture.height) / 3;
+            
+            for (int i = 0; i < sides; i++)
+            {
+                float angle1 = (float)i / sides * 2f * Mathf.PI;
+                float angle2 = (float)(i + 1) / sides * 2f * Mathf.PI;
+                
+                int x1 = centerX + (int)(Mathf.Cos(angle1) * radius);
+                int y1 = centerY + (int)(Mathf.Sin(angle1) * radius);
+                int x2 = centerX + (int)(Mathf.Cos(angle2) * radius);
+                int y2 = centerY + (int)(Mathf.Sin(angle2) * radius);
+                
+                DrawLineOnTexture(texture, centerX, centerY, x1, y1, color);
+                DrawLineOnTexture(texture, x1, y1, x2, y2, Color.Lerp(color, Color.clear, 0.3f));
+            }
+            texture.Apply();
+        }
+
+        private static void DrawFlameOnTexture(Texture2D texture, Color color)
+        {
+            int centerX = texture.width / 2;
+            int flames = UnityEngine.Random.Range(3, 6);
+            
+            for (int i = 0; i < flames; i++)
+            {
+                int startX = centerX + UnityEngine.Random.Range(-2, 3);
+                int startY = texture.height - 1;
+                int height = UnityEngine.Random.Range(texture.height / 2, texture.height - 2);
+                
+                for (int y = 0; y < height; y++)
+                {
+                    float flicker = UnityEngine.Random.Range(-1f, 1f) * (y * 0.1f);
+                    int x = startX + (int)flicker;
+                    
+                    if (x >= 0 && x < texture.width && startY - y >= 0 && startY - y < texture.height)
+                    {
+                        float intensity = 1f - (float)y / height;
+                        Color flameColor = Color.Lerp(Color.clear, color, intensity);
+                        texture.SetPixel(x, startY - y, flameColor);
+                    }
+                }
+            }
+            texture.Apply();
+        }
+
+        private static void DrawFrostOnTexture(Texture2D texture, Color color)
+        {
+            int centerX = texture.width / 2;
+            int centerY = texture.height / 2;
+            int arms = 6; // Snowflake pattern
+            
+            for (int arm = 0; arm < arms; arm++)
+            {
+                float angle = (float)arm / arms * 2f * Mathf.PI;
+                int length = Mathf.Min(texture.width, texture.height) / 3;
+                
+                // Main arm
+                DrawLineOnTexture(texture, centerX, centerY,
+                    centerX + (int)(Mathf.Cos(angle) * length),
+                    centerY + (int)(Mathf.Sin(angle) * length), color);
+                
+                // Side branches
+                for (int branch = 1; branch <= 2; branch++)
+                {
+                    int branchStart = length * branch / 3;
+                    int branchLength = length / 4;
+                    
+                    for (int side = -1; side <= 1; side += 2)
+                    {
+                        float branchAngle = angle + side * 0.5f;
+                        int startX = centerX + (int)(Mathf.Cos(angle) * branchStart);
+                        int startY = centerY + (int)(Mathf.Sin(angle) * branchStart);
+                        
+                        DrawLineOnTexture(texture, startX, startY,
+                            startX + (int)(Mathf.Cos(branchAngle) * branchLength),
+                            startY + (int)(Mathf.Sin(branchAngle) * branchLength),
+                            Color.Lerp(color, Color.clear, 0.3f));
+                    }
+                }
+            }
+            texture.Apply();
+        }
+
+        private static void DrawLightningOnTexture(Texture2D texture, Color color)
+        {
+            int startX = UnityEngine.Random.Range(1, texture.width - 1);
+            int startY = 0;
+            int endX = UnityEngine.Random.Range(1, texture.width - 1);
+            int endY = texture.height - 1;
+            
+            // Create jagged lightning path
+            List<Vector2> points = new List<Vector2>();
+            points.Add(new Vector2(startX, startY));
+            
+            int segments = UnityEngine.Random.Range(3, 6);
+            for (int i = 1; i < segments; i++)
+            {
+                float t = (float)i / segments;
+                int midX = (int)Mathf.Lerp(startX, endX, t) + UnityEngine.Random.Range(-3, 4);
+                int midY = (int)Mathf.Lerp(startY, endY, t);
+                points.Add(new Vector2(midX, midY));
+            }
+            
+            points.Add(new Vector2(endX, endY));
+            
+            // Draw lightning bolt
+            for (int i = 0; i < points.Count - 1; i++)
+            {
+                DrawLineOnTexture(texture, (int)points[i].x, (int)points[i].y,
+                    (int)points[i + 1].x, (int)points[i + 1].y, color);
+            }
+            texture.Apply();
+        }
+
+        private static void DrawVortexOnTexture(Texture2D texture, Color color)
+        {
+            int centerX = texture.width / 2;
+            int centerY = texture.height / 2;
+            float maxRadius = Mathf.Min(texture.width, texture.height) / 4;
+            
+            for (float t = 0; t < 4 * Mathf.PI; t += 0.2f)
+            {
+                float radius = maxRadius * (1 - t / (4 * Mathf.PI));
+                int x = centerX + (int)(Mathf.Cos(t) * radius);
+                int y = centerY + (int)(Mathf.Sin(t) * radius);
+                
+                if (x >= 0 && x < texture.width && y >= 0 && y < texture.height)
+                {
+                    float intensity = radius / maxRadius;
+                    Color vortexColor = Color.Lerp(Color.clear, color, intensity);
+                    texture.SetPixel(x, y, vortexColor);
+                }
+            }
+            texture.Apply();
+        }
+        
         private static void DrawRadialBurstOnTexture(Texture2D texture, Color color)
         {
             int centerX = texture.width / 2;
             int centerY = texture.height / 2;
             int rays = UnityEngine.Random.Range(6, 12);
-            
+
             for (int i = 0; i < rays; i++)
             {
                 float angle = (float)i / rays * 2f * Mathf.PI;
                 int length = UnityEngine.Random.Range(3, Mathf.Min(texture.width, texture.height) / 2);
-                DrawLineOnTexture(texture, centerX, centerY, 
+                DrawLineOnTexture(texture, centerX, centerY,
                         centerX + (int)(Mathf.Cos(angle) * length),
                         centerY + (int)(Mathf.Sin(angle) * length), color);
             }
